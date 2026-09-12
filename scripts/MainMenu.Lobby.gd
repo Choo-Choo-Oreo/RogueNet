@@ -26,3 +26,12 @@ func _on_join_button_pressed():
 
 	multiplayer.multiplayer_peer = peer
 	print("Joining host: ", host_steam_id)
+
+@rpc("any_peer", "call_local")
+func _receive_chat_message(text: String):
+	$VSplitContainer/ChatPanel/ChatLog.add_text(text + "\n")
+
+func _on_send_button_pressed():
+	var message = $VSplitContainer/ChatPanel/ChatInputRow/ChatInput.text
+	_receive_chat_message.rpc(message)
+	$VSplitContainer/ChatPanel/ChatInputRow/ChatInput.clear()
