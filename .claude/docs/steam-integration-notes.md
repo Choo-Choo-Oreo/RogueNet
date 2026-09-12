@@ -5,10 +5,26 @@ Read this when Steam/netcode work comes up; point Claude at it directly
 if needed. This is a *living* doc: update it as decisions get made
 instead of leaving stale entries.
 
-## Status: unresolved, exploratory
-Nothing here is decided. The team is currently leaning toward using
-**Steam Sockets** for networking transport (see below), but this hasn't
-been confirmed as final.
+## Status: Steam Sockets prototype validated
+Host → Join → bidirectional chat over `SteamMultiplayerPeer` (GodotSteam)
+has been tested successfully between two separate machines, using
+AppID 480 ("Spacewar") and a manual paste-your-SteamID flow (no lobby).
+Confirmed working:
+- `Steam.steamInit(480)` + `Steam.run_callbacks()` in a `SteamManager`
+  autoload (`singletons/SteamManager.gd`)
+- Hosting via `SteamMultiplayerPeer.create_host(0)`
+- Joining via `SteamMultiplayerPeer.create_client(steam_id, 0)`
+- `multiplayer.peer_connected` firing correctly on both ends (host sees
+  the joiner's real peer ID, joiner sees ID `1` for the host, as expected
+  by Godot's multiplayer convention)
+- A basic `@rpc("any_peer", "call_local")` chat message reaching both
+  peers
+
+This was built as a throwaway prototype in `scenes/ui/MainMenu-tmp.tscn`
+/ `scripts/MainMenu.Lobby.gd`, separate from the real `MainMenu.tscn`
+(which a teammate was building UI for concurrently). Transport choice is
+no longer purely theoretical — Steam Sockets is now a proven option, not
+just a plan.
 
 ## What's confirmed so far
 - The game will be published on Steam eventually.
@@ -54,7 +70,11 @@ been confirmed as final.
   shared test AppID.
 
 ## Next steps
-- Prototype basic Steam Sockets connectivity using AppID 480 before
-  committing to it as the transport.
-- Revisit this doc once that prototype tells us whether Steam Sockets
-  is worth the added dependency vs. plain ENet.
+- Decide whether to keep the prototype logic in the throwaway scene or
+  merge the host/join flow into the real `MainMenu` once its UI settles.
+- Still open: GodotSteam (full) vs. the lighter peer-only wrapper — the
+  prototype didn't need lobbies at all, so that decision remains
+  unforced either way.
+- Still open: how this fits the "local-or-server, Terraria-style"
+  hosting model from `design-goals.md`.
+- Register a real Steamworks AppID once ready to move past AppID 480.
