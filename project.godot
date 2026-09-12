@@ -11,8 +11,13 @@ config_version=5
 [application]
 
 config/name="RogueNET"
+run/main_scene="uid://bqee185h6kanu"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+SteamManager="*uid://dm328e1uneq2h"
 
 [display]
 

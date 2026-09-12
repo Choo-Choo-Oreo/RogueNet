@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://bqee185h6kanu"]
+
+[node name="MainMenu" type="Control" unique_id=1656644299]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="." unique_id=783054524]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 576.0
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="HSplitContainer" unique_id=1855608866]
+layout_mode = 2
