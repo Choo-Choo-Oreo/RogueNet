@@ -11,7 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_f8fx8")
 
-[node name="VSplitContainer" type="HSplitContainer" parent="." unique_id=2088344918]
+[node name="HSplitContainer" type="HSplitContainer" parent="." unique_id=2088344918]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,46 +19,46 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HSplitContainer" type="VSplitContainer" parent="VSplitContainer" unique_id=48419895]
+[node name="VSplitContainer" type="VSplitContainer" parent="HSplitContainer" unique_id=48419895]
 layout_mode = 2
 size_flags_horizontal = 3
 split_offsets = PackedInt32Array(0, 0)
 
-[node name="Button" type="Button" parent="VSplitContainer/HSplitContainer" unique_id=1855608866]
+[node name="Button" type="Button" parent="HSplitContainer/VSplitContainer" unique_id=1855608866]
 layout_mode = 2
 action_mode = 0
 text = "Host"
 
-[node name="LineEdit" type="LineEdit" parent="VSplitContainer/HSplitContainer" unique_id=2094414471]
+[node name="LineEdit" type="LineEdit" parent="HSplitContainer/VSplitContainer" unique_id=2094414471]
 layout_mode = 2
 placeholder_text = "Host's Steam ID"
 
-[node name="JoinButton" type="Button" parent="VSplitContainer/HSplitContainer" unique_id=-1111957754]
+[node name="JoinButton" type="Button" parent="HSplitContainer/VSplitContainer" unique_id=-1111957754]
 layout_mode = 2
 text = "Join"
 
-[node name="ChatPanel" type="VBoxContainer" parent="VSplitContainer" unique_id=1727969480]
+[node name="ChatPanel" type="VBoxContainer" parent="HSplitContainer" unique_id=1727969480]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="ChatLog" type="RichTextLabel" parent="VSplitContainer/ChatPanel" unique_id=-993085095]
+[node name="ChatLog" type="RichTextLabel" parent="HSplitContainer/ChatPanel" unique_id=-993085095]
 layout_mode = 2
 size_flags_vertical = 3
 scroll_following = true
 
-[node name="ChatInputRow" type="HBoxContainer" parent="VSplitContainer/ChatPanel" unique_id=-993085094]
+[node name="ChatInputRow" type="HBoxContainer" parent="HSplitContainer/ChatPanel" unique_id=-993085094]
 layout_mode = 2
 
-[node name="ChatInput" type="LineEdit" parent="VSplitContainer/ChatPanel/ChatInputRow" unique_id=-993085093]
+[node name="ChatInput" type="LineEdit" parent="HSplitContainer/ChatPanel/ChatInputRow" unique_id=-993085093]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Type a message..."
 
-[node name="SendButton" type="Button" parent="VSplitContainer/ChatPanel/ChatInputRow" unique_id=-993085092]
+[node name="SendButton" type="Button" parent="HSplitContainer/ChatPanel/ChatInputRow" unique_id=-993085092]
 layout_mode = 2
 text = "Send"
 
-[connection signal="pressed" from="VSplitContainer/HSplitContainer/Button" to="." method="_on_host_button_pressed"]
-[connection signal="pressed" from="VSplitContainer/HSplitContainer/JoinButton" to="." method="_on_join_button_pressed"]
-[connection signal="pressed" from="VSplitContainer/ChatPanel/ChatInputRow/SendButton" to="." method="_on_send_button_pressed"]
+[connection signal="pressed" from="HSplitContainer/VSplitContainer/Button" to="." method="_on_host_button_pressed"]
+[connection signal="pressed" from="HSplitContainer/VSplitContainer/JoinButton" to="." method="_on_join_button_pressed"]
+[connection signal="pressed" from="HSplitContainer/ChatPanel/ChatInputRow/SendButton" to="." method="_on_send_button_pressed"]

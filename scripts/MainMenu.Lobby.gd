@@ -17,7 +17,7 @@ func _on_host_button_pressed():
 
 func _on_join_button_pressed():
 	var peer = SteamMultiplayerPeer.new()
-	var host_steam_id = $HSplitContainer/LineEdit.text.to_int()
+	var host_steam_id = $HSplitContainer/VSplitContainer/LineEdit.text.to_int()
 	var error = peer.create_client(host_steam_id, 0)
 
 	if error != OK:
@@ -29,9 +29,9 @@ func _on_join_button_pressed():
 
 @rpc("any_peer", "call_local")
 func _receive_chat_message(text: String):
-	$VSplitContainer/ChatPanel/ChatLog.add_text(text + "\n")
+	$HSplitContainer/ChatPanel/ChatLog.add_text(text + "\n")
 
 func _on_send_button_pressed():
-	var message = $VSplitContainer/ChatPanel/ChatInputRow/ChatInput.text
+	var message = $HSplitContainer/ChatPanel/ChatInputRow/ChatInput.text
 	_receive_chat_message.rpc(message)
-	$VSplitContainer/ChatPanel/ChatInputRow/ChatInput.clear()
+	$HSplitContainer/ChatPanel/ChatInputRow/ChatInput.clear()
