@@ -3,7 +3,7 @@ extends Node
 var result
 
 func _ready():
-	result = Steam.steamInit(480) # Maybe remove?
+	result = Steam.steamInit(480)
 	print(result)
 
 func _process(_delta):

@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://2g4xuv8gdm7p"]
+
+[ext_resource type="Script" uid="uid://dxp4j1n1mnwaj" path="res://scripts/MainMenu.Lobby.gd" id="1_f8fx8"]
+
+[node name="MainMenu" type="Control" unique_id=1656644299]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_f8fx8")
+
+[node name="HSplitContainer" type="VSplitContainer" parent="." unique_id=48419895]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 576.0
+grow_vertical = 2
+split_offsets = PackedInt32Array(0, 0)
+
+[node name="Button" type="Button" parent="HSplitContainer" unique_id=1855608866]
+layout_mode = 2
+action_mode = 0
+text = "Host"
+
+[node name="LineEdit" type="LineEdit" parent="HSplitContainer" unique_id=2094414471]
+layout_mode = 2
+placeholder_text = "Host's Steam ID"
+
+[node name="JoinButton" type="Button" parent="HSplitContainer" unique_id=-1111957754]
+layout_mode = 2
+text = "Join"
+
+[connection signal="pressed" from="HSplitContainer/Button" to="." method="_on_host_button_pressed"]
+[connection signal="pressed" from="HSplitContainer/JoinButton" to="." method="_on_join_button_pressed"]
