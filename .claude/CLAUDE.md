@@ -66,10 +66,4 @@ Claude build the game for them. Most of the team is new to programming.
   wasn't hand-written, so don't assume it's well-understood by the team)_
 
 ## Known team context
-- 3–5 friends, most with little to no coding experience.
-- One teammate tends to overscope; the technical lead manages this by
-  owning core systems and keeping their own scope tight, letting others
-  own content/text areas.
-- Unresolved design tension: roguelite-light focus vs. a more
-  narrative/RPG-heavy focus. Don't assume either direction is settled —
-  ask if it affects the task at hand.
+@.claude/memory/team-context.md
