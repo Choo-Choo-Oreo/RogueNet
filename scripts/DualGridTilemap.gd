@@ -1,5 +1,14 @@
 extends Node2D
 
+enum CellType {
+	FLOOR_VOID = -1,
+	FLOOR_GRASS = 1,
+	FLOOR_DIRT = 2,
+	FLOOR_SMOOTH_STONE = 3,
+	WALL_COBBLE_BRICK = 4,
+	WALL_SMOOTH_STONE = 5
+}
+
 const NEIGHBOR_BITMASK_TO_ATLAS_COORD := {
 	0b1111: Vector2i(2, 1), # All corners
 	0b0001: Vector2i(1, 3), # Outer bottom-right corner
@@ -18,3 +27,8 @@ const NEIGHBOR_BITMASK_TO_ATLAS_COORD := {
 	0b1001: Vector2i(0, 1), # Top-left bottom-right corners
 	0b0000: Vector2i(-1, -1), # No corners, treated as empty tile
 }
+
+@export var world_map_layer: TileMapLayer
+
+@export var floor_grass_display_layer: TileMapLayer
+@export var floor_grass_atlas_coords: Vector2i
