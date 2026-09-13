@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bmwaca8ttlny3"
-path="res://.godot/imported/wall_topdown_reference.png-e494aac59cff392ac65755821bbb63e2.ctex"
+uid="uid://30t8sgmrsu53"
+path="res://.godot/imported/floor_void.png-681994be91735bcc4a786615c21bc8d2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/tileset/wall_topdown_reference.png"
-dest_files=["res://.godot/imported/wall_topdown_reference.png-e494aac59cff392ac65755821bbb63e2.ctex"]
+source_file="res://resources/gfx/tileset/floor_void.png"
+dest_files=["res://.godot/imported/floor_void.png-681994be91735bcc4a786615c21bc8d2.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bgwmtcdpygg88"
-path="res://.godot/imported/void.png-a53e0c063aa3b7aaa7bb465447809325.ctex"
+uid="uid://dqhpq8s0o1kqr"
+path="res://.godot/imported/wall_cobble_brick.png-14dec9d76325060be8815c1d45b69cc0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/tileset/void.png"
-dest_files=["res://.godot/imported/void.png-a53e0c063aa3b7aaa7bb465447809325.ctex"]
+source_file="res://resources/gfx/tileset/wall_cobble_brick.png"
+dest_files=["res://.godot/imported/wall_cobble_brick.png-14dec9d76325060be8815c1d45b69cc0.ctex"]
 
 [params]
 

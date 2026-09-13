@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bgr8epba36yuu"
-path="res://.godot/imported/ForestGrass 1.png-80f5c9d0ad5af38d5c50aba193f190e4.ctex"
+uid="uid://c4g37l6wvgs0p"
+path="res://.godot/imported/floor_dirt.png-8d8bf507bdbaca4c7a75b190c28b8e87.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://scenes/resources/ForestGrass 1.png"
-dest_files=["res://.godot/imported/ForestGrass 1.png-80f5c9d0ad5af38d5c50aba193f190e4.ctex"]
+source_file="res://resources/gfx/tileset/floor_dirt.png"
+dest_files=["res://.godot/imported/floor_dirt.png-8d8bf507bdbaca4c7a75b190c28b8e87.ctex"]
 
 [params]
 

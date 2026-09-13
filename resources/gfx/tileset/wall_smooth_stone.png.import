@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dj7silogo6684"
-path="res://.godot/imported/ForestGrass 1.png-407ccbe91956acb9eab5039d574bece8.ctex"
+uid="uid://cgplkwatxa2fv"
+path="res://.godot/imported/wall_smooth_stone.png-3e0a2d0e897d4a3be96032403351e90f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://scripts/ForestGrass 1.png"
-dest_files=["res://.godot/imported/ForestGrass 1.png-407ccbe91956acb9eab5039d574bece8.ctex"]
+source_file="res://resources/gfx/tileset/wall_smooth_stone.png"
+dest_files=["res://.godot/imported/wall_smooth_stone.png-3e0a2d0e897d4a3be96032403351e90f.ctex"]
 
 [params]
 
