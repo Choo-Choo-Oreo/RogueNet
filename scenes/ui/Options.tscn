@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://dtdvfpf70ff8m"]
+
+[ext_resource type="Script" uid="uid://cj82fc1sgd210" path="res://scenes/ui/options.gd" id="1_2wker"]
+[ext_resource type="AudioStream" uid="uid://c1aywv5g5xg27" path="res://scenes/resources/Menu Music.mp3" id="2_kyfin"]
+
+[node name="Options" type="Control" unique_id=1338701323]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_2wker")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=923917713]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1560149284]
+layout_mode = 2
+
+[node name="Back" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1481764862]
+layout_mode = 2
+text = "Back"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="MarginContainer/VBoxContainer" unique_id=1236441090]
+stream = ExtResource("2_kyfin")
+volume_db = -6.382
+autoplay = true
+
+[node name="volume" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1752212747]
+layout_mode = 2
+text = "Volume"
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer" unique_id=523630505]
+layout_mode = 2
+
+[node name="mute" type="CheckBox" parent="MarginContainer/VBoxContainer" unique_id=1692095907]
+layout_mode = 2
+text = "Mute"
+
+[node name="resolutions" type="OptionButton" parent="MarginContainer/VBoxContainer" unique_id=127138443]
+layout_mode = 2
+selected = 2
+item_count = 3
+popup/item_0/text = "1920x1080"
+popup/item_0/id = 0
+popup/item_1/text = "1600x900"
+popup/item_1/id = 1
+popup/item_2/text = "1280x720"
+popup/item_2/id = 2
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Back" to="." method="_on_back_pressed"]
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/HSlider" to="." method="_on_h_slider_value_changed"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/mute" to="." method="_on_check_box_toggled"]
+[connection signal="item_selected" from="MarginContainer/VBoxContainer/resolutions" to="." method="_on_resolutions_item_selected"]
