@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bdh3k1pjwhi31"
-path="res://.godot/imported/WoodenFloorBoards TileMap.png-4eccf0fe8355e50a03c8a982ca6e4748.ctex"
+uid="uid://c02feoo0aqbyo"
+path="res://.godot/imported/floor_flesh.png-9673c0ca2cb19e9d4aedd95ac176b69c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/tileset/WoodenFloorBoards TileMap.png"
-dest_files=["res://.godot/imported/WoodenFloorBoards TileMap.png-4eccf0fe8355e50a03c8a982ca6e4748.ctex"]
+source_file="res://resources/gfx/tileset/floor_flesh.png"
+dest_files=["res://.godot/imported/floor_flesh.png-9673c0ca2cb19e9d4aedd95ac176b69c.ctex"]
 
 [params]
 
