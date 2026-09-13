@@ -40,6 +40,13 @@ Claude build the game for them. Most of the team is new to programming.
   implement directly for scoped bug fixes or small tasks. Even then,
   Claude should flag when a request looks like it's growing into a whole
   feature and check before building it out.
+- **"Teach, don't implement" applies even to mechanical work**, like
+  porting/translating an existing script from another language (e.g. a
+  third-party C# reference implementation being converted to GDScript).
+  Don't assume that because the logic already exists elsewhere, writing
+  the `.gd` version doesn't count as "the code" — it still does. Only
+  write it directly when explicitly told to (see exception above); don't
+  infer permission from the task being low-judgment or reference-driven.
 - **Never implement a whole feature or system unprompted.** Break broad
   requests into smaller pieces and confirm scope before writing
   significant code.
