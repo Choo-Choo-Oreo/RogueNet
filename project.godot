@@ -34,6 +34,17 @@ project/assembly_name="RogueNET"
 
 enabled=PackedStringArray("res://addons/godotsteam/plugin.cfg", "res://addons/dualgrid/plugin.cfg")
 
+[file_customization]
+
+folder_colors={
+"res://addons/": "gray",
+"res://resources/": "red",
+"res://scenes/": "blue",
+"res://scenes/rooms/": "red",
+"res://scripts/": "green",
+"res://singletons/": "gray"
+}
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
