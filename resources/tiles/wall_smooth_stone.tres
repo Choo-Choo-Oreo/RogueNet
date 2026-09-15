@@ -8,4 +8,5 @@ script = ExtResource("1_ece4a")
 tile_name = "WallSmoothStone"
 atlas_texture = ExtResource("1_jfijs")
 category = 1
+marker_color = Color(0.458824, 0.458824, 0.458824, 1)
 metadata/_custom_type_script = "uid://brc0m0h8phc05"

@@ -1,11 +1,12 @@
-[gd_resource type="Resource" script_class="TileType" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="TileType" format=3 uid="uid://dqxvxha413p0r"]
 
 [ext_resource type="Script" uid="uid://brc0m0h8phc05" path="res://scripts/TileType.gd" id="1_ece4a"]
-[ext_resource type="Texture2D" path="res://resources/gfx/tileset/floor_flesh.png" id="1_jfijs"]
+[ext_resource type="Texture2D" uid="uid://c02feoo0aqbyo" path="res://resources/gfx/tileset/floor_flesh.png" id="1_jfijs"]
 
 [resource]
 script = ExtResource("1_ece4a")
 tile_name = "FloorFlesh"
 atlas_texture = ExtResource("1_jfijs")
-category = 0
+sort_order = 3
+marker_color = Color(0.74902, 0.184314, 0.184314, 1)
 metadata/_custom_type_script = "uid://brc0m0h8phc05"
