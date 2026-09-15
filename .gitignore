@@ -1,19 +1,47 @@
-# Godot 4+ specific ignores
+# ─── Godot Engine ───────────────────────────────────────────
+# Godot 4+ internal cache and Android media marker
 .godot/
 .nomedia
 
-# Godot-specific ignores
-.import/
-export.cfg
-export_credentials.cfg
+# Godot import/export
+.import/                            # asset import cache
+export.cfg                         # export settings
+export_presets.cfg                 # export presets (may contain secrets) 
+export_credentials.cfg             # export keys (keep out!)
 
-# Imported translations (automatically generated from CSV files)
+# Auto‑generated translations
 *.translation
 
-# Mono-specific ignores
-.mono/
-data_*/
-mono_crash.*.json
+# ─── Mono / C# Support ──────────────────────────────────────
+.mono/                              # mono metadata & assemblies :contentReference[oaicite:2]{index=2}
+data_*/                             # intermediate build dirs
+mono_crash.*.json                   # crash reports
+bin/                                # .NET build output
+obj/                                # .NET intermediate output
+
+# ─── Build / Export Outputs ─────────────────────────────────
+*.exe
+*.apk
+/build/
+/out/
+
+# ─── IDE / Editor ───────────────────────────────────────────
+.vscode/                            # VSCode workspace settings
+.idea/                              # JetBrains Rider / IntelliJ
+*.suo                               # Visual Studio user options
+*.user                              # Visual Studio / MonoDevelop
+*.userprefs                         # Godot Editor prefs
+
+# ─── Operating System ───────────────────────────────────────
+.DS_Store                           # macOS
+Thumbs.db                           # Windows Explorer
+ehthumbs.db
+desktop.ini
+
+# ─── Temporary / Backup ────────────────────────────────────
+*.swp
+*.tmp
+*.bak
 
 # Installer zips (GodotSteam GDExtension, Steamworks SDK) — not project
 # source, just download artifacts sitting in the repo root
