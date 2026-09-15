@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b5ott0q25o4e0" path="res://mouse.gd" id="1_51nn4"]
 [ext_resource type="SpriteFrames" uid="uid://dhejfud8rinrx" path="res://resources/gfx/entities/rat/rat_sprite_frames.tres" id="2_yijrh"]
+[ext_resource type="Script" uid="uid://q14trol0t3wp" path="res://Scripts/Health/Health.gd" id="3_yijrh"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_b46u8"]
 
@@ -17,3 +18,6 @@ shape = SubResource("RectangleShape2D_b46u8")
 
 [node name="MoveTimer" type="Timer" parent="." unique_id=154947184]
 wait_time = 0.5
+
+[node name="Health" type="Node2D" parent="." unique_id=316384947]
+script = ExtResource("3_yijrh")

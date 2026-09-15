@@ -7,6 +7,7 @@ extends CharacterBody2D
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var stone_wall_layer: TileMapLayer = get_node("../Stone Wall")
 @onready var move_timer: Timer = $MoveTimer
+@onready var health: Health = $Health
 
 var is_moving := false
 
@@ -14,6 +15,10 @@ func _ready() -> void:
 	move_timer.wait_time = move_interval
 	move_timer.timeout.connect(_on_move_timer_timeout)
 	move_timer.start()
+	health.died.connect(_on_died)
+
+func _on_died() -> void:
+	queue_free()
 
 func _on_move_timer_timeout() -> void:
 	if is_moving:
