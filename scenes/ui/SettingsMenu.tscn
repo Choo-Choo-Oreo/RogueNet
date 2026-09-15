@@ -1,0 +1,161 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/SettingsMenu.gd" id="1_settings"]
+[ext_resource type="Script" path="res://scripts/settings/AudioControl.gd" id="2_audio"]
+[ext_resource type="Script" path="res://scripts/settings/FullscreenControl.gd" id="3_fullscreen"]
+[ext_resource type="Script" path="res://scripts/settings/VSyncControl.gd" id="4_vsync"]
+
+[node name="SettingsMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_settings")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Settings"
+horizontal_alignment = 1
+
+[node name="MasterHBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("2_audio")
+audio_bus_name = "Master"
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/MasterHBoxContainer"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Master Volume"
+
+[node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/MasterHBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="AudioTypeControl" type="SpinBox" parent="MarginContainer/VBoxContainer/MasterHBoxContainer"]
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 1.0
+allow_greater = true
+
+[node name="MusicHBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("2_audio")
+audio_bus_name = "Music"
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/MusicHBoxContainer"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Music Volume"
+
+[node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/MusicHBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="AudioTypeControl" type="SpinBox" parent="MarginContainer/VBoxContainer/MusicHBoxContainer"]
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 1.0
+allow_greater = true
+
+[node name="SFXHBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("2_audio")
+audio_bus_name = "SFX"
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/SFXHBoxContainer"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "SFX Volume"
+
+[node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/SFXHBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="AudioTypeControl" type="SpinBox" parent="MarginContainer/VBoxContainer/SFXHBoxContainer"]
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 1.0
+allow_greater = true
+
+[node name="UIHBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("2_audio")
+audio_bus_name = "UI"
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/UIHBoxContainer"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "UI Volume"
+
+[node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/UIHBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="AudioTypeControl" type="SpinBox" parent="MarginContainer/VBoxContainer/UIHBoxContainer"]
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 1.0
+allow_greater = true
+
+[node name="FullscreenCheckButton" type="CheckButton" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(400, 15)
+layout_mode = 2
+text = "Fullscreen"
+script = ExtResource("3_fullscreen")
+
+[node name="VSyncCheckButton" type="CheckButton" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "VSync"
+script = ExtResource("4_vsync")
+
+[node name="ButtonBack" type="Button" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+text = "Back"
+
+[connection signal="toggled" from="MarginContainer/VBoxContainer/FullscreenCheckButton" to="MarginContainer/VBoxContainer/FullscreenCheckButton" method="_on_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/VSyncCheckButton" to="MarginContainer/VBoxContainer/VSyncCheckButton" method="_on_toggled"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/ButtonBack" to="." method="_on_back_pressed"]

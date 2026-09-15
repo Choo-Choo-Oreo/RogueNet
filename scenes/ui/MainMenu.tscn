@@ -1,42 +1,94 @@
 [gd_scene format=3 uid="uid://bqee185h6kanu"]
 
-[ext_resource type="Script" uid="uid://cw4p2iop2rv0i" path="res://scripts/main_menu.gd" id="1_vjtqc"]
-[ext_resource type="AudioStream" uid="uid://c1aywv5g5xg27" path="res://scenes/resources/Menu Music.mp3" id="2_6jbdy"]
+[ext_resource type="Script" uid="uid://cw4p2iop2rv0i" path="res://scripts/MainMenu.gd" id="1_vjtqc"]
+[ext_resource type="AudioStream" uid="uid://c1aywv5g5xg27" path="res://resources/sfx/music/Menu Music.mp3" id="2_6jbdy"]
 
-[node name="MainMenu" type="Control" unique_id=1656644299]
+[node name="MainMenu" type="Control" unique_id=1510708277]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource("1_vjtqc")
 
-[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1819487097]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="Background" type="Panel" parent="." unique_id=1911439092]
+custom_minimum_size = Vector2(1152, 768)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1375040055]
+[node name="HSplitContainer" type="HSplitContainer" parent="." unique_id=1895820745]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+dragging_enabled = false
+
+[node name="VSplitContainer" type="VSplitContainer" parent="HSplitContainer" unique_id=1668331263]
+layout_mode = 2
+dragging_enabled = false
+
+[node name="Icon" type="Panel" parent="HSplitContainer/VSplitContainer" unique_id=2133664891]
+custom_minimum_size = Vector2(200, 200)
 layout_mode = 2
 
-[node name="Play" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1487322205]
+[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer/VSplitContainer" unique_id=1038033847]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="Play" type="Button" parent="HSplitContainer/VSplitContainer/VBoxContainer" unique_id=183422601]
+custom_minimum_size = Vector2(100, 50)
 layout_mode = 2
 text = "Play"
 
-[node name="Options" type="Button" parent="MarginContainer/VBoxContainer" unique_id=495498428]
+[node name="Options" type="Button" parent="HSplitContainer/VSplitContainer/VBoxContainer" unique_id=959549795]
+custom_minimum_size = Vector2(100, 50)
 layout_mode = 2
 text = "Options"
 
-[node name="Exit" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1174069602]
+[node name="Exit" type="Button" parent="HSplitContainer/VSplitContainer/VBoxContainer" unique_id=1539011995]
+custom_minimum_size = Vector2(100, 50)
 layout_mode = 2
 text = "Exit"
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="MarginContainer/VBoxContainer" unique_id=1122449421]
+[node name="Whitespace" type="Panel" parent="HSplitContainer/VSplitContainer/VBoxContainer" unique_id=168903097]
+self_modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+
+[node name="Whitespace" type="Panel" parent="HSplitContainer" unique_id=183791862]
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+
+[node name="PanelSettings" type="Panel" parent="." unique_id=1357838185]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.194
+anchor_top = 0.037
+anchor_right = 0.979
+anchor_bottom = 0.963
+offset_left = 0.511993
+offset_top = 0.0240002
+offset_right = 0.192017
+offset_bottom = -0.0240479
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=280040554]
 stream = ExtResource("2_6jbdy")
 volume_db = -6.382
 autoplay = true
+bus = &"Music"
 
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Play" to="." method="_on_play_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Options" to="." method="_on_options_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Exit" to="." method="_on_exit_pressed"]
+[connection signal="pressed" from="HSplitContainer/VSplitContainer/VBoxContainer/Play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="HSplitContainer/VSplitContainer/VBoxContainer/Options" to="." method="_on_options_pressed"]
+[connection signal="pressed" from="HSplitContainer/VSplitContainer/VBoxContainer/Exit" to="." method="_on_exit_pressed"]

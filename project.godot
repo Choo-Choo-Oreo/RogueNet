@@ -11,13 +11,18 @@ config_version=5
 [application]
 
 config/name="RogueNET"
-run/main_scene="uid://2g4xuv8gdm7p"
+run/main_scene="uid://bqee185h6kanu"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
+
+[audio]
+
+buses/default_bus_layout="res://resources/AudioBusLayout.tres"
 
 [autoload]
 
 SteamManager="*uid://dm328e1uneq2h"
+ConfigFileHandler="*res://singletons/ConfigFileHandler.gd"
 
 [display]
 
@@ -32,17 +37,19 @@ project/assembly_name="RogueNET"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/godotsteam/plugin.cfg", "res://addons/dualgrid/plugin.cfg")
+enabled=PackedStringArray("res://addons/godotsteam/plugin.cfg")
 
 [file_customization]
 
 folder_colors={
 "res://addons/": "gray",
+"res://build/": "gray",
+"res://game/": "red",
 "res://resources/": "red",
 "res://scenes/": "blue",
 "res://scenes/rooms/": "red",
 "res://scripts/": "green",
-"res://singletons/": "gray"
+"res://singletons/": "green"
 }
 
 [physics]

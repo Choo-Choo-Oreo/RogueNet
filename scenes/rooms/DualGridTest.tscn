@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://b465mfevkv6ar"]
+
+[ext_resource type="Texture2D" uid="uid://cukpeoxqsmyde" path="res://resources/gfx/placeholders/flat-color-yellow.png" id="1_0koxv"]
+[ext_resource type="Script" uid="uid://cmo0pwrdjr2df" path="res://scenes/rooms/DualGridRender.gd" id="1_nkj1o"]
+[ext_resource type="Texture2D" uid="uid://cc1s25budl85p" path="res://resources/gfx/placeholders/dual-grid-test-atlas.png" id="2_4ir2e"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4ir2e"]
+texture = ExtResource("1_0koxv")
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_jfp6p"]
+sources/0 = SubResource("TileSetAtlasSource_4ir2e")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_nkj1o"]
+texture = ExtResource("2_4ir2e")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+3:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_nkj1o"]
+sources/0 = SubResource("TileSetAtlasSource_nkj1o")
+
+[node name="DualGridTest" type="Node2D" unique_id=11202829 node_paths=PackedStringArray("data_layer", "display_layer")]
+script = ExtResource("1_nkj1o")
+data_layer = NodePath("DataLayer")
+display_layer = NodePath("DisplayLayer")
+
+[node name="DataLayer" type="TileMapLayer" parent="." unique_id=992437631]
+tile_set = SubResource("TileSet_jfp6p")
+
+[node name="DisplayLayer" type="TileMapLayer" parent="." unique_id=2144031797]
+tile_set = SubResource("TileSet_nkj1o")
