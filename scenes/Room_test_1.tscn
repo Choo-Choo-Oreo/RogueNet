@@ -1,0 +1,52 @@
+[gd_scene format=3 uid="uid://dtv0hrxmx0ni6"]
+
+[ext_resource type="Texture2D" path="res://Sprites/Tiles/ForestGrass_1.png" id="1_hary7"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_oxd87"]
+texture = ExtResource("1_hary7")
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_b46u8"]
+sources/0 = SubResource("TileSetAtlasSource_oxd87")
+
+[node name="Node2D" type="Node2D" unique_id=1531996618]
+
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=38051101]
+tile_set = SubResource("TileSet_b46u8")
+
+[node name="ForestGrass1" type="Sprite2D" parent="." unique_id=635916100]
+position = Vector2(121, 85)
+texture = ExtResource("1_hary7")
+
+[node name="ForestGrass2" type="Sprite2D" parent="." unique_id=1124544587]
+position = Vector2(137, 85)
+texture = ExtResource("1_hary7")
+
+[node name="ForestGrass3" type="Sprite2D" parent="." unique_id=137334456]
+position = Vector2(105, 85)
+texture = ExtResource("1_hary7")
+
+[node name="ForestGrass4" type="Sprite2D" parent="." unique_id=2011723110]
+position = Vector2(105, 101)
+texture = ExtResource("1_hary7")
+
+[node name="ForestGrass5" type="Sprite2D" parent="." unique_id=1317242824]
+position = Vector2(121, 101)
+texture = ExtResource("1_hary7")
+
+[node name="ForestGrass6" type="Sprite2D" parent="." unique_id=1258170929]
+position = Vector2(137, 101)
+texture = ExtResource("1_hary7")
+
+[node name="ForestGrass7" type="Sprite2D" parent="." unique_id=1022675586]
+position = Vector2(153, 101)
+scale = Vector2(1, 0.99999994)
+texture = ExtResource("1_hary7")
+
+[node name="ForestGrass8" type="Sprite2D" parent="." unique_id=1389111951]
+position = Vector2(153, 85)
+texture = ExtResource("1_hary7")
+
+[node name="ForestGrass9" type="Sprite2D" parent="." unique_id=1619592492]
+position = Vector2(168, 104)
+texture = ExtResource("1_hary7")
