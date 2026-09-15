@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "blockReadsOutsideWorkingDirectories": true,
+    "allow": [
+      "WebSearch",
+      "Read",
+      "Grep",
+      "Glob",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Write(tools/**)",
+      "Edit(tools/**)"
+    ],
+    "deny": [
+      "Write(scripts/**)",
+      "Edit(scripts/**)",
+      "Write(project.godot)",
+      "Edit(project.godot)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
+    ]
+  }
+}

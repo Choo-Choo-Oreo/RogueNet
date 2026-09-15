@@ -1,0 +1,358 @@
+[gd_scene format=4 uid="uid://15vacpawn0sj"]
+
+[ext_resource type="Script" uid="uid://rvs3q27d6u0p" path="res://scripts/TileInitialize.gd" id="1_ootps"]
+[ext_resource type="Script" uid="uid://brc0m0h8phc05" path="res://scripts/TileType.gd" id="2_80anl"]
+[ext_resource type="Resource" path="res://resources/tiles/floor_dirt.tres" id="3_57y76"]
+[ext_resource type="Resource" path="res://resources/tiles/floor_flesh.tres" id="4_71wmb"]
+[ext_resource type="Resource" path="res://resources/tiles/floor_grass.tres" id="5_k070n"]
+[ext_resource type="Resource" path="res://resources/tiles/floor_smooth_stone.tres" id="6_77ilg"]
+[ext_resource type="Resource" path="res://resources/tiles/floor_void.tres" id="7_yogrt"]
+[ext_resource type="Resource" path="res://resources/tiles/floor_wood.tres" id="8_mm0fn"]
+[ext_resource type="Resource" path="res://resources/tiles/wall_cobble_brick.tres" id="9_bypk8"]
+[ext_resource type="Resource" path="res://resources/tiles/wall_smooth_stone.tres" id="10_4pdyi"]
+[ext_resource type="Script" uid="uid://cmo0pwrdjr2df" path="res://scripts/DualGridRender.gd" id="11_kf4if"]
+[ext_resource type="Texture2D" uid="uid://cukpeoxqsmyde" path="res://resources/gfx/placeholders/flat-color.png" id="12_t7c8k"]
+[ext_resource type="Texture2D" uid="uid://c4g37l6wvgs0p" path="res://resources/gfx/tileset/floor_dirt.png" id="13_u0de2"]
+[ext_resource type="Texture2D" uid="uid://c02feoo0aqbyo" path="res://resources/gfx/tileset/floor_flesh.png" id="14_bpbqc"]
+[ext_resource type="Texture2D" uid="uid://i0cxny0obdye" path="res://resources/gfx/tileset/floor_grass.png" id="15_04qgc"]
+[ext_resource type="Texture2D" uid="uid://bx185y82ohydi" path="res://resources/gfx/tileset/floor_smooth_stone.png" id="16_k2u32"]
+[ext_resource type="Texture2D" uid="uid://30t8sgmrsu53" path="res://resources/gfx/tileset/floor_void.png" id="17_6s36r"]
+[ext_resource type="Texture2D" uid="uid://bdh3k1pjwhi31" path="res://resources/gfx/tileset/floor_wood.png" id="18_ur4a1"]
+[ext_resource type="Texture2D" uid="uid://dqhpq8s0o1kqr" path="res://resources/gfx/tileset/wall_cobble_brick.png" id="19_trdqv"]
+[ext_resource type="Texture2D" uid="uid://cgplkwatxa2fv" path="res://resources/gfx/tileset/wall_smooth_stone.png" id="20_rbdqv"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xd2s5"]
+texture = ExtResource("12_t7c8k")
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_h4cc7"]
+sources/0 = SubResource("TileSetAtlasSource_xd2s5")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0snod"]
+texture = ExtResource("13_u0de2")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_yhi1g"]
+sources/0 = SubResource("TileSetAtlasSource_0snod")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_nehd5"]
+texture = ExtResource("12_t7c8k")
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_lenf8"]
+sources/0 = SubResource("TileSetAtlasSource_nehd5")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_sa468"]
+texture = ExtResource("14_bpbqc")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_3p6xk"]
+sources/0 = SubResource("TileSetAtlasSource_sa468")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_p1bdo"]
+texture = ExtResource("12_t7c8k")
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_d0h2i"]
+sources/0 = SubResource("TileSetAtlasSource_p1bdo")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_egxy7"]
+texture = ExtResource("15_04qgc")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_gl6gw"]
+sources/0 = SubResource("TileSetAtlasSource_egxy7")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_awulh"]
+texture = ExtResource("12_t7c8k")
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_g57ix"]
+sources/0 = SubResource("TileSetAtlasSource_awulh")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_h77im"]
+texture = ExtResource("16_k2u32")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_te7xl"]
+sources/0 = SubResource("TileSetAtlasSource_h77im")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_f42g4"]
+texture = ExtResource("12_t7c8k")
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_w3661"]
+sources/0 = SubResource("TileSetAtlasSource_f42g4")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wllu4"]
+texture = ExtResource("17_6s36r")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_nilxh"]
+sources/0 = SubResource("TileSetAtlasSource_wllu4")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4nxpj"]
+texture = ExtResource("12_t7c8k")
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_bk5mb"]
+sources/0 = SubResource("TileSetAtlasSource_4nxpj")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_rq3vb"]
+texture = ExtResource("18_ur4a1")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_xicwp"]
+sources/0 = SubResource("TileSetAtlasSource_rq3vb")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_hm3st"]
+texture = ExtResource("12_t7c8k")
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_hupfm"]
+sources/0 = SubResource("TileSetAtlasSource_hm3st")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ygua7"]
+texture = ExtResource("19_trdqv")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_llqcw"]
+sources/0 = SubResource("TileSetAtlasSource_ygua7")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wjsj1"]
+texture = ExtResource("12_t7c8k")
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_kwids"]
+sources/0 = SubResource("TileSetAtlasSource_wjsj1")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_j6vgo"]
+texture = ExtResource("20_rbdqv")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_yvy7c"]
+sources/0 = SubResource("TileSetAtlasSource_j6vgo")
+
+[node name="X16y16HullSmall" type="Node2D" unique_id=1358525914]
+script = ExtResource("1_ootps")
+tile_types = Array[ExtResource("2_80anl")]([ExtResource("3_57y76"), ExtResource("4_71wmb"), ExtResource("5_k070n"), ExtResource("6_77ilg"), ExtResource("7_yogrt"), ExtResource("8_mm0fn"), ExtResource("9_bypk8"), ExtResource("10_4pdyi")])
+
+[node name="FloorDirt" type="Node2D" parent="." unique_id=548564124 node_paths=PackedStringArray("data_layer", "display_layer")]
+script = ExtResource("11_kf4if")
+data_layer = NodePath("DataLayer")
+display_layer = NodePath("DisplayLayer")
+
+[node name="DataLayer" type="TileMapLayer" parent="FloorDirt" unique_id=2097999036]
+tile_map_data = PackedByteArray("AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAIAAAAAAAAAAAABAAIAAAAAAAAAAAABAAMAAAAAAAAAAAABAAQAAAAAAAAAAAACAAQAAAAAAAAAAAACAAUAAAAAAAAAAAAAAAYAAAAAAAAAAAABAAYAAAAAAAAAAAACAAYAAAAAAAAAAAADAAYAAAAAAAAAAAAEAAYAAAAAAAAAAAAFAAYAAAAAAAAAAAAGAAYAAAAAAAAAAAAGAAUAAAAAAAAAAAAFAAUAAAAAAAAAAAAEAAUAAAAAAAAAAAADAAUAAAAAAAAAAAABAAUAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAMAAAAAAAAAAAABAAAAAAAAAAAAAAACAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAFAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAGAAEAAAAAAAAAAAAGAAIAAAAAAAAAAAAGAAMAAAAAAAAAAAAFAAMAAAAAAAAAAAAGAAQAAAAAAAAAAAAEAAMAAAAAAAAAAAADAAMAAAAAAAAAAAAFAAIAAAAAAAAAAAAFAAEAAAAAAAAAAAAEAAEAAAAAAAAAAAADAAEAAAAAAAAAAAA=")
+tile_set = SubResource("TileSet_h4cc7")
+
+[node name="DisplayLayer" type="TileMapLayer" parent="FloorDirt" unique_id=1996642434]
+position = Vector2(8, 8)
+tile_set = SubResource("TileSet_yhi1g")
+
+[node name="FloorFlesh" type="Node2D" parent="." unique_id=573590277 node_paths=PackedStringArray("data_layer", "display_layer")]
+script = ExtResource("11_kf4if")
+data_layer = NodePath("DataLayer")
+display_layer = NodePath("DisplayLayer")
+
+[node name="DataLayer" type="TileMapLayer" parent="FloorFlesh" unique_id=529722123]
+tile_map_data = PackedByteArray("AAABAAEAAAAAAAAAAAACAAEAAAAAAAAAAAACAAIAAAAAAAAAAAADAAIAAAAAAAAAAAAEAAIAAAAAAAAAAAACAAMAAAAAAAAAAAADAAQAAAAAAAAAAAAEAAQAAAAAAAAAAAAFAAQAAAAAAAAAAAA=")
+tile_set = SubResource("TileSet_lenf8")
+
+[node name="DisplayLayer" type="TileMapLayer" parent="FloorFlesh" unique_id=1983304666]
+position = Vector2(8, 8)
+tile_set = SubResource("TileSet_3p6xk")
+
+[node name="FloorGrass" type="Node2D" parent="." unique_id=1877429896 node_paths=PackedStringArray("data_layer", "display_layer")]
+script = ExtResource("11_kf4if")
+data_layer = NodePath("DataLayer")
+display_layer = NodePath("DisplayLayer")
+
+[node name="DataLayer" type="TileMapLayer" parent="FloorGrass" unique_id=1621582457]
+tile_map_data = PackedByteArray("AAAHAAYAAAAAAAAAAAAIAAYAAAAAAAAAAAAJAAYAAAAAAAAAAAAJAAUAAAAAAAAAAAAIAAUAAAAAAAAAAAAHAAUAAAAAAAAAAAAHAAQAAAAAAAAAAAAHAAMAAAAAAAAAAAAHAAIAAAAAAAAAAAAIAAIAAAAAAAAAAAAIAAEAAAAAAAAAAAAHAAEAAAAAAAAAAAAHAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAJAAAAAAAAAAAAAAAJAAEAAAAAAAAAAAAJAAIAAAAAAAAAAAAJAAMAAAAAAAAAAAAJAAQAAAAAAAAAAAAIAAQAAAAAAAAAAAAIAAMAAAAAAAAAAAA=")
+tile_set = SubResource("TileSet_d0h2i")
+
+[node name="DisplayLayer" type="TileMapLayer" parent="FloorGrass" unique_id=1728393857]
+position = Vector2(8, 8)
+tile_set = SubResource("TileSet_gl6gw")
+
+[node name="FloorSmoothStone" type="Node2D" parent="." unique_id=564053062 node_paths=PackedStringArray("data_layer", "display_layer")]
+script = ExtResource("11_kf4if")
+data_layer = NodePath("DataLayer")
+display_layer = NodePath("DisplayLayer")
+
+[node name="DataLayer" type="TileMapLayer" parent="FloorSmoothStone" unique_id=1831767768]
+tile_map_data = PackedByteArray("AAAIAAAAAAAAAAAAAAAIAAEAAAAAAAAAAAAIAAIAAAAAAAAAAAAIAAMAAAAAAAAAAAAIAAQAAAAAAAAAAAAIAAUAAAAAAAAAAAAIAAYAAAAAAAAAAAA=")
+tile_set = SubResource("TileSet_g57ix")
+
+[node name="DisplayLayer" type="TileMapLayer" parent="FloorSmoothStone" unique_id=258813534]
+position = Vector2(8, 8)
+tile_set = SubResource("TileSet_te7xl")
+
+[node name="FloorVoid" type="Node2D" parent="." unique_id=1585542155 node_paths=PackedStringArray("data_layer", "display_layer")]
+script = ExtResource("11_kf4if")
+data_layer = NodePath("DataLayer")
+display_layer = NodePath("DisplayLayer")
+
+[node name="DataLayer" type="TileMapLayer" parent="FloorVoid" unique_id=1225955809]
+tile_set = SubResource("TileSet_w3661")
+
+[node name="DisplayLayer" type="TileMapLayer" parent="FloorVoid" unique_id=818904133]
+position = Vector2(8, 8)
+tile_set = SubResource("TileSet_nilxh")
+
+[node name="FloorWood" type="Node2D" parent="." unique_id=27274380 node_paths=PackedStringArray("data_layer", "display_layer")]
+script = ExtResource("11_kf4if")
+data_layer = NodePath("DataLayer")
+display_layer = NodePath("DisplayLayer")
+
+[node name="DataLayer" type="TileMapLayer" parent="FloorWood" unique_id=1662000642]
+tile_set = SubResource("TileSet_bk5mb")
+
+[node name="DisplayLayer" type="TileMapLayer" parent="FloorWood" unique_id=673981951]
+position = Vector2(8, 8)
+tile_set = SubResource("TileSet_xicwp")
+
+[node name="WallCobbleBrick" type="Node2D" parent="." unique_id=720533424 node_paths=PackedStringArray("data_layer", "display_layer")]
+script = ExtResource("11_kf4if")
+data_layer = NodePath("DataLayer")
+display_layer = NodePath("DisplayLayer")
+
+[node name="DataLayer" type="TileMapLayer" parent="WallCobbleBrick" unique_id=911717446]
+tile_set = SubResource("TileSet_hupfm")
+
+[node name="DisplayLayer" type="TileMapLayer" parent="WallCobbleBrick" unique_id=863278831]
+position = Vector2(8, 8)
+tile_set = SubResource("TileSet_llqcw")
+
+[node name="WallSmoothStone" type="Node2D" parent="." unique_id=1696459395 node_paths=PackedStringArray("data_layer", "display_layer")]
+script = ExtResource("11_kf4if")
+data_layer = NodePath("DataLayer")
+display_layer = NodePath("DisplayLayer")
+
+[node name="DataLayer" type="TileMapLayer" parent="WallSmoothStone" unique_id=979712126]
+tile_set = SubResource("TileSet_kwids")
+
+[node name="DisplayLayer" type="TileMapLayer" parent="WallSmoothStone" unique_id=967470106]
+position = Vector2(8, 8)
+tile_set = SubResource("TileSet_yvy7c")

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="TileType" load_steps=3 format=3]
+
+[ext_resource type="Script" uid="uid://brc0m0h8phc05" path="res://scripts/TileType.gd" id="1_ece4a"]
+[ext_resource type="Texture2D" path="res://resources/gfx/tileset/wall_smooth_stone.png" id="1_jfijs"]
+
+[resource]
+script = ExtResource("1_ece4a")
+tile_name = "WallSmoothStone"
+atlas_texture = ExtResource("1_jfijs")
+category = 1
+metadata/_custom_type_script = "uid://brc0m0h8phc05"
