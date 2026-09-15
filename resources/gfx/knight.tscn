@@ -144,7 +144,7 @@ script = ExtResource("1_xclhk")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1316510687]
 sprite_frames = SubResource("SpriteFrames_5e0of")
 animation = &"Front"
-frame_progress = 0.7350364
+frame_progress = 0.9669427
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1539227241]
 shape = SubResource("RectangleShape2D_m3flc")

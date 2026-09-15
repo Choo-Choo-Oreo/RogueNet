@@ -21,3 +21,10 @@ wait_time = 0.5
 
 [node name="Health" type="Node2D" parent="." unique_id=316384947]
 script = ExtResource("3_yijrh")
+
+[node name="HealthLabel" type="Label" parent="." unique_id=305036576]
+offset_left = -8.0
+offset_top = -14.0
+offset_right = 32.0
+offset_bottom = 9.0
+theme_override_font_sizes/font_size = 8

@@ -297,7 +297,7 @@ tile_map_data = PackedByteArray("AAAwACUAAAACAAEAAAAwACQAAAACAAEAAAAwACMAAAACAAE
 tile_set = SubResource("TileSet_bnhvo")
 
 [node name="Knight" parent="." unique_id=188024937 instance=ExtResource("5_35xla")]
-position = Vector2(434, 323)
+position = Vector2(763, 250)
 
 [node name="Mouse" parent="." unique_id=1107778231 instance=ExtResource("6_i3aeo")]
 position = Vector2(727, 304)

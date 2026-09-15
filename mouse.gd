@@ -8,17 +8,29 @@ extends CharacterBody2D
 @onready var stone_wall_layer: TileMapLayer = get_node("../Stone Wall")
 @onready var move_timer: Timer = $MoveTimer
 @onready var health: Health = $Health
+@onready var health_label: Label = $HealthLabel
 
 var is_moving := false
+var grid_cell: Vector2i
 
 func _ready() -> void:
+	add_to_group("enemies")
+	grid_cell = _to_cell(global_position)
 	move_timer.wait_time = move_interval
 	move_timer.timeout.connect(_on_move_timer_timeout)
 	move_timer.start()
 	health.died.connect(_on_died)
+	health.health_changed.connect(_on_health_changed)
+	_on_health_changed(health.current_health, health.max_health)
+
+func _to_cell(pos: Vector2) -> Vector2i:
+	return Vector2i(round(pos.x / tile_size), round(pos.y / tile_size))
 
 func _on_died() -> void:
 	queue_free()
+
+func _on_health_changed(current: int, max_hp: int) -> void:
+	health_label.text = str(current) + "/" + str(max_hp)
 
 func _on_move_timer_timeout() -> void:
 	if is_moving:
@@ -29,13 +41,15 @@ func _on_move_timer_timeout() -> void:
 
 func _move_one_tile(direction: Vector2) -> void:
 	var target_global := global_position + direction * tile_size
+	var target_cell := _to_cell(target_global)
 	_update_facing(direction)
 
-	if _is_blocked(target_global):
+	if _is_blocked(target_global, target_cell):
 		sprite.stop()
 		sprite.frame = 0
 		return
 
+	grid_cell = target_cell
 	is_moving = true
 	sprite.play()
 
@@ -47,10 +61,17 @@ func _move_one_tile(direction: Vector2) -> void:
 		sprite.frame = 0
 	)
 
-func _is_blocked(target_global: Vector2) -> bool:
+func _is_blocked(target_global: Vector2, target_cell: Vector2i) -> bool:
 	var cell: Vector2i = stone_wall_layer.local_to_map(stone_wall_layer.to_local(target_global))
 	var tile_data := stone_wall_layer.get_cell_tile_data(cell)
-	return tile_data != null and tile_data.get_custom_data("solid")
+	if tile_data != null and tile_data.get_custom_data("solid"):
+		return true
+
+	for player in get_tree().get_nodes_in_group("players"):
+		if player.grid_cell == target_cell:
+			return true
+
+	return false
 
 func _update_facing(direction: Vector2) -> void:
 	if direction == Vector2.LEFT:
