@@ -1,6 +1,5 @@
 {
   "permissions": {
-    "blockReadsOutsideWorkingDirectories": true,
     "allow": [
       "WebSearch",
       "Read",
