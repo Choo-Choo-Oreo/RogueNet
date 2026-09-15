@@ -90,6 +90,25 @@ this deliberately does **not** block the generation work below.
    to change what a good room looks like, so authoring a dozen now risks
    redoing them.
 
+## Later idea: room storage format + editor (not started)
+
+Floated in a design discussion: switch room storage from one `.tscn`
+scene per room to a single data file the generator reads directly —
+lighter to load, easier for procedural generation to reason about than
+a scene tree. Genuinely useful, but it's two separate asks bundled
+together:
+
+1. **Storage format change** (scene → single data file). Smaller,
+   mechanical, worth doing eventually.
+2. **An in-game visual tool** to place tiles and author rooms with a
+   live preview. A whole editor UI — its own project, not a follow-on
+   task to #1.
+
+Not blocked on anything else, but also not blocking anything else —
+there's still only one hand-placed room, so `.tscn` storage isn't
+actually hurting yet. Revisit once the assembler exists and more rooms
+are being authored.
+
 ## Deliberately not now
 
 - **Textures.** Real art is a time sink and placeholders are sufficient
