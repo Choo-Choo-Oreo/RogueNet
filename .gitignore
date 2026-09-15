@@ -46,3 +46,4 @@ desktop.ini
 # Installer zips (GodotSteam GDExtension, Steamworks SDK) — not project
 # source, just download artifacts sitting in the repo root
 *.zip
+addons/godotsteam/win64/~libgodotsteam.windows.template_debug.x86_64.dll
