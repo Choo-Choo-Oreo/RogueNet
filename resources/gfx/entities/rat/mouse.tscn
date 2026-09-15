@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://yk2xsllxd70v"]
+
+[ext_resource type="Script" uid="uid://b5ott0q25o4e0" path="res://mouse.gd" id="1_51nn4"]
+[ext_resource type="SpriteFrames" uid="uid://dhejfud8rinrx" path="res://resources/gfx/entities/rat/rat_sprite_frames.tres" id="2_yijrh"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b46u8"]
+
+[node name="Mouse" type="CharacterBody2D" unique_id=1107778231]
+script = ExtResource("1_51nn4")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=973786094]
+sprite_frames = ExtResource("2_yijrh")
+animation = &"side"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=160124497]
+shape = SubResource("RectangleShape2D_b46u8")
+
+[node name="MoveTimer" type="Timer" parent="." unique_id=154947184]
+wait_time = 0.5

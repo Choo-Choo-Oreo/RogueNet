@@ -2,28 +2,25 @@ extends CharacterBody2D
 
 @export var tile_size := 16
 @export var move_time := 0.2
+@export var move_interval := 1.2
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var stone_wall_layer: TileMapLayer = get_node("../Stone Wall")
+@onready var move_timer: Timer = $MoveTimer
 
 var is_moving := false
 
-func _unhandled_input(event: InputEvent) -> void:
+func _ready() -> void:
+	move_timer.wait_time = move_interval
+	move_timer.timeout.connect(_on_move_timer_timeout)
+	move_timer.start()
+
+func _on_move_timer_timeout() -> void:
 	if is_moving:
 		return
-
-	var direction := Vector2.ZERO
-	if event.is_action_pressed("ui_right"):
-		direction = Vector2.RIGHT
-	elif event.is_action_pressed("ui_left"):
-		direction = Vector2.LEFT
-	elif event.is_action_pressed("ui_up"):
-		direction = Vector2.UP
-	elif event.is_action_pressed("ui_down"):
-		direction = Vector2.DOWN
-
-	if direction != Vector2.ZERO:
-		_move_one_tile(direction)
+	var directions := [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]
+	directions.shuffle()
+	_move_one_tile(directions[0])
 
 func _move_one_tile(direction: Vector2) -> void:
 	var target_global := global_position + direction * tile_size
@@ -52,14 +49,11 @@ func _is_blocked(target_global: Vector2) -> bool:
 
 func _update_facing(direction: Vector2) -> void:
 	if direction == Vector2.LEFT:
-		sprite.animation = "Side"
+		sprite.animation = "side"
 		sprite.flip_h = true
 	elif direction == Vector2.RIGHT:
-		sprite.animation = "Side"
+		sprite.animation = "side"
 		sprite.flip_h = false
-	elif direction == Vector2.DOWN:
-		sprite.animation = "Front"
-		sprite.flip_h = false
-	elif direction == Vector2.UP:
-		sprite.animation = "Back"
+	elif direction == Vector2.DOWN or direction == Vector2.UP:
+		sprite.animation = "front"
 		sprite.flip_h = false
