@@ -1,9 +1,9 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene format=3]
 
-[ext_resource type="Script" path="res://scripts/SettingsMenu.gd" id="1_settings"]
-[ext_resource type="Script" path="res://scripts/settings/AudioControl.gd" id="2_audio"]
-[ext_resource type="Script" path="res://scripts/settings/FullscreenControl.gd" id="3_fullscreen"]
-[ext_resource type="Script" path="res://scripts/settings/VSyncControl.gd" id="4_vsync"]
+[ext_resource type="Script" uid="uid://chqdwx1x7e0qm" path="res://scripts/ui/SettingsMenu.gd" id="1_settings"]
+[ext_resource type="Script" uid="uid://cdqcm6fquv4mc" path="res://scripts/settings/AudioControl.gd" id="2_audio"]
+[ext_resource type="Script" uid="uid://c1bslvamdvulm" path="res://scripts/settings/FullscreenControl.gd" id="3_fullscreen"]
+[ext_resource type="Script" uid="uid://dj21umeulwan0" path="res://scripts/settings/VSyncControl.gd" id="4_vsync"]
 
 [node name="SettingsMenu" type="Control"]
 layout_mode = 3

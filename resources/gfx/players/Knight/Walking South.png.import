@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://p8p3ylpxge3o"
-path="res://.godot/imported/Walking South.png-dff6e9e2e58ccf675af633148601b156.ctex"
+path="res://.godot/imported/Walking South.png-473194906a85885af00d4650fb6e822b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/players/Knight/Walking South.png"
-dest_files=["res://.godot/imported/Walking South.png-dff6e9e2e58ccf675af633148601b156.ctex"]
+source_file="res://resources/gfx/players/knight/Walking South.png"
+dest_files=["res://.godot/imported/Walking South.png-473194906a85885af00d4650fb6e822b.ctex"]
 
 [params]
 

@@ -14,6 +14,10 @@ func _process(_delta: float) -> void:
 	_update_facing_animation()
 	if not is_multiplayer_authority():
 		return
+	if multiplayer.is_server():
+		NetworkSync._relay_position(1, global_position)
+	else:
+		NetworkSync.report_position.rpc_id(1, global_position)
 	var mouse_world := get_global_mouse_position()
 	var to_mouse := (mouse_world - global_position) * camera_mouse_weight
 	if to_mouse.length() > camera_max_offset:
@@ -53,27 +57,6 @@ func _move_one_tile(direction: Vector2) -> void:
 	tween.tween_property(self, "global_position", target_global, move_time)
 	tween.finished.connect(func(): is_moving = false)
 
-	if direction == Vector2.UP:
-		$AnimatedSprite2D.play("Back")
-	elif direction == Vector2.DOWN:
-		$AnimatedSprite2D.play("Front")
-	else:
-		$AnimatedSprite2D.play("Side")
-		$AnimatedSprite2D.flip_h = direction == Vector2.LEFT
-
-func _unhandled_input(event: InputEvent) -> void:
-	if not is_multiplayer_authority():
-		return
-	if is_moving:
-		return
-	var direction := Vector2.ZERO
-	if event.is_action_pressed("ui_right"): direction = Vector2.RIGHT
-	elif event.is_action_pressed("ui_left"): direction = Vector2.LEFT
-	elif event.is_action_pressed("ui_up"): direction = Vector2.UP
-	elif event.is_action_pressed("ui_down"): direction = Vector2.DOWN
-	if direction != Vector2.ZERO:
-		_move_one_tile(direction)
-
 func _physics_process(_delta: float) -> void:
 	if not is_multiplayer_authority():
 		return
@@ -86,4 +69,3 @@ func _physics_process(_delta: float) -> void:
 	elif Input.is_action_pressed("ui_down"): direction = Vector2.DOWN
 	if direction != Vector2.ZERO:
 		_move_one_tile(direction)
-		

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bkiwfakxplwp3"]
 
-[ext_resource type="PackedScene" uid="uid://clxscqh2q8e3h" path="res://Scenes/hotbarslot.tscn" id="1_1074w"]
-[ext_resource type="Script" uid="uid://copnqf5nidjl4" path="res://Scenes/hotbar.gd" id="1_ry1on"]
+[ext_resource type="PackedScene" uid="uid://clxscqh2q8e3h" path="res://scenes/hotbarslot.tscn" id="1_1074w"]
+[ext_resource type="Script" uid="uid://copnqf5nidjl4" path="res://scripts/player/player.protagonist/hotbar.gd" id="1_ry1on"]
 
 [node name="CanvasLayer" type="CanvasLayer" unique_id=1093126358]
 script = ExtResource("1_ry1on")

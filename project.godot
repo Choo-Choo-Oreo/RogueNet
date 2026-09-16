@@ -23,6 +23,7 @@ buses/default_bus_layout="res://resources/AudioBusLayout.tres"
 
 SteamManager="*uid://dm328e1uneq2h"
 ConfigFileHandler="*res://singletons/ConfigFileHandler.gd"
+NetworkSync="*uid://c2po3jo234gy8"
 
 [display]
 

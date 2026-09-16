@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://clxscqh2q8e3h"]
 
-[ext_resource type="Script" uid="uid://bva0ayk8gx7qf" path="res://scripts/hotbarslot.gd" id="1_vh5wx"]
+[ext_resource type="Script" uid="uid://bva0ayk8gx7qf" path="res://scripts/player/player.protagonist/hotbarslot.gd" id="1_vh5wx"]
 
 [node name="Hotbarslot" type="PanelContainer" unique_id=1447679452]
 custom_minimum_size = Vector2(64, 64)

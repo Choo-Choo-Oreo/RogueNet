@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b5ott0q25o4e0" path="res://mouse.gd" id="1_51nn4"]
 [ext_resource type="SpriteFrames" uid="uid://dhejfud8rinrx" path="res://resources/gfx/entities/rat/rat_sprite_frames.tres" id="2_yijrh"]
-[ext_resource type="Script" uid="uid://q14trol0t3wp" path="res://scripts/Health/Health.gd" id="3_yijrh"]
+[ext_resource type="Script" uid="uid://q14trol0t3wp" path="res://scripts/player/player.protagonist/health/Health.gd" id="3_xa71f"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_b46u8"]
 
@@ -20,7 +20,7 @@ shape = SubResource("RectangleShape2D_b46u8")
 wait_time = 0.1
 
 [node name="Health" type="Node2D" parent="." unique_id=316384947]
-script = ExtResource("3_yijrh")
+script = ExtResource("3_xa71f")
 
 [node name="HealthLabel" type="Label" parent="." unique_id=305036576]
 offset_left = -8.0

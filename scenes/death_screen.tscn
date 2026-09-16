@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://ranp27y0r3p1"]
 
-[ext_resource type="Script" uid="uid://dg0gl7sn8tcsh" path="res://scripts/death_screen.gd" id="1_6h2r2"]
+[ext_resource type="Script" uid="uid://dg0gl7sn8tcsh" path="res://scripts/player/player.protagonist/health/death_screen.gd" id="1_6h2r2"]
 
 [node name="DeathScreen" type="CanvasLayer" unique_id=1650668355]
 visible = false

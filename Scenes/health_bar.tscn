@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://lt2evl6j2upi"]
 
-[ext_resource type="Script" uid="uid://b0hojy4w34bg1" path="res://Scenes/health_bar.gd" id="1_78m4n"]
+[ext_resource type="Script" uid="uid://b0hojy4w34bg1" path="res://scripts/player/player.protagonist/health/health_bar.gd" id="1_78m4n"]
 
 [sub_resource type="Theme" id="Theme_dl3mn"]
 
