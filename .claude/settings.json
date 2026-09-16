@@ -12,12 +12,6 @@
       "Edit(tools/**)"
     ],
     "deny": [
-      "Write(scripts/**)",
-      "Edit(scripts/**)",
-      "Write(singletons/**)",
-      "Edit(singletons/**)",
-      "Write(project.godot)",
-      "Edit(project.godot)",
       "Bash(git commit:*)",
       "Bash(git push:*)"
     ]
