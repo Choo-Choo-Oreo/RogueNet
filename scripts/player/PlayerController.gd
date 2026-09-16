@@ -11,7 +11,15 @@ extends CharacterBody2D
 var _last_anim_position := Vector2.ZERO
 var _anim_idle_time := 0.0
 
+var _last_frame_time := 0
+
 func _process(delta: float) -> void:
+	var now := Time.get_ticks_msec()
+	if _last_frame_time != 0:
+		var gap := now - _last_frame_time
+		if gap > 250:
+			print("[ANIM DEBUG] frame gap %dms | focused=%s | fps=%.1f" % [gap, DisplayServer.window_is_focused(), Engine.get_frames_per_second()])
+	_last_frame_time = now
 	_update_facing_animation(delta)
 	if not is_multiplayer_authority():
 		return
