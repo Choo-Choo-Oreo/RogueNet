@@ -8,7 +8,10 @@ extends CharacterBody2D
 @export var camera_mouse_weight := 0.3
 @export var camera_max_offset := 96.0
 
+var _last_anim_position := Vector2.ZERO
+
 func _process(_delta: float) -> void:
+	_update_facing_animation()
 	if not is_multiplayer_authority():
 		return
 	var mouse_world := get_global_mouse_position()
@@ -16,6 +19,18 @@ func _process(_delta: float) -> void:
 	if to_mouse.length() > camera_max_offset:
 		to_mouse = to_mouse.normalized() * camera_max_offset
 	$Camera2D.position = to_mouse
+
+func _update_facing_animation() -> void:
+	var delta_pos := global_position - _last_anim_position
+	_last_anim_position = global_position
+	if delta_pos.length() < 0.5:
+		$AnimatedSprite2D.stop()
+		return
+	if abs(delta_pos.x) > abs(delta_pos.y):
+		$AnimatedSprite2D.play("Side")
+		$AnimatedSprite2D.flip_h = delta_pos.x < 0
+	else:
+		$AnimatedSprite2D.play("Back" if delta_pos.y < 0 else "Front")
 
 func _ready() -> void:
 	set_multiplayer_authority(int(str(name)))
@@ -34,6 +49,10 @@ func _move_one_tile(direction: Vector2) -> void:
 		return
 	is_moving = true
 
+	var tween := create_tween()
+	tween.tween_property(self, "global_position", target_global, move_time)
+	tween.finished.connect(func(): is_moving = false)
+
 	if direction == Vector2.UP:
 		$AnimatedSprite2D.play("Back")
 	elif direction == Vector2.DOWN:
@@ -41,13 +60,6 @@ func _move_one_tile(direction: Vector2) -> void:
 	else:
 		$AnimatedSprite2D.play("Side")
 		$AnimatedSprite2D.flip_h = direction == Vector2.LEFT
-
-	var tween := create_tween()
-	tween.tween_property(self, "global_position", target_global, move_time)
-	tween.finished.connect(func():
-		is_moving = false
-		$AnimatedSprite2D.stop()
-	)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not is_multiplayer_authority():
