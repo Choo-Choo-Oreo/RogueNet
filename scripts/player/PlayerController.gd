@@ -11,16 +11,7 @@ extends CharacterBody2D
 var _last_anim_position := Vector2.ZERO
 var _anim_idle_time := 0.0
 
-var _last_frame_time := 0
-var _debug_log := FileAccess.open("user://anim_debug.log", FileAccess.WRITE)
-
 func _process(delta: float) -> void:
-	var now := Time.get_ticks_msec()
-	if _last_frame_time != 0:
-		var gap := now - _last_frame_time
-		if gap > 250:
-			_debug_log.store_line("gap=%dms focused=%s fps=%.1f" % [gap, DisplayServer.window_is_focused(), Engine.get_frames_per_second()])
-	_last_frame_time = now
 	_update_facing_animation(delta)
 	if not is_multiplayer_authority():
 		return
@@ -40,14 +31,21 @@ func _update_facing_animation(delta: float) -> void:
 	if delta_pos.length() < 0.5:
 		_anim_idle_time += delta
 		if _anim_idle_time > 0.15:
+			if is_multiplayer_authority():
+				print("[ANIM] STOP")
 			$AnimatedSprite2D.stop()
 		return
 	_anim_idle_time = 0.0
 	if abs(delta_pos.x) > abs(delta_pos.y):
+		if is_multiplayer_authority():
+			print("[ANIM] PLAY Side dx=%.2f" % delta_pos.x)
 		$AnimatedSprite2D.play("Side")
 		$AnimatedSprite2D.flip_h = delta_pos.x < 0
 	else:
-		$AnimatedSprite2D.play("Back" if delta_pos.y < 0 else "Front")
+		var anim := "Back" if delta_pos.y < 0 else "Front"
+		if is_multiplayer_authority():
+			print("[ANIM] PLAY %s dy=%.2f" % [anim, delta_pos.y])
+		$AnimatedSprite2D.play(anim)
 
 func _ready() -> void:
 	set_multiplayer_authority(int(str(name)))
