@@ -8,6 +8,9 @@ func _on_play_pressed() -> void:
 	var settings_scene = preload("res://scenes/ui/MultiplayerMenu.tscn").instantiate()
 	panel_settings.add_child(settings_scene)
 
+func _on_dungeon_maker_pressed() -> void:
+	get_tree().change_scene_to_file("res://scenes/dungeon/DungeonMaker.tscn")
+
 func _on_options_pressed() -> void:
 	_close_settings_panel()
 	panel_settings.visible = true
