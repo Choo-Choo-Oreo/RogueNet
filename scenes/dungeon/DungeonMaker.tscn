@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bniomtokxpoff"]
+
+[ext_resource type="Script" uid="uid://b0fhl288f3d2s" path="res://scripts/dungeon/DungeonMaker.gd" id="1_u5pr7"]
+
+[node name="DungeonMaker" type="Node2D" unique_id=989925086]
+script = ExtResource("1_u5pr7")
