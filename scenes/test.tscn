@@ -307,3 +307,15 @@ position = Vector2(733, 310)
 [node name="CanvasLayer" parent="." unique_id=1093126358 instance=ExtResource("7_5wyu1")]
 
 [node name="HealthBar" parent="." unique_id=302320589 instance=ExtResource("8_0c07c")]
+
+[node name="Mouse2" parent="." unique_id=1054269668 instance=ExtResource("6_i3aeo")]
+position = Vector2(692, 275)
+
+[node name="Mouse3" parent="." unique_id=1865933746 instance=ExtResource("6_i3aeo")]
+position = Vector2(714, 333)
+
+[node name="Mouse4" parent="." unique_id=293631833 instance=ExtResource("6_i3aeo")]
+position = Vector2(760, 314)
+
+[node name="Mouse5" parent="." unique_id=204392137 instance=ExtResource("6_i3aeo")]
+position = Vector2(698, 303)

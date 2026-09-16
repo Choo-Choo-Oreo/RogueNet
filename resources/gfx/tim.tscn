@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bco7mys2ss55s"]
 
-[ext_resource type="Script" uid="uid://i42ytnxilkvp" path="res://Scripts/tim.gd" id="1_ak6vf"]
+[ext_resource type="Script" uid="uid://i42ytnxilkvp" path="res://scripts/tim.gd" id="1_ak6vf"]
 [ext_resource type="Texture2D" uid="uid://c227spu0bhdoi" path="res://resources/gfx/players/Knight/walking east.png" id="2_6qosm"]
 [ext_resource type="Texture2D" uid="uid://cjyd46u0cnwon" path="res://resources/gfx/players/Knight/Walking North.png" id="3_5e0of"]
 [ext_resource type="Texture2D" uid="uid://p8p3ylpxge3o" path="res://resources/gfx/players/Knight/Walking South.png" id="4_jgbsc"]
