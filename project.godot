@@ -46,10 +46,10 @@ folder_colors={
 "res://addons/": "gray",
 "res://build/": "gray",
 "res://game/": "red",
+"res://game/rooms/": "red",
 "res://resources/": "red",
 "res://scenes/": "blue",
 "res://scenes/dev/": "purple",
-"res://scenes/rooms/": "red",
 "res://scripts/": "green",
 "res://singletons/": "green"
 }

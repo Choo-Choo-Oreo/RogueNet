@@ -41,3 +41,20 @@ func receive_position(player_id: int, pos: Vector2) -> void:
 	var player := get_tree().current_scene.get_node_or_null("Player/" + str(player_id))
 	if player:
 		player.global_position = pos
+
+@rpc("any_peer", "reliable")
+func report_move_state(direction: Vector2, moving: bool) -> void:
+	if not multiplayer.is_server():
+		return
+	_relay_move_state(multiplayer.get_remote_sender_id(), direction, moving)
+
+func _relay_move_state(sender_id: int, direction: Vector2, moving: bool) -> void:
+	for peer_id in multiplayer.get_peers():
+		if peer_id != sender_id:
+			receive_move_state.rpc_id(peer_id, sender_id, direction, moving)
+
+@rpc("authority", "reliable")
+func receive_move_state(player_id: int, direction: Vector2, moving: bool) -> void:
+	var player := get_tree().current_scene.get_node_or_null("Player/" + str(player_id))
+	if player:
+		player.apply_move_animation(direction, moving)

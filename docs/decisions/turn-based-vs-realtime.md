@@ -19,7 +19,7 @@
 **Downsides**
 - Discards a genre-feel the team's own movement/animation work already leans toward — extending real-time code is a gentler ramp than replacing its foundational assumptions.
 - Turn-blocking: party pacing stalls on the slowest decider, a known pain point (mitigated by turn timers, but a real UX cost that real-time party co-op never has to solve).
-- No proven networked-co-op precedent as strong as real-time's (Deep Rock Galactic, Risk of Rain 2) for the specific "party dives into procedural run together" structure.
+- No proven networked-co-op precedent as strong as real-time's (Deep Rock Galactic) for the specific "party dives into procedural run together" structure.
 
 ---
 
@@ -27,7 +27,7 @@
 
 **Upsides**
 - Builds directly on validated, already-shipped work: Steam ID sync, peer disconnect handling, position relay, idle animation — no mode-switch, no second interaction paradigm to design and teach.
-- Strong genre precedent for the exact structure RogueNet describes: Deep Rock Galactic and Risk of Rain 2 both do hub → party dive → procedural run → return, in real-time, with real networked co-op.
+- Strong genre precedent for the exact structure RogueNet describes: Deep Rock Galactic does hub → party dive → procedural run → return, in real-time, with real networked co-op. (Risk of Rain 2 is real-time networked co-op too, but is a continuous run/loop rather than a hub-return cycle, so it supports "real-time co-op works" generally without supporting the hub-return structural claim specifically.)
 - For co-op PvE (not competitive), real-time doesn't require frame-perfect rollback netcode — host-authoritative hit validation with client-side telegraphing (tolerant of some lag) is the standard, well-documented pattern for this genre.
 - Loot/skill depth isn't paradigm-locked — ARPGs (Diablo, Path of Exile) pair build depth with real-time execution routinely; real-time adds a second skill axis (positioning/timing) rather than replacing build strategy.
 - Never blocks party pacing on the slowest player — everyone acts independently and continuously.
