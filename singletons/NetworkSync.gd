@@ -23,7 +23,9 @@ func receive_steam_ids(ids: Dictionary) -> void:
 func report_position(pos: Vector2) -> void:
 	if not multiplayer.is_server():
 		return
-	_relay_position(multiplayer.get_remote_sender_id(), pos)
+	var sender_id := multiplayer.get_remote_sender_id()
+	receive_position(sender_id, pos)
+	_relay_position(sender_id, pos)
 
 func _relay_position(sender_id: int, pos: Vector2) -> void:
 	for peer_id in multiplayer.get_peers():
