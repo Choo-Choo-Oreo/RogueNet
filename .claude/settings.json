@@ -12,8 +12,6 @@
       "Edit(tools/**)"
     ],
     "deny": [
-      "Bash(git commit:*)",
-      "Bash(git push:*)"
     ]
   }
 }
