@@ -5,7 +5,7 @@ extends Control
 func _on_play_pressed() -> void:
 	_close_settings_panel()
 	panel_settings.visible = true
-	var settings_scene = preload("res://scenes/ui/MultiplayerLobby.tscn").instantiate()
+	var settings_scene = preload("res://scenes/ui/MultiplayerMenu.tscn").instantiate()
 	panel_settings.add_child(settings_scene)
 
 func _on_options_pressed() -> void:

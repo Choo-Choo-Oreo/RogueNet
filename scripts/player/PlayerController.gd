@@ -3,7 +3,10 @@ extends CharacterBody2D
 @export var tile_size := 16
 @export var move_time := 0.2
 
-@onready var wall_data: TileMapLayer = get_node("../WallData")
+@onready var wall_data: TileMapLayer = get_tree().current_scene.get_node("WallData")
+
+func _ready() -> void:
+	set_multiplayer_authority(int(str(name)))
 
 func _is_blocked(target_global: Vector2) -> bool:
 	var cell: Vector2i = wall_data.local_to_map(wall_data.to_local(target_global))
@@ -21,6 +24,8 @@ func _move_one_tile(direction: Vector2) -> void:
 	tween.finished.connect(func(): is_moving = false)
 
 func _unhandled_input(event: InputEvent) -> void:
+	if not is_multiplayer_authority():
+		return
 	if is_moving:
 		return
 	var direction := Vector2.ZERO

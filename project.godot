@@ -42,20 +42,13 @@ enabled=PackedStringArray("res://addons/godotsteam/plugin.cfg")
 [file_customization]
 
 folder_colors={
-"res://Scenes/": "blue",
-"res://Scenes/rooms/": "red",
+"res://scenes/": "blue",
+"res://scenes/rooms/": "red",
+"res://scenes/dev/": "purple",
 "res://addons/": "gray",
 "res://build/": "gray",
 "res://game/": "red",
 "res://resources/": "red",
-"res://build/": "gray",
-"res://game/": "red",
-"res://resources/": "red",
-"res://scenes/": "blue",
-"res://scenes/dev/": "purple",
-"res://scenes/rooms/": "red",
-"res://scripts/": "green",
-"res://singletons/": "green"
 "res://scripts/": "green",
 "res://singletons/": "green"
 }

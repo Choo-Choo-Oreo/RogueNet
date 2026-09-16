@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileType" format=3]
+[gd_resource type="Resource" script_class="TileType" format=3 uid="uid://wshepbn6jigg"]
 
 [ext_resource type="Script" uid="uid://brc0m0h8phc05" path="res://scripts/cells/tiles/TileType.gd" id="1_ece4a"]
 [ext_resource type="Texture2D" uid="uid://cgplkwatxa2fv" path="res://resources/gfx/tileset/wall_smooth_stone.png" id="1_jfijs"]
@@ -7,6 +7,7 @@
 script = ExtResource("1_ece4a")
 tile_name = "WallSmoothStone"
 atlas_texture = ExtResource("1_jfijs")
+sort_order = 100
 category = 1
 marker_color = Color(0.458824, 0.458824, 0.458824, 1)
 metadata/_custom_type_script = "uid://brc0m0h8phc05"

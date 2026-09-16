@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c4v1uy6b6afx5"]
 
-[ext_resource type="Script" uid="uid://n4swiwx8inka" path="res://scripts/network/LobbyMenu.gd" id="1_lobby"]
+[ext_resource type="Script" uid="uid://n4swiwx8inka" path="res://scripts/network/LobbyMenu.gd" id="1_rgco0"]
 
 [node name="MultiplayerLobby" type="Control" unique_id=672080569]
 layout_mode = 3
@@ -9,7 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_lobby")
+script = ExtResource("1_rgco0")
 
 [node name="Background" type="Panel" parent="." unique_id=204084178]
 layout_mode = 1

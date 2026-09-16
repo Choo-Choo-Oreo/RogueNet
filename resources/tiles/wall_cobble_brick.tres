@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileType" format=3]
+[gd_resource type="Resource" script_class="TileType" format=3 uid="uid://bm1atmemhbrwf"]
 
 [ext_resource type="Script" uid="uid://brc0m0h8phc05" path="res://scripts/cells/tiles/TileType.gd" id="1_ece4a"]
 [ext_resource type="Texture2D" uid="uid://dqhpq8s0o1kqr" path="res://resources/gfx/tileset/wall_cobble_brick.png" id="1_jfijs"]
@@ -7,6 +7,7 @@
 script = ExtResource("1_ece4a")
 tile_name = "WallCobbleBrick"
 atlas_texture = ExtResource("1_jfijs")
+sort_order = 100
 category = 1
 marker_color = Color(0.545098, 0.266667, 0.266667, 1)
 metadata/_custom_type_script = "uid://brc0m0h8phc05"
