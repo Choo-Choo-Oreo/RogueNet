@@ -144,13 +144,13 @@ script = ExtResource("1_xclhk")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1316510687]
 sprite_frames = SubResource("SpriteFrames_5e0of")
 animation = &"Front"
-frame_progress = 0.9669427
+frame_progress = 0.524789
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1539227241]
 shape = SubResource("RectangleShape2D_m3flc")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=2043266512]
-zoom = Vector2(7.5, 7.5)
+zoom = Vector2(5, 5)
 position_smoothing_enabled = true
 
 [node name="Health" type="Node2D" parent="." unique_id=1835473326]

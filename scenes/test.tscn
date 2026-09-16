@@ -6,6 +6,8 @@
 [ext_resource type="AudioStream" uid="uid://c1aywv5g5xg27" path="res://resources/sfx/music/Menu Music.mp3" id="3_qc4db"]
 [ext_resource type="PackedScene" uid="uid://b55q47hoay17r" path="res://resources/gfx/knight.tscn" id="5_35xla"]
 [ext_resource type="PackedScene" uid="uid://yk2xsllxd70v" path="res://resources/gfx/entities/rat/mouse.tscn" id="6_i3aeo"]
+[ext_resource type="PackedScene" uid="uid://bkiwfakxplwp3" path="res://Scenes/Hotbar.tscn" id="7_5wyu1"]
+[ext_resource type="PackedScene" uid="uid://lt2evl6j2upi" path="res://Scenes/health_bar.tscn" id="8_0c07c"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_i3aeo"]
 texture = ExtResource("2_35xla")
@@ -297,7 +299,11 @@ tile_map_data = PackedByteArray("AAAwACUAAAACAAEAAAAwACQAAAACAAEAAAAwACMAAAACAAE
 tile_set = SubResource("TileSet_bnhvo")
 
 [node name="Knight" parent="." unique_id=188024937 instance=ExtResource("5_35xla")]
-position = Vector2(763, 250)
+position = Vector2(753, 260)
 
 [node name="Mouse" parent="." unique_id=1107778231 instance=ExtResource("6_i3aeo")]
-position = Vector2(727, 304)
+position = Vector2(733, 310)
+
+[node name="CanvasLayer" parent="." unique_id=1093126358 instance=ExtResource("7_5wyu1")]
+
+[node name="HealthBar" parent="." unique_id=302320589 instance=ExtResource("8_0c07c")]

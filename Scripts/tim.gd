@@ -23,17 +23,18 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("attack"):
 		_attack()
 
+func _process(delta: float) -> void:
 	if is_moving:
 		return
 
 	var direction := Vector2.ZERO
-	if event.is_action_pressed("ui_right"):
+	if Input.is_action_pressed("ui_right"):
 		direction = Vector2.RIGHT
-	elif event.is_action_pressed("ui_left"):
+	elif Input.is_action_pressed("ui_left"):
 		direction = Vector2.LEFT
-	elif event.is_action_pressed("ui_up"):
+	elif Input.is_action_pressed("ui_up"):
 		direction = Vector2.UP
-	elif event.is_action_pressed("ui_down"):
+	elif Input.is_action_pressed("ui_down"):
 		direction = Vector2.DOWN
 
 	if direction != Vector2.ZERO:
