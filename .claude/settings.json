@@ -1,6 +1,5 @@
 {
   "permissions": {
-    "blockReadsOutsideWorkingDirectories": true,
     "allow": [
       "WebSearch",
       "Read",
@@ -13,8 +12,6 @@
       "Edit(tools/**)"
     ],
     "deny": [
-      "Write(scenes/**)",
-      "Edit(scenes/**)",
       "Write(scripts/**)",
       "Edit(scripts/**)",
       "Write(singletons/**)",

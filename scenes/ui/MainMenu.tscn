@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" uid="uid://cw4p2iop2rv0i" path="res://scripts/MainMenu.gd" id="1_vjtqc"]
 [ext_resource type="AudioStream" uid="uid://c1aywv5g5xg27" path="res://resources/sfx/music/Menu Music.mp3" id="2_6jbdy"]
+[ext_resource type="PackedScene" path="res://scenes/ui/SettingsMenu.tscn" id="2_iwbf0"]
+[ext_resource type="PackedScene" uid="uid://c4v1uy6b6afx5" path="res://scenes/ui/MultiplayerLobby.tscn" id="3_2ysvc"]
 
 [node name="MainMenu" type="Control" unique_id=1510708277]
 layout_mode = 3
@@ -42,12 +44,17 @@ layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer/VSplitContainer" unique_id=1038033847]
 layout_mode = 2
-size_flags_vertical = 8
+size_flags_vertical = 4
 
-[node name="Play" type="Button" parent="HSplitContainer/VSplitContainer/VBoxContainer" unique_id=183422601]
+[node name="Singleplayer" type="Button" parent="HSplitContainer/VSplitContainer/VBoxContainer" unique_id=183422601]
 custom_minimum_size = Vector2(100, 50)
 layout_mode = 2
-text = "Play"
+text = "Singleplayer"
+
+[node name="Multiplayer" type="Button" parent="HSplitContainer/VSplitContainer/VBoxContainer" unique_id=921803609]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+text = "Multiplayer"
 
 [node name="Options" type="Button" parent="HSplitContainer/VSplitContainer/VBoxContainer" unique_id=959549795]
 custom_minimum_size = Vector2(100, 50)
@@ -83,12 +90,34 @@ offset_bottom = -0.0240479
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="SettingsMenu" parent="PanelSettings" unique_id=1044778914 instance=ExtResource("2_iwbf0")]
+layout_mode = 1
+
+[node name="PanelLobby" type="Panel" parent="." unique_id=1293094149]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.194
+anchor_top = 0.037
+anchor_right = 0.979
+anchor_bottom = 0.963
+offset_left = 0.511993
+offset_top = 0.0240002
+offset_right = 0.192017
+offset_bottom = -0.0240479
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MultiplayerLobby" parent="PanelLobby" unique_id=672080569 instance=ExtResource("3_2ysvc")]
+layout_mode = 1
+
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=280040554]
 stream = ExtResource("2_6jbdy")
 volume_db = -6.382
 autoplay = true
 bus = &"Music"
 
-[connection signal="pressed" from="HSplitContainer/VSplitContainer/VBoxContainer/Play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="HSplitContainer/VSplitContainer/VBoxContainer/Singleplayer" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="HSplitContainer/VSplitContainer/VBoxContainer/Multiplayer" to="." method="_on_play_pressed"]
 [connection signal="pressed" from="HSplitContainer/VSplitContainer/VBoxContainer/Options" to="." method="_on_options_pressed"]
 [connection signal="pressed" from="HSplitContainer/VSplitContainer/VBoxContainer/Exit" to="." method="_on_exit_pressed"]

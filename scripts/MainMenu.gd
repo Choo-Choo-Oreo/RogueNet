@@ -2,20 +2,17 @@ extends Control
 
 @onready var panel_settings: Panel = $PanelSettings
 
-
-
 func _on_play_pressed() -> void:
-	get_tree().change_scene_to_file("res://scenes/ui/MainMenu-tmp.tscn")
-
-
+	_close_settings_panel()
+	panel_settings.visible = true
+	var settings_scene = preload("res://scenes/ui/MultiplayerLobby.tscn").instantiate()
+	panel_settings.add_child(settings_scene)
 
 func _on_options_pressed() -> void:
 	_close_settings_panel()
 	panel_settings.visible = true
 	var settings_scene = preload("res://scenes/ui/SettingsMenu.tscn").instantiate()
 	panel_settings.add_child(settings_scene)
-
-
 
 func _on_exit_pressed() -> void:
 	get_tree().quit()

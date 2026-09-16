@@ -1,0 +1,104 @@
+[gd_scene format=3 uid="uid://c4v1uy6b6afx5"]
+
+[ext_resource type="Script" uid="uid://n4swiwx8inka" path="res://scripts/network/LobbyMenu.gd" id="1_lobby"]
+
+[node name="MultiplayerLobby" type="Control" unique_id=672080569]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lobby")
+
+[node name="Background" type="Panel" parent="." unique_id=204084178]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="." unique_id=756409194]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+split_offsets = PackedInt32Array(260)
+dragging_enabled = false
+split_offset = 260
+
+[node name="ConnectPanel" type="VBoxContainer" parent="HSplitContainer" unique_id=622084594]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="Title" type="Label" parent="HSplitContainer/ConnectPanel" unique_id=1562468655]
+layout_mode = 2
+text = "MULTIPLAYER LOBBY"
+horizontal_alignment = 1
+
+[node name="YourIdRow" type="HBoxContainer" parent="HSplitContainer/ConnectPanel" unique_id=775420168]
+layout_mode = 2
+
+[node name="YourIdField" type="LineEdit" parent="HSplitContainer/ConnectPanel/YourIdRow" unique_id=1319807915]
+custom_minimum_size = Vector2(160, 36)
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Your Steam ID"
+editable = false
+
+[node name="CopyIdButton" type="Button" parent="HSplitContainer/ConnectPanel/YourIdRow" unique_id=2073263036]
+custom_minimum_size = Vector2(60, 36)
+layout_mode = 2
+text = "Copy"
+
+[node name="LineEdit" type="LineEdit" parent="HSplitContainer/ConnectPanel" unique_id=1688442967]
+custom_minimum_size = Vector2(220, 40)
+layout_mode = 2
+placeholder_text = "Host's Steam ID"
+
+[node name="HostButton" type="Button" parent="HSplitContainer/ConnectPanel" unique_id=633463571]
+custom_minimum_size = Vector2(220, 50)
+layout_mode = 2
+text = "Host"
+
+[node name="JoinButton" type="Button" parent="HSplitContainer/ConnectPanel" unique_id=954655286]
+custom_minimum_size = Vector2(220, 50)
+layout_mode = 2
+text = "Join"
+
+[node name="BackButton" type="Button" parent="HSplitContainer/ConnectPanel" unique_id=2034992485]
+custom_minimum_size = Vector2(220, 50)
+layout_mode = 2
+text = "Back"
+
+[node name="ChatPanel" type="VBoxContainer" parent="HSplitContainer" unique_id=1430858234]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ChatLog" type="RichTextLabel" parent="HSplitContainer/ChatPanel" unique_id=1586742839]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ChatInputRow" type="HBoxContainer" parent="HSplitContainer/ChatPanel" unique_id=1875415177]
+layout_mode = 2
+
+[node name="ChatInput" type="LineEdit" parent="HSplitContainer/ChatPanel/ChatInputRow" unique_id=1411733253]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SendButton" type="Button" parent="HSplitContainer/ChatPanel/ChatInputRow" unique_id=294631995]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Send"
+
+[connection signal="pressed" from="HSplitContainer/ConnectPanel/YourIdRow/CopyIdButton" to="." method="_on_copy_id_button_pressed"]
+[connection signal="pressed" from="HSplitContainer/ConnectPanel/HostButton" to="." method="_on_host_button_pressed"]
+[connection signal="pressed" from="HSplitContainer/ConnectPanel/JoinButton" to="." method="_on_join_button_pressed"]
+[connection signal="pressed" from="HSplitContainer/ConnectPanel/BackButton" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="HSplitContainer/ChatPanel/ChatInputRow/SendButton" to="." method="_on_send_button_pressed"]
