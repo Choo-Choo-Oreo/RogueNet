@@ -156,6 +156,7 @@ position = Vector2(8, 8)
 shape = SubResource("RectangleShape2D_pctrl")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+enabled = false
 zoom = Vector2(5, 5)
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
