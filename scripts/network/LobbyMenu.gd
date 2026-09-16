@@ -4,6 +4,9 @@ func _ready():
 	multiplayer.peer_connected.connect(func(id): print ("Peer connected: ", id))
 	multiplayer.connection_failed.connect(func(): print ("Connection failed"))
 
+func _on_copy_id_button_pressed():
+	pass
+
 func _on_host_button_pressed():
 	var peer = SteamMultiplayerPeer.new()
 	var error = peer.create_host(0)
@@ -17,7 +20,7 @@ func _on_host_button_pressed():
 
 func _on_join_button_pressed():
 	var peer = SteamMultiplayerPeer.new()
-	var host_steam_id = $HSplitContainer/VSplitContainer/LineEdit.text.to_int()
+	var host_steam_id = $HSplitContainer/ConnectPanel/LineEdit.text.to_int()
 	var error = peer.create_client(host_steam_id, 0)
 
 	if error != OK:
@@ -26,6 +29,10 @@ func _on_join_button_pressed():
 
 	multiplayer.multiplayer_peer = peer
 	print("Joining host: ", host_steam_id)
+
+func _on_back_pressed() -> void:
+	get_parent().hide()
+	queue_free()
 
 @rpc("any_peer", "call_local")
 func _receive_chat_message(text: String):

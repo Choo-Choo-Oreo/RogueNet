@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://djuwmio4x8p12"]
+
+[ext_resource type="Script" uid="uid://b8dk1dj5mllej" path="res://scripts/player/PlayerController.gd" id="1_etyb6"]
+
+[node name="PlayerController" type="CharacterBody2D" unique_id=648928602]
+script = ExtResource("1_etyb6")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=493834436]

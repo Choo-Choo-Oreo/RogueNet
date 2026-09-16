@@ -12,8 +12,6 @@
       "Edit(tools/**)"
     ],
     "deny": [
-      "Write(scenes/**)",
-      "Edit(scenes/**)",
       "Write(scripts/**)",
       "Edit(scripts/**)",
       "Write(singletons/**)",

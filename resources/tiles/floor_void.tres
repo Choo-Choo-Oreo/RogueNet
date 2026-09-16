@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="TileType" format=3 uid="uid://dsc0oidgv0irr"]
 
-[ext_resource type="Script" uid="uid://brc0m0h8phc05" path="res://scripts/TileType.gd" id="1_ece4a"]
+[ext_resource type="Script" uid="uid://brc0m0h8phc05" path="res://scripts/cells/tiles/TileType.gd" id="1_ece4a"]
 [ext_resource type="Texture2D" uid="uid://30t8sgmrsu53" path="res://resources/gfx/tileset/floor_void.png" id="1_jfijs"]
 
 [resource]

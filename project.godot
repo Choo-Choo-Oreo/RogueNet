@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="RogueNET"
-run/main_scene="uid://dvy7qdmiyab41"
+run/main_scene="uid://bqee185h6kanu"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -47,6 +47,7 @@ folder_colors={
 "res://game/": "red",
 "res://resources/": "red",
 "res://scenes/": "blue",
+"res://scenes/dev/": "purple",
 "res://scenes/rooms/": "red",
 "res://scripts/": "green",
 "res://singletons/": "green"
