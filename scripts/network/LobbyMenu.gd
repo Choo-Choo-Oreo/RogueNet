@@ -16,6 +16,7 @@ func _on_host_button_pressed():
 		return
 
 	multiplayer.multiplayer_peer = peer
+	NetworkSync.peer_steam_ids[1] = Steam.getSteamID()
 	print("Hosting. My Steam ID: ", Steam.getSteamID())
 	get_tree().change_scene_to_file("res://scenes/dev/HubMPTest.tscn")
 

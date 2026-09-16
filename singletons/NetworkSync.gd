@@ -1,5 +1,24 @@
 extends Node
 
+var peer_steam_ids: Dictionary = {}
+
+func _ready() -> void:
+	multiplayer.connected_to_server.connect(func():
+		report_steam_id.rpc_id(1, Steam.getSteamID())
+	)
+
+@rpc("any_peer", "reliable")
+func report_steam_id(steam_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+	peer_steam_ids[multiplayer.get_remote_sender_id()] = steam_id
+	for peer_id in multiplayer.get_peers():
+		receive_steam_ids.rpc_id(peer_id, peer_steam_ids)
+
+@rpc("authority", "reliable")
+func receive_steam_ids(ids: Dictionary) -> void:
+	peer_steam_ids = ids
+
 @rpc("any_peer", "unreliable_ordered")
 func report_position(pos: Vector2) -> void:
 	if not multiplayer.is_server():
