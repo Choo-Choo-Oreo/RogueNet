@@ -63,3 +63,109 @@ func receive_move_state(player_id: int, direction: Vector2, moving: bool) -> voi
 	var player := get_tree().current_scene.get_node_or_null("Player/" + str(player_id))
 	if player:
 		player.apply_move_animation(direction, moving)
+
+var missions: Dictionary = {}
+
+@rpc("authority", "reliable")
+func receive_mission_created(mission_id: int, creator_id: int, privacy: String) -> void:
+	var guild_town := get_tree().current_scene.get_node_or_null("PanelGuild/GuildTown")
+	if guild_town:
+		guild_town.add_mission(mission_id, creator_id, privacy)
+
+@rpc("any_peer", "reliable")
+func report_create_mission(privacy: String, password: String) -> void:
+	if not multiplayer.is_server():
+		return
+	_create_mission(multiplayer.get_remote_sender_id(), privacy, password)
+
+func _create_mission(creator_id: int, privacy: String, password: String) -> void:
+	var mission_id := creator_id
+	missions[mission_id] = {"creator_id": creator_id, "privacy": privacy, "password": password, "members": [creator_id]}
+	receive_mission_created(mission_id, creator_id, privacy)
+	for peer_id in multiplayer.get_peers():
+		receive_mission_created.rpc_id(peer_id, mission_id, creator_id, privacy)
+	_broadcast_members(mission_id)
+var peer_names: Dictionary = {}
+
+@rpc("any_peer", "reliable")
+func report_player_name(player_name: String) -> void:
+	if not multiplayer.is_server():
+		return
+	peer_names[multiplayer.get_remote_sender_id()] = player_name
+	for peer_id in multiplayer.get_peers():
+		receive_player_names.rpc_id(peer_id, peer_names)
+
+@rpc("authority", "reliable")
+func receive_player_names(names: Dictionary) -> void:
+	peer_names = names
+
+@rpc("any_peer", "reliable")
+func report_join_mission(mission_id: int, password: String) -> void:
+	if not multiplayer.is_server():
+		return
+	_join_mission(multiplayer.get_remote_sender_id(), mission_id, password)
+
+func _join_mission(peer_id: int, mission_id: int, password: String) -> void:
+	if not missions.has(mission_id):
+		return
+	var mission: Dictionary = missions[mission_id]
+	if mission["privacy"] == "password" and mission["password"] != password:
+		print("Player %d failed to join mission %d: wrong password" % [peer_id, mission_id])
+		return
+	var members: Array = mission["members"]
+	if peer_id not in members:
+		members.append(peer_id)
+	print("Player %d joined mission %d" % [peer_id, mission_id])
+	_broadcast_members(mission_id)
+
+func _broadcast_members(mission_id: int) -> void:
+	var members: Array = missions[mission_id]["members"]
+	for peer_id in members:
+		if peer_id == 1:
+			receive_mission_members(mission_id, members)
+		else:
+			receive_mission_members.rpc_id(peer_id, mission_id, members)
+
+@rpc("authority", "reliable")
+func receive_mission_members(mission_id: int, members: Array) -> void:
+	var main_town := get_tree().current_scene
+	var mission_screen := main_town.get_node_or_null("PanelMission/GuildMission")
+	if mission_screen:
+		mission_screen.set_members(mission_id, members)
+	main_town.get_node_or_null("PanelMain").hide()
+	main_town.get_node_or_null("PanelGuild").hide()
+	main_town.get_node_or_null("PanelMission").show()
+
+@rpc("any_peer", "reliable")
+func report_leave_mission(mission_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+	_leave_mission(multiplayer.get_remote_sender_id(), mission_id)
+
+func _leave_mission(peer_id: int, mission_id: int) -> void:
+	if not missions.has(mission_id):
+		return
+	var mission: Dictionary = missions[mission_id]
+	if peer_id == mission["creator_id"]:
+		_end_mission(mission_id)
+		return
+	var members: Array = mission["members"]
+	members.erase(peer_id)
+	_broadcast_members(mission_id)
+
+func _end_mission(mission_id: int) -> void:
+	missions.erase(mission_id)
+	receive_mission_ended(mission_id)
+	for peer_id in multiplayer.get_peers():
+		receive_mission_ended.rpc_id(peer_id, mission_id)
+
+@rpc("authority", "reliable")
+func receive_mission_ended(mission_id: int) -> void:
+	var main_town := get_tree().current_scene
+	var guild_town := main_town.get_node_or_null("PanelGuild/GuildTown")
+	if guild_town:
+		guild_town.remove_mission(mission_id)
+	var mission_screen := main_town.get_node_or_null("PanelMission/GuildMission")
+	if mission_screen and mission_screen.current_mission_id == mission_id:
+		main_town.get_node_or_null("PanelMission").hide()
+		main_town.get_node_or_null("PanelGuild").show()

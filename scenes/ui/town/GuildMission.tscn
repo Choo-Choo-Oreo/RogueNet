@@ -1,0 +1,69 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/town/GuildMission.gd" id="1_guildmission"]
+
+[node name="GuildMission" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_guildmission")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+split_offset = 320
+dragging_enabled = false
+
+[node name="ActionPanel" type="VBoxContainer" parent="HSplitContainer"]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+size_flags_vertical = 4
+alignment = 1
+theme_override_constants/separation = 14
+
+[node name="Title" type="Label" parent="HSplitContainer/ActionPanel"]
+layout_mode = 2
+text = "GUILD MISSION"
+horizontal_alignment = 1
+
+[node name="StartButton" type="Button" parent="HSplitContainer/ActionPanel"]
+custom_minimum_size = Vector2(220, 50)
+layout_mode = 2
+text = "Start Mission"
+
+[node name="LeaveButton" type="Button" parent="HSplitContainer/ActionPanel"]
+custom_minimum_size = Vector2(220, 50)
+layout_mode = 2
+text = "Leave"
+
+[node name="MemberListPanel" type="VBoxContainer" parent="HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="HSplitContainer/MemberListPanel"]
+layout_mode = 2
+text = "PARTY MEMBERS"
+horizontal_alignment = 1
+
+[node name="MemberList" type="ItemList" parent="HSplitContainer/MemberListPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[connection signal="pressed" from="HSplitContainer/ActionPanel/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="HSplitContainer/ActionPanel/LeaveButton" to="." method="_on_leave_button_pressed"]

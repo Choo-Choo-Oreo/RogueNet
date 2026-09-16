@@ -1,0 +1,96 @@
+[gd_scene format=3 uid="uid://df0w734h2xs0d"]
+
+[ext_resource type="Script" uid="uid://bcwl5pwvxi865" path="res://scripts/ui/town/GuildTown.gd" id="1_guildtown"]
+
+[node name="GuildTown" type="Control" unique_id=88084801]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_guildtown")
+
+[node name="Background" type="Panel" parent="." unique_id=88084802]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="." unique_id=88084803]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+split_offsets = PackedInt32Array(320)
+dragging_enabled = false
+split_offset = 320
+
+[node name="CreatePanel" type="VBoxContainer" parent="HSplitContainer" unique_id=88084808]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="Title" type="Label" parent="HSplitContainer/CreatePanel" unique_id=88084809]
+layout_mode = 2
+text = "CREATE MISSION"
+horizontal_alignment = 1
+
+[node name="PrivacyOption" type="OptionButton" parent="HSplitContainer/CreatePanel" unique_id=88084810]
+custom_minimum_size = Vector2(220, 40)
+layout_mode = 2
+
+[node name="PasswordField" type="LineEdit" parent="HSplitContainer/CreatePanel" unique_id=88084811]
+custom_minimum_size = Vector2(220, 40)
+layout_mode = 2
+placeholder_text = "Password (optional)"
+secret = true
+
+[node name="CreateButton" type="Button" parent="HSplitContainer/CreatePanel" unique_id=88084812]
+custom_minimum_size = Vector2(220, 50)
+layout_mode = 2
+text = "Create"
+
+[node name="BackButton" type="Button" parent="HSplitContainer/CreatePanel" unique_id=88084813]
+custom_minimum_size = Vector2(220, 50)
+layout_mode = 2
+text = "Back"
+
+[node name="MissionListPanel" type="VBoxContainer" parent="HSplitContainer" unique_id=88084804]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="HSplitContainer/MissionListPanel" unique_id=88084805]
+layout_mode = 2
+text = "JOIN MISSION"
+horizontal_alignment = 1
+
+[node name="MissionList" type="ItemList" parent="HSplitContainer/MissionListPanel" unique_id=88084806]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="JoinPasswordField" type="LineEdit" parent="HSplitContainer/MissionListPanel" unique_id=88084814]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+placeholder_text = "Password (if required)"
+secret = true
+
+[node name="JoinButton" type="Button" parent="HSplitContainer/MissionListPanel" unique_id=88084807]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Join"
+
+[node name="Multiplayer" type="Button" parent="." unique_id=695356583]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 0
+text = "Multiplayer"
+
+[connection signal="pressed" from="HSplitContainer/CreatePanel/CreateButton" to="." method="_on_create_button_pressed"]
+[connection signal="pressed" from="HSplitContainer/MissionListPanel/JoinButton" to="." method="_on_join_button_pressed"]

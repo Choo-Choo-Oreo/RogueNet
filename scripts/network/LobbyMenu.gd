@@ -17,8 +17,9 @@ func _on_host_button_pressed():
 
 	multiplayer.multiplayer_peer = peer
 	NetworkSync.peer_steam_ids[1] = Steam.getSteamID()
+	NetworkSync.peer_names[1] = Steam.getPersonaName()
 	print("Hosting. My Steam ID: ", Steam.getSteamID())
-	get_tree().change_scene_to_file("res://scenes/dev/HubMPTest.tscn")
+	get_tree().change_scene_to_file("res://scenes/ui/town/MainTown.tscn")
 
 func _on_join_button_pressed():
 	var peer = SteamMultiplayerPeer.new()
@@ -34,7 +35,8 @@ func _on_join_button_pressed():
 	print("Joining host: ", host_steam_id)
 
 func _on_connected_to_server():
-	get_tree().change_scene_to_file("res://scenes/dev/HubMPTest.tscn")
+	NetworkSync.report_player_name.rpc_id(1, Steam.getPersonaName())
+	get_tree().change_scene_to_file("res://scenes/ui/town/MainTown.tscn")
 
 func _on_back_pressed() -> void:
 	get_parent().hide()
