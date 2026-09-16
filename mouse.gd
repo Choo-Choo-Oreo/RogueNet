@@ -2,7 +2,9 @@ extends CharacterBody2D
 
 @export var tile_size := 16
 @export var move_time := 0.2
-@export var move_interval := 1.2
+@export var move_interval := 0.3
+@export var detection_radius := 8  # in tiles
+@export var attack_damage := 1
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var stone_wall_layer: TileMapLayer = get_node("../Stone Wall")
@@ -35,11 +37,69 @@ func _on_health_changed(current: int, max_hp: int) -> void:
 func _on_move_timer_timeout() -> void:
 	if is_moving:
 		return
-	var directions := [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]
-	directions.shuffle()
-	_move_one_tile(directions[0])
 
-func _move_one_tile(direction: Vector2) -> void:
+	var target := _find_nearest_player_in_range()
+	if target != null:
+		_move_towards(target.grid_cell)
+	else:
+		var directions := [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]
+		directions.shuffle()
+		_move_one_tile(directions[0])
+
+func _find_nearest_player_in_range() -> Node:
+	var nearest: Node = null
+	var nearest_dist := INF
+
+	for player in get_tree().get_nodes_in_group("players"):
+		var dist := Vector2(player.grid_cell - grid_cell).length()
+		if dist <= detection_radius and dist < nearest_dist:
+			nearest = player
+			nearest_dist = dist
+
+	return nearest
+
+func _move_towards(target_cell: Vector2i) -> void:
+	var delta := target_cell - grid_cell
+	var primary := Vector2.ZERO
+	var secondary := Vector2.ZERO
+
+	if abs(delta.x) > abs(delta.y):
+		primary = Vector2.RIGHT if delta.x > 0 else Vector2.LEFT
+		if delta.y != 0:
+			secondary = Vector2.DOWN if delta.y > 0 else Vector2.UP
+	else:
+		primary = Vector2.DOWN if delta.y > 0 else Vector2.UP
+		if delta.x != 0:
+			secondary = Vector2.RIGHT if delta.x > 0 else Vector2.LEFT
+
+	if _try_move_or_attack(primary):
+		return
+
+	if secondary != Vector2.ZERO:
+		_try_move_or_attack(secondary)
+
+func _try_move_or_attack(direction: Vector2) -> bool:
+	var target_cell := _to_cell(global_position + direction * tile_size)
+	var player := _get_player_at(target_cell)
+	if player != null:
+		_update_facing(direction)
+		_attack(player)
+		return true
+
+	return _move_one_tile(direction)
+
+func _get_player_at(cell: Vector2i) -> Node:
+	for player in get_tree().get_nodes_in_group("players"):
+		if player.grid_cell == cell:
+			return player
+	return null
+
+func _attack(player: Node) -> void:
+	var player_health: Health = player.get_node("Health")
+	if player_health:
+		player_health.take_damage(attack_damage)
+
+func _move_one_tile(direction: Vector2) -> bool:
 	var target_global := global_position + direction * tile_size
 	var target_cell := _to_cell(target_global)
 	_update_facing(direction)
@@ -47,7 +107,7 @@ func _move_one_tile(direction: Vector2) -> void:
 	if _is_blocked(target_global, target_cell):
 		sprite.stop()
 		sprite.frame = 0
-		return
+		return false
 
 	grid_cell = target_cell
 	is_moving = true
@@ -60,6 +120,7 @@ func _move_one_tile(direction: Vector2) -> void:
 		sprite.stop()
 		sprite.frame = 0
 	)
+	return true
 
 func _is_blocked(target_global: Vector2, target_cell: Vector2i) -> bool:
 	var cell: Vector2i = stone_wall_layer.local_to_map(stone_wall_layer.to_local(target_global))

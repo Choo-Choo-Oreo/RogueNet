@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cw4p2iop2rv0i" path="res://scripts/MainMenu.gd" id="1_vjtqc"]
 [ext_resource type="AudioStream" uid="uid://c1aywv5g5xg27" path="res://resources/sfx/music/Menu Music.mp3" id="2_6jbdy"]
 [ext_resource type="PackedScene" path="res://scenes/ui/SettingsMenu.tscn" id="2_iwbf0"]
-[ext_resource type="PackedScene" uid="uid://c4v1uy6b6afx5" path="res://scenes/ui/MultiplayerMenu.tscn" id="3_2ysvc"]
+[ext_resource type="PackedScene" uid="uid://c4v1uy6b6afx5" path="res://Scenes/ui/MultiplayerMenu.tscn" id="3_2ysvc"]
 
 [node name="MainMenu" type="Control" unique_id=1510708277]
 layout_mode = 3
