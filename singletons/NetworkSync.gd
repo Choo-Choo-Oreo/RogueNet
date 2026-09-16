@@ -3,6 +3,7 @@ extends Node
 var peer_steam_ids: Dictionary = {}
 
 func _ready() -> void:
+	multiplayer.server_disconnected.connect(_on_server_disconnected)
 	multiplayer.peer_disconnected.connect(func(id):
 		if not multiplayer.is_server():
 			return
@@ -10,6 +11,10 @@ func _ready() -> void:
 		for peer_id in multiplayer.get_peers():
 			receive_steam_ids.rpc_id(peer_id, peer_steam_ids)
 	)
+
+func _on_server_disconnected() -> void:
+	multiplayer.multiplayer_peer = null
+	get_tree().change_scene_to_file("res://scenes/ui/MainMenu.tscn")
 
 @rpc("any_peer", "reliable")
 func report_steam_id(steam_id: int) -> void:
