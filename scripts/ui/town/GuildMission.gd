@@ -12,7 +12,7 @@ func set_members(mission_id: int, members: Array) -> void:
 		member_list.add_item(player_name)
 
 func _on_start_button_pressed() -> void:
-	get_tree().change_scene_to_file("res://scenes/dungeon/Dungeon.tscn")
+	get_tree().change_scene_to_file("res://scenes/dev/HubMPTest.tscn")
 
 func _on_leave_button_pressed() -> void:
 	if multiplayer.is_server():
