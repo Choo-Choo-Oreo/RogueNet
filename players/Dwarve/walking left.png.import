@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c227spu0bhdoi"
-path="res://.godot/imported/walking east.png-05637436ce4b60cae3caec0f4948eccc.ctex"
+uid="uid://ob51wly8uv5m"
+path="res://.godot/imported/walking left.png-fc2febe32935fae3cd607bf5f1b6f644.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/players/Knight/walking east.png"
-dest_files=["res://.godot/imported/walking east.png-05637436ce4b60cae3caec0f4948eccc.ctex"]
+source_file="res://players/Dwarve/walking left.png"
+dest_files=["res://.godot/imported/walking left.png-fc2febe32935fae3cd607bf5f1b6f644.ctex"]
 
 [params]
 
