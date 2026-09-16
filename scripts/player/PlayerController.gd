@@ -9,9 +9,10 @@ extends CharacterBody2D
 @export var camera_max_offset := 96.0
 
 var _last_anim_position := Vector2.ZERO
+var _anim_idle_time := 0.0
 
-func _process(_delta: float) -> void:
-	_update_facing_animation()
+func _process(delta: float) -> void:
+	_update_facing_animation(delta)
 	if not is_multiplayer_authority():
 		return
 	if multiplayer.is_server():
@@ -24,12 +25,15 @@ func _process(_delta: float) -> void:
 		to_mouse = to_mouse.normalized() * camera_max_offset
 	$Camera2D.position = to_mouse
 
-func _update_facing_animation() -> void:
+func _update_facing_animation(delta: float) -> void:
 	var delta_pos := global_position - _last_anim_position
 	_last_anim_position = global_position
 	if delta_pos.length() < 0.5:
-		$AnimatedSprite2D.stop()
+		_anim_idle_time += delta
+		if _anim_idle_time > 0.15:
+			$AnimatedSprite2D.stop()
 		return
+	_anim_idle_time = 0.0
 	if abs(delta_pos.x) > abs(delta_pos.y):
 		$AnimatedSprite2D.play("Side")
 		$AnimatedSprite2D.flip_h = delta_pos.x < 0

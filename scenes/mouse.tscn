@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://yk2xsllxd70v"]
 
-[ext_resource type="Script" uid="uid://b5ott0q25o4e0" path="res://mouse.gd" id="1_51nn4"]
+[ext_resource type="Script" uid="uid://b5ott0q25o4e0" path="res://scripts/player/player.antagonist/mouse.gd" id="1_51nn4"]
 [ext_resource type="SpriteFrames" uid="uid://dhejfud8rinrx" path="res://resources/gfx/entities/rat/rat_sprite_frames.tres" id="2_yijrh"]
 [ext_resource type="Script" uid="uid://q14trol0t3wp" path="res://scripts/player/player.protagonist/health/Health.gd" id="3_xa71f"]
 
