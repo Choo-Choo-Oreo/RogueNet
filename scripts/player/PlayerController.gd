@@ -9,6 +9,7 @@ extends CharacterBody2D
 @export var camera_max_offset := 96.0
 
 var _last_anim_position := Vector2.ZERO
+var _facing_direction := Vector2.DOWN
 var _anim_idle_time := 0.0
 
 func _process(delta: float) -> void:
@@ -26,26 +27,29 @@ func _process(delta: float) -> void:
 	$Camera2D.position = to_mouse
 
 func _update_facing_animation(delta: float) -> void:
+	if is_multiplayer_authority():
+		if not is_moving:
+			$AnimatedSprite2D.stop()
+			return
+		if abs(_facing_direction.x) > abs(_facing_direction.y):
+			$AnimatedSprite2D.play("Side")
+			$AnimatedSprite2D.flip_h = _facing_direction.x < 0
+		else:
+			$AnimatedSprite2D.play("Back" if _facing_direction.y < 0 else "Front")
+		return
 	var delta_pos := global_position - _last_anim_position
 	_last_anim_position = global_position
 	if delta_pos.length() < 0.5:
 		_anim_idle_time += delta
 		if _anim_idle_time > 0.15:
-			if is_multiplayer_authority():
-				print("[ANIM] STOP")
 			$AnimatedSprite2D.stop()
 		return
 	_anim_idle_time = 0.0
 	if abs(delta_pos.x) > abs(delta_pos.y):
-		if is_multiplayer_authority():
-			print("[ANIM] PLAY Side dx=%.2f" % delta_pos.x)
 		$AnimatedSprite2D.play("Side")
 		$AnimatedSprite2D.flip_h = delta_pos.x < 0
 	else:
-		var anim := "Back" if delta_pos.y < 0 else "Front"
-		if is_multiplayer_authority():
-			print("[ANIM] PLAY %s dy=%.2f" % [anim, delta_pos.y])
-		$AnimatedSprite2D.play(anim)
+		$AnimatedSprite2D.play("Back" if delta_pos.y < 0 else "Front")
 
 func _ready() -> void:
 	set_multiplayer_authority(int(str(name)))
@@ -62,6 +66,7 @@ func _move_one_tile(direction: Vector2) -> void:
 	var target_global := global_position + direction * tile_size
 	if _is_blocked(target_global):
 		return
+	_facing_direction = direction
 	is_moving = true
 
 	var tween := create_tween()
