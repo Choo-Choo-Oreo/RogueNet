@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://yk2xsllxd70v" path="res://resources/gfx/entities/rat/mouse.tscn" id="6_i3aeo"]
 [ext_resource type="PackedScene" uid="uid://bkiwfakxplwp3" path="res://Scenes/Hotbar.tscn" id="7_5wyu1"]
 [ext_resource type="PackedScene" uid="uid://lt2evl6j2upi" path="res://Scenes/health_bar.tscn" id="8_0c07c"]
+[ext_resource type="PackedScene" uid="uid://ranp27y0r3p1" path="res://scripts/death_screen.tscn" id="9_2cgwh"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_i3aeo"]
 texture = ExtResource("2_35xla")
@@ -308,14 +309,4 @@ position = Vector2(733, 310)
 
 [node name="HealthBar" parent="." unique_id=302320589 instance=ExtResource("8_0c07c")]
 
-[node name="Mouse2" parent="." unique_id=1054269668 instance=ExtResource("6_i3aeo")]
-position = Vector2(692, 275)
-
-[node name="Mouse3" parent="." unique_id=1865933746 instance=ExtResource("6_i3aeo")]
-position = Vector2(714, 333)
-
-[node name="Mouse4" parent="." unique_id=293631833 instance=ExtResource("6_i3aeo")]
-position = Vector2(760, 314)
-
-[node name="Mouse5" parent="." unique_id=204392137 instance=ExtResource("6_i3aeo")]
-position = Vector2(698, 303)
+[node name="DeathScreen" parent="." unique_id=1650668355 instance=ExtResource("9_2cgwh")]

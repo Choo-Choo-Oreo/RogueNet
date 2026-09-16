@@ -9,22 +9,30 @@ extends CharacterBody2D
 @onready var health: Health = $Health
 
 var is_moving := false
+var is_dead := false
 var facing_direction := Vector2.DOWN
 var grid_cell: Vector2i
 
 func _ready() -> void:
 	add_to_group("players")
 	grid_cell = _to_cell(global_position)
+	health.died.connect(_on_died)
+
+func _on_died() -> void:
+	is_dead = true
 
 func _to_cell(pos: Vector2) -> Vector2i:
 	return Vector2i(round(pos.x / tile_size), round(pos.y / tile_size))
 
 func _unhandled_input(event: InputEvent) -> void:
+	if is_dead:
+		return
+
 	if event.is_action_pressed("attack"):
 		_attack()
 
 func _process(delta: float) -> void:
-	if is_moving:
+	if is_dead or is_moving:
 		return
 
 	var direction := Vector2.ZERO
