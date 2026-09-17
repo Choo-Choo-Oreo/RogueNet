@@ -1,8 +1,10 @@
 # Dungeon Room Format + Dungeon Maker Tool
 
-**Status:** scoped, not started. This file is staged at the repo root
-temporarily — it belongs at `scripts/dungeon/README.md` once that folder
-exists (Orea will move it).
+**Status:** in progress, good shape. `DungeonMaker.gd`/`DungeonMakerOverlay.gd`
+exist and work, 7 rooms have been authored in `game/rooms/`, and there's a
+teammate-reported bug already fixed locally but not yet pushed as of
+2026-09-16 — audited by Claude that day, see the checklist and **Doc vs.
+implementation gaps** below for specifics.
 
 ## What this is
 
@@ -141,16 +143,24 @@ that exactly; a redundant tag can only go stale.
 An in-editor Godot tool (not a runtime/in-game feature) that lets someone
 without programming experience:
 
-1. Set a room's `width`/`height` and `id`.
-2. Paint `floor` and `walls` tiles by picking from the tile palette
+1. ~~Set a room's `width`/`height` and `id`.~~ **Done** — all 7 rooms have
+   explicit, stable `id`s and consistent width/height vs. array dimensions.
+2. ~~Paint `floor` and `walls` tiles by picking from the tile palette
    (palette entries should show by name, not raw `source_id`/
-   `atlas_coords`).
-3. Place `objects` freely (not snapped to the tile grid).
-4. Mark `connectors` on boundary tiles.
-5. Add/edit `tags`.
-6. Export the result as a room JSON file conforming to the format above,
+   `atlas_coords`).~~ **Done** — `_populate_palette_lists()` shows palette
+   entries by name.
+3. ~~Place `objects` freely (not snapped to the tile grid).~~ **Done** —
+   objects also carry a `rotation` field not yet documented here, see below.
+4. ~~Mark `connectors` on boundary tiles.~~ **Done** — every connector in
+   every room file sits on a boundary cell; the tool has a built-in
+   validator (`_validate_room`, "Validate All" button) that checks this.
+5. Add/edit `tags`. **Not confirmed** — the audit didn't verify a tag-editing
+   UI exists in the tool; worth a direct check.
+6. ~~Export the result as a room JSON file conforming to the format above,
    plus maintain the shared tile palette file as new tile types are
-   needed.
+   needed.~~ **Done** — 7 rooms exported, `game/tile_palette.json` exists
+   and is maintained, though its naming convention has drifted from this
+   doc's example (see below).
 
 This is scoped as an editor tool, not a whole game system — it doesn't
 need to know anything about how rooms get assembled into a dungeon at
@@ -159,14 +169,38 @@ runtime. That's separate, future work (the "reader/assembler"), and per
 across multiplayer peers) — something to keep in mind if this tool's
 scope ever grows toward also *loading* rooms, but out of scope for now.
 
-## Where this goes once moved
+## Doc vs. implementation gaps (found 2026-09-16, not yet fixed here)
 
-- `scripts/dungeon/` — Dungeon Maker script(s), this README, and (later)
-  the reader/assembler.
-- `scenes/dev/` or `scenes/ui/` — the Dungeon Maker scene itself (name
-  TBD, e.g. `DungeonMaker.tscn`).
-- `game/rooms/` — exported room JSON files. This already exists
-  (`game/rooms/.gitkeep`).
+- **Tile naming convention.** The example above uses bare names (`"dirt"`,
+  `"cobble_brick"`, `"door"`), but the real `game/tile_palette.json` and all
+  7 room files use `floor_`/`wall_`-prefixed names (`floor_dirt`,
+  `wall_cobble_brick`, `wall_door`). This isn't cosmetic —
+  `DungeonMaker.gd`'s `_populate_palette_lists()` sorts palette entries into
+  the floor/wall UI panels by checking that prefix, so an unprefixed name
+  would silently fail to show up in either list. The example JSON/palette
+  blocks above still show the old bare-name convention; update them before
+  anyone hand-authors a room from this doc.
+- **`objects.rotation` is undocumented.** Every room file's objects (and
+  `DungeonMaker.gd`'s `_serialize_objects()`) include a `"rotation": float`
+  field the field-reference table above doesn't mention.
+- **`atlas_coords` is effectively dead.** `tile_palette.json` omits it for
+  all but one tile, and `DungeonMaker.gd` always paints with
+  `set_cell(cell, source_id, Vector2i.ZERO)` — it never reads
+  `atlas_coords`. Each named tile turns out to be its own dedicated
+  `TileSetAtlasSource` in `DungeonMaker.tscn`, so nothing is currently
+  broken, but a future reader/assembler built strictly off this doc's
+  reader-usage example would be relying on a field the tool doesn't
+  actually populate or use. **Open decision, not made yet:** keep
+  `atlas_coords` in the schema for future flexibility, or drop it since
+  it's unused — Orea's call.
+
+## Where things live
+
+- `scripts/dungeon/` — `DungeonMaker.gd`, `DungeonMakerOverlay.gd`, this
+  README, and (later) the reader/assembler.
+- `game/rooms/` — 7 exported room JSON files as of 2026-09-16
+  (`Closet_3x3`, `Flesh_Closes_5x5`, `Stone_10x10`, `Target_10x10`,
+  `flesh_7x9`, `grass_hall_5x10`, `no_door_5x5`).
 - `game/tile_palette.json` — the shared tile-name lookup file. Per Orea:
   `game/` is where *all* non-animation JSON data lives, so this belongs
   there rather than under `resources/`.
