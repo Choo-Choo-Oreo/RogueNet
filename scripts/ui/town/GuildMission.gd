@@ -12,7 +12,14 @@ func set_members(mission_id: int, members: Array) -> void:
 		member_list.add_item(player_name)
 
 func _on_start_button_pressed() -> void:
-	get_tree().change_scene_to_file("res://scenes/dev/HubMPTest.tscn")
+	if multiplayer.is_server():
+		NetworkSync._start_mission(current_mission_id)
+	else:
+		NetworkSync.report_start_mission.rpc_id(1, current_mission_id)
+
+func _on_back_button_pressed() -> void:
+	get_tree().current_scene.get_node_or_null("PanelMission").hide()
+	get_tree().current_scene.get_node_or_null("PanelGuild").show()
 
 func _on_leave_button_pressed() -> void:
 	if multiplayer.is_server():

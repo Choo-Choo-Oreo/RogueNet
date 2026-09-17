@@ -2,6 +2,18 @@ extends Control
 
 @onready var panel_main: Panel = $PanelMain
 @onready var panel_guild: Panel = $PanelGuild
+@onready var player_list: VBoxContainer = $HSplitContainer/PlayerListPanel/PlayersBox/PlayerList
+
+func _ready() -> void:
+	refresh_player_list()
+
+func refresh_player_list() -> void:
+	for child in player_list.get_children():
+		child.queue_free()
+	for peer_id in NetworkSync.peer_names:
+		var label := Label.new()
+		label.text = NetworkSync.peer_names[peer_id]
+		player_list.add_child(label)
 
 func _on_guild_button_pressed() -> void:
 	panel_main.hide()

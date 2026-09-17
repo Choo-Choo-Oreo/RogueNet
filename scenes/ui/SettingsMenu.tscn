@@ -12,6 +12,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource("1_settings")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -152,7 +154,7 @@ text = "VSync"
 script = ExtResource("4_vsync")
 
 [node name="ButtonBack" type="Button" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(100, 50)
+custom_minimum_size = Vector2(220, 50)
 layout_mode = 2
 text = "Back"
 

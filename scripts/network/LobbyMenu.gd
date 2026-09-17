@@ -22,8 +22,12 @@ func _on_host_button_pressed():
 	get_tree().change_scene_to_file("res://scenes/ui/town/MainTown.tscn")
 
 func _on_join_button_pressed():
+	var host_id_text = $HSplitContainer/ConnectPanel/LineEdit.text.strip_edges()
+	if host_id_text.is_empty() or not host_id_text.is_valid_int():
+		print("Enter a valid host Steam ID before joining.")
+		return
 	var peer = SteamMultiplayerPeer.new()
-	var host_steam_id = $HSplitContainer/ConnectPanel/LineEdit.text.to_int()
+	var host_steam_id = host_id_text.to_int()
 	var error = peer.create_client(host_steam_id, 0)
 
 	if error != OK:
@@ -41,12 +45,3 @@ func _on_connected_to_server():
 func _on_back_pressed() -> void:
 	get_parent().hide()
 	queue_free()
-
-@rpc("any_peer", "call_local")
-func _receive_chat_message(text: String):
-	$HSplitContainer/ChatPanel/ChatLog.add_text(text + "\n")
-
-func _on_send_button_pressed():
-	var message = $HSplitContainer/ChatPanel/ChatInputRow/ChatInput.text
-	_receive_chat_message.rpc(message)
-	$HSplitContainer/ChatPanel/ChatInputRow/ChatInput.clear()

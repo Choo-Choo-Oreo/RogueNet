@@ -4,10 +4,12 @@ extends Control
 @onready var password_field: LineEdit = $HSplitContainer/CreatePanel/PasswordField
 @onready var mission_list: ItemList = $HSplitContainer/MissionListPanel/MissionList
 @onready var join_password_field: LineEdit = $HSplitContainer/MissionListPanel/JoinPasswordField
+@onready var status_label: Label = $HSplitContainer/MissionListPanel/StatusLabel
 
 func _ready() -> void:
 	privacy_option.add_item("Public", 0)
 	privacy_option.add_item("Password", 1)
+	privacy_option.select(0)
 
 func _on_create_button_pressed() -> void:
 	var privacy := "public" if privacy_option.selected == 0 else "password"
@@ -29,6 +31,7 @@ func add_mission(mission_id: int, creator_id: int, privacy: String) -> void:
 		mission_items[mission_id] = idx
 
 func _on_join_button_pressed() -> void:
+	status_label.text = ""
 	var selected := mission_list.get_selected_items()
 	if selected.is_empty():
 		return
@@ -38,6 +41,9 @@ func _on_join_button_pressed() -> void:
 		NetworkSync._join_mission(1, mission_id, password)
 	else:
 		NetworkSync.report_join_mission.rpc_id(1, mission_id, password)
+
+func show_join_error(message: String) -> void:
+	status_label.text = message
 
 func remove_mission(mission_id: int) -> void:
 	if not mission_items.has(mission_id):

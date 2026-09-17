@@ -8,8 +8,13 @@ func _ready() -> void:
 		if not multiplayer.is_server():
 			return
 		peer_steam_ids.erase(id)
+		peer_names.erase(id)
 		for peer_id in multiplayer.get_peers():
 			receive_steam_ids.rpc_id(peer_id, peer_steam_ids)
+			receive_player_names.rpc_id(peer_id, peer_names)
+		var main_town := get_tree().current_scene
+		if main_town and main_town.has_method("refresh_player_list"):
+			main_town.refresh_player_list()
 	)
 
 func _on_server_disconnected() -> void:
@@ -98,6 +103,9 @@ func report_player_name(player_name: String) -> void:
 @rpc("authority", "reliable")
 func receive_player_names(names: Dictionary) -> void:
 	peer_names = names
+	var main_town := get_tree().current_scene
+	if main_town and main_town.has_method("refresh_player_list"):
+		main_town.refresh_player_list()
 
 @rpc("any_peer", "reliable")
 func report_join_mission(mission_id: int, password: String) -> void:
@@ -110,6 +118,10 @@ func _join_mission(peer_id: int, mission_id: int, password: String) -> void:
 		return
 	var mission: Dictionary = missions[mission_id]
 	if mission["privacy"] == "password" and mission["password"] != password:
+		if peer_id == 1:
+			receive_join_rejected(mission_id)
+		else:
+			receive_join_rejected.rpc_id(peer_id, mission_id)
 		print("Player %d failed to join mission %d: wrong password" % [peer_id, mission_id])
 		return
 	var members: Array = mission["members"]
@@ -117,6 +129,32 @@ func _join_mission(peer_id: int, mission_id: int, password: String) -> void:
 		members.append(peer_id)
 	print("Player %d joined mission %d" % [peer_id, mission_id])
 	_broadcast_members(mission_id)
+
+@rpc("authority", "reliable")
+func receive_join_rejected(_mission_id: int) -> void:
+	var guild_town := get_tree().current_scene.get_node_or_null("PanelGuild/GuildTown")
+	if guild_town:
+		guild_town.show_join_error("Incorrect password.")
+
+@rpc("any_peer", "reliable")
+func report_start_mission(mission_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+	_start_mission(mission_id)
+
+func _start_mission(mission_id: int) -> void:
+	if not missions.has(mission_id):
+		return
+	var members: Array = missions[mission_id]["members"]
+	for peer_id in members:
+		if peer_id == 1:
+			receive_start_mission()
+		else:
+			receive_start_mission.rpc_id(peer_id)
+
+@rpc("authority", "reliable")
+func receive_start_mission() -> void:
+	get_tree().change_scene_to_file("res://scenes/dev/HubMPTest.tscn")
 
 func _broadcast_members(mission_id: int) -> void:
 	var members: Array = missions[mission_id]["members"]

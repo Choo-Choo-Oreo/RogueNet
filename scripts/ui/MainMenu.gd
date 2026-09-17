@@ -8,6 +8,17 @@ func _on_play_pressed() -> void:
 	var settings_scene = preload("res://scenes/ui/MultiplayerMenu.tscn").instantiate()
 	panel_settings.add_child(settings_scene)
 
+func _on_singleplayer_pressed() -> void:
+	var peer = SteamMultiplayerPeer.new()
+	var error = peer.create_host(0)
+	if error != OK:
+		print("Failed to host: ", error)
+		return
+	multiplayer.multiplayer_peer = peer
+	NetworkSync.peer_steam_ids[1] = Steam.getSteamID()
+	NetworkSync.peer_names[1] = Steam.getPersonaName()
+	get_tree().change_scene_to_file("res://scenes/ui/town/MainTown.tscn")
+
 func _on_dungeon_maker_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/dungeon/DungeonMaker.tscn")
 

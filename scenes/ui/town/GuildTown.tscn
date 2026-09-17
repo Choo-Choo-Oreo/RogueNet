@@ -9,6 +9,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource("1_guildtown")
 
 [node name="Background" type="Panel" parent="." unique_id=88084802]
@@ -26,12 +28,12 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-split_offsets = PackedInt32Array(320)
+split_offsets = PackedInt32Array(260)
 dragging_enabled = false
-split_offset = 320
+split_offset = 260
 
 [node name="CreatePanel" type="VBoxContainer" parent="HSplitContainer" unique_id=88084808]
-custom_minimum_size = Vector2(320, 0)
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_constants/separation = 14
@@ -87,10 +89,10 @@ custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "Join"
 
-[node name="Multiplayer" type="Button" parent="." unique_id=695356583]
-custom_minimum_size = Vector2(100, 50)
-layout_mode = 0
-text = "Multiplayer"
+[node name="StatusLabel" type="Label" parent="HSplitContainer/MissionListPanel" unique_id=88084815]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
+horizontal_alignment = 1
 
 [connection signal="pressed" from="HSplitContainer/CreatePanel/CreateButton" to="." method="_on_create_button_pressed"]
 [connection signal="pressed" from="HSplitContainer/MissionListPanel/JoinButton" to="." method="_on_join_button_pressed"]

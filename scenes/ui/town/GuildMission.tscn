@@ -1,17 +1,19 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://b7uns6j0fj3jv"]
 
-[ext_resource type="Script" path="res://scripts/ui/town/GuildMission.gd" id="1_guildmission"]
+[ext_resource type="Script" uid="uid://dc8xyujc3yeyi" path="res://scripts/ui/town/GuildMission.gd" id="1_guildmission"]
 
-[node name="GuildMission" type="Control"]
+[node name="GuildMission" type="Control" unique_id=874424324]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource("1_guildmission")
 
-[node name="Background" type="Panel" parent="."]
+[node name="Background" type="Panel" parent="." unique_id=2039562938]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,51 +21,60 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HSplitContainer" type="HSplitContainer" parent="."]
+[node name="HSplitContainer" type="HSplitContainer" parent="." unique_id=1240276955]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-split_offset = 320
+split_offsets = PackedInt32Array(260)
 dragging_enabled = false
+split_offset = 260
 
-[node name="ActionPanel" type="VBoxContainer" parent="HSplitContainer"]
-custom_minimum_size = Vector2(320, 0)
+[node name="ActionPanel" type="VBoxContainer" parent="HSplitContainer" unique_id=1938952575]
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 size_flags_vertical = 4
-alignment = 1
 theme_override_constants/separation = 14
+alignment = 1
 
-[node name="Title" type="Label" parent="HSplitContainer/ActionPanel"]
+[node name="Title" type="Label" parent="HSplitContainer/ActionPanel" unique_id=578555796]
 layout_mode = 2
+theme_override_font_sizes/font_size = 30
 text = "GUILD MISSION"
 horizontal_alignment = 1
 
-[node name="StartButton" type="Button" parent="HSplitContainer/ActionPanel"]
+[node name="StartButton" type="Button" parent="HSplitContainer/ActionPanel" unique_id=1186317681]
 custom_minimum_size = Vector2(220, 50)
 layout_mode = 2
 text = "Start Mission"
 
-[node name="LeaveButton" type="Button" parent="HSplitContainer/ActionPanel"]
+[node name="BackButton" type="Button" parent="HSplitContainer/ActionPanel" unique_id=2027529182]
+visible = false
+custom_minimum_size = Vector2(220, 50)
+layout_mode = 2
+text = "Back to Guild"
+
+[node name="LeaveButton" type="Button" parent="HSplitContainer/ActionPanel" unique_id=1045806768]
 custom_minimum_size = Vector2(220, 50)
 layout_mode = 2
 text = "Leave"
 
-[node name="MemberListPanel" type="VBoxContainer" parent="HSplitContainer"]
+[node name="MemberListPanel" type="VBoxContainer" parent="HSplitContainer" unique_id=1954885666]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
 
-[node name="Title" type="Label" parent="HSplitContainer/MemberListPanel"]
+[node name="Title" type="Label" parent="HSplitContainer/MemberListPanel" unique_id=2016495787]
 layout_mode = 2
 text = "PARTY MEMBERS"
 horizontal_alignment = 1
 
-[node name="MemberList" type="ItemList" parent="HSplitContainer/MemberListPanel"]
+[node name="MemberList" type="ItemList" parent="HSplitContainer/MemberListPanel" unique_id=830738817]
 layout_mode = 2
 size_flags_vertical = 3
 
 [connection signal="pressed" from="HSplitContainer/ActionPanel/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="HSplitContainer/ActionPanel/BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="pressed" from="HSplitContainer/ActionPanel/LeaveButton" to="." method="_on_leave_button_pressed"]

@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://df0w734h2xs0d" path="res://scenes/ui/town/GuildTown.tscn" id="1_i864c"]
 [ext_resource type="Script" uid="uid://bom5jxuqhni1a" path="res://scripts/ui/town/MainTown.gd" id="2_maintown"]
-[ext_resource type="PackedScene" path="res://scenes/ui/town/GuildMission.tscn" id="3_guildmission"]
+[ext_resource type="PackedScene" uid="uid://b7uns6j0fj3jv" path="res://scenes/ui/town/GuildMission.tscn" id="3_guildmission"]
 
 [node name="MainTown" type="Control" unique_id=748747690]
 layout_mode = 3
@@ -11,10 +11,13 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 tooltip_text = "This will be the main \"Lobby\" once joined before people decide to go into the depths of a dungeon"
 script = ExtResource("2_maintown")
 
 [node name="Background" type="Panel" parent="." unique_id=1102938475]
+custom_minimum_size = Vector2(1280, 720)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -29,37 +32,65 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+split_offsets = PackedInt32Array(260)
 dragging_enabled = false
+split_offset = 260
 
-[node name="PlayerListPanel" type="VBoxContainer" parent="HSplitContainer" unique_id=384756192]
+[node name="PlayerListPanel" type="VSplitContainer" parent="HSplitContainer" unique_id=384756192]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
+dragging_enabled = false
+
+[node name="PlayersBox" type="VBoxContainer" parent="HSplitContainer/PlayerListPanel" unique_id=1547615517]
+layout_mode = 2
+size_flags_vertical = 3
 theme_override_constants/separation = 8
 
-[node name="Title" type="Label" parent="HSplitContainer/PlayerListPanel" unique_id=938475610]
+[node name="Title" type="Label" parent="HSplitContainer/PlayerListPanel/PlayersBox" unique_id=938475610]
 layout_mode = 2
 text = "PLAYERS IN TOWN"
 horizontal_alignment = 1
 
-[node name="PlayerList" type="VBoxContainer" parent="HSplitContainer/PlayerListPanel" unique_id=756192384]
+[node name="PlayerList" type="VBoxContainer" parent="HSplitContainer/PlayerListPanel/PlayersBox" unique_id=756192384]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="ChatPanel" type="VBoxContainer" parent="HSplitContainer/PlayerListPanel" unique_id=1082611912]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="ChatLog" type="RichTextLabel" parent="HSplitContainer/PlayerListPanel/ChatPanel" unique_id=1370474165]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ChatInputRow" type="HBoxContainer" parent="HSplitContainer/PlayerListPanel/ChatPanel" unique_id=1705145101]
+layout_mode = 2
+
+[node name="ChatInput" type="LineEdit" parent="HSplitContainer/PlayerListPanel/ChatPanel/ChatInputRow" unique_id=299086416]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Say something..."
+
+[node name="SendButton" type="Button" parent="HSplitContainer/PlayerListPanel/ChatPanel/ChatInputRow" unique_id=831121711]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Send"
 
 [node name="Whitespace" type="Panel" parent="HSplitContainer" unique_id=284739610]
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 
 [node name="PanelMain" type="Panel" parent="." unique_id=192384756]
+self_modulate = Color(1, 1, 1, 0)
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.194
-anchor_top = 0.037
-anchor_right = 0.979
-anchor_bottom = 0.963
-offset_left = 0.511993
-offset_top = 0.0240002
-offset_right = 0.192017
-offset_bottom = -0.0240479
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 280.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -73,6 +104,7 @@ theme_override_constants/separation = 14
 
 [node name="Title" type="Label" parent="PanelMain/VBoxContainer" unique_id=847561923]
 layout_mode = 2
+theme_override_font_sizes/font_size = 30
 text = "TOWN"
 horizontal_alignment = 1
 
@@ -81,6 +113,16 @@ custom_minimum_size = Vector2(220, 50)
 layout_mode = 2
 text = "Guild"
 
+[node name="SwapCharactersButton" type="Button" parent="PanelMain/VBoxContainer" unique_id=1126673908]
+custom_minimum_size = Vector2(220, 50)
+layout_mode = 2
+text = "Swap Characters"
+
+[node name="StorageButton" type="Button" parent="PanelMain/VBoxContainer" unique_id=1330444518]
+custom_minimum_size = Vector2(220, 50)
+layout_mode = 2
+text = "Storage"
+
 [node name="LeaveButton" type="Button" parent="PanelMain/VBoxContainer" unique_id=923847561]
 custom_minimum_size = Vector2(220, 50)
 layout_mode = 2
@@ -88,40 +130,37 @@ text = "Leave"
 
 [node name="PanelGuild" type="Panel" parent="." unique_id=471029384]
 visible = false
+self_modulate = Color(1, 1, 1, 0)
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.194
-anchor_top = 0.037
-anchor_right = 0.979
-anchor_bottom = 0.963
-offset_left = 0.511993
-offset_top = 0.0240002
-offset_right = 0.192017
-offset_bottom = -0.0240479
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 280.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="GuildTown" parent="PanelGuild" unique_id=88084801 instance=ExtResource("1_i864c")]
 layout_mode = 1
 
-[node name="PanelMission" type="Panel" parent="."]
+[node name="PanelMission" type="Panel" parent="." unique_id=1777280263]
 visible = false
+self_modulate = Color(1, 1, 1, 0)
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.194
-anchor_top = 0.037
-anchor_right = 0.979
-anchor_bottom = 0.963
-offset_left = 0.511993
-offset_top = 0.0240002
-offset_right = 0.192017
-offset_bottom = -0.0240479
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 280.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="GuildMission" parent="PanelMission" instance=ExtResource("3_guildmission")]
+[node name="GuildMission" parent="PanelMission" unique_id=82301945 instance=ExtResource("3_guildmission")]
 layout_mode = 1
 
 [connection signal="pressed" from="PanelMain/VBoxContainer/GuildButton" to="." method="_on_guild_button_pressed"]
 [connection signal="pressed" from="PanelMain/VBoxContainer/LeaveButton" to="." method="_on_leave_button_pressed"]
-[connection signal="pressed" from="PanelGuild/GuildTown/HSplitContainer/CreatePanel/BackButton" to="." method="_on_back_button_pressed"]
