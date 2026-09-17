@@ -280,9 +280,11 @@ script = ExtResource("2_tinit")
 tile_registry = ExtResource("3_reg01")
 
 [node name="FloorData" type="TileMapLayer" parent="TileRenderer" unique_id=141529315]
+visible = false
 tile_set = SubResource("TileSet_c7xci")
 
 [node name="WallData" type="TileMapLayer" parent="TileRenderer" unique_id=1368195247]
+visible = false
 tile_set = SubResource("TileSet_qobdk")
 
 [node name="floor_dirt" type="Node2D" parent="TileRenderer" unique_id=622314497 node_paths=PackedStringArray("data_layer", "display_layer")]

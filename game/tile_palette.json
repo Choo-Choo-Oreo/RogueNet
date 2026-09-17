@@ -27,6 +27,13 @@
 		],
 		"source_id": 8
 	},
+	"wall_door_open": {
+		"atlas_coords": [
+			2,
+			0
+		],
+		"source_id": 9
+	},
 	"wall_smooth_stone": {
 		"source_id": 7
 	}

@@ -51,6 +51,9 @@ func _ensure_pair(tile_type: TileType, data_layer: TileMapLayer) -> void:
 	if has_node(tile_type.tile_name):
 		var existing := get_node(tile_type.tile_name)
 		existing.z_index = tile_type.sort_order
+		if existing is StaticTileRender:
+			existing.atlas_coords = tile_type.atlas_coords
+			existing.orientable = tile_type.orientable
 		_apply_marker_appearance(data_layer, existing.source_id, tile_type)
 		return
 
@@ -64,6 +67,7 @@ func _ensure_pair(tile_type: TileType, data_layer: TileMapLayer) -> void:
 	pair.source_id = _register_marker_source(data_layer, tile_type)
 	if pair is StaticTileRender:
 		pair.atlas_coords = tile_type.atlas_coords
+		pair.orientable = tile_type.orientable
 
 	var display_layer := TileMapLayer.new()
 	display_layer.name = "DisplayLayer"

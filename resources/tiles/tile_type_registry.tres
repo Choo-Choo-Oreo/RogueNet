@@ -13,6 +13,7 @@ ids = {
 "floor_wood": 5,
 "wall_cobble_brick": 6,
 "wall_door": 8,
-"wall_smooth_stone": 7
+"wall_smooth_stone": 7,
+"wall_door_open": 9
 }
-next_id = 9
+next_id = 10

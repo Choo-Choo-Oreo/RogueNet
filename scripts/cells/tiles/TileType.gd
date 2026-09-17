@@ -11,3 +11,4 @@ enum Shape { DUAL_GRID, STATIC }
 @export var marker_color: Color = Color.WHITE
 @export var shape: Shape = Shape.DUAL_GRID
 @export var atlas_coords: Vector2i = Vector2i.ZERO
+@export var orientable: bool = false

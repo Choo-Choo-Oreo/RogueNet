@@ -860,6 +860,8 @@ func _handle_select_input(event: InputEvent) -> void:
 				if not multi_selected_indices.has(hit):
 					_set_multi_selection([hit])
 				_begin_group_drag()
+			elif _toggle_door_at(_mouse_to_cell()):
+				pass
 			else:
 				_clear_multi_selection()
 				marquee_active = true
@@ -879,6 +881,20 @@ func _handle_select_input(event: InputEvent) -> void:
 			queue_redraw()
 		elif group_drag_active:
 			_update_group_drag()
+
+func _toggle_door_at(cell: Vector2i) -> bool:
+	if cell.x < 0 or cell.x >= width or cell.y < 0 or cell.y >= height:
+		return false
+	var current = walls_names[cell.y][cell.x]
+	if current != "wall_door" and current != "wall_door_open":
+		return false
+	var new_value: String = "wall_door_open" if current == "wall_door" else "wall_door"
+	_apply_tile("wall", cell, new_value)
+	_push_undo(
+		func(): _apply_tile("wall", cell, current),
+		func(): _apply_tile("wall", cell, new_value)
+	)
+	return true
 
 func _set_multi_selection(indices: Array) -> void:
 	multi_selected_indices.clear()
