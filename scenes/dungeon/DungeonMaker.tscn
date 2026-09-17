@@ -388,9 +388,11 @@ script = ExtResource("16_ovrly")
 
 [node name="ObjectsLayer" type="Node2D" parent="." unique_id=953312153]
 position = Vector2(16, 550)
+z_index = 200
 
 [node name="ConnectorsLayer" type="Node2D" parent="." unique_id=957538359]
 position = Vector2(16, 550)
+z_index = 200
 
 [node name="RoomFileDialog" type="FileDialog" parent="."]
 title = "Load Room"

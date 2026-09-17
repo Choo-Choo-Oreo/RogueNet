@@ -26,7 +26,7 @@ func _draw_multi_selection_highlight() -> void:
 		if index < 0 or index >= main.objects.size():
 			continue
 		var pos: Vector2 = main.objects[index]["position"]
-		var center := main.WORLD_OFFSET + pos
+		var center: Vector2 = main.WORLD_OFFSET + pos
 		draw_arc(center, main.OBJECT_HIT_RADIUS + 3.0, 0.0, TAU, 24, main.OBJECT_SELECT_COLOR, 2.0)
 
 func _draw_marquee() -> void:
@@ -44,19 +44,19 @@ func _draw_hover_ghost() -> void:
 			draw_rect(cell_rect, main.CONNECTOR_MODE_COLOR, false, 2.0)
 	elif main.object_mode_active:
 		if main.selected_object_type != "" and main.OBJECT_MARKER_TEXTURES.has(main.selected_object_type):
-			var icon := main._make_object_icon(main.selected_object_type)
-			var center := main.WORLD_OFFSET + main.hover_world_pos
+			var icon: Texture2D = main._make_object_icon(main.selected_object_type)
+			var center: Vector2 = main.WORLD_OFFSET + main.hover_world_pos
 			draw_set_transform(center, deg_to_rad(main.pending_object_rotation), Vector2.ONE)
 			draw_texture_rect(icon, Rect2(-Vector2(main.TILE_SIZE, main.TILE_SIZE) / 2.0, Vector2(main.TILE_SIZE, main.TILE_SIZE)), false, Color(1, 1, 1, 0.6))
 			draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 		elif main.selected_object_type != "":
 			draw_circle(main.WORLD_OFFSET + main.hover_world_pos, main.OBJECT_HIT_RADIUS, Color(main.OBJECT_MODE_COLOR.r, main.OBJECT_MODE_COLOR.g, main.OBJECT_MODE_COLOR.b, 0.5))
 	elif main.eraser_active:
-		var brush_rect := main._brush_world_rect(main.hover_cell)
+		var brush_rect: Rect2 = main._brush_world_rect(main.hover_cell)
 		draw_rect(brush_rect, Color(main.ERASER_MODE_COLOR.r, main.ERASER_MODE_COLOR.g, main.ERASER_MODE_COLOR.b, 0.35))
 		draw_rect(brush_rect, main.ERASER_MODE_COLOR, false, 2.0)
 	elif main.selected_tile_name != "":
-		var brush_rect := main._brush_world_rect(main.hover_cell)
+		var brush_rect: Rect2 = main._brush_world_rect(main.hover_cell)
 		draw_rect(brush_rect, Color(main.PAINT_MODE_COLOR.r, main.PAINT_MODE_COLOR.g, main.PAINT_MODE_COLOR.b, 0.35))
 		draw_rect(brush_rect, main.PAINT_MODE_COLOR, false, 2.0)
 
@@ -68,7 +68,7 @@ func _draw_shape_preview() -> void:
 		draw_rect(select_rect, main.RECT_PREVIEW_FILL)
 		draw_rect(select_rect, main.RECT_PREVIEW_BORDER, false, 2.0)
 		return
-	var cells := main._shape_cells(main.paint_tool, main.shape_start_cell, main.shape_current_cell)
+	var cells: Array = main._shape_cells(main.paint_tool, main.shape_start_cell, main.shape_current_cell)
 	var color: Color = main.ERASER_MODE_COLOR if main.eraser_active else main.PAINT_MODE_COLOR
 	for cell in cells:
 		var cell_rect := Rect2(main.WORLD_OFFSET + Vector2(cell) * main.TILE_SIZE, Vector2(main.TILE_SIZE, main.TILE_SIZE))
