@@ -3,9 +3,21 @@ extends Control
 @onready var panel_main: Panel = $PanelMain
 @onready var panel_guild: Panel = $PanelGuild
 @onready var player_list: VBoxContainer = $HSplitContainer/PlayerListPanel/PlayersBox/PlayerList
+@onready var sidebar: Panel = $Sidebar
+@onready var player_list_panel: VSplitContainer = $HSplitContainer/PlayerListPanel
 
 func _ready() -> void:
 	refresh_player_list()
+	_apply_session_mode()
+
+func _apply_session_mode() -> void:
+	match NetworkSync.session_mode:
+		NetworkSync.SessionMode.SINGLEPLAYER:
+			sidebar.hide()
+			player_list_panel.hide()
+		NetworkSync.SessionMode.HOST, NetworkSync.SessionMode.CLIENT:
+			sidebar.show()
+			player_list_panel.show()
 
 func refresh_player_list() -> void:
 	for child in player_list.get_children():

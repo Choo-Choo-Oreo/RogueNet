@@ -14,6 +14,7 @@ size_flags_vertical = 3
 script = ExtResource("1_rgco0")
 
 [node name="Background" type="Panel" parent="." unique_id=204084178]
+self_modulate = Color(1, 1, 1, 0)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

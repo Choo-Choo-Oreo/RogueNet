@@ -1,5 +1,8 @@
 extends Node
 
+enum SessionMode { SINGLEPLAYER, HOST, CLIENT }
+var session_mode: SessionMode = SessionMode.SINGLEPLAYER
+
 var peer_steam_ids: Dictionary = {}
 
 func _ready() -> void:
