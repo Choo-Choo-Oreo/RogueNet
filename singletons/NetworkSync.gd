@@ -6,7 +6,7 @@ var session_mode: SessionMode = SessionMode.SINGLEPLAYER
 ## Temporary local test flag — flip by hand to simulate a dedicated host
 ## (no local player) without an actual dedicated-server build. Remove once
 ## real headless support exists.
-var is_dedicated: bool = true
+var is_dedicated: bool = false
 
 var peer_steam_ids: Dictionary = {}
 
@@ -120,10 +120,17 @@ var peer_names: Dictionary = {}
 func report_player_name(player_name: String) -> void:
 	if not multiplayer.is_server():
 		return
-	peer_names[multiplayer.get_remote_sender_id()] = player_name
+	var sender_id := multiplayer.get_remote_sender_id()
+	peer_names[sender_id] = player_name
 	for peer_id in multiplayer.get_peers():
 		receive_player_names.rpc_id(peer_id, peer_names)
 	receive_player_names(peer_names)
+	_send_existing_missions(sender_id)
+
+func _send_existing_missions(peer_id: int) -> void:
+	for mission_id in missions:
+		var mission: Dictionary = missions[mission_id]
+		receive_mission_created.rpc_id(peer_id, mission_id, mission["creator_id"], mission["privacy"])
 
 @rpc("authority", "reliable")
 func receive_player_names(names: Dictionary) -> void:
