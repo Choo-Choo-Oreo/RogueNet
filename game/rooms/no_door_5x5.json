@@ -48,6 +48,7 @@
 	"height": 5,
 	"id": "no_door_5x5",
 	"objects": [],
+	"role": "normal",
 	"tags": [
 		"test"
 	],

@@ -1,5 +1,6 @@
 @tool
 extends Node2D
+class_name TileInitialize
 
 const TILE_TYPES_DIR := "res://resources/tiles/"
 

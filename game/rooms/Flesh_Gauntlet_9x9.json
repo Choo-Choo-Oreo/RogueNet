@@ -1,0 +1,253 @@
+{
+  "connectors": [
+    {
+      "position": {
+        "x": 4,
+        "y": 0
+      }
+    },
+    {
+      "position": {
+        "x": 4,
+        "y": 8
+      }
+    }
+  ],
+  "floor": [
+    [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      null,
+      "floor_flesh",
+      "floor_flesh",
+      "floor_flesh",
+      "floor_flesh",
+      "floor_flesh",
+      "floor_flesh",
+      "floor_flesh",
+      null
+    ],
+    [
+      null,
+      "floor_flesh",
+      "floor_flesh",
+      "floor_flesh",
+      null,
+      "floor_flesh",
+      "floor_flesh",
+      "floor_flesh",
+      null
+    ],
+    [
+      null,
+      "floor_flesh",
+      "floor_flesh",
+      null,
+      "floor_flesh",
+      null,
+      "floor_flesh",
+      "floor_flesh",
+      null
+    ],
+    [
+      null,
+      "floor_flesh",
+      "floor_flesh",
+      "floor_flesh",
+      "floor_flesh",
+      "floor_flesh",
+      "floor_flesh",
+      "floor_flesh",
+      null
+    ],
+    [
+      null,
+      "floor_flesh",
+      "floor_flesh",
+      null,
+      "floor_flesh",
+      null,
+      "floor_flesh",
+      "floor_flesh",
+      null
+    ],
+    [
+      null,
+      "floor_flesh",
+      "floor_flesh",
+      "floor_flesh",
+      null,
+      "floor_flesh",
+      "floor_flesh",
+      "floor_flesh",
+      null
+    ],
+    [
+      null,
+      "floor_flesh",
+      "floor_flesh",
+      "floor_flesh",
+      "floor_flesh",
+      "floor_flesh",
+      "floor_flesh",
+      "floor_flesh",
+      null
+    ],
+    [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  ],
+  "format": 1,
+  "height": 9,
+  "id": "Flesh_Gauntlet_9x9",
+  "objects": [
+    {
+      "position": {
+        "x": 40.0,
+        "y": 72.0
+      },
+      "rotation": 0.0,
+      "type": "torch"
+    },
+    {
+      "position": {
+        "x": 104.0,
+        "y": 72.0
+      },
+      "rotation": 0.0,
+      "type": "torch"
+    },
+    {
+      "position": {
+        "x": 72.0,
+        "y": 72.0
+      },
+      "rotation": 0.0,
+      "type": "chest"
+    }
+  ],
+  "role": "normal",
+  "tags": [
+    "combat",
+    "flesh"
+  ],
+  "walls": [
+    [
+      "wall_cobble_brick",
+      "wall_cobble_brick",
+      "wall_cobble_brick",
+      "wall_cobble_brick",
+      "wall_door",
+      "wall_cobble_brick",
+      "wall_cobble_brick",
+      "wall_cobble_brick",
+      "wall_cobble_brick"
+    ],
+    [
+      "wall_cobble_brick",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "wall_cobble_brick"
+    ],
+    [
+      "wall_cobble_brick",
+      null,
+      null,
+      null,
+      "wall_cobble_brick",
+      null,
+      null,
+      null,
+      "wall_cobble_brick"
+    ],
+    [
+      "wall_cobble_brick",
+      null,
+      null,
+      "wall_cobble_brick",
+      null,
+      "wall_cobble_brick",
+      null,
+      null,
+      "wall_cobble_brick"
+    ],
+    [
+      "wall_cobble_brick",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "wall_cobble_brick"
+    ],
+    [
+      "wall_cobble_brick",
+      null,
+      null,
+      "wall_cobble_brick",
+      null,
+      "wall_cobble_brick",
+      null,
+      null,
+      "wall_cobble_brick"
+    ],
+    [
+      "wall_cobble_brick",
+      null,
+      null,
+      null,
+      "wall_cobble_brick",
+      null,
+      null,
+      null,
+      "wall_cobble_brick"
+    ],
+    [
+      "wall_cobble_brick",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "wall_cobble_brick"
+    ],
+    [
+      "wall_cobble_brick",
+      "wall_cobble_brick",
+      "wall_cobble_brick",
+      "wall_cobble_brick",
+      "wall_door",
+      "wall_cobble_brick",
+      "wall_cobble_brick",
+      "wall_cobble_brick",
+      "wall_cobble_brick"
+    ]
+  ],
+  "width": 9
+}

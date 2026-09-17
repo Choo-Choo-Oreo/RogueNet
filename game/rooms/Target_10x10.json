@@ -133,6 +133,7 @@
 	"height": 10,
 	"id": "Target_10x10",
 	"objects": [],
+	"role": "normal",
 	"tags": [],
 	"walls": [
 		[

@@ -1,8 +1,31 @@
 [gd_scene format=3 uid="uid://c7oo6hc4nq1pn"]
 
 [ext_resource type="PackedScene" path="res://scenes/ui/PauseMenu.tscn" id="1_pausemenu"]
+[ext_resource type="Script" uid="uid://bc0lnb6o6cg5r" path="res://scripts/network/PlayerSpawner.gd" id="2_playerspawner"]
+[ext_resource type="Script" path="res://scripts/dungeon/DungeonDebugView.gd" id="3_dungeondebug"]
+[ext_resource type="Script" uid="uid://rvs3q27d6u0p" path="res://scripts/cells/tiles/TileInitialize.gd" id="4_tileinit"]
+[ext_resource type="Resource" uid="uid://dyam0g3j5dqar" path="res://resources/tiles/tile_type_registry.tres" id="5_tileregistry"]
+[ext_resource type="Script" path="res://scripts/dungeon/DungeonPainter.gd" id="6_dungeonpainter"]
 
 [node name="Dungeon" type="Node2D" unique_id=2115702958]
+
+[node name="TileInitialize" type="Node2D" parent="."]
+script = ExtResource("4_tileinit")
+tile_registry = ExtResource("5_tileregistry")
+
+[node name="DungeonPainter" type="Node" parent="." node_paths=PackedStringArray("tile_initialize")]
+script = ExtResource("6_dungeonpainter")
+tile_initialize = NodePath("../TileInitialize")
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://djuwmio4x8p12")
+spawn_path = NodePath("../Player")
+
+[node name="Player" type="Node2D" parent="."]
+script = ExtResource("2_playerspawner")
+
+[node name="DungeonDebugView" type="Node" parent="."]
+script = ExtResource("3_dungeondebug")
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 

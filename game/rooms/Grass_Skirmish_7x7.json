@@ -1,0 +1,173 @@
+{
+  "connectors": [
+    {
+      "position": {
+        "x": 3,
+        "y": 0
+      }
+    },
+    {
+      "position": {
+        "x": 0,
+        "y": 3
+      }
+    }
+  ],
+  "floor": [
+    [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      null,
+      "floor_grass",
+      "floor_grass",
+      "floor_grass",
+      "floor_grass",
+      "floor_grass",
+      null
+    ],
+    [
+      null,
+      "floor_grass",
+      null,
+      "floor_grass",
+      "floor_grass",
+      "floor_grass",
+      null
+    ],
+    [
+      null,
+      "floor_grass",
+      "floor_grass",
+      "floor_grass",
+      "floor_grass",
+      "floor_grass",
+      null
+    ],
+    [
+      null,
+      "floor_grass",
+      "floor_grass",
+      "floor_grass",
+      null,
+      "floor_grass",
+      null
+    ],
+    [
+      null,
+      "floor_grass",
+      "floor_grass",
+      "floor_grass",
+      "floor_grass",
+      "floor_grass",
+      null
+    ],
+    [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  ],
+  "format": 1,
+  "height": 7,
+  "id": "Grass_Skirmish_7x7",
+  "objects": [
+    {
+      "position": {
+        "x": 88.0,
+        "y": 24.0
+      },
+      "rotation": 0.0,
+      "type": "torch"
+    },
+    {
+      "position": {
+        "x": 24.0,
+        "y": 88.0
+      },
+      "rotation": 0.0,
+      "type": "torch"
+    }
+  ],
+  "role": "normal",
+  "tags": [
+    "combat",
+    "grass"
+  ],
+  "walls": [
+    [
+      "wall_cobble_brick",
+      "wall_cobble_brick",
+      "wall_cobble_brick",
+      "wall_door",
+      "wall_cobble_brick",
+      "wall_cobble_brick",
+      "wall_cobble_brick"
+    ],
+    [
+      "wall_cobble_brick",
+      null,
+      null,
+      null,
+      null,
+      null,
+      "wall_cobble_brick"
+    ],
+    [
+      "wall_cobble_brick",
+      null,
+      "wall_cobble_brick",
+      null,
+      null,
+      null,
+      "wall_cobble_brick"
+    ],
+    [
+      "wall_door",
+      null,
+      null,
+      null,
+      null,
+      null,
+      "wall_cobble_brick"
+    ],
+    [
+      "wall_cobble_brick",
+      null,
+      null,
+      null,
+      "wall_cobble_brick",
+      null,
+      "wall_cobble_brick"
+    ],
+    [
+      "wall_cobble_brick",
+      null,
+      null,
+      null,
+      null,
+      null,
+      "wall_cobble_brick"
+    ],
+    [
+      "wall_cobble_brick",
+      "wall_cobble_brick",
+      "wall_cobble_brick",
+      "wall_cobble_brick",
+      "wall_cobble_brick",
+      "wall_cobble_brick",
+      "wall_cobble_brick"
+    ]
+  ],
+  "width": 7
+}

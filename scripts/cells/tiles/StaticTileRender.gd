@@ -10,7 +10,6 @@ class_name StaticTileRender
 @export var orientable: bool = false
 
 func _ready():
-	display_layer.position = Vector2(data_layer.tile_set.tile_size) / 2.0
 	data_layer.changed.connect(_on_data_layer_changed)
 	refresh()
 
@@ -26,20 +25,9 @@ func refresh():
 		for x in range(used_rect.position.x, used_rect.end.x):
 			var cell := Vector2i(x, y)
 			if data_layer.get_cell_source_id(cell) == source_id:
-				var alt := 0
-				if orientable and _is_vertical_run(cell):
-					alt = TileSetAtlasSource.TRANSFORM_TRANSPOSE | TileSetAtlasSource.TRANSFORM_FLIP_H
+				# The orientation isn't guessable from neighboring wall shape
+				# alone (that can't tell north from south or east from west) —
+				# whoever painted this cell already knows which way it should
+				# face and encodes it as the data layer's alternative tile.
+				var alt := data_layer.get_cell_alternative_tile(cell) if orientable else 0
 				display_layer.set_cell(cell, 0, atlas_coords, alt)
-
-func _is_vertical_run(cell: Vector2i) -> bool:
-	var vertical_score := 0
-	var horizontal_score := 0
-	if data_layer.get_cell_source_id(cell + Vector2i(0, -1)) != -1:
-		vertical_score += 1
-	if data_layer.get_cell_source_id(cell + Vector2i(0, 1)) != -1:
-		vertical_score += 1
-	if data_layer.get_cell_source_id(cell + Vector2i(-1, 0)) != -1:
-		horizontal_score += 1
-	if data_layer.get_cell_source_id(cell + Vector2i(1, 0)) != -1:
-		horizontal_score += 1
-	return vertical_score > horizontal_score

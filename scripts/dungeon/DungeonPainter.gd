@@ -1,0 +1,64 @@
+extends Node
+
+## Drop into a dungeon scene as a sibling that comes AFTER a TileInitialize
+## node (sibling order determines _ready() order in Godot, and this relies
+## on TileInitialize having already built FloorData/WallData by the time
+## this runs). Turns DungeonAssembler's abstract layout into real painted
+## tiles using NetworkSync.dungeon_seed, so every peer paints the identical
+## dungeon.
+
+@export var tile_initialize: TileInitialize
+
+## Connectors get painted as one of two door tiles rather than whatever the
+## room author drew, since the JSON's own "wall_door" is just a placeholder
+## for "a connector goes here" — the actual open/sealed state is only known
+## once DungeonAssembler decides it during placement.
+const OPEN_CONNECTOR_TILE := "wall_door_open"
+
+func _ready() -> void:
+	var floor_data: TileMapLayer = tile_initialize.get_node("FloorData")
+	var wall_data: TileMapLayer = tile_initialize.get_node("WallData")
+	var registry: TileTypeRegistry = tile_initialize.tile_registry
+
+	var rooms := DungeonAssembler.load_rooms()
+	var placements := DungeonAssembler.generate_with_retry(rooms, NetworkSync.dungeon_seed)
+	_paint(rooms, placements, floor_data, wall_data, registry)
+
+func _paint(rooms: Dictionary, placements: Array, floor_data: TileMapLayer, wall_data: TileMapLayer, registry: TileTypeRegistry) -> void:
+	for p in placements:
+		var room: Dictionary = rooms[p.room_id]
+		var locked := {}
+		for local_pos in p.locked_connectors:
+			locked[local_pos] = true
+		var suppressed := {}
+		for local_pos in p.suppressed_connectors:
+			suppressed[local_pos] = true
+		var sealed_tile := DungeonAssembler.dominant_wall_tile(room) if not locked.is_empty() else ""
+		var floor_tile := DungeonAssembler.dominant_floor_tile(room)
+
+		for y in room["height"]:
+			for x in room["width"]:
+				var local := Vector2i(x, y)
+				var world: Vector2i = p.offset + local
+
+				var floor_name: Variant = room["floor"][y][x]
+				if floor_name != null:
+					floor_data.set_cell(world, registry.get_id(floor_name), Vector2i.ZERO)
+
+				var wall_name: Variant = room["walls"][y][x]
+				var alt := 0
+				if wall_name == "wall_door":
+					if suppressed.has(local):
+						wall_name = null
+					elif locked.has(local):
+						wall_name = sealed_tile
+					else:
+						wall_name = OPEN_CONNECTOR_TILE
+						alt = DungeonAssembler.door_orientation_alt(DungeonAssembler._connector_dir(room, local))
+				if wall_name != null:
+					wall_data.set_cell(world, registry.get_id(wall_name), Vector2i.ZERO, alt)
+
+		for c in room["connectors"]:
+			var local := Vector2i(int(c["position"]["x"]), int(c["position"]["y"]))
+			var world: Vector2i = p.offset + local
+			floor_data.set_cell(world, registry.get_id(floor_tile), Vector2i.ZERO)

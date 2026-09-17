@@ -10,6 +10,12 @@ var is_dedicated: bool = false
 
 var peer_steam_ids: Dictionary = {}
 
+## Seed for the dungeon everyone's currently in, picked once by the host in
+## _start_mission() and handed to every peer via receive_start_mission() so
+## DungeonAssembler.generate_with_retry() produces the identical layout on
+## every machine.
+var dungeon_seed: int = 0
+
 func _ready() -> void:
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 	multiplayer.peer_disconnected.connect(func(id):
@@ -180,15 +186,17 @@ func _start_mission(peer_id: int, mission_id: int) -> void:
 	if peer_id != missions[mission_id]["creator_id"]:
 		return
 	var members: Array = missions[mission_id]["members"]
+	var mission_seed := randi()
 	for member_id in members:
 		if member_id == 1:
-			receive_start_mission()
+			receive_start_mission(mission_seed)
 		else:
-			receive_start_mission.rpc_id(member_id)
+			receive_start_mission.rpc_id(member_id, mission_seed)
 
 @rpc("authority", "reliable")
-func receive_start_mission() -> void:
-	get_tree().change_scene_to_file("res://scenes/dev/HubMPTest.tscn")
+func receive_start_mission(mission_seed: int) -> void:
+	dungeon_seed = mission_seed
+	get_tree().change_scene_to_file("res://scenes/dungeon/Dungeon.tscn")
 
 func _broadcast_members(mission_id: int) -> void:
 	var members: Array = missions[mission_id]["members"]

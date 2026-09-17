@@ -28,6 +28,7 @@
 	"height": 3,
 	"id": "Closet_3x3",
 	"objects": [],
+	"role": "normal",
 	"tags": [
 		"test"
 	],

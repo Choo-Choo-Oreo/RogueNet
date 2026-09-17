@@ -118,6 +118,7 @@
 			"type": "torch"
 		}
 	],
+	"role": "normal",
 	"tags": [
 		"test"
 	],

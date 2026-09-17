@@ -100,6 +100,7 @@
 	"height": 9,
 	"id": "flesh_7x9",
 	"objects": [],
+	"role": "normal",
 	"tags": [
 		"test"
 	],

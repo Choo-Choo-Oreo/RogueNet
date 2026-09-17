@@ -105,6 +105,7 @@ should not need to touch anything in those folders.
 | `walls` | 2D array of string/null | Same shape and rules as `floor`. `"door"` is just a tile-palette name like any other — it renders as a wall-layer tile, and is also how a connector's cell is visually represented. |
 | `objects` | array of object | `{ "type": string, "position": { "x": float, "y": float } }`. Free placement, not tile-locked — matches Godot's `Vector2`. |
 | `connectors` | array of object | `{ "position": { "x": int, "y": int } }`. Tile-aligned — matches Godot's `Vector2i`. Must sit on a cell that's on the room's outer boundary (row/col 0 or the max row/col) so a facing can be inferred. |
+| `role` | string | Added 2026-09-16. One of `"normal"`, `"corridor"`, `"entrance"`, `"boss"` — see **Room roles** below. Every room needs exactly this field now; existing rooms were batch-patched to `"normal"`. |
 
 ### Tile palette (name → actual tile)
 
@@ -137,6 +138,55 @@ tags stay meaningful instead of arbitrary:
 
 Don't tag size (`"small"`, `"large"`) — `width`/`height` already say
 that exactly; a redundant tag can only go stale.
+
+## Room roles (added 2026-09-16)
+
+Every room now needs a `role`, one of:
+
+- **`normal`** — a regular encounter room. Most rooms, including all 6
+  combat rooms and the 7 pre-existing ones (all batch-patched to this).
+- **`corridor`** — a connector room, usually long/thin with exactly 2
+  connectors, used to thread two other rooms together. `Corridor_3x9` is
+  the first one.
+- **`entrance`** — exactly one of these must exist. It's the dungeon's
+  fixed anchor: the assembler always places it so its **center cell**
+  (`floor(width/2), floor(height/2)`) lands on **world tile (0, 0)** —
+  this is `Entrance_15x15`'s design, 4 connectors (N/S/E/W at each edge's
+  midpoint) radiating out from that center. Anchoring the entrance at a
+  known, fixed world position means the existing player-spawn path
+  (`PlayerSpawner.gd`, already spawning near world origin) keeps working
+  unmodified regardless of what the rest of a generated dungeon looks
+  like — no dungeon-specific spawn-point data needed.
+- **`boss`** — exactly one of these must exist (`Boss_Vault_11x11`, added
+  2026-09-16, 4 connectors mirroring the entrance's cross pattern). The
+  assembler guarantees it a spot at the dead end with the greatest hop
+  count from the entrance ("farthest" by graph distance, not just "some
+  room connected to whatever's farthest"), falling back to extending a
+  chain of `corridor` rooms outward (up to 8 segments, allowed to exceed
+  the normal room budget) if nothing fits directly. This is layout
+  placement only — the room doesn't spawn an actual boss/antagonist yet;
+  that's still the deferred lobby feature from `.claude/CLAUDE.md`.
+
+Separately, any room tagged `"treasure"` (not a distinct role) is also
+guaranteed a placement at some dead end — `Treasure_Vault_5x5` is the
+first one.
+
+## Locked (sealed) connectors
+
+The assembler (`scripts/dungeon/DungeonAssembler.gd`) enforces a room
+budget (`max_rooms`) so generation can't runaway-expand. Any connector
+that's left over once the budget is hit, or that has no compatible
+neighbor room available, gets marked **locked** instead of staying an
+inviting open doorway to nowhere.
+
+This is purely an *assembly-time* decision, not something authored into
+individual room files — no new field was added to the room format for
+it. When a future tile-painting pass renders a locked connector, it
+should paint that cell with the room's own dominant wall tile (see
+`DungeonAssembler.dominant_wall_tile()`) instead of `wall_door`, so it
+reads as a solid wall rather than a locked/decorative door. That
+painting step doesn't exist yet — see **Doc vs. implementation gaps**
+below.
 
 ## What the Dungeon Maker needs to do
 
@@ -183,6 +233,28 @@ scope ever grows toward also *loading* rooms, but out of scope for now.
 - **`objects.rotation` is undocumented.** Every room file's objects (and
   `DungeonMaker.gd`'s `_serialize_objects()`) include a `"rotation": float`
   field the field-reference table above doesn't mention.
+- **The assembler doesn't paint tiles yet.** `DungeonAssembler.gd` (added
+  2026-09-16) computes a full room layout — which rooms, at what world-tile
+  offset, and which connectors ended up locked — from a seed, but nothing
+  yet takes that layout and actually calls `set_cell()` on a real
+  `TileMapLayer` to build a playable scene. That's the next piece of work.
+  `DungeonDebugView.gd` (F5, see **Where things live**) is a text-only
+  stand-in for checking a layout in the meantime, not a real renderer.
+- **`generate_with_retry()` is the entry point, not `generate()`.** A
+  layout can (rarely) come up short a boss or treasure room if the graph
+  self-closes into too few dead ends before either can be placed —
+  confirmed via a 100,000-seed stress test to happen for about 1 in
+  100,000 seeds on the current room set. `generate_with_retry()` detects
+  this and deterministically retries with `seed + 1`, `seed + 2`, etc.
+  (same value on host and every client) until one succeeds. Callers
+  should always go through it, never call `generate()` directly.
+- **Connector adjacency is seam-adjacent, not same-cell.** Two connected
+  rooms don't share one tile — each keeps its own door tile, and the two
+  door tiles end up on adjacent world cells straddling the shared
+  boundary (e.g. one room's door at world x=7, the neighbor's door at
+  world x=8, same row). This is what makes the connection "flush without
+  replacing walls": both tiles were already painted as doors by their own
+  room data, so placement alone is enough, no runtime tile surgery needed.
 - **`atlas_coords` is effectively dead.** `tile_palette.json` omits it for
   all but one tile, and `DungeonMaker.gd` always paints with
   `set_cell(cell, source_id, Vector2i.ZERO)` — it never reads
@@ -196,11 +268,20 @@ scope ever grows toward also *loading* rooms, but out of scope for now.
 
 ## Where things live
 
-- `scripts/dungeon/` — `DungeonMaker.gd`, `DungeonMakerOverlay.gd`, this
-  README, and (later) the reader/assembler.
-- `game/rooms/` — 7 exported room JSON files as of 2026-09-16
+- `scripts/dungeon/` — `DungeonMaker.gd`, `DungeonMakerOverlay.gd`,
+  `DungeonAssembler.gd` (the reader/assembler, added 2026-09-16 — layout
+  generation only, no scene painting yet), `DungeonDebugView.gd` (added
+  2026-09-16 — drop into a dev scene, press F5 to generate a random seed
+  and dump the layout as an ASCII grid to the output console; bound via
+  the `debug_dungeon_layout` input action in `project.godot`; not yet
+  instanced into any scene), and this README.
+- `game/rooms/` — 17 room JSON files as of 2026-09-16: the original 7
   (`Closet_3x3`, `Flesh_Closes_5x5`, `Stone_10x10`, `Target_10x10`,
-  `flesh_7x9`, `grass_hall_5x10`, `no_door_5x5`).
+  `flesh_7x9`, `grass_hall_5x10`, `no_door_5x5`), 6 combat rooms
+  (`Brick_Arena_9x9`, `Stone_Killzone_8x12`, `Grass_Skirmish_7x7`,
+  `Wood_Barracks_6x10`, `Dirt_Killzone_11x7`, `Flesh_Gauntlet_9x9`), and
+  `Entrance_15x15`, `Corridor_3x9`, `Boss_Vault_11x11`, and
+  `Treasure_Vault_5x5`.
 - `game/tile_palette.json` — the shared tile-name lookup file. Per Orea:
   `game/` is where *all* non-animation JSON data lives, so this belongs
   there rather than under `resources/`.
