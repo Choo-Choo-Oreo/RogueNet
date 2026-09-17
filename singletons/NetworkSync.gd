@@ -102,6 +102,7 @@ func report_player_name(player_name: String) -> void:
 	peer_names[multiplayer.get_remote_sender_id()] = player_name
 	for peer_id in multiplayer.get_peers():
 		receive_player_names.rpc_id(peer_id, peer_names)
+	receive_player_names(peer_names)
 
 @rpc("authority", "reliable")
 func receive_player_names(names: Dictionary) -> void:
@@ -143,17 +144,19 @@ func receive_join_rejected(_mission_id: int) -> void:
 func report_start_mission(mission_id: int) -> void:
 	if not multiplayer.is_server():
 		return
-	_start_mission(mission_id)
+	_start_mission(multiplayer.get_remote_sender_id(), mission_id)
 
-func _start_mission(mission_id: int) -> void:
+func _start_mission(peer_id: int, mission_id: int) -> void:
 	if not missions.has(mission_id):
 		return
+	if peer_id != missions[mission_id]["creator_id"]:
+		return
 	var members: Array = missions[mission_id]["members"]
-	for peer_id in members:
-		if peer_id == 1:
+	for member_id in members:
+		if member_id == 1:
 			receive_start_mission()
 		else:
-			receive_start_mission.rpc_id(peer_id)
+			receive_start_mission.rpc_id(member_id)
 
 @rpc("authority", "reliable")
 func receive_start_mission() -> void:

@@ -13,7 +13,7 @@ func set_members(mission_id: int, members: Array) -> void:
 
 func _on_start_button_pressed() -> void:
 	if multiplayer.is_server():
-		NetworkSync._start_mission(current_mission_id)
+		NetworkSync._start_mission(1, current_mission_id)
 	else:
 		NetworkSync.report_start_mission.rpc_id(1, current_mission_id)
 

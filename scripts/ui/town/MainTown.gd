@@ -38,3 +38,7 @@ func _on_back_button_pressed() -> void:
 func _on_leave_button_pressed() -> void:
 	multiplayer.multiplayer_peer = null
 	get_tree().change_scene_to_file("res://scenes/ui/MainMenu.tscn")
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		_on_leave_button_pressed()
