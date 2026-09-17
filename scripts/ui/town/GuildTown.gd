@@ -45,6 +45,10 @@ func _on_join_button_pressed() -> void:
 func show_join_error(message: String) -> void:
 	status_label.text = message
 
+func _on_back_button_pressed() -> void:
+	get_tree().current_scene.get_node_or_null("PanelGuild").hide()
+	get_tree().current_scene.get_node_or_null("PanelMain").show()
+
 func remove_mission(mission_id: int) -> void:
 	if not mission_items.has(mission_id):
 		return
