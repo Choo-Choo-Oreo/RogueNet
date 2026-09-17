@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://df0w734h2xs0d" path="res://scenes/ui/town/GuildTown.tscn" id="1_i864c"]
 [ext_resource type="Script" uid="uid://bom5jxuqhni1a" path="res://scripts/ui/town/MainTown.gd" id="2_maintown"]
 [ext_resource type="PackedScene" uid="uid://b7uns6j0fj3jv" path="res://scenes/ui/town/GuildMission.tscn" id="3_guildmission"]
+[ext_resource type="PackedScene" path="res://scenes/ui/PauseMenu.tscn" id="4_pausemenu"]
 
 [node name="MainTown" type="Control" unique_id=748747690]
 layout_mode = 3
@@ -25,7 +26,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Sidebar" type="Panel" parent="."]
+[node name="Sidebar" type="Panel" parent="." unique_id=1653544042]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 1
 anchors_preset = 9
@@ -167,6 +168,10 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="GuildMission" parent="PanelMission" unique_id=82301945 instance=ExtResource("3_guildmission")]
+layout_mode = 1
+
+[node name="PauseMenu" parent="." unique_id=21659558 instance=ExtResource("4_pausemenu")]
+visible = false
 layout_mode = 1
 
 [connection signal="pressed" from="PanelMain/VBoxContainer/GuildButton" to="." method="_on_guild_button_pressed"]

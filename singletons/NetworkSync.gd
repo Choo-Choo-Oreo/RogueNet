@@ -3,6 +3,11 @@ extends Node
 enum SessionMode { SINGLEPLAYER, HOST, CLIENT }
 var session_mode: SessionMode = SessionMode.SINGLEPLAYER
 
+## Temporary local test flag — flip by hand to simulate a dedicated host
+## (no local player) without an actual dedicated-server build. Remove once
+## real headless support exists.
+var is_dedicated: bool = true
+
 var peer_steam_ids: Dictionary = {}
 
 func _ready() -> void:
@@ -73,6 +78,22 @@ func receive_move_state(player_id: int, direction: Vector2, moving: bool) -> voi
 		player.apply_move_animation(direction, moving)
 
 var missions: Dictionary = {}
+
+const SHARED_MISSION_ID := 0
+
+@rpc("any_peer", "reliable")
+func report_join_shared_party() -> void:
+	if not multiplayer.is_server():
+		return
+	_join_shared_party(multiplayer.get_remote_sender_id())
+
+func _join_shared_party(peer_id: int) -> void:
+	if not missions.has(SHARED_MISSION_ID):
+		missions[SHARED_MISSION_ID] = {"creator_id": 1, "privacy": "public", "password": "", "members": []}
+		receive_mission_created(SHARED_MISSION_ID, 1, "public")
+		for other_id in multiplayer.get_peers():
+			receive_mission_created.rpc_id(other_id, SHARED_MISSION_ID, 1, "public")
+	_join_mission(peer_id, SHARED_MISSION_ID, "")
 
 @rpc("authority", "reliable")
 func receive_mission_created(mission_id: int, creator_id: int, privacy: String) -> void:

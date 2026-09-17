@@ -1,8 +1,14 @@
 extends Control
 
 @onready var member_list: ItemList = $HSplitContainer/MemberListPanel/MemberList
+@onready var back_button: Button = $HSplitContainer/ActionPanel/BackButton
+@onready var leave_button: Button = $HSplitContainer/ActionPanel/LeaveButton
 
 var current_mission_id: int = -1
+
+func _ready() -> void:
+	back_button.visible = not NetworkSync.is_dedicated
+	leave_button.visible = NetworkSync.is_dedicated
 
 func set_members(mission_id: int, members: Array) -> void:
 	current_mission_id = mission_id
@@ -19,7 +25,10 @@ func _on_start_button_pressed() -> void:
 
 func _on_back_button_pressed() -> void:
 	get_tree().current_scene.get_node_or_null("PanelMission").hide()
-	get_tree().current_scene.get_node_or_null("PanelGuild").show()
+	if not NetworkSync.is_dedicated:
+		get_tree().current_scene.get_node_or_null("PanelMain").show()
+	else:
+		get_tree().current_scene.get_node_or_null("PanelGuild").show()
 
 func _on_leave_button_pressed() -> void:
 	if multiplayer.is_server():

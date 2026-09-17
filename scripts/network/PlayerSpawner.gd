@@ -6,6 +6,8 @@ func _ready() -> void:
 	multiplayer.peer_connected.connect(_spawn_player)
 	multiplayer.peer_disconnected.connect(_despawn_player)
 	_spawn_player(multiplayer.get_unique_id())
+	for peer_id in multiplayer.get_peers():
+		_spawn_player(peer_id)
 
 func _despawn_player(id: int) -> void:
 	var player := get_node_or_null(str(id))

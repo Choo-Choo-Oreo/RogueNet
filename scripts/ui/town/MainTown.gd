@@ -28,6 +28,12 @@ func refresh_player_list() -> void:
 		player_list.add_child(label)
 
 func _on_guild_button_pressed() -> void:
+	if not NetworkSync.is_dedicated:
+		if multiplayer.is_server():
+			NetworkSync._join_shared_party(1)
+		else:
+			NetworkSync.report_join_shared_party.rpc_id(1)
+		return
 	panel_main.hide()
 	panel_guild.show()
 
@@ -38,7 +44,3 @@ func _on_back_button_pressed() -> void:
 func _on_leave_button_pressed() -> void:
 	multiplayer.multiplayer_peer = null
 	get_tree().change_scene_to_file("res://scenes/ui/MainMenu.tscn")
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel"):
-		_on_leave_button_pressed()

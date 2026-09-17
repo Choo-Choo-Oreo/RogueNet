@@ -1,3 +1,9 @@
 [gd_scene format=3 uid="uid://c7oo6hc4nq1pn"]
 
+[ext_resource type="PackedScene" path="res://scenes/ui/PauseMenu.tscn" id="1_pausemenu"]
+
 [node name="Dungeon" type="Node2D" unique_id=2115702958]
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="PauseMenu" parent="UILayer" instance=ExtResource("1_pausemenu")]

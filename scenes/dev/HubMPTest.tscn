@@ -21,6 +21,7 @@
 [ext_resource type="Texture2D" uid="uid://dqhpq8s0o1kqr" path="res://resources/gfx/tileset/wall_cobble_brick.png" id="19_ehsm5"]
 [ext_resource type="Texture2D" uid="uid://cgplkwatxa2fv" path="res://resources/gfx/tileset/wall_smooth_stone.png" id="20_u7dof"]
 [ext_resource type="Script" uid="uid://bc0lnb6o6cg5r" path="res://scripts/network/PlayerSpawner.gd" id="21_mdqvh"]
+[ext_resource type="PackedScene" path="res://scenes/ui/PauseMenu.tscn" id="22_pausemenu"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_mbloq"]
 resource_name = "floor_dirt.png"
@@ -363,3 +364,7 @@ spawn_path = NodePath("../Player")
 
 [node name="Player" type="Node2D" parent="." unique_id=2086541261]
 script = ExtResource("21_mdqvh")
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="PauseMenu" parent="UILayer" instance=ExtResource("22_pausemenu")]
