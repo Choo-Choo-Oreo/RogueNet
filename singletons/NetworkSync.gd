@@ -3,17 +3,13 @@ extends Node
 enum SessionMode { SINGLEPLAYER, HOST, CLIENT }
 var session_mode: SessionMode = SessionMode.SINGLEPLAYER
 
-## Temporary local test flag — flip by hand to simulate a dedicated host
-## (no local player) without an actual dedicated-server build. Remove once
-## real headless support exists.
+# Temporary local test flag — flip by hand to simulate a dedicated host
+# (no local player) without an actual dedicated-server build. Remove once
+# real headless support exists.
 var is_dedicated: bool = false
 
 var peer_steam_ids: Dictionary = {}
 
-## Seed for the dungeon everyone's currently in, picked once by the host in
-## _start_mission() and handed to every peer via receive_start_mission() so
-## DungeonAssembler.generate_with_retry() produces the identical layout on
-## every machine.
 var dungeon_seed: int = 0
 
 func _ready() -> void:

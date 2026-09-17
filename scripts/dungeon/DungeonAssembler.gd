@@ -1,23 +1,8 @@
 extends RefCounted
 class_name DungeonAssembler
 
-## Reader/assembler for the room-JSON format documented in
-## scripts/dungeon/DUNGEON_CREATOR_README.md. Produces a room LAYOUT
-## (room id + world-tile offset per placed room, plus which connectors
-## ended up sealed) from a seed. Does not paint any TileMapLayer yet —
-## that's the next step once this placement logic is confirmed correct.
-##
-## Determinism: only ever draw from `rng` (a caller-seeded
-## RandomNumberGenerator), and always iterate rooms/connectors in a
-## sorted, filename-independent order. Never use global randi()/randf()
-## and never iterate a Dictionary whose insertion order could differ
-## between host and client.
-
 const ROOMS_DIR := "res://game/rooms/"
 
-## Per-seed room count target, picked from this range. Derived from
-## original Rogue averaging ~4-5 rooms explored per player, times a
-## ~4-5 player party — Orea's call, revisit if it plays too sparse/dense.
 const MIN_ROOM_COUNT := 20
 const MAX_ROOM_COUNT := 30
 
@@ -39,8 +24,6 @@ static func _dir_step(dir: int) -> Vector2i:
 		Dir.WEST: return Vector2i(-1, 0)
 	return Vector2i.ZERO
 
-## Boundary cell -> which way the connector opens. Assumes the format's
-## own rule that every connector sits on row/col 0 or the max row/col.
 static func _connector_dir(room: Dictionary, pos: Vector2i) -> int:
 	var h: int = room["height"]
 	if pos.y == 0:
@@ -73,23 +56,12 @@ static func load_rooms() -> Dictionary:
 			rooms[data["id"]] = data
 	return rooms
 
-## Most common non-null tile in a room's border walls — used to seal a
-## locked connector back to a plain wall without needing new art: paint
-## that cell with this instead of "wall_door".
 static func dominant_wall_tile(room: Dictionary) -> String:
 	return _dominant_tile(room["walls"], "wall_door")
 
-## Most common non-null tile in a room's floor — used to paint a floor cell
-## under a connector, since the room's own floor grid is null on the
-## boundary ring (walls own that ring, not floor) and a connector still
-## needs ground to stand on once it's an open passage rather than a wall.
 static func dominant_floor_tile(room: Dictionary) -> String:
 	return _dominant_tile(room["floor"], "")
 
-## The door art is a single asymmetric "hinge + swung open" graphic, not a
-## symmetric one, so which way it needs to face is a genuine 90°-per-side
-## rotation, not a guess from neighboring wall shape. South is the art's
-## native orientation; the others are one quarter turn apart going around.
 static func door_orientation_alt(dir: int) -> int:
 	match dir:
 		Dir.SOUTH: return 0
@@ -119,10 +91,6 @@ class Placement:
 	var offset: Vector2i
 	var depth: int = 0  # hop count from the entrance, used to find the "farthest" dead end for the boss room
 	var locked_connectors: Array[Vector2i] = []
-	## Connectors that joined an existing room's connector to form a single
-	## connection. The already-placed room's side of the pair "owns" the
-	## door visually; this room's side gets no door tile of its own, just
-	## floor — a connection should read as one door, not two side by side.
 	var suppressed_connectors: Array[Vector2i] = []
 
 ## dungeon_seed: RNG seed, same value on host and every client -> identical layout.
@@ -171,12 +139,8 @@ static func generate(rooms: Dictionary, dungeon_seed: int) -> Array[Placement]:
 	_queue_connectors(entrance_room, 0, open_connectors)
 	_seal_random_entrance_doors(entrance_placement, open_connectors, rng)
 
-	# Reserve the last two slots of the target for a guaranteed boss room
-	# and a guaranteed treasure room, so they're never lost to random draw.
 	var normal_budget: int = max(target_count - 2, 1)
 
-	# Stop steering away from endcap rooms once we're close to budget —
-	# closing off branches near the end is normal and desired.
 	const DEAD_END_AVOIDANCE_MARGIN := 3
 	while open_connectors.size() > 0 and placements.size() < normal_budget:
 		var entry: Dictionary = open_connectors.pop_front()
@@ -184,7 +148,6 @@ static func generate(rooms: Dictionary, dungeon_seed: int) -> Array[Placement]:
 		if not _try_place(rooms, pool_ids, entry, placements, occupied, open_connectors, rng, avoid_dead_ends):
 			_lock(placements[entry["placement_index"]], entry["local_pos"])
 
-	# Budget ran out (or the pool ran dry) — whatever's still open is a dead end.
 	for entry in open_connectors:
 		_lock(placements[entry["placement_index"]], entry["local_pos"])
 	open_connectors.clear()
@@ -201,15 +164,6 @@ static func generate(rooms: Dictionary, dungeon_seed: int) -> Array[Placement]:
 
 	return placements
 
-## Simulation across 1000+ seeds shows generate() succeeding (boss +
-## treasure both placed, no overlaps) every time on the current room
-## set, but that's a property of today's content, not a guarantee for
-## whatever gets added later. This is the actual entry point real
-## callers should use: last-resort safety net — if a seed ever produces
-## an incomplete layout, silently retry with a nearby derived seed
-## (deterministic: seed+attempt, so host and every client land on the
-## exact same fallback seed too) before ever handing back a broken
-## dungeon.
 static func generate_with_retry(rooms: Dictionary, dungeon_seed: int, max_attempts: int = 20) -> Array[Placement]:
 	var need_boss := false
 	var need_treasure := false
@@ -241,17 +195,6 @@ static func _satisfies_requirements(rooms: Dictionary, placements: Array[Placeme
 			has_treasure = true
 	return (not need_boss or has_boss) and (not need_treasure or has_treasure)
 
-## Tries every room in candidate_ids (shuffled) against the given open
-## connector; on success, appends the new Placement and queues its own
-## connectors for further growth.
-##
-## avoid_dead_ends: when true, single-connector "endcap" rooms (e.g.
-## Closet_3x3, only one door) are tried last, after every multi-connector
-## room has already failed. Without this, a run of bad luck drawing
-## several endcaps in a row can seal off every branch of the dungeon
-## with zero connectors left anywhere — not an overlap, just the graph
-## running out of open doors decades before the room-count target, which
-## leaves nothing for the boss/treasure fallback to attach to either.
 static func _try_place(rooms: Dictionary, candidate_ids: Array, entry: Dictionary, placements: Array[Placement], occupied: Array[Rect2i], open_connectors: Array, rng: RandomNumberGenerator, avoid_dead_ends: bool) -> bool:
 	var from_placement: Placement = placements[entry["placement_index"]]
 	var from_world: Vector2i = from_placement.offset + entry["local_pos"]
@@ -292,9 +235,6 @@ static func _try_place(rooms: Dictionary, candidate_ids: Array, entry: Dictionar
 			return true
 	return false
 
-## Fits one specific room (not a pool) onto one specific existing dead
-## end. Any of its own remaining connectors are immediately locked too —
-## by this point generation is over, nothing grows further from it.
 static func _fit_room_at(rooms: Dictionary, room_id: String, from_placement: Placement, local_pos: Vector2i, placements: Array[Placement], occupied: Array[Rect2i]) -> bool:
 	var from_room: Dictionary = rooms[from_placement.room_id]
 	var from_dir: int = _connector_dir(from_room, local_pos)
@@ -330,17 +270,8 @@ static func _fit_room_at(rooms: Dictionary, room_id: String, from_placement: Pla
 		return true
 	return false
 
-## Longest corridor chain we'll grow looking for free space for the boss
-## room. These rooms are on top of the normal 20-30 budget — Orea's call:
-## the cap only governs the initial pass, not the boss-placement fallback.
 const MAX_BOSS_CORRIDOR_EXTENSION := 8
 
-## Boss room goes on the dead end that's the most hops away from the
-## entrance — deepest part of the generated layout, not just "connected
-## to whatever happens to be farthest." If it doesn't fit anywhere
-## directly (the surrounding layout is too tightly packed for an 11x11
-## room), fall back to growing a corridor chain out from the farthest
-## dead ends until there's room for it, even past the normal room budget.
 static func _place_farthest(rooms: Dictionary, room_id: String, corridor_ids: Array, placements: Array[Placement], occupied: Array[Rect2i]) -> bool:
 	var candidates: Array = []
 	for i in placements.size():
@@ -379,7 +310,6 @@ static func _place_farthest(rooms: Dictionary, room_id: String, corridor_ids: Ar
 	push_warning("DungeonAssembler: boss room \"%s\" didn't fit anywhere, even after extending corridors" % room_id)
 	return false
 
-## Treasure just needs to exist somewhere — first dead end any candidate fits.
 static func _place_any_locked(rooms: Dictionary, room_ids: Array, placements: Array[Placement], occupied: Array[Rect2i]) -> bool:
 	var candidates: Array = []
 	for i in placements.size():
@@ -420,12 +350,6 @@ static func _overlaps_any(rect: Rect2i, occupied: Array[Rect2i]) -> bool:
 static func _lock(placement: Placement, local_pos: Vector2i) -> void:
 	placement.locked_connectors.append(local_pos)
 
-## Not every one of the entrance room's own doors should always be used —
-## give each an escalating chance to be sealed off before anything grows
-## from it: 25% for the first one, 50% for the next, 75% for the third,
-## but the last remaining door is always kept (100% guaranteed to stay).
-## `entrance_connectors` holds only that room's own open connectors at this
-## point, so entries removed here are sealed rather than grown from.
 static func _seal_random_entrance_doors(entrance_placement: Placement, entrance_connectors: Array, rng: RandomNumberGenerator) -> void:
 	var total: int = entrance_connectors.size()
 	var shuffled: Array = entrance_connectors.duplicate()
@@ -445,7 +369,6 @@ static func _seal_random_entrance_doors(entrance_placement: Placement, entrance_
 		else:
 			entrance_connectors.append(entry)
 
-## Fisher-Yates using the seeded rng, so shuffles are reproducible.
 static func _shuffle(arr: Array, rng: RandomNumberGenerator) -> void:
 	for i in range(arr.size() - 1, 0, -1):
 		var j := rng.randi_range(0, i)

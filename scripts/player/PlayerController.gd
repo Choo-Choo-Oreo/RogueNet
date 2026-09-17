@@ -5,9 +5,6 @@ extends CharacterBody2D
 
 @onready var wall_data: TileMapLayer = get_tree().current_scene.find_child("WallData", true, false)
 
-## An open connector is painted onto WallData like any other wall cell (see
-## DungeonPainter.gd), so it needs to be excluded here by source_id or an
-## open doorway would block movement exactly like a solid wall.
 @onready var _open_door_source_id: int = load("res://resources/tiles/tile_type_registry.tres").get_id("wall_door_open")
 
 @export var camera_mouse_weight := 0.3

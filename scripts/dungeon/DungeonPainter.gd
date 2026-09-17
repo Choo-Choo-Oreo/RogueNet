@@ -1,18 +1,7 @@
 extends Node
 
-## Drop into a dungeon scene as a sibling that comes AFTER a TileInitialize
-## node (sibling order determines _ready() order in Godot, and this relies
-## on TileInitialize having already built FloorData/WallData by the time
-## this runs). Turns DungeonAssembler's abstract layout into real painted
-## tiles using NetworkSync.dungeon_seed, so every peer paints the identical
-## dungeon.
-
 @export var tile_initialize: TileInitialize
 
-## Connectors get painted as one of two door tiles rather than whatever the
-## room author drew, since the JSON's own "wall_door" is just a placeholder
-## for "a connector goes here" — the actual open/sealed state is only known
-## once DungeonAssembler decides it during placement.
 const OPEN_CONNECTOR_TILE := "wall_door_open"
 
 func _ready() -> void:
