@@ -24,6 +24,8 @@ const PAN_SPEED := 0.5
 const PAN_SPEED_FLOOR := 0.15
 const ROTATE_STEP_DEGREES := 45.0
 const NUDGE_STEP := 4.0
+const BRUSH_SIZE_MIN := 1
+const BRUSH_SIZE_MAX := 5
 
 const PAINT_MODE_COLOR := Color(0.3, 0.7, 0.95)
 const OBJECT_MODE_COLOR := Color(0.95, 0.65, 0.2)
@@ -59,6 +61,7 @@ const OBJECT_SELECT_COLOR := Color(1, 1, 0.3, 0.95)
 @onready var eraser_button: Button = $UI/LeftPanel/PaletteSection/EraserButton
 @onready var floor_data_layer: TileMapLayer = $TileRenderer/FloorData
 @onready var wall_data_layer: TileMapLayer = $TileRenderer/WallData
+@onready var tile_renderer: Node2D = $TileRenderer
 @onready var objects_layer: Node2D = $ObjectsLayer
 @onready var object_palette_list: ItemList = $UI/RightPanel/ObjectSection/ObjectPaletteList
 @onready var objects_list: ItemList = $UI/RightPanel/ObjectSection/ObjectsList
@@ -83,6 +86,7 @@ var object_type_names: Array = []
 var selected_layer: String = ""
 var selected_tile_name: String = ""
 var eraser_active: bool = false
+var brush_size: int = 1
 
 var rect_paint_active: bool = false
 var rect_paint_start_cell: Vector2i = Vector2i.ZERO
@@ -166,35 +170,6 @@ func _draw() -> void:
 	draw_rect(rect, ROOM_FILL_COLOR)
 	_draw_grid_lines(rect)
 	draw_rect(rect, ROOM_BORDER_COLOR, false, 2.0)
-	if rect_paint_active:
-		var min_cell := Vector2i(min(rect_paint_start_cell.x, rect_paint_current_cell.x), min(rect_paint_start_cell.y, rect_paint_current_cell.y))
-		var max_cell := Vector2i(max(rect_paint_start_cell.x, rect_paint_current_cell.x), max(rect_paint_start_cell.y, rect_paint_current_cell.y))
-		var preview_rect := Rect2(WORLD_OFFSET + Vector2(min_cell) * TILE_SIZE, Vector2(max_cell - min_cell + Vector2i(1, 1)) * TILE_SIZE)
-		draw_rect(preview_rect, RECT_PREVIEW_FILL)
-		draw_rect(preview_rect, RECT_PREVIEW_BORDER, false, 2.0)
-	elif shape_drag_active:
-		_draw_shape_preview()
-	elif mouse_over_room:
-		_draw_hover_ghost()
-	if not multi_selected_indices.is_empty():
-		_draw_multi_selection_highlight()
-	if marquee_active:
-		_draw_marquee()
-
-func _draw_multi_selection_highlight() -> void:
-	for index in multi_selected_indices:
-		if index < 0 or index >= objects.size():
-			continue
-		var pos: Vector2 = objects[index]["position"]
-		var center := WORLD_OFFSET + pos
-		draw_arc(center, OBJECT_HIT_RADIUS + 3.0, 0.0, TAU, 24, OBJECT_SELECT_COLOR, 2.0)
-
-func _draw_marquee() -> void:
-	var min_pos := Vector2(min(marquee_start_world.x, marquee_current_world.x), min(marquee_start_world.y, marquee_current_world.y))
-	var max_pos := Vector2(max(marquee_start_world.x, marquee_current_world.x), max(marquee_start_world.y, marquee_current_world.y))
-	var marquee_rect := Rect2(WORLD_OFFSET + min_pos, max_pos - min_pos)
-	draw_rect(marquee_rect, RECT_PREVIEW_FILL)
-	draw_rect(marquee_rect, RECT_PREVIEW_BORDER, false, 1.5)
 
 func _draw_grid_lines(rect: Rect2) -> void:
 	for x in range(1, width):
@@ -204,44 +179,19 @@ func _draw_grid_lines(rect: Rect2) -> void:
 		var py: float = rect.position.y + y * TILE_SIZE
 		draw_line(Vector2(rect.position.x, py), Vector2(rect.position.x + rect.size.x, py), GRID_LINE_COLOR, 1.0)
 
-func _draw_hover_ghost() -> void:
-	if connector_mode_active:
-		if _is_boundary_cell(hover_cell):
-			var cell_rect := Rect2(WORLD_OFFSET + Vector2(hover_cell) * TILE_SIZE, Vector2(TILE_SIZE, TILE_SIZE))
-			draw_rect(cell_rect, Color(CONNECTOR_MODE_COLOR.r, CONNECTOR_MODE_COLOR.g, CONNECTOR_MODE_COLOR.b, 0.35))
-			draw_rect(cell_rect, CONNECTOR_MODE_COLOR, false, 2.0)
-	elif object_mode_active:
-		if selected_object_type != "" and OBJECT_MARKER_TEXTURES.has(selected_object_type):
-			var icon := _make_object_icon(selected_object_type)
-			var center := WORLD_OFFSET + hover_world_pos
-			draw_set_transform(center, deg_to_rad(pending_object_rotation), Vector2.ONE)
-			draw_texture_rect(icon, Rect2(-Vector2(TILE_SIZE, TILE_SIZE) / 2.0, Vector2(TILE_SIZE, TILE_SIZE)), false, Color(1, 1, 1, 0.6))
-			draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-		elif selected_object_type != "":
-			draw_circle(WORLD_OFFSET + hover_world_pos, OBJECT_HIT_RADIUS, Color(OBJECT_MODE_COLOR.r, OBJECT_MODE_COLOR.g, OBJECT_MODE_COLOR.b, 0.5))
-	elif eraser_active:
-		var cell_rect := Rect2(WORLD_OFFSET + Vector2(hover_cell) * TILE_SIZE, Vector2(TILE_SIZE, TILE_SIZE))
-		draw_rect(cell_rect, Color(ERASER_MODE_COLOR.r, ERASER_MODE_COLOR.g, ERASER_MODE_COLOR.b, 0.35))
-		draw_rect(cell_rect, ERASER_MODE_COLOR, false, 2.0)
-	elif selected_tile_name != "":
-		var cell_rect := Rect2(WORLD_OFFSET + Vector2(hover_cell) * TILE_SIZE, Vector2(TILE_SIZE, TILE_SIZE))
-		draw_rect(cell_rect, Color(PAINT_MODE_COLOR.r, PAINT_MODE_COLOR.g, PAINT_MODE_COLOR.b, 0.35))
-		draw_rect(cell_rect, PAINT_MODE_COLOR, false, 2.0)
+func _brush_cells(center: Vector2i) -> Array:
+	var half := brush_size - 1
+	var cells := []
+	for y in range(center.y - half, center.y + half + 1):
+		for x in range(center.x - half, center.x + half + 1):
+			cells.append(Vector2i(x, y))
+	return cells
 
-func _draw_shape_preview() -> void:
-	if paint_tool == PaintTool.SELECT:
-		var min_cell := Vector2i(min(shape_start_cell.x, shape_current_cell.x), min(shape_start_cell.y, shape_current_cell.y))
-		var max_cell := Vector2i(max(shape_start_cell.x, shape_current_cell.x), max(shape_start_cell.y, shape_current_cell.y))
-		var select_rect := Rect2(WORLD_OFFSET + Vector2(min_cell) * TILE_SIZE, Vector2(max_cell - min_cell + Vector2i(1, 1)) * TILE_SIZE)
-		draw_rect(select_rect, RECT_PREVIEW_FILL)
-		draw_rect(select_rect, RECT_PREVIEW_BORDER, false, 2.0)
-		return
-	var cells := _shape_cells(paint_tool, shape_start_cell, shape_current_cell)
-	var color: Color = ERASER_MODE_COLOR if eraser_active else PAINT_MODE_COLOR
-	for cell in cells:
-		var cell_rect := Rect2(WORLD_OFFSET + Vector2(cell) * TILE_SIZE, Vector2(TILE_SIZE, TILE_SIZE))
-		draw_rect(cell_rect, Color(color.r, color.g, color.b, 0.35))
-		draw_rect(cell_rect, color, false, 1.0)
+func _brush_world_rect(center: Vector2i) -> Rect2:
+	var half := brush_size - 1
+	var top_left := Vector2i(center.x - half, center.y - half)
+	var side := brush_size * 2 - 1
+	return Rect2(WORLD_OFFSET + Vector2(top_left) * TILE_SIZE, Vector2(side, side) * TILE_SIZE)
 
 func _shape_cells(tool: int, start: Vector2i, current: Vector2i) -> Array:
 	match tool:
@@ -591,6 +541,7 @@ func _restore_grids(new_floor: Array, new_walls: Array) -> void:
 			var w = walls_names[y][x]
 			if w != null and palette.has(w):
 				wall_data_layer.set_cell(Vector2i(x, y), palette[w]["source_id"], Vector2i.ZERO)
+	tile_renderer.refresh_all()
 	_update_validation_display()
 
 func _on_room_info_header_toggled(pressed: bool) -> void:
@@ -785,6 +736,10 @@ func _handle_camera_input(event: InputEvent) -> void:
 			_adjust_pending_rotation(ROTATE_STEP_DEGREES)
 		elif event.pressed and event.shift_pressed and object_mode_active and event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			_adjust_pending_rotation(-ROTATE_STEP_DEGREES)
+		elif event.pressed and event.ctrl_pressed and (eraser_active or selected_tile_name != "") and event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			_adjust_brush_size(1)
+		elif event.pressed and event.ctrl_pressed and (eraser_active or selected_tile_name != "") and event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			_adjust_brush_size(-1)
 		elif event.pressed and event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			_zoom_camera(1.0 / CAMERA_ZOOM_STEP)
 		elif event.pressed and event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
@@ -817,6 +772,11 @@ func _delete_at_mouse() -> void:
 func _adjust_pending_rotation(delta_degrees: float) -> void:
 	pending_object_rotation = fmod(pending_object_rotation + delta_degrees + 360.0, 360.0)
 	queue_redraw()
+
+func _adjust_brush_size(delta: int) -> void:
+	brush_size = clampi(brush_size + delta, BRUSH_SIZE_MIN, BRUSH_SIZE_MAX)
+	var side := brush_size * 2 - 1
+	_show_export_status("Brush size: %dx%d" % [side, side])
 
 func _zoom_camera(factor: float) -> void:
 	var clamped := clampf(camera.zoom.x * factor, CAMERA_ZOOM_MIN, CAMERA_ZOOM_MAX)
@@ -1107,10 +1067,7 @@ func _paint_at_mouse() -> void:
 	var cell := _mouse_to_cell()
 	if cell.x < 0 or cell.x >= width or cell.y < 0 or cell.y >= height:
 		return
-	if eraser_active:
-		_erase_cell(cell)
-	else:
-		_paint_cell(cell)
+	_apply_cells_with_undo(_brush_cells(cell))
 
 func _mouse_to_cell() -> Vector2i:
 	var pos := get_global_mouse_position() - WORLD_OFFSET
@@ -1129,36 +1086,7 @@ func _apply_tile(layer: String, cell: Vector2i, value) -> void:
 		else:
 			wall_data_layer.set_cell(cell, palette[value]["source_id"], Vector2i.ZERO)
 		walls_names[cell.y][cell.x] = value
-
-func _paint_cell(cell: Vector2i) -> void:
-	if selected_tile_name == "" or not palette.has(selected_tile_name):
-		return
-	var layer := selected_layer
-	var old_value = floor_names[cell.y][cell.x] if layer == "floor" else walls_names[cell.y][cell.x]
-	var new_value := selected_tile_name
-	if old_value == new_value:
-		return
-	_apply_tile(layer, cell, new_value)
-	_push_undo(
-		func(): _apply_tile(layer, cell, old_value),
-		func(): _apply_tile(layer, cell, new_value)
-	)
-
-func _erase_cell(cell: Vector2i) -> void:
-	var old_floor = floor_names[cell.y][cell.x]
-	var old_wall = walls_names[cell.y][cell.x]
-	if old_floor == null and old_wall == null:
-		return
-	_apply_tile("floor", cell, null)
-	_apply_tile("wall", cell, null)
-	_push_undo(
-		func():
-			_apply_tile("floor", cell, old_floor)
-			_apply_tile("wall", cell, old_wall),
-		func():
-			_apply_tile("floor", cell, null)
-			_apply_tile("wall", cell, null)
-	)
+	tile_renderer.refresh_all()
 
 func _fill_rect(from_cell: Vector2i, to_cell: Vector2i) -> void:
 	var min_x: int = min(from_cell.x, to_cell.x)

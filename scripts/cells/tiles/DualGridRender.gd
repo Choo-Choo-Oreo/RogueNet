@@ -16,8 +16,11 @@ const MASK_TO_CELL := {
 
 func _ready():
 	display_layer.position = Vector2(data_layer.tile_set.tile_size) / 2.0
-	data_layer.changed.connect(refresh)
+	data_layer.changed.connect(_on_data_layer_changed)
 	refresh()
+
+func _on_data_layer_changed() -> void:
+	refresh.call_deferred()
 	
 func refresh():
 	if not is_instance_valid(display_layer):

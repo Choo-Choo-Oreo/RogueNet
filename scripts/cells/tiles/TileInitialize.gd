@@ -30,6 +30,11 @@ func _discover_tile_types() -> Array[TileType]:
 	dir.list_dir_end()
 	return discovered
 
+func refresh_all() -> void:
+	for child in get_children():
+		if child.has_method("refresh"):
+			child.refresh()
+
 func _get_or_build_shared_data_layer(layer_name: String) -> TileMapLayer:
 	if has_node(layer_name):
 		return get_node(layer_name)
