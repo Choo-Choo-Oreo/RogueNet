@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("1_ece4a")
-tile_name = "WallCobbleBrick"
+tile_name = "wall_cobble_brick"
 atlas_texture = ExtResource("1_jfijs")
 sort_order = 100
 category = 1

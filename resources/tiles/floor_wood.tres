@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("1_ece4a")
-tile_name = "FloorWood"
+tile_name = "floor_wood"
 atlas_texture = ExtResource("1_jfijs")
 sort_order = 2
 marker_color = Color(0.662745, 0.454902, 0.286275, 1)

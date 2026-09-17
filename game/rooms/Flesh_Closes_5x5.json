@@ -1,0 +1,92 @@
+{
+	"connectors": [
+		{
+			"position": {
+				"x": 0,
+				"y": 2
+			}
+		}
+	],
+	"floor": [
+		[
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone"
+		],
+		[
+			"floor_smooth_stone",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_smooth_stone"
+		],
+		[
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_smooth_stone"
+		],
+		[
+			"floor_smooth_stone",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_smooth_stone"
+		],
+		[
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone"
+		]
+	],
+	"format": 1,
+	"height": 5,
+	"id": "Flesh_Closes_5x5",
+	"objects": [],
+	"tags": [
+		"test"
+	],
+	"walls": [
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		]
+	],
+	"width": 5
+}

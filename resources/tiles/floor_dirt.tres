@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("1_ece4a")
-tile_name = "FloorDirt"
+tile_name = "floor_dirt"
 atlas_texture = ExtResource("1_jfijs")
 category = 0
 marker_color = Color(0.545098, 0.352941, 0.168627, 1)

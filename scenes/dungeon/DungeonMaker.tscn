@@ -1,6 +1,759 @@
 [gd_scene format=3 uid="uid://bniomtokxpoff"]
 
 [ext_resource type="Script" uid="uid://b0fhl288f3d2s" path="res://scripts/dungeon/DungeonMaker.gd" id="1_u5pr7"]
+[ext_resource type="Script" uid="uid://rvs3q27d6u0p" path="res://scripts/cells/tiles/TileInitialize.gd" id="2_tinit"]
+[ext_resource type="Resource" uid="uid://dyam0g3j5dqar" path="res://resources/tiles/tile_type_registry.tres" id="3_reg01"]
+[ext_resource type="Texture2D" uid="uid://cukpeoxqsmyde" path="res://resources/gfx/placeholders/flat-color.png" id="4_p0k0o"]
+[ext_resource type="Script" uid="uid://cmo0pwrdjr2df" path="res://scripts/cells/tiles/DualGridRender.gd" id="5_kgqa5"]
+[ext_resource type="Texture2D" uid="uid://c4g37l6wvgs0p" path="res://resources/gfx/tileset/floor_dirt.png" id="6_yifbx"]
+[ext_resource type="Texture2D" uid="uid://c02feoo0aqbyo" path="res://resources/gfx/tileset/floor_flesh.png" id="7_n4bai"]
+[ext_resource type="Texture2D" uid="uid://i0cxny0obdye" path="res://resources/gfx/tileset/floor_grass.png" id="8_62u44"]
+[ext_resource type="Texture2D" uid="uid://bx185y82ohydi" path="res://resources/gfx/tileset/floor_smooth_stone.png" id="9_eqchr"]
+[ext_resource type="Texture2D" uid="uid://30t8sgmrsu53" path="res://resources/gfx/tileset/floor_void.png" id="10_beptr"]
+[ext_resource type="Texture2D" uid="uid://bdh3k1pjwhi31" path="res://resources/gfx/tileset/floor_wood.png" id="11_o85wv"]
+[ext_resource type="Texture2D" uid="uid://dqhpq8s0o1kqr" path="res://resources/gfx/tileset/wall_cobble_brick.png" id="12_mse36"]
+[ext_resource type="Script" uid="uid://kwiwirkys8xp" path="res://scripts/cells/tiles/StaticTileRender.gd" id="13_b6gtq"]
+[ext_resource type="Texture2D" uid="uid://c807vxen01fgd" path="res://resources/gfx/objects/Door.png" id="14_hvud5"]
+[ext_resource type="Texture2D" uid="uid://cgplkwatxa2fv" path="res://resources/gfx/tileset/wall_smooth_stone.png" id="15_jjsgu"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_op54d"]
+resource_name = "floor_dirt.png"
+texture = ExtResource("4_p0k0o")
+0:0/0 = 0
+0:0/0/modulate = Color(0.545098, 0.352941, 0.168627, 1)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wosje"]
+resource_name = "floor_flesh.png"
+texture = ExtResource("4_p0k0o")
+0:0/0 = 0
+0:0/0/modulate = Color(0.74902, 0.184314, 0.184314, 1)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7anta"]
+resource_name = "floor_grass.png"
+texture = ExtResource("4_p0k0o")
+0:0/0 = 0
+0:0/0/modulate = Color(0.356863, 0.54902, 0.227451, 1)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_r8l4g"]
+resource_name = "floor_smooth_stone.png"
+texture = ExtResource("4_p0k0o")
+0:0/0 = 0
+0:0/0/modulate = Color(0.690196, 0.690196, 0.690196, 1)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_kp3wk"]
+resource_name = "floor_void.png"
+texture = ExtResource("4_p0k0o")
+0:0/0 = 0
+0:0/0/modulate = Color(0.101961, 0.101961, 0.101961, 1)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jdyau"]
+resource_name = "floor_wood.png"
+texture = ExtResource("4_p0k0o")
+0:0/0 = 0
+0:0/0/modulate = Color(0.662745, 0.454902, 0.286275, 1)
+
+[sub_resource type="TileSet" id="TileSet_c7xci"]
+sources/0 = SubResource("TileSetAtlasSource_op54d")
+sources/1 = SubResource("TileSetAtlasSource_wosje")
+sources/2 = SubResource("TileSetAtlasSource_7anta")
+sources/3 = SubResource("TileSetAtlasSource_r8l4g")
+sources/4 = SubResource("TileSetAtlasSource_kp3wk")
+sources/5 = SubResource("TileSetAtlasSource_jdyau")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_as6o5"]
+resource_name = "wall_cobble_brick.png"
+texture = ExtResource("4_p0k0o")
+0:0/0 = 0
+0:0/0/modulate = Color(0.545098, 0.266667, 0.266667, 1)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1ru4o"]
+resource_name = "wall_smooth_stone.png"
+texture = ExtResource("4_p0k0o")
+0:0/0 = 0
+0:0/0/modulate = Color(0.458824, 0.458824, 0.458824, 1)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5by0x"]
+resource_name = "Door.png"
+texture = ExtResource("4_p0k0o")
+0:0/0 = 0
+0:0/0/modulate = Color(0.454902, 0.360784, 0.239216, 1)
+
+[sub_resource type="TileSet" id="TileSet_qobdk"]
+sources/6 = SubResource("TileSetAtlasSource_as6o5")
+sources/8 = SubResource("TileSetAtlasSource_5by0x")
+sources/7 = SubResource("TileSetAtlasSource_1ru4o")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dnx6h"]
+texture = ExtResource("6_yifbx")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_03xln"]
+sources/0 = SubResource("TileSetAtlasSource_dnx6h")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_picnw"]
+texture = ExtResource("7_n4bai")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_nqa80"]
+sources/0 = SubResource("TileSetAtlasSource_picnw")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5kgoq"]
+texture = ExtResource("8_62u44")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_31l4m"]
+sources/0 = SubResource("TileSetAtlasSource_5kgoq")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_mupk7"]
+texture = ExtResource("9_eqchr")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_nffg0"]
+sources/0 = SubResource("TileSetAtlasSource_mupk7")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_x8xaq"]
+texture = ExtResource("10_beptr")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_tnqnc"]
+sources/0 = SubResource("TileSetAtlasSource_x8xaq")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5gg0c"]
+texture = ExtResource("11_o85wv")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_4a6js"]
+sources/0 = SubResource("TileSetAtlasSource_5gg0c")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pb0uc"]
+texture = ExtResource("12_mse36")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_j4qsa"]
+sources/0 = SubResource("TileSetAtlasSource_pb0uc")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6srwk"]
+texture = ExtResource("14_hvud5")
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_8lwbh"]
+sources/0 = SubResource("TileSetAtlasSource_6srwk")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_hbm6m"]
+texture = ExtResource("15_jjsgu")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_nfid1"]
+sources/0 = SubResource("TileSetAtlasSource_hbm6m")
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_painttool"]
 
 [node name="DungeonMaker" type="Node2D" unique_id=989925086]
 script = ExtResource("1_u5pr7")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="TileRenderer" type="Node2D" parent="." unique_id=1259110351]
+position = Vector2(16, 550)
+script = ExtResource("2_tinit")
+tile_registry = ExtResource("3_reg01")
+
+[node name="FloorData" type="TileMapLayer" parent="TileRenderer" unique_id=141529315]
+tile_set = SubResource("TileSet_c7xci")
+
+[node name="WallData" type="TileMapLayer" parent="TileRenderer" unique_id=1368195247]
+tile_set = SubResource("TileSet_qobdk")
+
+[node name="floor_dirt" type="Node2D" parent="TileRenderer" unique_id=622314497 node_paths=PackedStringArray("data_layer", "display_layer")]
+script = ExtResource("5_kgqa5")
+data_layer = NodePath("../FloorData")
+display_layer = NodePath("DisplayLayer")
+
+[node name="DisplayLayer" type="TileMapLayer" parent="TileRenderer/floor_dirt" unique_id=241222370]
+position = Vector2(8, 8)
+tile_set = SubResource("TileSet_03xln")
+
+[node name="floor_flesh" type="Node2D" parent="TileRenderer" unique_id=312980028 node_paths=PackedStringArray("data_layer", "display_layer")]
+z_index = 3
+script = ExtResource("5_kgqa5")
+data_layer = NodePath("../FloorData")
+display_layer = NodePath("DisplayLayer")
+source_id = 1
+
+[node name="DisplayLayer" type="TileMapLayer" parent="TileRenderer/floor_flesh" unique_id=1144635052]
+position = Vector2(8, 8)
+tile_set = SubResource("TileSet_nqa80")
+
+[node name="floor_grass" type="Node2D" parent="TileRenderer" unique_id=1490162813 node_paths=PackedStringArray("data_layer", "display_layer")]
+z_index = 1
+script = ExtResource("5_kgqa5")
+data_layer = NodePath("../FloorData")
+display_layer = NodePath("DisplayLayer")
+source_id = 2
+
+[node name="DisplayLayer" type="TileMapLayer" parent="TileRenderer/floor_grass" unique_id=1534079050]
+position = Vector2(8, 8)
+tile_set = SubResource("TileSet_31l4m")
+
+[node name="floor_smooth_stone" type="Node2D" parent="TileRenderer" unique_id=1946513433 node_paths=PackedStringArray("data_layer", "display_layer")]
+z_index = 2
+script = ExtResource("5_kgqa5")
+data_layer = NodePath("../FloorData")
+display_layer = NodePath("DisplayLayer")
+source_id = 3
+
+[node name="DisplayLayer" type="TileMapLayer" parent="TileRenderer/floor_smooth_stone" unique_id=699094380]
+position = Vector2(8, 8)
+tile_set = SubResource("TileSet_nffg0")
+
+[node name="floor_void" type="Node2D" parent="TileRenderer" unique_id=278510294 node_paths=PackedStringArray("data_layer", "display_layer")]
+z_index = -1
+script = ExtResource("5_kgqa5")
+data_layer = NodePath("../FloorData")
+display_layer = NodePath("DisplayLayer")
+source_id = 4
+
+[node name="DisplayLayer" type="TileMapLayer" parent="TileRenderer/floor_void" unique_id=1426205171]
+position = Vector2(8, 8)
+tile_set = SubResource("TileSet_tnqnc")
+
+[node name="floor_wood" type="Node2D" parent="TileRenderer" unique_id=751572871 node_paths=PackedStringArray("data_layer", "display_layer")]
+z_index = 2
+script = ExtResource("5_kgqa5")
+data_layer = NodePath("../FloorData")
+display_layer = NodePath("DisplayLayer")
+source_id = 5
+
+[node name="DisplayLayer" type="TileMapLayer" parent="TileRenderer/floor_wood" unique_id=1952560300]
+position = Vector2(8, 8)
+tile_set = SubResource("TileSet_4a6js")
+
+[node name="wall_cobble_brick" type="Node2D" parent="TileRenderer" unique_id=174658759 node_paths=PackedStringArray("data_layer", "display_layer")]
+z_index = 100
+script = ExtResource("5_kgqa5")
+data_layer = NodePath("../WallData")
+display_layer = NodePath("DisplayLayer")
+source_id = 6
+
+[node name="DisplayLayer" type="TileMapLayer" parent="TileRenderer/wall_cobble_brick" unique_id=720804391]
+position = Vector2(8, 8)
+tile_set = SubResource("TileSet_j4qsa")
+
+[node name="wall_door" type="Node2D" parent="TileRenderer" unique_id=570259027 node_paths=PackedStringArray("data_layer", "display_layer")]
+z_index = 100
+script = ExtResource("13_b6gtq")
+data_layer = NodePath("../WallData")
+display_layer = NodePath("DisplayLayer")
+source_id = 8
+
+[node name="DisplayLayer" type="TileMapLayer" parent="TileRenderer/wall_door" unique_id=1455816809]
+position = Vector2(8, 8)
+tile_set = SubResource("TileSet_8lwbh")
+
+[node name="wall_smooth_stone" type="Node2D" parent="TileRenderer" unique_id=1043341413 node_paths=PackedStringArray("data_layer", "display_layer")]
+z_index = 100
+script = ExtResource("5_kgqa5")
+data_layer = NodePath("../WallData")
+display_layer = NodePath("DisplayLayer")
+source_id = 7
+
+[node name="DisplayLayer" type="TileMapLayer" parent="TileRenderer/wall_smooth_stone" unique_id=308916844]
+position = Vector2(8, 8)
+tile_set = SubResource("TileSet_nfid1")
+
+[node name="ObjectsLayer" type="Node2D" parent="." unique_id=953312153]
+position = Vector2(16, 550)
+
+[node name="ConnectorsLayer" type="Node2D" parent="." unique_id=957538359]
+position = Vector2(16, 550)
+
+[node name="RoomFileDialog" type="FileDialog" parent="."]
+title = "Load Room"
+size = Vector2i(600, 400)
+
+[node name="OverwriteConfirmDialog" type="ConfirmationDialog" parent="."]
+title = "Overwrite Room?"
+size = Vector2i(420, 140)
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=733060813]
+
+[node name="BackButton" type="Button" parent="UI" unique_id=341770810]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 136.0
+offset_bottom = 47.0
+text = "Back to Menu"
+
+[node name="LoadRoomButton" type="Button" parent="UI"]
+offset_left = 152.0
+offset_top = 16.0
+offset_right = 272.0
+offset_bottom = 47.0
+text = "Load Room"
+
+[node name="FrameRoomButton" type="Button" parent="UI"]
+offset_left = 288.0
+offset_top = 16.0
+offset_right = 408.0
+offset_bottom = 47.0
+text = "Frame Room"
+
+[node name="LeftPanel" type="VBoxContainer" parent="UI"]
+offset_left = 16.0
+offset_top = 60.0
+offset_right = 280.0
+offset_bottom = 700.0
+
+[node name="RoomInfoHeader" type="Button" parent="UI/LeftPanel"]
+layout_mode = 2
+toggle_mode = true
+text = "▸ Room Info"
+
+[node name="RoomInfo" type="VBoxContainer" parent="UI/LeftPanel" unique_id=1656047263]
+visible = false
+layout_mode = 2
+
+[node name="WidthRow" type="HBoxContainer" parent="UI/LeftPanel/RoomInfo" unique_id=78018738]
+layout_mode = 2
+
+[node name="WidthLabel" type="Label" parent="UI/LeftPanel/RoomInfo/WidthRow" unique_id=1458824306]
+layout_mode = 2
+text = "Width"
+
+[node name="WidthSpinBox" type="SpinBox" parent="UI/LeftPanel/RoomInfo/WidthRow" unique_id=687708775]
+layout_mode = 2
+min_value = 1.0
+value = 5.0
+
+[node name="HeightRow" type="HBoxContainer" parent="UI/LeftPanel/RoomInfo" unique_id=1815491035]
+layout_mode = 2
+
+[node name="HeightLabel" type="Label" parent="UI/LeftPanel/RoomInfo/HeightRow" unique_id=1278387947]
+layout_mode = 2
+text = "Height"
+
+[node name="HeightSpinBox" type="SpinBox" parent="UI/LeftPanel/RoomInfo/HeightRow" unique_id=1731745032]
+layout_mode = 2
+min_value = 1.0
+value = 5.0
+
+[node name="IdRow" type="HBoxContainer" parent="UI/LeftPanel/RoomInfo" unique_id=1521032564]
+layout_mode = 2
+
+[node name="IdLabel" type="Label" parent="UI/LeftPanel/RoomInfo/IdRow" unique_id=1574021110]
+layout_mode = 2
+text = "Room ID"
+
+[node name="IdLineEdit" type="LineEdit" parent="UI/LeftPanel/RoomInfo/IdRow" unique_id=1014155784]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "bandit_camp_small"
+
+[node name="TemplateRow" type="HBoxContainer" parent="UI/LeftPanel/RoomInfo"]
+layout_mode = 2
+
+[node name="TemplateOption" type="OptionButton" parent="UI/LeftPanel/RoomInfo/TemplateRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ApplyTemplateButton" type="Button" parent="UI/LeftPanel/RoomInfo/TemplateRow"]
+layout_mode = 2
+text = "Apply"
+
+[node name="FlipRow" type="HBoxContainer" parent="UI/LeftPanel/RoomInfo"]
+layout_mode = 2
+
+[node name="FlipHorizontalButton" type="Button" parent="UI/LeftPanel/RoomInfo/FlipRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Flip ⇋ Horizontal"
+
+[node name="FlipVerticalButton" type="Button" parent="UI/LeftPanel/RoomInfo/FlipRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Flip ⇵ Vertical"
+
+[node name="RecentRoomsLabel" type="Label" parent="UI/LeftPanel/RoomInfo"]
+layout_mode = 2
+text = "Recent Rooms (click to load)"
+
+[node name="RecentRoomsList" type="ItemList" parent="UI/LeftPanel/RoomInfo"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+
+[node name="TagsSection" type="VBoxContainer" parent="UI/LeftPanel/RoomInfo" unique_id=714858522]
+layout_mode = 2
+
+[node name="TagInputRow" type="HBoxContainer" parent="UI/LeftPanel/RoomInfo/TagsSection" unique_id=832559701]
+layout_mode = 2
+
+[node name="TagLineEdit" type="LineEdit" parent="UI/LeftPanel/RoomInfo/TagsSection/TagInputRow" unique_id=727647931]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Add tag..."
+
+[node name="AddTagButton" type="Button" parent="UI/LeftPanel/RoomInfo/TagsSection/TagInputRow" unique_id=989416723]
+layout_mode = 2
+text = "+"
+
+[node name="TagsList" type="ItemList" parent="UI/LeftPanel/RoomInfo/TagsSection" unique_id=1847310648]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+
+[node name="RemoveTagButton" type="Button" parent="UI/LeftPanel/RoomInfo/TagsSection" unique_id=482810384]
+layout_mode = 2
+text = "Remove Selected Tag"
+
+[node name="KnownTagsLabel" type="Label" parent="UI/LeftPanel/RoomInfo/TagsSection"]
+layout_mode = 2
+text = "Known Tags (click to add)"
+
+[node name="KnownTagsList" type="ItemList" parent="UI/LeftPanel/RoomInfo/TagsSection"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+
+[node name="ValidationLabel" type="Label" parent="UI/LeftPanel/RoomInfo"]
+layout_mode = 2
+autowrap_mode = 2
+text = ""
+
+[node name="PaletteHeader" type="Button" parent="UI/LeftPanel"]
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+text = "▾ Tile Palette"
+
+[node name="PaletteSection" type="VBoxContainer" parent="UI/LeftPanel" unique_id=1498856239]
+layout_mode = 2
+
+[node name="EraserButton" type="Button" parent="UI/LeftPanel/PaletteSection" unique_id=1172433915]
+layout_mode = 2
+toggle_mode = true
+text = "Eraser"
+
+[node name="PaintToolRow" type="HBoxContainer" parent="UI/LeftPanel/PaletteSection"]
+layout_mode = 2
+
+[node name="FreehandToolButton" type="Button" parent="UI/LeftPanel/PaletteSection/PaintToolRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_painttool")
+text = "Freehand"
+
+[node name="LineToolButton" type="Button" parent="UI/LeftPanel/PaletteSection/PaintToolRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_painttool")
+text = "Line"
+
+[node name="BoxToolButton" type="Button" parent="UI/LeftPanel/PaletteSection/PaintToolRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_painttool")
+text = "Box"
+
+[node name="CircleToolButton" type="Button" parent="UI/LeftPanel/PaletteSection/PaintToolRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_painttool")
+text = "Circle"
+
+[node name="SelectToolButton" type="Button" parent="UI/LeftPanel/PaletteSection/PaintToolRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_painttool")
+text = "Select"
+
+[node name="FloorPaletteLabel" type="Label" parent="UI/LeftPanel/PaletteSection" unique_id=785540206]
+layout_mode = 2
+text = "Floor Tiles"
+
+[node name="FloorSearchEdit" type="LineEdit" parent="UI/LeftPanel/PaletteSection"]
+layout_mode = 2
+placeholder_text = "Search floor tiles..."
+
+[node name="FloorPaletteList" type="ItemList" parent="UI/LeftPanel/PaletteSection" unique_id=326918250]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+
+[node name="WallPaletteLabel" type="Label" parent="UI/LeftPanel/PaletteSection" unique_id=1366053094]
+layout_mode = 2
+text = "Wall Tiles"
+
+[node name="WallSearchEdit" type="LineEdit" parent="UI/LeftPanel/PaletteSection"]
+layout_mode = 2
+placeholder_text = "Search wall tiles..."
+
+[node name="WallPaletteList" type="ItemList" parent="UI/LeftPanel/PaletteSection" unique_id=679014048]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+
+[node name="RightPanel" type="VBoxContainer" parent="UI"]
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -320.0
+offset_right = -16.0
+offset_top = 16.0
+offset_bottom = 700.0
+
+[node name="ObjectHeader" type="Button" parent="UI/RightPanel"]
+layout_mode = 2
+toggle_mode = true
+text = "▸ Objects"
+
+[node name="ObjectSection" type="VBoxContainer" parent="UI/RightPanel" unique_id=641120778]
+visible = false
+layout_mode = 2
+
+[node name="SnapToggleButton" type="Button" parent="UI/RightPanel/ObjectSection"]
+layout_mode = 2
+toggle_mode = true
+text = "Snap to Grid"
+
+[node name="ObjectTypesLabel" type="Label" parent="UI/RightPanel/ObjectSection"]
+layout_mode = 2
+text = "Object Types"
+
+[node name="ObjectSearchEdit" type="LineEdit" parent="UI/RightPanel/ObjectSection"]
+layout_mode = 2
+placeholder_text = "Search objects..."
+
+[node name="ObjectPaletteList" type="ItemList" parent="UI/RightPanel/ObjectSection"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+fixed_icon_size = Vector2i(24, 24)
+
+[node name="ObjectsList" type="ItemList" parent="UI/RightPanel/ObjectSection" unique_id=1991492732]
+custom_minimum_size = Vector2(0, 140)
+layout_mode = 2
+
+[node name="RotateRow" type="HBoxContainer" parent="UI/RightPanel/ObjectSection"]
+layout_mode = 2
+
+[node name="RotateLeftButton" type="Button" parent="UI/RightPanel/ObjectSection/RotateRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "⟲ Rotate Left"
+
+[node name="RotateRightButton" type="Button" parent="UI/RightPanel/ObjectSection/RotateRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "⟳ Rotate Right"
+
+[node name="ObjectActionsRow" type="HBoxContainer" parent="UI/RightPanel/ObjectSection"]
+layout_mode = 2
+
+[node name="DuplicateObjectButton" type="Button" parent="UI/RightPanel/ObjectSection/ObjectActionsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Duplicate"
+
+[node name="DeleteObjectButton" type="Button" parent="UI/RightPanel/ObjectSection/ObjectActionsRow" unique_id=1160472891]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Delete Selected"
+
+[node name="ConnectorHeader" type="Button" parent="UI/RightPanel"]
+layout_mode = 2
+toggle_mode = true
+text = "▸ Connectors"
+
+[node name="ConnectorSection" type="VBoxContainer" parent="UI/RightPanel" unique_id=629265981]
+visible = false
+layout_mode = 2
+
+[node name="ConnectorModeButton" type="Button" parent="UI/RightPanel/ConnectorSection" unique_id=1910053661]
+layout_mode = 2
+toggle_mode = true
+text = "Place Connector"
+
+[node name="ConnectorsList" type="ItemList" parent="UI/RightPanel/ConnectorSection" unique_id=564393489]
+custom_minimum_size = Vector2(0, 140)
+layout_mode = 2
+
+[node name="ExportHeader" type="Button" parent="UI/RightPanel"]
+layout_mode = 2
+toggle_mode = true
+text = "▸ Export"
+
+[node name="ExportSection" type="VBoxContainer" parent="UI/RightPanel"]
+visible = false
+layout_mode = 2
+
+[node name="ExportButton" type="Button" parent="UI/RightPanel/ExportSection"]
+layout_mode = 2
+text = "Export Room"
+
+[node name="ValidateAllButton" type="Button" parent="UI/RightPanel/ExportSection"]
+layout_mode = 2
+text = "Validate All Rooms"
+
+[node name="ExportStatusLabel" type="Label" parent="UI/RightPanel/ExportSection"]
+layout_mode = 2
+autowrap_mode = 2
+text = ""
+
+[connection signal="pressed" from="UI/BackButton" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="UI/LoadRoomButton" to="." method="_on_load_room_pressed"]
+[connection signal="pressed" from="UI/FrameRoomButton" to="." method="_on_frame_room_pressed"]
+[connection signal="toggled" from="UI/LeftPanel/RoomInfoHeader" to="." method="_on_room_info_header_toggled"]
+[connection signal="value_changed" from="UI/LeftPanel/RoomInfo/WidthRow/WidthSpinBox" to="." method="_on_width_changed"]
+[connection signal="value_changed" from="UI/LeftPanel/RoomInfo/HeightRow/HeightSpinBox" to="." method="_on_height_changed"]
+[connection signal="text_changed" from="UI/LeftPanel/RoomInfo/IdRow/IdLineEdit" to="." method="_on_id_changed"]
+[connection signal="pressed" from="UI/LeftPanel/RoomInfo/TemplateRow/ApplyTemplateButton" to="." method="_on_apply_template_pressed"]
+[connection signal="pressed" from="UI/LeftPanel/RoomInfo/FlipRow/FlipHorizontalButton" to="." method="_on_flip_horizontal_pressed"]
+[connection signal="pressed" from="UI/LeftPanel/RoomInfo/FlipRow/FlipVerticalButton" to="." method="_on_flip_vertical_pressed"]
+[connection signal="item_selected" from="UI/LeftPanel/RoomInfo/RecentRoomsList" to="." method="_on_recent_room_selected"]
+[connection signal="pressed" from="UI/LeftPanel/RoomInfo/TagsSection/TagInputRow/AddTagButton" to="." method="_on_add_tag_pressed"]
+[connection signal="pressed" from="UI/LeftPanel/RoomInfo/TagsSection/RemoveTagButton" to="." method="_on_remove_tag_pressed"]
+[connection signal="item_selected" from="UI/LeftPanel/RoomInfo/TagsSection/KnownTagsList" to="." method="_on_known_tag_selected"]
+[connection signal="toggled" from="UI/LeftPanel/PaletteHeader" to="." method="_on_palette_header_toggled"]
+[connection signal="toggled" from="UI/LeftPanel/PaletteSection/EraserButton" to="." method="_on_eraser_toggled"]
+[connection signal="pressed" from="UI/LeftPanel/PaletteSection/PaintToolRow/FreehandToolButton" to="." method="_on_tool_freehand_pressed"]
+[connection signal="pressed" from="UI/LeftPanel/PaletteSection/PaintToolRow/LineToolButton" to="." method="_on_tool_line_pressed"]
+[connection signal="pressed" from="UI/LeftPanel/PaletteSection/PaintToolRow/BoxToolButton" to="." method="_on_tool_box_pressed"]
+[connection signal="pressed" from="UI/LeftPanel/PaletteSection/PaintToolRow/CircleToolButton" to="." method="_on_tool_circle_pressed"]
+[connection signal="pressed" from="UI/LeftPanel/PaletteSection/PaintToolRow/SelectToolButton" to="." method="_on_tool_select_pressed"]
+[connection signal="text_changed" from="UI/LeftPanel/PaletteSection/FloorSearchEdit" to="." method="_on_floor_search_changed"]
+[connection signal="item_selected" from="UI/LeftPanel/PaletteSection/FloorPaletteList" to="." method="_on_floor_palette_selected"]
+[connection signal="text_changed" from="UI/LeftPanel/PaletteSection/WallSearchEdit" to="." method="_on_wall_search_changed"]
+[connection signal="item_selected" from="UI/LeftPanel/PaletteSection/WallPaletteList" to="." method="_on_wall_palette_selected"]
+[connection signal="toggled" from="UI/RightPanel/ObjectHeader" to="." method="_on_object_header_toggled"]
+[connection signal="toggled" from="UI/RightPanel/ObjectSection/SnapToggleButton" to="." method="_on_object_snap_toggled"]
+[connection signal="text_changed" from="UI/RightPanel/ObjectSection/ObjectSearchEdit" to="." method="_on_object_search_changed"]
+[connection signal="item_selected" from="UI/RightPanel/ObjectSection/ObjectPaletteList" to="." method="_on_object_palette_selected"]
+[connection signal="pressed" from="UI/RightPanel/ObjectSection/RotateRow/RotateLeftButton" to="." method="_on_rotate_left_pressed"]
+[connection signal="pressed" from="UI/RightPanel/ObjectSection/RotateRow/RotateRightButton" to="." method="_on_rotate_right_pressed"]
+[connection signal="pressed" from="UI/RightPanel/ObjectSection/ObjectActionsRow/DuplicateObjectButton" to="." method="_on_duplicate_object_pressed"]
+[connection signal="pressed" from="UI/RightPanel/ObjectSection/ObjectActionsRow/DeleteObjectButton" to="." method="_on_delete_object_pressed"]
+[connection signal="toggled" from="UI/RightPanel/ConnectorHeader" to="." method="_on_connector_header_toggled"]
+[connection signal="toggled" from="UI/RightPanel/ConnectorSection/ConnectorModeButton" to="." method="_on_connector_mode_toggled"]
+[connection signal="toggled" from="UI/RightPanel/ExportHeader" to="." method="_on_export_header_toggled"]
+[connection signal="pressed" from="UI/RightPanel/ExportSection/ExportButton" to="." method="_on_export_pressed"]
+[connection signal="pressed" from="UI/RightPanel/ExportSection/ValidateAllButton" to="." method="_on_validate_all_pressed"]

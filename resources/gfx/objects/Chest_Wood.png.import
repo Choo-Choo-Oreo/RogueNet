@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c227spu0bhdoi"
-path="res://.godot/imported/walking east.png-05637436ce4b60cae3caec0f4948eccc.ctex"
+uid="uid://di37f1vpvbyrx"
+path="res://.godot/imported/Chest_Wood.png-05fb2f799ada3fc1158c78674c5128ed.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/players/Knight/walking east.png"
-dest_files=["res://.godot/imported/walking east.png-05637436ce4b60cae3caec0f4948eccc.ctex"]
+source_file="res://resources/gfx/objects/Chest_Wood.png"
+dest_files=["res://.godot/imported/Chest_Wood.png-05fb2f799ada3fc1158c78674c5128ed.ctex"]
 
 [params]
 

@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("1_ece4a")
-tile_name = "WallSmoothStone"
+tile_name = "wall_smooth_stone"
 atlas_texture = ExtResource("1_jfijs")
 sort_order = 100
 category = 1
