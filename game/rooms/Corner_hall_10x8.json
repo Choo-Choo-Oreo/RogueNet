@@ -2,8 +2,14 @@
 	"connectors": [
 		{
 			"position": {
-				"x": 4,
-				"y": 0
+				"x": 9,
+				"y": 2
+			}
+		},
+		{
+			"position": {
+				"x": 2,
+				"y": 7
 			}
 		}
 	],
@@ -35,79 +41,19 @@
 		[
 			null,
 			"floor_smooth_stone",
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			"floor_smooth_stone",
-			null
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt"
 		],
 		[
 			null,
 			"floor_smooth_stone",
-			null,
-			"floor_smooth_stone",
-			"floor_smooth_stone",
-			"floor_smooth_stone",
-			"floor_smooth_stone",
-			null,
-			"floor_smooth_stone",
-			null
-		],
-		[
-			null,
-			"floor_smooth_stone",
-			null,
-			"floor_smooth_stone",
-			null,
-			null,
-			"floor_smooth_stone",
-			null,
-			"floor_smooth_stone",
-			null
-		],
-		[
-			null,
-			"floor_smooth_stone",
-			null,
-			"floor_smooth_stone",
-			null,
-			null,
-			"floor_smooth_stone",
-			null,
-			"floor_smooth_stone",
-			null
-		],
-		[
-			null,
-			"floor_smooth_stone",
-			null,
-			"floor_smooth_stone",
-			"floor_smooth_stone",
-			"floor_smooth_stone",
-			"floor_smooth_stone",
-			null,
-			"floor_smooth_stone",
-			null
-		],
-		[
-			null,
-			"floor_smooth_stone",
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			"floor_smooth_stone",
-			null
-		],
-		[
-			null,
-			"floor_smooth_stone",
-			"floor_smooth_stone",
+			"floor_dirt",
 			"floor_smooth_stone",
 			"floor_smooth_stone",
 			"floor_smooth_stone",
@@ -118,8 +64,44 @@
 		],
 		[
 			null,
+			"floor_smooth_stone",
+			"floor_dirt",
+			"floor_smooth_stone",
 			null,
 			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_dirt",
+			"floor_smooth_stone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_dirt",
+			"floor_smooth_stone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_dirt",
 			null,
 			null,
 			null,
@@ -130,10 +112,34 @@
 		]
 	],
 	"format": 1,
-	"height": 10,
-	"id": "Target_10x10",
-	"objects": [],
-	"role": "normal",
+	"height": 8,
+	"id": "Corner_hall_10x8",
+	"objects": [
+		{
+			"position": {
+				"x": 26.2968597412109,
+				"y": 22.1558227539063
+			},
+			"rotation": 0.0,
+			"type": "chest"
+		},
+		{
+			"position": {
+				"x": 125.755737304688,
+				"y": 57.97705078125
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		},
+		{
+			"position": {
+				"x": 126.589202880859,
+				"y": 23.3883056640625
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		}
+	],
 	"tags": [],
 	"walls": [
 		[
@@ -141,7 +147,7 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
-			"wall_door",
+			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
@@ -163,74 +169,14 @@
 		[
 			"wall_cobble_brick",
 			null,
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick",
 			null,
 			null,
 			null,
 			null,
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			"wall_door",
-			null,
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick",
 			null,
 			null,
 			null,
-			null,
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick"
+			null
 		],
 		[
 			"wall_cobble_brick",
@@ -246,8 +192,44 @@
 		],
 		[
 			"wall_cobble_brick",
+			null,
+			null,
+			null,
 			"wall_cobble_brick",
 			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",

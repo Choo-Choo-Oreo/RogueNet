@@ -5,10 +5,10 @@
 [sub_resource type="Theme" id="Theme_dl3mn"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_78m4n"]
-bg_color = Color(0.8209874, 0.5254586, 0.1268189, 1)
+bg_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dl3mn"]
-bg_color = Color(0, 0.8643506, 0, 1)
+bg_color = Color(0.87271523, 0, 0, 1)
 
 [node name="HealthBar" type="CanvasLayer" unique_id=302320589]
 script = ExtResource("1_78m4n")

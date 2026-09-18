@@ -16,6 +16,10 @@ const OBJECT_MARKER_TEXTURES := {
 	"chest": "res://resources/gfx/objects/Chest_Wood.png",
 }
 const CONNECTOR_TEXTURE_PATH := "res://resources/gfx/objects/Door.png"
+const PLAYER_SPAWNER_TEXTURE_PATH := "res://resources/gfx/players/knight/Walking South.png"
+const PLAYER_CONTROLLER_SCENE_PATH := "res://scenes/player/PlayerController.tscn"
+const PLACEHOLDER_ENEMY_SCENE_PATH := "res://scenes/dungeon/PlaceholderMouse.tscn"
+const ENEMY_TYPE_NAMES := ["mouse"]
 const CAMERA_ZOOM_MIN := 0.25
 const CAMERA_ZOOM_MAX := 3.0
 const CAMERA_ZOOM_STEP := 0.9
@@ -32,6 +36,7 @@ const OBJECT_MODE_COLOR := Color(0.95, 0.65, 0.2)
 const CONNECTOR_MODE_COLOR := Color(0.35, 0.9, 0.55)
 const ERASER_MODE_COLOR := Color(0.95, 0.35, 0.35)
 const OBJECT_SELECT_COLOR := Color(1, 1, 0.3, 0.95)
+const SPAWNER_MODE_COLOR := Color(0.85, 0.35, 0.85)
 
 @onready var camera: Camera2D = $Camera2D
 @onready var room_file_dialog: FileDialog = $RoomFileDialog
@@ -71,6 +76,18 @@ const OBJECT_SELECT_COLOR := Color(1, 1, 0.3, 0.95)
 @onready var connector_mode_button: Button = $UI/RightPanel/ConnectorSection/ConnectorModeButton
 @onready var export_status_label: Label = $UI/RightPanel/ExportSection/ExportStatusLabel
 @onready var overwrite_confirm_dialog: ConfirmationDialog = $OverwriteConfirmDialog
+@onready var overlay: Node2D = $Overlay
+@onready var spawners_layer: Node2D = $SpawnersLayer
+@onready var spawner_header: Button = $UI/RightPanel/SpawnerHeader
+@onready var spawner_section: VBoxContainer = $UI/RightPanel/SpawnerSection
+@onready var spawner_palette_list: ItemList = $UI/RightPanel/SpawnerSection/SpawnerPaletteList
+@onready var spawners_list: ItemList = $UI/RightPanel/SpawnerSection/SpawnersList
+@onready var test_button: Button = $UI/TestButton
+@onready var spawner_settings_dialog: ConfirmationDialog = $SpawnerSettingsDialog
+@onready var enemy_type_option: OptionButton = $SpawnerSettingsDialog/SettingsVBox/EnemyTypeRow/EnemyTypeOption
+@onready var interval_spin_box: SpinBox = $SpawnerSettingsDialog/SettingsVBox/IntervalRow/IntervalSpinBox
+@onready var count_spin_box: SpinBox = $SpawnerSettingsDialog/SettingsVBox/CountRow/CountSpinBox
+@onready var test_hud: CanvasLayer = $TestHUD
 
 var width: int = 5
 var height: int = 5
@@ -122,6 +139,22 @@ var connector_mode_active: bool = false
 var connectors: Array = []
 var connector_markers: Array[Node2D] = []
 
+var spawner_mode_active: bool = false
+var selected_spawner_type: String = ""
+
+var has_player_spawner: bool = false
+var player_spawner_cell: Vector2i = Vector2i.ZERO
+var player_spawner_marker: Sprite2D = null
+
+var enemy_spawners: Array = []
+var enemy_spawner_markers: Array[Node2D] = []
+var editing_spawner_index: int = -1
+
+var test_mode_active: bool = false
+var test_player: Node = null
+var test_spawn_timers: Array[Timer] = []
+var test_spawned_enemies: Array[Node] = []
+
 var camera_dragging: bool = false
 var camera_bounds_min: Vector2 = Vector2.ZERO
 var camera_bounds_max: Vector2 = Vector2.ZERO
@@ -142,6 +175,8 @@ func _ready() -> void:
 	palette = _load_palette()
 	_populate_palette_lists()
 	_populate_object_palette()
+	_populate_spawner_palette()
+	_update_test_button()
 	_setup_template_option()
 	_setup_room_file_dialog()
 	_setup_overwrite_confirm_dialog()
@@ -453,6 +488,7 @@ func _resize_room_data(new_width: int, new_height: int) -> void:
 	floor_names = new_floor
 	walls_names = new_walls
 	_prune_invalid_connectors()
+	_prune_invalid_spawners()
 	_update_camera_bounds()
 	_clamp_camera_position()
 	_update_validation_display()
@@ -540,7 +576,9 @@ func _restore_grids(new_floor: Array, new_walls: Array) -> void:
 				floor_data_layer.set_cell(Vector2i(x, y), palette[f]["source_id"], Vector2i.ZERO)
 			var w = walls_names[y][x]
 			if w != null and palette.has(w):
-				wall_data_layer.set_cell(Vector2i(x, y), palette[w]["source_id"], Vector2i.ZERO)
+				var cell := Vector2i(x, y)
+				var alt := _door_orientation_alt(cell) if DOOR_TILE_NAMES.has(w) else 0
+				wall_data_layer.set_cell(cell, palette[w]["source_id"], Vector2i.ZERO, alt)
 	tile_renderer.refresh_all()
 	_update_validation_display()
 
@@ -603,6 +641,10 @@ func _on_tool_select_pressed() -> void:
 	paint_tool = PaintTool.SELECT
 
 func _unhandled_input(event: InputEvent) -> void:
+	if test_mode_active:
+		if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
+			_stop_test()
+		return
 	if event is InputEventMouseMotion:
 		_update_hover()
 	if event is InputEventKey and event.pressed and not event.echo:
@@ -613,6 +655,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		_handle_connector_input(event)
 	elif object_mode_active:
 		_handle_object_input(event)
+	elif spawner_mode_active:
+		_handle_spawner_input(event)
 	else:
 		_handle_paint_input(event)
 
@@ -643,6 +687,7 @@ func _handle_shortcut(event: InputEventKey) -> bool:
 	if event.keycode == KEY_1:
 		_set_object_mode_active(false)
 		_set_connector_mode(false)
+		_set_spawner_mode_active(false)
 		return true
 	if event.keycode == KEY_2:
 		_set_object_mode_active(true)
@@ -667,6 +712,7 @@ func _deselect_all() -> void:
 	eraser_active = false
 	_set_object_mode_active(false)
 	_set_connector_mode(false)
+	_set_spawner_mode_active(false)
 	_clear_multi_selection()
 	marquee_active = false
 	queue_redraw()
@@ -679,6 +725,8 @@ func _delete_selected() -> void:
 	elif not connectors_list.get_selected_items().is_empty():
 		var index: int = connectors_list.get_selected_items()[0]
 		_remove_connector_with_undo(index)
+	elif not spawners_list.get_selected_items().is_empty():
+		_on_delete_spawner_pressed()
 
 func _nudge_selected_object(event: InputEventKey) -> bool:
 	var selected := objects_list.get_selected_items()
@@ -749,7 +797,7 @@ func _handle_camera_input(event: InputEvent) -> void:
 		_clamp_camera_position()
 
 func _has_active_selection() -> bool:
-	return selected_tile_name != "" or eraser_active or object_mode_active or connector_mode_active or not multi_selected_indices.is_empty()
+	return selected_tile_name != "" or eraser_active or object_mode_active or connector_mode_active or spawner_mode_active or not multi_selected_indices.is_empty()
 
 func _handle_right_click() -> void:
 	if _has_active_selection():
@@ -768,6 +816,13 @@ func _delete_at_mouse() -> void:
 	var connector_index := _find_connector_at(cell)
 	if connector_index != -1:
 		_remove_connector_with_undo(connector_index)
+		return
+	var enemy_index := _find_enemy_spawner_at(cell)
+	if enemy_index != -1:
+		_remove_enemy_spawner_with_undo(enemy_index)
+		return
+	if has_player_spawner and player_spawner_cell == cell:
+		_clear_player_spawner_with_undo()
 
 func _adjust_pending_rotation(delta_degrees: float) -> void:
 	pending_object_rotation = fmod(pending_object_rotation + delta_degrees + 360.0, 360.0)
@@ -861,6 +916,8 @@ func _handle_select_input(event: InputEvent) -> void:
 					_set_multi_selection([hit])
 				_begin_group_drag()
 			elif _toggle_door_at(_mouse_to_cell()):
+				pass
+			elif _try_open_spawner_settings(_mouse_to_cell()):
 				pass
 			else:
 				_clear_multi_selection()
@@ -1089,6 +1146,22 @@ func _mouse_to_cell() -> Vector2i:
 	var pos := get_global_mouse_position() - WORLD_OFFSET
 	return Vector2i(floori(pos.x / TILE_SIZE), floori(pos.y / TILE_SIZE))
 
+const DOOR_TILE_NAMES := ["wall_door", "wall_door_open"]
+
+## Matches DungeonAssembler._connector_dir's boundary-facing rule, so a door
+## painted here looks identical to how DungeonPainter renders it at runtime.
+func _door_orientation_alt(cell: Vector2i) -> int:
+	var dir: int
+	if cell.y == 0:
+		dir = DungeonAssembler.Dir.NORTH
+	elif cell.y == height - 1:
+		dir = DungeonAssembler.Dir.SOUTH
+	elif cell.x == 0:
+		dir = DungeonAssembler.Dir.WEST
+	else:
+		dir = DungeonAssembler.Dir.EAST
+	return DungeonAssembler.door_orientation_alt(dir)
+
 func _apply_tile(layer: String, cell: Vector2i, value) -> void:
 	if layer == "floor":
 		if value == null:
@@ -1100,7 +1173,8 @@ func _apply_tile(layer: String, cell: Vector2i, value) -> void:
 		if value == null:
 			wall_data_layer.erase_cell(cell)
 		else:
-			wall_data_layer.set_cell(cell, palette[value]["source_id"], Vector2i.ZERO)
+			var alt := _door_orientation_alt(cell) if DOOR_TILE_NAMES.has(value) else 0
+			wall_data_layer.set_cell(cell, palette[value]["source_id"], Vector2i.ZERO, alt)
 		walls_names[cell.y][cell.x] = value
 	tile_renderer.refresh_all()
 
@@ -1156,6 +1230,7 @@ func _set_object_mode_active(active: bool) -> void:
 	if active:
 		connector_mode_active = false
 		connector_mode_button.set_pressed_no_signal(false)
+		_set_spawner_mode_active(false)
 	queue_redraw()
 
 func _on_object_snap_toggled(pressed: bool) -> void:
@@ -1291,6 +1366,7 @@ func _on_connector_mode_toggled(pressed: bool) -> void:
 	connector_mode_active = pressed
 	if pressed:
 		_set_object_mode_active(false)
+		_set_spawner_mode_active(false)
 	queue_redraw()
 
 func _handle_connector_input(event: InputEvent) -> void:
@@ -1371,6 +1447,318 @@ func _make_connector_marker(cell: Vector2i) -> Sprite2D:
 	marker.position = Vector2(cell.x * TILE_SIZE + TILE_SIZE / 2.0, cell.y * TILE_SIZE + TILE_SIZE / 2.0)
 	return marker
 
+## --- Spawners (player start / enemy spawners) ---
+## Session-only: not part of _build_export_data, matching the current
+## room JSON format. A real runtime spawner system will be designed later.
+
+func _populate_spawner_palette() -> void:
+	_style_selection_highlight(spawner_palette_list, SPAWNER_MODE_COLOR)
+	spawner_palette_list.add_item("player_spawner", _make_player_spawner_icon())
+	spawner_palette_list.add_item("enemy_spawner", PlaceholderMouse.make_icon())
+
+func _make_player_spawner_icon() -> Texture2D:
+	var atlas := AtlasTexture.new()
+	atlas.atlas = load(PLAYER_SPAWNER_TEXTURE_PATH)
+	atlas.region = Rect2(0, 0, TILE_SIZE, TILE_SIZE)
+	return atlas
+
+func _cell_center_world(cell: Vector2i) -> Vector2:
+	return Vector2(cell.x * TILE_SIZE + TILE_SIZE / 2.0, cell.y * TILE_SIZE + TILE_SIZE / 2.0)
+
+func _cell_in_bounds(cell: Vector2i) -> bool:
+	return cell.x >= 0 and cell.x < width and cell.y >= 0 and cell.y < height
+
+func _on_spawner_palette_selected(index: int) -> void:
+	selected_spawner_type = spawner_palette_list.get_item_text(index)
+	_set_spawner_mode_active(true)
+	queue_redraw()
+
+func _set_spawner_mode_active(active: bool) -> void:
+	spawner_mode_active = active
+	if active:
+		_set_object_mode_active(false)
+		_set_connector_mode(false)
+	else:
+		spawner_palette_list.deselect_all()
+		selected_spawner_type = ""
+	queue_redraw()
+
+func _handle_spawner_input(event: InputEvent) -> void:
+	if not (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT):
+		return
+	var cell := _mouse_to_cell()
+	if not _cell_in_bounds(cell):
+		return
+	if selected_spawner_type == "player_spawner":
+		_place_player_spawner_with_undo(cell)
+	elif selected_spawner_type == "enemy_spawner":
+		var index := _find_enemy_spawner_at(cell)
+		if index != -1:
+			_remove_enemy_spawner_with_undo(index)
+		else:
+			_add_enemy_spawner_with_undo(cell)
+
+func _find_enemy_spawner_at(cell: Vector2i) -> int:
+	for i in range(enemy_spawners.size()):
+		if enemy_spawners[i]["cell"] == cell:
+			return i
+	return -1
+
+func _try_open_spawner_settings(cell: Vector2i) -> bool:
+	var index := _find_enemy_spawner_at(cell)
+	if index == -1:
+		return false
+	_open_spawner_settings(index)
+	return true
+
+func _place_player_spawner_with_undo(cell: Vector2i) -> void:
+	var had_spawner := has_player_spawner
+	var old_cell := player_spawner_cell
+	if had_spawner and old_cell == cell:
+		return
+	_set_player_spawner(cell)
+	_push_undo(
+		func():
+			if had_spawner:
+				_set_player_spawner(old_cell)
+			else:
+				_clear_player_spawner(),
+		func(): _set_player_spawner(cell)
+	)
+
+func _clear_player_spawner_with_undo() -> void:
+	var old_cell := player_spawner_cell
+	_clear_player_spawner()
+	_push_undo(
+		func(): _set_player_spawner(old_cell),
+		func(): _clear_player_spawner()
+	)
+
+func _set_player_spawner(cell: Vector2i) -> void:
+	player_spawner_cell = cell
+	has_player_spawner = true
+	if player_spawner_marker == null:
+		player_spawner_marker = Sprite2D.new()
+		player_spawner_marker.texture = _make_player_spawner_icon()
+		spawners_layer.add_child(player_spawner_marker)
+	player_spawner_marker.position = _cell_center_world(cell)
+	_refresh_spawners_list()
+	_update_test_button()
+
+func _clear_player_spawner() -> void:
+	has_player_spawner = false
+	if player_spawner_marker != null:
+		player_spawner_marker.queue_free()
+		player_spawner_marker = null
+	_refresh_spawners_list()
+	_update_test_button()
+
+func _add_enemy_spawner_with_undo(cell: Vector2i) -> void:
+	var index := enemy_spawners.size()
+	var data := {"cell": cell, "enemy_type": "mouse", "spawn_interval": 2.0, "spawn_count": 3}
+	_insert_enemy_spawner(data, index)
+	_push_undo(
+		func(): _remove_enemy_spawner(index),
+		func(): _insert_enemy_spawner(data.duplicate(), index)
+	)
+
+func _remove_enemy_spawner_with_undo(index: int) -> void:
+	var data: Dictionary = enemy_spawners[index].duplicate()
+	_remove_enemy_spawner(index)
+	_push_undo(
+		func(): _insert_enemy_spawner(data.duplicate(), index),
+		func(): _remove_enemy_spawner(index)
+	)
+
+func _insert_enemy_spawner(data: Dictionary, index: int) -> void:
+	enemy_spawners.insert(index, data)
+	var marker := Sprite2D.new()
+	marker.texture = PlaceholderMouse.make_icon()
+	marker.position = _cell_center_world(data["cell"])
+	spawners_layer.add_child(marker)
+	enemy_spawner_markers.insert(index, marker)
+	_refresh_spawners_list()
+	_update_test_button()
+
+func _remove_enemy_spawner(index: int) -> void:
+	enemy_spawners.remove_at(index)
+	enemy_spawner_markers[index].queue_free()
+	enemy_spawner_markers.remove_at(index)
+	_refresh_spawners_list()
+	_update_test_button()
+
+func _clear_spawners() -> void:
+	_clear_player_spawner()
+	for marker in enemy_spawner_markers:
+		marker.queue_free()
+	enemy_spawners.clear()
+	enemy_spawner_markers.clear()
+	_refresh_spawners_list()
+	_update_test_button()
+
+func _prune_invalid_spawners() -> void:
+	if has_player_spawner and not _cell_in_bounds(player_spawner_cell):
+		_clear_player_spawner()
+	var i := enemy_spawners.size() - 1
+	while i >= 0:
+		if not _cell_in_bounds(enemy_spawners[i]["cell"]):
+			_remove_enemy_spawner(i)
+		i -= 1
+
+func _refresh_spawners_list() -> void:
+	spawners_list.clear()
+	if has_player_spawner:
+		spawners_list.add_item("Player Spawner @ (%d, %d)" % [player_spawner_cell.x, player_spawner_cell.y])
+	for spawner in enemy_spawners:
+		var cell: Vector2i = spawner["cell"]
+		spawners_list.add_item("Enemy Spawner (%s) @ (%d, %d) — every %.1fs x%d" % [spawner["enemy_type"], cell.x, cell.y, spawner["spawn_interval"], spawner["spawn_count"]])
+
+func _spawners_list_index_to_enemy_index(list_index: int) -> int:
+	var offset := 1 if has_player_spawner else 0
+	if list_index < offset:
+		return -1
+	return list_index - offset
+
+func _on_edit_spawner_pressed() -> void:
+	var selected := spawners_list.get_selected_items()
+	if selected.is_empty():
+		return
+	var enemy_index := _spawners_list_index_to_enemy_index(selected[0])
+	if enemy_index != -1:
+		_open_spawner_settings(enemy_index)
+
+func _on_delete_spawner_pressed() -> void:
+	var selected := spawners_list.get_selected_items()
+	if selected.is_empty():
+		return
+	var index: int = selected[0]
+	if has_player_spawner and index == 0:
+		_clear_player_spawner_with_undo()
+		return
+	var enemy_index := _spawners_list_index_to_enemy_index(index)
+	if enemy_index != -1:
+		_remove_enemy_spawner_with_undo(enemy_index)
+
+func _open_spawner_settings(enemy_index: int) -> void:
+	editing_spawner_index = enemy_index
+	var data: Dictionary = enemy_spawners[enemy_index]
+	enemy_type_option.clear()
+	for i in range(ENEMY_TYPE_NAMES.size()):
+		enemy_type_option.add_item(ENEMY_TYPE_NAMES[i].capitalize(), i)
+	enemy_type_option.select(max(ENEMY_TYPE_NAMES.find(data["enemy_type"]), 0))
+	interval_spin_box.value = data["spawn_interval"]
+	count_spin_box.value = data["spawn_count"]
+	spawner_settings_dialog.popup_centered()
+
+func _on_spawner_settings_confirmed() -> void:
+	if editing_spawner_index == -1 or editing_spawner_index >= enemy_spawners.size():
+		return
+	var index := editing_spawner_index
+	var old_data: Dictionary = enemy_spawners[index].duplicate()
+	var new_data := old_data.duplicate()
+	new_data["enemy_type"] = ENEMY_TYPE_NAMES[enemy_type_option.get_selected_id()]
+	new_data["spawn_interval"] = interval_spin_box.value
+	new_data["spawn_count"] = int(count_spin_box.value)
+	_apply_spawner_settings(index, new_data)
+	_push_undo(
+		func(): _apply_spawner_settings(index, old_data),
+		func(): _apply_spawner_settings(index, new_data)
+	)
+
+func _apply_spawner_settings(index: int, data: Dictionary) -> void:
+	enemy_spawners[index] = data.duplicate()
+	_refresh_spawners_list()
+
+func _on_spawner_header_toggled(pressed: bool) -> void:
+	_set_section_expanded(spawner_header, spawner_section, pressed, "Spawners")
+
+func _update_test_button() -> void:
+	test_button.disabled = not has_player_spawner
+
+## --- Test mode ---
+## Drops the designer into a live, walkable instance of the room currently
+## being edited, using the real PlayerController + NetworkSync RPC path so
+## behavior matches live play, but on an OfflineMultiplayerPeer so it's
+## fully local — no port, no other peers, nothing to configure.
+
+func _on_test_pressed() -> void:
+	if not has_player_spawner or test_mode_active:
+		return
+	_start_test()
+
+func _start_test() -> void:
+	test_mode_active = true
+	_deselect_all()
+	overlay.visible = false
+	$UI.visible = false
+	test_hud.visible = true
+	camera.enabled = false
+	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
+
+	test_player = load(PLAYER_CONTROLLER_SCENE_PATH).instantiate()
+	test_player.name = "1"
+	test_player.global_position = WORLD_OFFSET + _cell_top_left(player_spawner_cell)
+	add_child(test_player)
+	test_player.get_node("Camera2D").make_current()
+
+	for spawner in enemy_spawners:
+		_start_enemy_spawner_timer(spawner)
+
+func _cell_top_left(cell: Vector2i) -> Vector2:
+	return Vector2(cell.x * TILE_SIZE, cell.y * TILE_SIZE)
+
+func _start_enemy_spawner_timer(spawner: Dictionary) -> void:
+	var world_pos: Vector2 = WORLD_OFFSET + _cell_top_left(spawner["cell"])
+	var max_count: int = spawner["spawn_count"]
+	var spawned := [0]
+	var timer := Timer.new()
+	timer.wait_time = spawner["spawn_interval"]
+	add_child(timer)
+	test_spawn_timers.append(timer)
+	timer.timeout.connect(func():
+		spawned[0] += 1
+		_spawn_test_enemy(world_pos)
+		if spawned[0] >= max_count:
+			timer.stop()
+	)
+	timer.start()
+
+func _spawn_test_enemy(world_pos: Vector2) -> void:
+	var enemy: Node2D = load(PLACEHOLDER_ENEMY_SCENE_PATH).instantiate()
+	enemy.global_position = world_pos
+	add_child(enemy)
+	test_spawned_enemies.append(enemy)
+
+func _on_quit_test_pressed() -> void:
+	_stop_test()
+
+func _stop_test() -> void:
+	test_mode_active = false
+	# set_process(false) first: PlayerController's queued-for-deletion node
+	# still gets one more _process() this frame otherwise, and it reads
+	# multiplayer.get_unique_id(), which errors once the peer below is gone.
+	if is_instance_valid(test_player):
+		test_player.set_process(false)
+		test_player.set_physics_process(false)
+		test_player.queue_free()
+	test_player = null
+	multiplayer.multiplayer_peer = null
+	for timer in test_spawn_timers:
+		if is_instance_valid(timer):
+			timer.queue_free()
+	test_spawn_timers.clear()
+	for enemy in test_spawned_enemies:
+		if is_instance_valid(enemy):
+			enemy.set_process(false)
+			enemy.queue_free()
+	test_spawned_enemies.clear()
+	camera.enabled = true
+	camera.make_current()
+	$UI.visible = true
+	overlay.visible = true
+	test_hud.visible = false
+	queue_redraw()
+
 func _on_load_room_pressed() -> void:
 	room_file_dialog.popup_centered_ratio(0.5)
 
@@ -1392,6 +1780,7 @@ func _load_room_data(data: Dictionary) -> void:
 	redo_stack.clear()
 	_clear_objects()
 	_clear_connectors()
+	_clear_spawners()
 
 	room_id = str(data.get("id", ""))
 	id_line_edit.text = room_id
