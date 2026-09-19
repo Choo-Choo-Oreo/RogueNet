@@ -176,7 +176,7 @@
 			null,
 			null,
 			null,
-			null
+			"wall_door"
 		],
 		[
 			"wall_cobble_brick",
@@ -229,7 +229,7 @@
 		[
 			"wall_cobble_brick",
 			"wall_cobble_brick",
-			null,
+			"wall_door",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
