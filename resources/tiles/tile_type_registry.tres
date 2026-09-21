@@ -5,11 +5,14 @@
 [resource]
 script = ExtResource("1_reg01")
 ids = {
+"floor_acid": 15,
 "floor_dirt": 0,
 "floor_flesh": 1,
 "floor_grass": 2,
+"floor_lava": 13,
 "floor_smooth_stone": 3,
 "floor_void": 4,
+"floor_water": 14,
 "floor_wood_planks": 5,
 "wall_cobble_brick": 6,
 "wall_door": 8,
@@ -19,4 +22,4 @@ ids = {
 "wall_smooth_stone": 7,
 "wall_wood_plank": 12
 }
-next_id = 13
+next_id = 16

@@ -20,6 +20,7 @@ from on its own:
 | `cave/` | `wall_rough_cave` | dirt, grass patches | Thick irregular walls, few straight edges. |
 | `mine/` | `wall_rough_cave` rock with `wall_wood_plank` timber supports | dirt, wood plank walkways | A mine shaft. Plank tracks run door to door. Timber frames doorways and props up long tunnels. Includes `Mine_Cabin_Cavern_19x15`, a big cavern with a cabin in the middle. |
 | `flesh/` | `wall_flesh` | flesh, smooth stone | Flesh floor slows movement, so stone strips act as fast lanes. |
+| `liquid/` | `wall_smooth_stone` | smooth stone, `floor_water`, `floor_lava`, `floor_acid` | Test biome for the liquid floors (added 2026-09-21): normal rooms (pools, lava bridge, moat, acid vats, a 29x29 lava checkerboard maze) plus a 52x52 lava-lake boss room (a 40x40 lava pit, a stress test for the glow flood), so the entrance, treasure and corridors come from `fallback/`. Water and acid are `DIFFICULT` terrain, lava `SEVERE`. |
 
 ## `cathedral/` is a stress test, not a designed biome
 

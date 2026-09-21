@@ -30,6 +30,11 @@ func _cell_id(pos: Vector2i) -> int:
 var group_sources: Dictionary = {}
 var void_floor_source: int = -1
 var _variants := 1
+var overlay_layer: TileMapLayer
+
+func set_overlay(layer: TileMapLayer) -> void:
+	overlay_layer = layer
+	overlay_layer.position = display_layer.position
 
 func _is_filled(sid: int) -> bool:
 	if group_sources.is_empty():
@@ -61,8 +66,10 @@ func refresh():
 		return
 	var source := display_layer.tile_set.get_source(0) as TileSetAtlasSource
 	if source and source.texture:
-		_variants = maxi(1, int(source.texture.get_width() / 64.0))
+		_variants = maxi(1, int(source.texture.get_height() / 64.0))
 	display_layer.clear()
+	if overlay_layer:
+		overlay_layer.clear()
 	if group_sources.is_empty():
 		var touched := {}
 		for cell in data_layer.get_used_cells_by_id(source_id):
@@ -97,7 +104,9 @@ func _refresh_cell(pos: Vector2i) -> void:
 		var cell := pos * 2 + q
 		var atlas := c * 2 + q
 		if mask == 15:
-			atlas.x += 8 * _pick_variant(cell)
+			atlas.y += 8 * _pick_variant(cell)
+			if overlay_layer:
+				overlay_layer.set_cell(cell, 0, Vector2i.ZERO)
 		display_layer.set_cell(cell, 0, atlas)
 
 func _pick_variant(cell: Vector2i) -> int:

@@ -24,7 +24,7 @@ func _paint(rooms: Dictionary, placements: Array, floor_data: TileMapLayer, wall
 		for local_pos in p.suppressed_connectors:
 			suppressed[local_pos] = true
 		var sealed_tile := DungeonAssembler.dominant_wall_tile(room) if not locked.is_empty() else ""
-		var floor_tile := DungeonAssembler.dominant_floor_tile(room)
+		var floor_tile: String = room.get("base_floor", DungeonAssembler.dominant_floor_tile(room))
 
 		for y in room["height"]:
 			for x in room["width"]:

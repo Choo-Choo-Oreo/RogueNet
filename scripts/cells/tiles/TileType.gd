@@ -22,5 +22,11 @@ const TERRAIN_SPEED := {
 @export var orientable: bool = false
 @export var terrain: Terrain = Terrain.NORMAL
 
+@export var overlay_texture: Texture2D
+@export_range(0.0, 1.0) var overlay_density := 0.2
+
+@export var glow_radius := 0.0
+@export var glow_color := Color.WHITE
+
 func move_speed() -> float:
 	return TERRAIN_SPEED[terrain]

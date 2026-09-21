@@ -9,6 +9,8 @@ To add a material: add a line to MATERIALS. Pick a method:
   wall             tilt + rim bevel + optional brightness bumps (walls with black tops)
   palette          each art colour has a height role (flesh); walls get their wall base under it
   bevel            named "top" colours are flat, everything else slopes away from them (smooth stone)
+Atlas layout: animation frames run left to right (Aseprite's horizontal strip), variants run
+top to bottom, each a 64x64 set. Any image size works because everything is done per tile.
 Every method works per 16x16 tile (or 8x8 quarter for bevel) so nothing leaks between tiles.
 """
 import math, sys
@@ -52,6 +54,10 @@ def gradient(hs, x, y):
 
 def flat(W, H):
     return Image.new("RGBA", (W, H), (128, 128, 255, 255))
+
+def plain(src):
+    """Completely flat normals, for surfaces that emit light (lava) and shouldn't take shading."""
+    return flat(*src.size)
 
 def apply_height(src, base, h, strength):
     """Add the slope of height map `h` on top of `base` normals (only where the art has pixels)."""
@@ -186,7 +192,9 @@ FLESH = {
     (0x77, 0x14, 0x14): None,  # painted shadow accent
     (0xFF, 0xFF, 0xFF): None,  # painted vein glare
 }
-STONE_TOPS = {(0x92, 0x96, 0xA1), (0x76, 0x7A, 0x84), (0x67, 0x6B, 0x75)}
+WATER = {(0x5B, 0x6E, 0xE1): 0.0, (0x44, 0x55, 0xBA): 0.0, (0x63, 0x9B, 0xFF): 0.5}   # shallows, deep (same level: calm), ripple highlight
+ACID = {(0x4F, 0x7A, 0x12): 0.0, (0x37, 0x94, 0x6E): 0.5}    # base, teal highlight
+STONE_TOPS ={(0x92, 0x96, 0xA1), (0x76, 0x7A, 0x84), (0x67, 0x6B, 0x75)}
 
 MATERIALS = {
     "wall_smooth_stone": (wall, dict(bump=0.8, tilt=0.25, bevel=1.2)),
@@ -198,6 +206,9 @@ MATERIALS = {
     "floor_grass":       (luminance_floor, {}),
     "floor_flesh":       (palette, dict(heights=FLESH)),
     "floor_smooth_stone": (bevel, dict(tops=STONE_TOPS)),
+    "floor_water":       (palette, dict(heights=WATER, strength=3.0)),
+    "floor_lava":        (plain, {}),   # emits its own light, so no shading from the player's
+    "floor_acid":        (palette, dict(heights=ACID, strength=3.0)),
 }
 
 # The dirt and grass PNGs in the game were made with different settings than these defaults

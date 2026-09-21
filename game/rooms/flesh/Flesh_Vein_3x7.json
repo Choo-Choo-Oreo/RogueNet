@@ -1,4 +1,5 @@
 {
+	"base_floor": "floor_flesh",
 	"biome": "flesh",
 	"connectors": [
 		{

@@ -1,9 +1,6 @@
 extends Node2D
 class_name LightMap
 
-# Minecraft-style light: flood outward from the local player through open cells only.
-# Walls get lit where light touches them but never pass it on. Everything else is black.
-
 const CELL := 8
 const TILE := 16
 const DIRS := [
@@ -32,6 +29,15 @@ var _last_light_pos := Vector2(INF, INF)
 var _top_left := Vector2i.ZERO
 var _reached: Array[Vector2i] = []
 var _cost := {}
+var _glow_cost := {}
+var _glow_from := {}
+var _glow_seed := {}
+var _glow_sources: Array = []
+var _glow_reached: Array[Vector2i] = []
+var _glow_image: Image
+var _glow_texture: ImageTexture
+var _tint: Sprite2D
+var _glow_top_left := Vector2i.ZERO
 
 var _shading: ShaderMaterial = load("res://resources/shaders/normal_lit_material.tres")
 
@@ -43,6 +49,9 @@ func _ready() -> void:
 	var side := int(view_half * 2.0 / CELL) + 1
 	_image = Image.create(side, side, false, Image.FORMAT_RGBA8)
 	_texture = ImageTexture.create_from_image(_image)
+	_glow_image = Image.create(1, 1, false, Image.FORMAT_RGBA8)
+	_glow_image.fill(Color(0, 0, 0, 1))
+	_glow_texture = ImageTexture.create_from_image(_glow_image)
 	_sprite = Sprite2D.new()
 	_sprite.texture = _texture
 	_sprite.centered = false
@@ -51,9 +60,38 @@ func _ready() -> void:
 	var smooth := ShaderMaterial.new()
 	smooth.shader = load("res://resources/shaders/light_smooth.gdshader")
 	smooth.set_shader_parameter("cell_size", float(CELL))
+	smooth.set_shader_parameter("glow_map", _glow_texture)
 	_sprite.material = smooth
 	_sprite.z_index = 2000
 	add_child(_sprite)
+	_tint = Sprite2D.new()
+	_tint.texture = _glow_texture
+	_tint.centered = false
+	_tint.scale = Vector2(CELL, CELL)
+	_tint.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	var tint := ShaderMaterial.new()
+	tint.shader = load("res://resources/shaders/glow_tint.gdshader")
+	tint.set_shader_parameter("cell_size", float(CELL))
+	_tint.material = tint
+	_tint.z_index = 2001
+	add_child(_tint)
+	bake_glow()
+
+func bake_glow() -> void:
+	_blocked_cache.clear()
+	var tiles := _floor_data.get_used_rect().merge(_wall_data.get_used_rect())
+	_scan_glow_sources(tiles)
+	_glow_top_left = tiles.position * 2
+	_glow_image = Image.create(tiles.size.x * 2, tiles.size.y * 2, false, Image.FORMAT_RGBA8)
+	_glow_texture = ImageTexture.create_from_image(_glow_image)
+	_flood_glow()
+	_paint_glow()
+	_tint.texture = _glow_texture
+	_tint.position = Vector2(_glow_top_left * CELL)
+	var smooth: ShaderMaterial = _sprite.material
+	smooth.set_shader_parameter("glow_map", _glow_texture)
+	smooth.set_shader_parameter("glow_origin", _tint.position)
+	smooth.set_shader_parameter("glow_size", Vector2(_glow_image.get_size()))
 
 func _process(_delta: float) -> void:
 	var player := _local_player()
@@ -76,6 +114,21 @@ func _local_player() -> Node2D:
 			return child as Node2D
 	return null
 
+func _scan_glow_sources(tiles: Rect2i) -> void:
+	_glow_sources.clear()
+	var glowing := tile_initialize.glow_sources
+	if glowing.is_empty():
+		return
+	for ty in range(tiles.position.y, tiles.end.y):
+		for tx in range(tiles.position.x, tiles.end.x):
+			var tile := Vector2i(tx, ty)
+			var id := _floor_data.get_cell_source_id(tile)
+			if not glowing.has(id):
+				id = _wall_data.get_cell_source_id(tile)
+			if glowing.has(id):
+				var type: TileType = glowing[id]
+				_glow_sources.append({"tile": tile, "radius": type.glow_radius, "color": type.glow_color})
+
 func _paint(light_pos: Vector2) -> void:
 	_image.fill(Color(1, 0, 0, 1))
 	var gap := ((Vector2(_last_origin) + Vector2(0.5, 0.5)) * CELL - light_pos).length()
@@ -90,12 +143,30 @@ func _paint(light_pos: Vector2) -> void:
 		_image.set_pixelv(pixel, Color(minf(fraction, 1.0), 0, 0, 1))
 	_texture.update(_image)
 
+func _paint_glow() -> void:
+	_glow_image.fill(Color(0, 0, 0, 1))
+	for cell in _glow_reached:
+		var pixel := cell - _glow_top_left
+		if pixel.x < 0 or pixel.y < 0 or pixel.x >= _glow_image.get_width() or pixel.y >= _glow_image.get_height():
+			continue
+		var source: Dictionary = _glow_sources[_glow_from[cell]]
+		var centre := (Vector2(cell) + Vector2(0.5, 0.5)) * CELL
+		var source_centre: Vector2 = (Vector2(source["tile"]) + Vector2(0.5, 0.5)) * TILE
+		var beyond := (centre - source_centre).abs() - Vector2(TILE / 2.0, TILE / 2.0)
+		var straight := Vector2(maxf(beyond.x, 0.0), maxf(beyond.y, 0.0)).length()
+		var walked: float = (_glow_cost[cell] - source["head"]) * CELL / (STRAIGHT * 1.0824) - CELL * 0.75
+		var fraction: float = maxf(straight, walked) / source["radius"]
+		var color: Color = source["color"]
+		_glow_image.set_pixelv(pixel, Color(color.r, color.g, color.b, minf(fraction, 1.0)))
+	_glow_texture.update(_glow_image)
+
 func _flood(origin: Vector2i) -> void:
 	_blocked_cache.clear()
 	_reached.clear()
 	var half := int(_image.get_width() / 2.0)
 	_top_left = origin - Vector2i(half, half)
 	_sprite.position = Vector2(_top_left * CELL)
+	_sprite.material.set_shader_parameter("window_origin", _sprite.position)
 	var radius_cells := light_radius / CELL
 	var max_cost := int(radius_cells * STRAIGHT * PATH_SLACK)
 	var cost := {origin: 0}
@@ -128,6 +199,67 @@ func _flood(origin: Vector2i) -> void:
 					buckets[next_cost] = []
 				buckets[next_cost].append(next)
 	_cost = cost
+
+func _flood_glow() -> void:
+	_glow_cost.clear()
+	_glow_from.clear()
+	_glow_seed.clear()
+	_glow_reached.clear()
+	if _glow_sources.is_empty():
+		return
+	var biggest := 0.0
+	for source in _glow_sources:
+		biggest = maxf(biggest, source["radius"])
+	var max_cost := int(biggest / CELL * STRAIGHT * PATH_SLACK)
+	var buckets: Array = []
+	buckets.resize(max_cost + DIAGONAL + 1)
+	for i in _glow_sources.size():
+		var source: Dictionary = _glow_sources[i]
+		var head := max_cost - int(source["radius"] / CELL * STRAIGHT * PATH_SLACK)
+		source["head"] = head
+		for dy in 2:
+			for dx in 2:
+				var cell: Vector2i = source["tile"] * 2 + Vector2i(dx, dy)
+				_glow_cost[cell] = head
+				_glow_from[cell] = i
+				_glow_seed[cell] = true
+				if buckets[head] == null:
+					buckets[head] = []
+				buckets[head].append(cell)
+	var bounds := _glow_image.get_size()
+	for level in range(max_cost + 1):
+		if buckets[level] == null:
+			continue
+		for cell: Vector2i in buckets[level]:
+			if _glow_cost[cell] != level:
+				continue
+			_glow_reached.append(cell)
+			if _is_blocked(cell) and not _glow_seed.has(cell):
+				continue
+			if _glow_seed.has(cell) and _is_interior_seed(cell):
+				continue
+			for dir in DIRS:
+				var step := DIAGONAL if dir.x != 0 and dir.y != 0 else STRAIGHT
+				if step == DIAGONAL and (_is_blocked(cell + Vector2i(dir.x, 0)) or _is_blocked(cell + Vector2i(0, dir.y))):
+					continue
+				var next: Vector2i = cell + dir
+				var next_cost: int = level + step
+				var pixel := next - _glow_top_left
+				if next_cost > max_cost or pixel.x < 0 or pixel.y < 0 or pixel.x >= bounds.x or pixel.y >= bounds.y:
+					continue
+				if _glow_cost.has(next) and _glow_cost[next] <= next_cost:
+					continue
+				_glow_cost[next] = next_cost
+				_glow_from[next] = _glow_from[cell]
+				if buckets[next_cost] == null:
+					buckets[next_cost] = []
+				buckets[next_cost].append(next)
+
+func _is_interior_seed(cell: Vector2i) -> bool:
+	for dir in DIRS:
+		if not _glow_seed.has(cell + dir):
+			return false
+	return true
 
 func _is_blocked(cell: Vector2i) -> bool:
 	var tile := Vector2i(floori(cell.x * CELL / float(TILE)), floori(cell.y * CELL / float(TILE)))
