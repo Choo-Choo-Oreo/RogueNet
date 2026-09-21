@@ -34,6 +34,8 @@ func _paint(rooms: Dictionary, placements: Array, floor_data: TileMapLayer, wall
 				var floor_name: Variant = room["floor"][y][x]
 				if floor_name != null:
 					floor_data.set_cell(world, registry.get_id(floor_name), Vector2i.ZERO)
+				elif room["walls"][y][x] != null:
+					floor_data.set_cell(world, registry.get_id(floor_tile), Vector2i.ZERO)
 
 				var wall_name: Variant = room["walls"][y][x]
 				var alt := 0
@@ -57,12 +59,9 @@ func _paint(rooms: Dictionary, placements: Array, floor_data: TileMapLayer, wall
 
 func _fill_void(floor_data: TileMapLayer, wall_data: TileMapLayer, registry: TileTypeRegistry) -> void:
 	var void_id := registry.get_id("floor_void")
-	var door_ids := [registry.get_id("wall_door"), registry.get_id(OPEN_CONNECTOR_TILE)]
 	var rect := floor_data.get_used_rect().merge(wall_data.get_used_rect()).grow(VOID_PADDING)
 	for y in range(rect.position.y, rect.end.y):
 		for x in range(rect.position.x, rect.end.x):
 			var cell := Vector2i(x, y)
-			var wall_id := wall_data.get_cell_source_id(cell)
-			var under_wall := wall_id != -1 and not door_ids.has(wall_id)
-			if under_wall or floor_data.get_cell_source_id(cell) == -1:
+			if floor_data.get_cell_source_id(cell) == -1:
 				floor_data.set_cell(cell, void_id, Vector2i.ZERO)
