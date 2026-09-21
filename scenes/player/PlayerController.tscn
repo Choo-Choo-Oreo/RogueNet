@@ -139,8 +139,8 @@ animations = [{
 
 [sub_resource type="Gradient" id="Gradient_6ev1f"]
 interpolation_mode = 1
-offsets = PackedFloat32Array(0, 0.3, 0.55, 0.8, 1)
-colors = PackedColorArray(1, 1, 1, 1, 0.7, 0.7, 0.7, 1, 0.4, 0.4, 0.4, 1, 0.15, 0.15, 0.15, 1, 0, 0, 0, 1)
+offsets = PackedFloat32Array(0, 0.5, 0.75, 0.875, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.55, 0.55, 0.55, 1, 0.28, 0.28, 0.28, 1, 0.1, 0.1, 0.1, 1, 0, 0, 0, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_ut1ih"]
 gradient = SubResource("Gradient_6ev1f")
@@ -170,6 +170,6 @@ zoom = Vector2(5, 5)
 [node name="PointLight2D" type="PointLight2D" parent="." unique_id=584270523]
 position = Vector2(8, 8)
 color = Color(1, 0.7, 0.35, 1)
-height = 40.0
+height = 100.0
 texture = SubResource("GradientTexture2D_ut1ih")
-texture_scale = 2.0
+texture_scale = 1.0
