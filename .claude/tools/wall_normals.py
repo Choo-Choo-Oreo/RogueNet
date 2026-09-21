@@ -55,6 +55,7 @@ MATERIALS = {
     'wall_cobble_brick': dict(bump=4.0, tilt=0.25, bevel=1.2),
     'wall_wood_plank': dict(bump=2.5, tilt=0.25, bevel=1.2),
     'wall_rough_cave': dict(bump=3.0, tilt=0.25, bevel=1.2),
+    'wall_flesh': dict(bump=2.5, tilt=0.25, bevel=1.2),
 }
 for n, kw in MATERIALS.items():
     make(n, n+'_normal.png', **kw)

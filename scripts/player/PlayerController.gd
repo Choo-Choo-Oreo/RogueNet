@@ -4,8 +4,10 @@ extends CharacterBody2D
 @export var move_time := 0.2
 
 @onready var wall_data: TileMapLayer = get_tree().current_scene.find_child("WallData", true, false)
+@onready var floor_data: TileMapLayer = get_tree().current_scene.find_child("FloorData", true, false)
 
 @onready var _open_door_source_id: int = load("res://resources/tiles/tile_type_registry.tres").get_id("wall_door_open")
+@onready var _void_source_id: int = load("res://resources/tiles/tile_type_registry.tres").get_id("floor_void")
 
 @export var camera_mouse_weight := 0.3
 @export var camera_max_offset := 96.0
@@ -54,16 +56,39 @@ func _update_facing_animation(delta: float) -> void:
 		$AnimatedSprite2D.play("Back" if delta_pos.y < 0 else "Front")
 
 func _ready() -> void:
+	_build_floor_speeds()
 	set_multiplayer_authority(int(str(name)))
 	if is_multiplayer_authority():
 		$Camera2D.enabled = true
+
+func _floor_source_at(target_global: Vector2) -> int:
+	if floor_data == null:
+		return -1
+	var cell: Vector2i = floor_data.local_to_map(floor_data.to_local(target_global))
+	return floor_data.get_cell_source_id(cell)
+
+var _floor_speed := {}
+
+func _build_floor_speeds() -> void:
+	var registry: TileTypeRegistry = load("res://resources/tiles/tile_type_registry.tres")
+	var dir := DirAccess.open("res://resources/tiles/")
+	if dir == null:
+		return
+	for file_name in dir.get_files():
+		if not file_name.ends_with(".tres"):
+			continue
+		var tile := load("res://resources/tiles/" + file_name) as TileType
+		if tile != null and tile.category == TileType.Category.FLOOR:
+			_floor_speed[registry.get_id(tile.tile_name)] = tile.move_speed()
 
 func _is_blocked(target_global: Vector2) -> bool:
 	if wall_data == null:
 		return false
 	var cell: Vector2i = wall_data.local_to_map(wall_data.to_local(target_global))
 	var source_id := wall_data.get_cell_source_id(cell)
-	return source_id != -1 and source_id != _open_door_source_id
+	if source_id != -1 and source_id != _open_door_source_id:
+		return true
+	return _floor_source_at(target_global) == _void_source_id
 
 var is_moving := false
 
@@ -74,8 +99,10 @@ func _move_one_tile(direction: Vector2) -> void:
 	_facing_direction = direction
 	is_moving = true
 
+	var step_time: float = move_time / _floor_speed.get(_floor_source_at(target_global), 1.0)
+
 	var tween := create_tween()
-	tween.tween_property(self, "global_position", target_global, move_time)
+	tween.tween_property(self, "global_position", target_global, step_time)
 	tween.finished.connect(func(): is_moving = false)
 
 func _physics_process(_delta: float) -> void:
