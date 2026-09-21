@@ -1,0 +1,109 @@
+{
+	"biome": "cave",
+	"connectors": [
+		{
+			"position": {
+				"x": 2,
+				"y": 0
+			}
+		},
+		{
+			"position": {
+				"x": 4,
+				"y": 3
+			}
+		}
+	],
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_dirt",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 1,
+	"height": 5,
+	"id": "Cave_Bend_5x5",
+	"objects": [
+		{
+			"position": {
+				"x": 56.0,
+				"y": 40.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		}
+	],
+	"role": "corridor",
+	"tags": [
+		"cave"
+	],
+	"walls": [
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_door",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			"wall_door"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		]
+	],
+	"width": 5
+}

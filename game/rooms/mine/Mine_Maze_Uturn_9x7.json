@@ -1,0 +1,194 @@
+{
+	"biome": "mine",
+	"connectors": [
+		{
+			"position": {
+				"x": 1,
+				"y": 6
+			}
+		},
+		{
+			"position": {
+				"x": 7,
+				"y": 6
+			}
+		}
+	],
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			null,
+			null,
+			"floor_dirt",
+			null,
+			null,
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			null,
+			null,
+			"floor_dirt",
+			null,
+			null,
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 1,
+	"height": 7,
+	"id": "Mine_Maze_Uturn_9x7",
+	"objects": [
+		{
+			"position": {
+				"x": 72.0,
+				"y": 56.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		}
+	],
+	"role": "normal",
+	"tags": [
+		"maze",
+		"mine"
+	],
+	"walls": [
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_wood_plank",
+			null,
+			"wall_wood_plank",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_wood_plank",
+			null,
+			"wall_wood_plank"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_door",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_door",
+			"wall_rough_cave"
+		]
+	],
+	"width": 9
+}

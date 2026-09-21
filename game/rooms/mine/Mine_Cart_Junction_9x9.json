@@ -1,0 +1,274 @@
+{
+	"biome": "mine",
+	"connectors": [
+		{
+			"position": {
+				"x": 4,
+				"y": 0
+			}
+		},
+		{
+			"position": {
+				"x": 0,
+				"y": 4
+			}
+		},
+		{
+			"position": {
+				"x": 8,
+				"y": 4
+			}
+		},
+		{
+			"position": {
+				"x": 4,
+				"y": 8
+			}
+		}
+	],
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 1,
+	"height": 9,
+	"id": "Mine_Cart_Junction_9x9",
+	"objects": [
+		{
+			"position": {
+				"x": 40.0,
+				"y": 40.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		},
+		{
+			"position": {
+				"x": 104.0,
+				"y": 40.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		},
+		{
+			"position": {
+				"x": 40.0,
+				"y": 104.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		},
+		{
+			"position": {
+				"x": 104.0,
+				"y": 104.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		}
+	],
+	"role": "normal",
+	"tags": [
+		"peaceful",
+		"mine"
+	],
+	"walls": [
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_wood_plank",
+			"wall_door",
+			"wall_wood_plank",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_wood_plank",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_wood_plank"
+		],
+		[
+			"wall_door",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_door"
+		],
+		[
+			"wall_wood_plank",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_wood_plank"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_wood_plank",
+			"wall_door",
+			"wall_wood_plank",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		]
+	],
+	"width": 9
+}

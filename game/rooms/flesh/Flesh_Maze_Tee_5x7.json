@@ -1,0 +1,135 @@
+{
+	"biome": "flesh",
+	"connectors": [
+		{
+			"position": {
+				"x": 2,
+				"y": 0
+			}
+		},
+		{
+			"position": {
+				"x": 4,
+				"y": 3
+			}
+		},
+		{
+			"position": {
+				"x": 2,
+				"y": 6
+			}
+		}
+	],
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_flesh",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_flesh",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			null,
+			"floor_flesh",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_flesh",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 1,
+	"height": 7,
+	"id": "Flesh_Maze_Tee_5x7",
+	"objects": [],
+	"role": "normal",
+	"tags": [
+		"maze",
+		"flesh"
+	],
+	"walls": [
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_door",
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			"wall_door"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_door",
+			"wall_flesh",
+			"wall_flesh"
+		]
+	],
+	"width": 5
+}

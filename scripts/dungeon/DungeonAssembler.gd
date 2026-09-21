@@ -6,6 +6,9 @@ const ROOMS_DIR := "res://game/rooms/"
 const MIN_ROOM_COUNT := 20
 const MAX_ROOM_COUNT := 30
 
+const IGNORED_FOLDERS := ["fallback"]
+const FALLBACK_FOLDER := "fallback"
+
 enum Dir { NORTH, SOUTH, EAST, WEST }
 
 static func _opposite(dir: int) -> int:
@@ -34,11 +37,52 @@ static func _connector_dir(room: Dictionary, pos: Vector2i) -> int:
 		return Dir.WEST
 	return Dir.EAST
 
-static func load_rooms() -> Dictionary:
-	var rooms := {}
+static func list_biomes() -> Array:
+	var biomes: Array = []
 	var dir := DirAccess.open(ROOMS_DIR)
 	if dir == null:
-		push_error("DungeonAssembler: couldn't open " + ROOMS_DIR)
+		return biomes
+	for folder in dir.get_directories():
+		if not IGNORED_FOLDERS.has(folder):
+			biomes.append(folder)
+	biomes.sort()
+	return biomes
+
+static func pick_biome(dungeon_seed: int) -> String:
+	var biomes := list_biomes()
+	if biomes.is_empty():
+		return ""
+	var rng := RandomNumberGenerator.new()
+	rng.seed = dungeon_seed ^ 0xB10E
+	return biomes[rng.randi_range(0, biomes.size() - 1)]
+
+
+static func _room_kind(room: Dictionary) -> String:
+	var role: String = room.get("role", "normal")
+	if role == "entrance" or role == "boss":
+		return role
+	if (room.get("tags", []) as Array).has("treasure"):
+		return "treasure"
+	return role
+
+static func _fill_from_fallback(rooms: Dictionary) -> void:
+	var present := {}
+	for id in rooms:
+		present[_room_kind(rooms[id])] = true
+	var fallback := _read_folder(ROOMS_DIR + FALLBACK_FOLDER + "/")
+	for kind in ["entrance", "boss", "treasure", "corridor", "normal"]:
+		if present.has(kind):
+			continue
+		push_warning("DungeonAssembler: no \"%s\" room in this biome, using fallback" % kind)
+		for id in fallback:
+			if _room_kind(fallback[id]) == kind:
+				rooms[id] = fallback[id]
+
+static func _read_folder(folder: String) -> Dictionary:
+	var rooms := {}
+	var dir := DirAccess.open(folder)
+	if dir == null:
+		push_error("DungeonAssembler: couldn't open " + folder)
 		return rooms
 	var file_names: Array = []
 	dir.list_dir_begin()
@@ -50,10 +94,15 @@ static func load_rooms() -> Dictionary:
 	dir.list_dir_end()
 	file_names.sort()
 	for name in file_names:
-		var text := FileAccess.get_file_as_string(ROOMS_DIR + name)
+		var text := FileAccess.get_file_as_string(folder + name)
 		var data = JSON.parse_string(text)
 		if data is Dictionary:
 			rooms[data["id"]] = data
+	return rooms
+
+static func load_rooms(biome: String = "") -> Dictionary:
+	var rooms := _read_folder(ROOMS_DIR + (biome + "/" if biome != "" else ""))
+	_fill_from_fallback(rooms)
 	return with_rotations(rooms)
 
 static func dominant_wall_tile(room: Dictionary) -> String:

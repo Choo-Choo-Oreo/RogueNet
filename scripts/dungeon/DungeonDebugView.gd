@@ -18,7 +18,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		_dump_layout(NetworkSync.dungeon_seed)
 
 func _dump_layout(dungeon_seed: int) -> void:
-	var rooms := DungeonAssembler.load_rooms()
+	var rooms := DungeonAssembler.load_rooms(DungeonAssembler.pick_biome(dungeon_seed))
 	if rooms.is_empty():
 		print("DungeonDebugView: no rooms loaded")
 		return

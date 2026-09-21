@@ -1,0 +1,194 @@
+{
+	"biome": "mine",
+	"connectors": [
+		{
+			"position": {
+				"x": 3,
+				"y": 0
+			}
+		},
+		{
+			"position": {
+				"x": 0,
+				"y": 3
+			}
+		},
+		{
+			"position": {
+				"x": 6,
+				"y": 3
+			}
+		},
+		{
+			"position": {
+				"x": 3,
+				"y": 6
+			}
+		}
+	],
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 1,
+	"height": 7,
+	"id": "Mine_Treasure_Stash_7x7",
+	"objects": [
+		{
+			"position": {
+				"x": 24.0,
+				"y": 24.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		},
+		{
+			"position": {
+				"x": 56.0,
+				"y": 56.0
+			},
+			"rotation": 0.0,
+			"type": "chest"
+		},
+		{
+			"position": {
+				"x": 88.0,
+				"y": 88.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		}
+	],
+	"role": "normal",
+	"tags": [
+		"treasure",
+		"mine"
+	],
+	"walls": [
+		[
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_door",
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_wood_plank"
+		],
+		[
+			"wall_wood_plank",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_wood_plank"
+		],
+		[
+			"wall_wood_plank",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_wood_plank"
+		],
+		[
+			"wall_door",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_door"
+		],
+		[
+			"wall_wood_plank",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_wood_plank"
+		],
+		[
+			"wall_wood_plank",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_wood_plank"
+		],
+		[
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_door",
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_wood_plank"
+		]
+	],
+	"width": 7
+}

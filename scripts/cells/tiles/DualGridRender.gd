@@ -35,29 +35,6 @@ func _is_filled(sid: int) -> bool:
 		return sid == source_id
 	return group_sources.has(sid) or sid == VOID
 
-func _pieces(ids: Array[int]) -> Array[int]:
-	var wall: Array[bool] = []
-	for id in ids:
-		wall.append(_is_filled(id))
-	var groups: Array[int] = [1, 2, 4, 8]
-	var joins := [
-		[0, 2, true],                                         # left column: always join
-		[1, 3, true],                                         # right column: always join
-		[0, 1, ids[0] == ids[1] or (wall[2] and wall[3])],    # top row: conditional
-		[2, 3, ids[2] == ids[3] or (wall[0] and wall[1])],    # bottom row: conditional
-	]
-	for j in joins:
-		if j[2] and wall[j[0]] and wall[j[1]]:
-			var merged: int = groups[j[0]] | groups[j[1]]
-			for k in 4:
-				if merged & (1 << k):
-					groups[k] = merged
-	var result: Array[int] = []
-	for k in 4:
-		if wall[k] and not result.has(groups[k]):
-			result.append(groups[k])
-	return result
-
 var _floor_layer: TileMapLayer
 
 func _ready():

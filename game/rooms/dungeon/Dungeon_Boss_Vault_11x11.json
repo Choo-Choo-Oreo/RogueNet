@@ -1,0 +1,362 @@
+{
+	"biome": "dungeon",
+	"connectors": [
+		{
+			"position": {
+				"x": 5,
+				"y": 0
+			}
+		},
+		{
+			"position": {
+				"x": 5,
+				"y": 10
+			}
+		},
+		{
+			"position": {
+				"x": 0,
+				"y": 5
+			}
+		},
+		{
+			"position": {
+				"x": 10,
+				"y": 5
+			}
+		}
+	],
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 1,
+	"height": 11,
+	"id": "Dungeon_Boss_Vault_11x11",
+	"objects": [
+		{
+			"position": {
+				"x": 24.0,
+				"y": 24.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		},
+		{
+			"position": {
+				"x": 152.0,
+				"y": 24.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		},
+		{
+			"position": {
+				"x": 24.0,
+				"y": 152.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		},
+		{
+			"position": {
+				"x": 152.0,
+				"y": 152.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		}
+	],
+	"role": "boss",
+	"tags": [
+		"combat",
+		"stone"
+	],
+	"walls": [
+		[
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_door",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone"
+		],
+		[
+			"wall_smooth_stone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_smooth_stone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_smooth_stone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_smooth_stone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_door",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_door"
+		],
+		[
+			"wall_smooth_stone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_smooth_stone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_smooth_stone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_smooth_stone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_door",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone"
+		]
+	],
+	"width": 11
+}

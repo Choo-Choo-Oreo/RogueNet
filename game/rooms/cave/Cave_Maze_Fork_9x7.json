@@ -1,0 +1,200 @@
+{
+	"biome": "cave",
+	"connectors": [
+		{
+			"position": {
+				"x": 2,
+				"y": 0
+			}
+		},
+		{
+			"position": {
+				"x": 6,
+				"y": 0
+			}
+		},
+		{
+			"position": {
+				"x": 4,
+				"y": 6
+			}
+		}
+	],
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_dirt",
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 1,
+	"height": 7,
+	"id": "Cave_Maze_Fork_9x7",
+	"objects": [
+		{
+			"position": {
+				"x": 56.0,
+				"y": 56.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		}
+	],
+	"role": "normal",
+	"tags": [
+		"maze",
+		"cave"
+	],
+	"walls": [
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_door",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_door",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			"wall_rough_cave",
+			null,
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_door",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		]
+	],
+	"width": 9
+}

@@ -1,0 +1,230 @@
+{
+	"biome": "mine",
+	"connectors": [
+		{
+			"position": {
+				"x": 0,
+				"y": 3
+			}
+		},
+		{
+			"position": {
+				"x": 10,
+				"y": 3
+			}
+		}
+	],
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 1,
+	"height": 7,
+	"id": "Mine_Ore_Gallery_11x7",
+	"objects": [
+		{
+			"position": {
+				"x": 40.0,
+				"y": 24.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		},
+		{
+			"position": {
+				"x": 136.0,
+				"y": 24.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		}
+	],
+	"role": "normal",
+	"tags": [
+		"combat",
+		"mine"
+	],
+	"walls": [
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			"wall_rough_cave",
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_door",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_door"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			"wall_wood_plank",
+			null,
+			null,
+			null,
+			"wall_wood_plank",
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		]
+	],
+	"width": 11
+}

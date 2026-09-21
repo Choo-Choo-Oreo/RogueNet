@@ -1,0 +1,250 @@
+{
+	"biome": "mine",
+	"connectors": [
+		{
+			"position": {
+				"x": 4,
+				"y": 0
+			}
+		},
+		{
+			"position": {
+				"x": 0,
+				"y": 4
+			}
+		},
+		{
+			"position": {
+				"x": 8,
+				"y": 4
+			}
+		},
+		{
+			"position": {
+				"x": 4,
+				"y": 8
+			}
+		}
+	],
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 1,
+	"height": 9,
+	"id": "Mine_Maze_Dejavu_9x9",
+	"objects": [
+		{
+			"position": {
+				"x": 72.0,
+				"y": 72.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		}
+	],
+	"role": "normal",
+	"tags": [
+		"maze",
+		"mine"
+	],
+	"walls": [
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_door",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_wood_plank",
+			null,
+			"wall_wood_plank",
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_wood_plank",
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_door",
+			null,
+			"wall_wood_plank",
+			null,
+			null,
+			null,
+			"wall_wood_plank",
+			null,
+			"wall_door"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			"wall_wood_plank",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			"wall_wood_plank",
+			null,
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_wood_plank",
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_door",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		]
+	],
+	"width": 9
+}

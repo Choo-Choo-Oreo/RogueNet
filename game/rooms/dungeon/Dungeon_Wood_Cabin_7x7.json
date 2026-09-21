@@ -1,0 +1,174 @@
+{
+	"biome": "dungeon",
+	"connectors": [
+		{
+			"position": {
+				"x": 3,
+				"y": 0
+			}
+		},
+		{
+			"position": {
+				"x": 3,
+				"y": 6
+			}
+		}
+	],
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			null,
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			null,
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 1,
+	"height": 7,
+	"id": "Dungeon_Wood_Cabin_7x7",
+	"objects": [
+		{
+			"position": {
+				"x": 24.0,
+				"y": 24.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		},
+		{
+			"position": {
+				"x": 88.0,
+				"y": 88.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		}
+	],
+	"role": "normal",
+	"tags": [
+		"combat",
+		"wood"
+	],
+	"walls": [
+		[
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_door",
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_wood_plank"
+		],
+		[
+			"wall_wood_plank",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_wood_plank"
+		],
+		[
+			"wall_wood_plank",
+			null,
+			"wall_wood_plank",
+			null,
+			null,
+			null,
+			"wall_wood_plank"
+		],
+		[
+			"wall_wood_plank",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_wood_plank"
+		],
+		[
+			"wall_wood_plank",
+			null,
+			null,
+			null,
+			"wall_wood_plank",
+			null,
+			"wall_wood_plank"
+		],
+		[
+			"wall_wood_plank",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_wood_plank"
+		],
+		[
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_door",
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_wood_plank"
+		]
+	],
+	"width": 7
+}

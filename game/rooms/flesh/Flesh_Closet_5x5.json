@@ -1,0 +1,95 @@
+{
+	"biome": "flesh",
+	"connectors": [
+		{
+			"position": {
+				"x": 0,
+				"y": 2
+			}
+		}
+	],
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 1,
+	"height": 5,
+	"id": "Flesh_Closet_5x5",
+	"objects": [],
+	"role": "normal",
+	"tags": [
+		"peaceful",
+		"flesh"
+	],
+	"walls": [
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			null,
+			null,
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_door",
+			null,
+			null,
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			null,
+			null,
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		]
+	],
+	"width": 5
+}

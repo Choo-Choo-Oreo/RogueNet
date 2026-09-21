@@ -1,0 +1,193 @@
+{
+	"biome": "flesh",
+	"connectors": [
+		{
+			"position": {
+				"x": 6,
+				"y": 4
+			}
+		},
+		{
+			"position": {
+				"x": 0,
+				"y": 4
+			}
+		}
+	],
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 1,
+	"height": 9,
+	"id": "Flesh_Chambers_7x9",
+	"objects": [],
+	"role": "normal",
+	"tags": [
+		"combat",
+		"flesh"
+	],
+	"walls": [
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			null,
+			null,
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_door",
+			null,
+			"wall_flesh",
+			null,
+			null,
+			null,
+			"wall_door"
+		],
+		[
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			"wall_door",
+			"wall_flesh",
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			null,
+			null,
+			null,
+			"wall_flesh",
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		]
+	],
+	"width": 7
+}

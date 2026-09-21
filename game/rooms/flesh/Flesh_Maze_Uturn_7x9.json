@@ -1,0 +1,193 @@
+{
+	"biome": "flesh",
+	"connectors": [
+		{
+			"position": {
+				"x": 0,
+				"y": 1
+			}
+		},
+		{
+			"position": {
+				"x": 0,
+				"y": 7
+			}
+		}
+	],
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 1,
+	"height": 9,
+	"id": "Flesh_Maze_Uturn_7x9",
+	"objects": [],
+	"role": "normal",
+	"tags": [
+		"maze",
+		"flesh"
+	],
+	"walls": [
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_door",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_door",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		]
+	],
+	"width": 7
+}
