@@ -29,6 +29,7 @@ func _cell_id(pos: Vector2i) -> int:
 
 var group_sources: Dictionary = {}
 var void_floor_source: int = -1
+var _variants := 1
 
 func _is_filled(sid: int) -> bool:
 	if group_sources.is_empty():
@@ -58,6 +59,9 @@ func _run_queued_refresh() -> void:
 func refresh():
 	if not is_instance_valid(display_layer):
 		return
+	var source := display_layer.tile_set.get_source(0) as TileSetAtlasSource
+	if source and source.texture:
+		_variants = maxi(1, int(source.texture.get_width() / 64.0))
 	display_layer.clear()
 	if group_sources.is_empty():
 		var touched := {}
@@ -90,4 +94,13 @@ func _refresh_cell(pos: Vector2i) -> void:
 		if not group_sources.is_empty() and ids[k] != source_id:
 			continue
 		var q := Vector2i(k & 1, k >> 1)
-		display_layer.set_cell(pos * 2 + q, 0, c * 2 + q)
+		var cell := pos * 2 + q
+		var atlas := c * 2 + q
+		if mask == 15:
+			atlas.x += 8 * _pick_variant(cell)
+		display_layer.set_cell(cell, 0, atlas)
+
+func _pick_variant(cell: Vector2i) -> int:
+	if _variants <= 1:
+		return 0
+	return (((cell.x * 73856093) ^ (cell.y * 19349663)) & 0x7fffffff) % _variants

@@ -2,6 +2,7 @@
 extends Node2D
 class_name TileInitialize
 
+const SHADING_MATERIAL := preload("res://resources/shaders/normal_lit_material.tres")
 const TILE_TYPES_DIR := "res://resources/tiles/"
 
 @export var tile_types: Array[TileType] = []
@@ -69,6 +70,7 @@ func _ensure_pair(tile_type: TileType, data_layer: TileMapLayer) -> void:
 		var existing := get_node(tile_type.tile_name)
 		existing.z_index = tile_type.sort_order
 		if existing.display_layer:
+			existing.display_layer.material = SHADING_MATERIAL
 			existing.display_layer.tile_set = _build_display_tile_set(tile_type)
 		if existing is StaticTileRender:
 			existing.atlas_coords = tile_type.atlas_coords
@@ -91,6 +93,7 @@ func _ensure_pair(tile_type: TileType, data_layer: TileMapLayer) -> void:
 	var display_layer := TileMapLayer.new()
 	display_layer.name = "DisplayLayer"
 	display_layer.tile_set = _build_display_tile_set(tile_type)
+	display_layer.material = SHADING_MATERIAL
 
 	pair.data_layer = data_layer
 	pair.display_layer = display_layer
@@ -121,8 +124,9 @@ func _build_display_tile_set(tile_type: TileType) -> TileSet:
 	var quarters := tile_type.shape == TileType.Shape.DUAL_GRID
 	source.texture_region_size = Vector2i(8, 8) if quarters else Vector2i(16, 16)
 	if quarters:
+		var columns := int(tile_type.atlas_texture.get_width() / 8.0)
 		for row in range(8):
-			for col in range(8):
+			for col in range(columns):
 				source.create_tile(Vector2i(col, row))
 	else:
 		source.create_tile(tile_type.atlas_coords)

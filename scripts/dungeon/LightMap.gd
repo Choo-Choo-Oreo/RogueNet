@@ -32,6 +32,8 @@ var _last_light_pos := Vector2(INF, INF)
 var _top_left := Vector2i.ZERO
 var _reached: Array[Vector2i] = []
 
+var _shading: ShaderMaterial = load("res://resources/shaders/normal_lit_material.tres")
+
 func _ready() -> void:
 	_wall_data = tile_initialize.get_node("WallData")
 	_floor_data = tile_initialize.get_node("FloorData")
@@ -64,6 +66,7 @@ func _process(_delta: float) -> void:
 		_last_light_pos = Vector2(INF, INF)
 	if light_pos != _last_light_pos:
 		_last_light_pos = light_pos
+		_shading.set_shader_parameter("light_pos", light_pos)
 		_paint(light_pos)
 
 func _local_player() -> Node2D:
