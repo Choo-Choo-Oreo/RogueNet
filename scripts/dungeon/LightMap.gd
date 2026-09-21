@@ -20,15 +20,24 @@ var _wall_data: TileMapLayer
 var _floor_data: TileMapLayer
 var _void_id: int
 var _open_door_id: int
-var _image: Image
-var _texture: ImageTexture
+const MAX_OTHERS := 3
+
+# One light per player: its own window of cells and the flood results inside it.
+class Light:
+	var image: Image
+	var texture: ImageTexture
+	var top_left := Vector2i.ZERO
+	var reached: Array[Vector2i] = []
+	var cost := {}
+	var last_origin := Vector2i(-99999, -99999)
+	var last_light_pos := Vector2(INF, INF)
+	var light_pos := Vector2.ZERO
+
+var _local: Light
+var _others := {}  # player node -> Light, for the other players (at most MAX_OTHERS are drawn)
+var _side := 0
 var _sprite: Sprite2D
 var _blocked_cache := {}
-var _last_origin := Vector2i(-99999, -99999)
-var _last_light_pos := Vector2(INF, INF)
-var _top_left := Vector2i.ZERO
-var _reached: Array[Vector2i] = []
-var _cost := {}
 var _glow_cost := {}
 var _glow_from := {}
 var _glow_seed := {}
@@ -46,14 +55,13 @@ func _ready() -> void:
 	_floor_data = tile_initialize.get_node("FloorData")
 	_void_id = tile_initialize.tile_registry.get_id("floor_void")
 	_open_door_id = tile_initialize.tile_registry.get_id("wall_door_open")
-	var side := int(view_half * 2.0 / CELL) + 1
-	_image = Image.create(side, side, false, Image.FORMAT_RGBA8)
-	_texture = ImageTexture.create_from_image(_image)
+	_side = int(view_half * 2.0 / CELL) + 1
+	_local = _make_light()
 	_glow_image = Image.create(1, 1, false, Image.FORMAT_RGBA8)
 	_glow_image.fill(Color(0, 0, 0, 1))
 	_glow_texture = ImageTexture.create_from_image(_glow_image)
 	_sprite = Sprite2D.new()
-	_sprite.texture = _texture
+	_sprite.texture = _local.texture
 	_sprite.centered = false
 	_sprite.scale = Vector2(CELL, CELL)
 	_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
@@ -97,22 +105,62 @@ func _process(_delta: float) -> void:
 	var player := _local_player()
 	if player == null:
 		return
-	var light_pos: Vector2 = (player.global_position + Vector2(TILE / 2.0, TILE / 2.0)).round()
-	var origin := Vector2i((light_pos / CELL).floor())
-	if origin != _last_origin:
-		_last_origin = origin
-		_flood(origin)
-		_last_light_pos = Vector2(INF, INF)
-	if light_pos != _last_light_pos:
-		_last_light_pos = light_pos
-		_shading.set_shader_parameter("light_pos", light_pos)
-		_paint(light_pos)
+	_update_light(_local, player, true)
+	_shading.set_shader_parameter("light_pos", _local.light_pos)
+	_update_others()
 
 func _local_player() -> Node2D:
 	for child in player_root.get_children():
 		if child.is_multiplayer_authority():
 			return child as Node2D
 	return null
+
+func _make_light() -> Light:
+	var light := Light.new()
+	light.image = Image.create(_side, _side, false, Image.FORMAT_RGBA8)
+	light.image.fill(Color(1, 0, 0, 1))
+	light.texture = ImageTexture.create_from_image(light.image)
+	return light
+
+# Floods and paints one player's light, only when they moved to a new cell or moved within it.
+func _update_light(light: Light, player: Node2D, is_local: bool) -> void:
+	light.light_pos = (player.global_position + Vector2(TILE / 2.0, TILE / 2.0)).round()
+	var origin := Vector2i((light.light_pos / CELL).floor())
+	if origin != light.last_origin:
+		light.last_origin = origin
+		_flood(light, origin, is_local)
+		light.last_light_pos = Vector2(INF, INF)
+	if light.light_pos != light.last_light_pos:
+		light.last_light_pos = light.light_pos
+		_paint(light)
+
+# Every other player carries their own light, visible however far they are from the local player.
+# The shaders take the brightest of all the lights, so up to MAX_OTHERS others are drawn.
+func _update_others() -> void:
+	var present: Array[Node2D] = []
+	for child in player_root.get_children():
+		if not child.is_multiplayer_authority():
+			present.append(child as Node2D)
+	for player in _others.keys():
+		if not is_instance_valid(player) or not present.has(player):
+			_others.erase(player)
+	var smooth: ShaderMaterial = _sprite.material
+	var positions := PackedVector2Array([Vector2.ZERO, Vector2.ZERO, Vector2.ZERO])
+	var count := 0
+	for player in present:
+		if count >= MAX_OTHERS:
+			break
+		if not _others.has(player):
+			_others[player] = _make_light()
+		var light: Light = _others[player]
+		_update_light(light, player, false)
+		count += 1
+		smooth.set_shader_parameter("other_map_%d" % count, light.texture)
+		smooth.set_shader_parameter("other_origin_%d" % count, Vector2(light.top_left * CELL))
+		positions[count - 1] = light.light_pos
+	smooth.set_shader_parameter("other_count", count)
+	_shading.set_shader_parameter("other_lights", positions)
+	_shading.set_shader_parameter("other_light_count", count)
 
 func _scan_glow_sources(tiles: Rect2i) -> void:
 	_glow_sources.clear()
@@ -129,19 +177,21 @@ func _scan_glow_sources(tiles: Rect2i) -> void:
 				var type: TileType = glowing[id]
 				_glow_sources.append({"tile": tile, "radius": type.glow_radius, "color": type.glow_color})
 
-func _paint(light_pos: Vector2) -> void:
-	_image.fill(Color(1, 0, 0, 1))
-	var gap := ((Vector2(_last_origin) + Vector2(0.5, 0.5)) * CELL - light_pos).length()
-	for cell in _reached:
-		var pixel := cell - _top_left
-		if pixel.x < 0 or pixel.y < 0 or pixel.x >= _image.get_width() or pixel.y >= _image.get_height():
+func _paint(light: Light) -> void:
+	var image := light.image
+	var light_pos := light.light_pos
+	image.fill(Color(1, 0, 0, 1))
+	var gap := ((Vector2(light.last_origin) + Vector2(0.5, 0.5)) * CELL - light_pos).length()
+	for cell in light.reached:
+		var pixel := cell - light.top_left
+		if pixel.x < 0 or pixel.y < 0 or pixel.x >= image.get_width() or pixel.y >= image.get_height():
 			continue
 		var centre := (Vector2(cell) + Vector2(0.5, 0.5)) * CELL
 		var straight := (centre - light_pos).length()
-		var walked: float = _cost[cell] * CELL / (STRAIGHT * 1.0824) - gap
+		var walked: float = light.cost[cell] * CELL / (STRAIGHT * 1.0824) - gap
 		var fraction := maxf(straight, walked) / light_radius
-		_image.set_pixelv(pixel, Color(minf(fraction, 1.0), 0, 0, 1))
-	_texture.update(_image)
+		image.set_pixelv(pixel, Color(minf(fraction, 1.0), 0, 0, 1))
+	light.texture.update(image)
 
 func _paint_glow() -> void:
 	_glow_image.fill(Color(0, 0, 0, 1))
@@ -160,13 +210,15 @@ func _paint_glow() -> void:
 		_glow_image.set_pixelv(pixel, Color(color.r, color.g, color.b, minf(fraction, 1.0)))
 	_glow_texture.update(_glow_image)
 
-func _flood(origin: Vector2i) -> void:
+func _flood(light: Light, origin: Vector2i, is_local: bool) -> void:
 	_blocked_cache.clear()
-	_reached.clear()
-	var half := int(_image.get_width() / 2.0)
-	_top_left = origin - Vector2i(half, half)
-	_sprite.position = Vector2(_top_left * CELL)
-	_sprite.material.set_shader_parameter("window_origin", _sprite.position)
+	var reached := light.reached
+	reached.clear()
+	var half := int(_side / 2.0)
+	light.top_left = origin - Vector2i(half, half)
+	if is_local:
+		_sprite.position = Vector2(light.top_left * CELL)
+		_sprite.material.set_shader_parameter("window_origin", _sprite.position)
 	var radius_cells := light_radius / CELL
 	var max_cost := int(radius_cells * STRAIGHT * PATH_SLACK)
 	var cost := {origin: 0}
@@ -181,7 +233,7 @@ func _flood(origin: Vector2i) -> void:
 				continue
 			if Vector2(cell - origin).length() > radius_cells + 1.0:
 				continue
-			_reached.append(cell)
+			reached.append(cell)
 			if cell != origin and _is_blocked(cell):
 				continue
 			for dir in DIRS:
@@ -198,7 +250,7 @@ func _flood(origin: Vector2i) -> void:
 				if buckets[next_cost] == null:
 					buckets[next_cost] = []
 				buckets[next_cost].append(next)
-	_cost = cost
+	light.cost = cost
 
 func _flood_glow() -> void:
 	_glow_cost.clear()

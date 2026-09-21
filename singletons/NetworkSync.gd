@@ -65,7 +65,11 @@ func _relay_position(sender_id: int, pos: Vector2) -> void:
 
 @rpc("authority", "unreliable_ordered")
 func receive_position(player_id: int, pos: Vector2) -> void:
-	var player := get_tree().current_scene.get_node_or_null("Player/" + str(player_id))
+	# current_scene is null for a moment while the scene changes, and packets keep arriving.
+	var scene := get_tree().current_scene
+	if scene == null:
+		return
+	var player := scene.get_node_or_null("Player/" + str(player_id))
 	if player:
 		player.global_position = pos
 
@@ -82,7 +86,10 @@ func _relay_move_state(sender_id: int, direction: Vector2, moving: bool) -> void
 
 @rpc("authority", "reliable")
 func receive_move_state(player_id: int, direction: Vector2, moving: bool) -> void:
-	var player := get_tree().current_scene.get_node_or_null("Player/" + str(player_id))
+	var scene := get_tree().current_scene
+	if scene == null:
+		return
+	var player := scene.get_node_or_null("Player/" + str(player_id))
 	if player:
 		player.apply_move_animation(direction, moving)
 
@@ -106,7 +113,10 @@ func _join_shared_party(peer_id: int) -> void:
 
 @rpc("authority", "reliable")
 func receive_mission_created(mission_id: int, creator_id: int, privacy: String) -> void:
-	var guild_town := get_tree().current_scene.get_node_or_null("PanelGuild/GuildTown")
+	var scene := get_tree().current_scene
+	if scene == null:
+		return
+	var guild_town := scene.get_node_or_null("PanelGuild/GuildTown")
 	if guild_town:
 		guild_town.add_mission(mission_id, creator_id, privacy)
 
@@ -173,7 +183,10 @@ func _join_mission(peer_id: int, mission_id: int, password: String) -> void:
 
 @rpc("authority", "reliable")
 func receive_join_rejected(_mission_id: int) -> void:
-	var guild_town := get_tree().current_scene.get_node_or_null("PanelGuild/GuildTown")
+	var scene := get_tree().current_scene
+	if scene == null:
+		return
+	var guild_town := scene.get_node_or_null("PanelGuild/GuildTown")
 	if guild_town:
 		guild_town.show_join_error("Incorrect password.")
 
@@ -212,6 +225,9 @@ func _broadcast_members(mission_id: int) -> void:
 @rpc("authority", "reliable")
 func receive_mission_members(mission_id: int, members: Array) -> void:
 	var main_town := get_tree().current_scene
+	# Not in the town (for example already in the dungeon): nothing to update.
+	if main_town == null or main_town.get_node_or_null("PanelMission") == null:
+		return
 	var mission_screen := main_town.get_node_or_null("PanelMission/GuildMission")
 	if mission_screen:
 		mission_screen.set_members(mission_id, members)
@@ -245,6 +261,8 @@ func _end_mission(mission_id: int) -> void:
 @rpc("authority", "reliable")
 func receive_mission_ended(mission_id: int) -> void:
 	var main_town := get_tree().current_scene
+	if main_town == null:
+		return
 	var guild_town := main_town.get_node_or_null("PanelGuild/GuildTown")
 	if guild_town:
 		guild_town.remove_mission(mission_id)

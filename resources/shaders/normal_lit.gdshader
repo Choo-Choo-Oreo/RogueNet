@@ -9,6 +9,10 @@ uniform float strength = 0.8;            // overall amount of shading
 uniform float reach = 96.0;              // pixels from the light where shading fades to nothing
 uniform float steps = 4.0;               // brightness levels of the shading (higher = smoother)
 
+// The other players' lights (set by LightMap.gd); each pixel is shaded by whichever light is nearest.
+uniform vec2 other_lights[3];
+uniform int other_light_count = 0;
+
 varying vec2 world_pos;
 
 void vertex() {
@@ -17,7 +21,13 @@ void vertex() {
 
 void fragment() {
 	vec3 normal = normalize(texture(NORMAL_TEXTURE, UV).xyz * 2.0 - 1.0);
-	vec2 to_light = light_pos - world_pos;
+	vec2 nearest = light_pos;
+	for (int i = 0; i < 3; i++) {
+		if (i < other_light_count && length(other_lights[i] - world_pos) < length(nearest - world_pos)) {
+			nearest = other_lights[i];
+		}
+	}
+	vec2 to_light = nearest - world_pos;
 	// The normal maps are green-up, screen y is down, so flip y for the light direction.
 	vec3 light_dir = normalize(vec3(to_light.x, -to_light.y, light_height));
 	float tilt = max(dot(normal, light_dir), 0.0) - light_dir.z;
