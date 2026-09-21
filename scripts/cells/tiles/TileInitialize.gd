@@ -14,6 +14,8 @@ func _ready():
 	for tile_type in types:
 		var data_layer := floor_data_layer if tile_type.category == TileType.Category.FLOOR else wall_data_layer
 		_ensure_pair(tile_type, data_layer)
+		_link_wall_group(wall_data_layer)
+		refresh_all()
 
 func _discover_tile_types() -> Array[TileType]:
 	var discovered: Array[TileType] = []
@@ -30,6 +32,15 @@ func _discover_tile_types() -> Array[TileType]:
 		file_name = dir.get_next()
 	dir.list_dir_end()
 	return discovered
+
+func _link_wall_group(wall_data_layer: TileMapLayer) -> void:
+	var group := {}
+	for child in get_children():
+		if child is DualGridRender and child.data_layer == wall_data_layer:
+			group[child.source_id] = true
+	for child in get_children():
+		if child is DualGridRender and child.data_layer == wall_data_layer:
+			child.group_sources = group
 
 func refresh_all() -> void:
 	for child in get_children():
