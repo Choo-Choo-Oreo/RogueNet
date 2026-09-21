@@ -21,11 +21,14 @@ func _cell_id(pos: Vector2i) -> int:
 	if sid != -1 or group_sources.is_empty():
 		return sid
 	var floor_layer := get_parent().get_node_or_null("FloorData") as TileMapLayer
-	if floor_layer and floor_layer.get_cell_source_id(pos) == -1:
-		return VOID
+	if floor_layer:
+		var floor_sid := floor_layer.get_cell_source_id(pos)
+		if floor_sid == -1 or floor_sid == void_floor_source:
+			return VOID
 	return -1
 
 var group_sources: Dictionary = {}
+var void_floor_source: int = -1
 
 func _is_filled(sid: int) -> bool:
 	if group_sources.is_empty():
@@ -84,7 +87,7 @@ func refresh():
 				continue
 			var c: Vector2i = MASK_TO_CELL[mask]
 			for k in 4:
-				if ids[k] != source_id:
+				if not group_sources.is_empty() and ids[k] != source_id:
 					continue
 				var q := Vector2i(k & 1, k >> 1)
 				display_layer.set_cell(Vector2i(x, y) * 2 + q, 0, c * 2 + q)

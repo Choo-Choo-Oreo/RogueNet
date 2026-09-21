@@ -14,8 +14,8 @@ func _ready():
 	for tile_type in types:
 		var data_layer := floor_data_layer if tile_type.category == TileType.Category.FLOOR else wall_data_layer
 		_ensure_pair(tile_type, data_layer)
-		_link_wall_group(wall_data_layer)
-		refresh_all()
+	_link_wall_group(wall_data_layer)
+	refresh_all()
 
 func _discover_tile_types() -> Array[TileType]:
 	var discovered: Array[TileType] = []
@@ -38,9 +38,14 @@ func _link_wall_group(wall_data_layer: TileMapLayer) -> void:
 	for child in get_children():
 		if child is DualGridRender and child.data_layer == wall_data_layer:
 			group[child.source_id] = true
+	var void_source := -1
+	var void_node := get_node_or_null("floor_void")
+	if void_node:
+		void_source = void_node.source_id
 	for child in get_children():
 		if child is DualGridRender and child.data_layer == wall_data_layer:
 			child.group_sources = group
+			child.void_floor_source = void_source
 
 func refresh_all() -> void:
 	for child in get_children():
@@ -63,6 +68,8 @@ func _ensure_pair(tile_type: TileType, data_layer: TileMapLayer) -> void:
 	if has_node(tile_type.tile_name):
 		var existing := get_node(tile_type.tile_name)
 		existing.z_index = tile_type.sort_order
+		if existing.display_layer:
+			existing.display_layer.tile_set = _build_display_tile_set(tile_type)
 		if existing is StaticTileRender:
 			existing.atlas_coords = tile_type.atlas_coords
 			existing.orientable = tile_type.orientable

@@ -3,6 +3,7 @@ extends Node
 @export var tile_initialize: TileInitialize
 
 const OPEN_CONNECTOR_TILE := "wall_door_open"
+const VOID_PADDING := 2
 
 func _ready() -> void:
 	var floor_data: TileMapLayer = tile_initialize.get_node("FloorData")
@@ -51,3 +52,17 @@ func _paint(rooms: Dictionary, placements: Array, floor_data: TileMapLayer, wall
 			var local := Vector2i(int(c["position"]["x"]), int(c["position"]["y"]))
 			var world: Vector2i = p.offset + local
 			floor_data.set_cell(world, registry.get_id(floor_tile), Vector2i.ZERO)
+
+	_fill_void(floor_data, wall_data, registry)
+
+func _fill_void(floor_data: TileMapLayer, wall_data: TileMapLayer, registry: TileTypeRegistry) -> void:
+	var void_id := registry.get_id("floor_void")
+	var door_ids := [registry.get_id("wall_door"), registry.get_id(OPEN_CONNECTOR_TILE)]
+	var rect := floor_data.get_used_rect().merge(wall_data.get_used_rect()).grow(VOID_PADDING)
+	for y in range(rect.position.y, rect.end.y):
+		for x in range(rect.position.x, rect.end.x):
+			var cell := Vector2i(x, y)
+			var wall_id := wall_data.get_cell_source_id(cell)
+			var under_wall := wall_id != -1 and not door_ids.has(wall_id)
+			if under_wall or floor_data.get_cell_source_id(cell) == -1:
+				floor_data.set_cell(cell, void_id, Vector2i.ZERO)
