@@ -9,7 +9,6 @@ tile_name = "wall_door"
 atlas_texture = ExtResource("1_jfijs")
 sort_order = 100
 category = 1
-casts_shadow = true
 shape = 1
 atlas_coords = Vector2i(0, 0)
 marker_color = Color(0.454902, 0.360784, 0.239216, 1)

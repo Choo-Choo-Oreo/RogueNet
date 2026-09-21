@@ -113,18 +113,8 @@ func _register_marker_source(data_layer: TileMapLayer, tile_type: TileType) -> i
 func _apply_marker_appearance(data_layer: TileMapLayer, source_id: int, tile_type: TileType) -> void:
 	var source := data_layer.tile_set.get_source(source_id) as TileSetAtlasSource
 	source.get_tile_data(Vector2i(0, 0), 0).modulate = tile_type.marker_color
-	_apply_occluder(data_layer.tile_set, source.get_tile_data(Vector2i(0, 0), 0), tile_type)
 	source.resource_name = tile_type.atlas_texture.resource_path.get_file() if tile_type.atlas_texture else tile_type.tile_name
-	
-func _apply_occluder(tile_set: TileSet, tile_data: TileData, tile_type: TileType) -> void:
-	if tile_set.get_occlusion_layers_count() == 0:
-		tile_set.add_occlusion_layer()
-	if not tile_type.casts_shadow:
-		return
-	var occluder := OccluderPolygon2D.new()
-	occluder.polygon = PackedVector2Array([Vector2(-8, -8), Vector2(8, -8), Vector2(8, 8), Vector2(-8, 8)])
-	tile_data.set_occluder(0, occluder)
-	
+
 func _build_display_tile_set(tile_type: TileType) -> TileSet:
 	var source := TileSetAtlasSource.new()
 	source.texture = tile_type.atlas_texture

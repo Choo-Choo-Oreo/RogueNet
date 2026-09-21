@@ -58,7 +58,6 @@ func _update_facing_animation(delta: float) -> void:
 func _ready() -> void:
 	_build_floor_speeds()
 	set_multiplayer_authority(int(str(name)))
-	$VisionLight.visible = is_multiplayer_authority()
 	if is_multiplayer_authority():
 		$Camera2D.enabled = true
 

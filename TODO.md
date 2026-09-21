@@ -3,7 +3,7 @@
 Legend: ✓ done, ✗ not done. Statuses were checked against the files (not by
 running the game), so anything about how it looks or plays is unconfirmed.
 
-Last verified: 2026-09-21 (after commit `a89638a`, "Introduce biomes and per-biome room loading").
+Last verified: 2026-09-21 (after commit `3f9aaa4`, plus uncommitted lighting rewrite; not checked in game).
 
 ## Small cleanups
 - ✓ Unused `_pieces()` in `DualGridRender.gd` removed
@@ -30,7 +30,10 @@ Last verified: 2026-09-21 (after commit `a89638a`, "Introduce biomes and per-bio
 - ✗ `Mine_Cabin_Cavern_19x15`: about 8% of its floor is unreachable from its doors (may be intentional)
 
 ## Rendering and art
-- ✗ Wall shadows: no `LightOccluder2D` anywhere (needs a `TileInitialize.gd` change)
+- ✓ Vision limit and walls blocking light: `LightMap.gd` (Minecraft-style flood fill from the local player, round, smooth to the pixel, stepped brightness) replaced the shadow/occluder attempt
+- ✗ Normal-map shading is off while the torch `PointLight2D` is disabled (re-enable via LightMap if wanted)
+- ✗ Light steps and radius tuning (`light_radius`, `step_*` in `light_smooth.gdshader`)
+- ✗ Other players' vision and party shared vision (LightMap only follows the local player)
 - ✓ `wall_wood_plank`, `wall_rough_cave`, `wall_flesh` tile types and lit textures exist
 - ✓ Normal maps for those three walls (`.claude/tools/wall_normals.py` lists them, PNGs exist)
 - ✗ Normal maps for the void and the doors (no files)
