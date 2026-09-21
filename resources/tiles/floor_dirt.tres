@@ -8,5 +8,6 @@ script = ExtResource("1_ece4a")
 tile_name = "floor_dirt"
 atlas_texture = ExtResource("1_jfijs")
 category = 0
+sort_order = 2
 marker_color = Color(0.545098, 0.352941, 0.168627, 1)
 metadata/_custom_type_script = "uid://brc0m0h8phc05"

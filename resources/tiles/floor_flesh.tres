@@ -7,6 +7,6 @@
 script = ExtResource("1_ece4a")
 tile_name = "floor_flesh"
 atlas_texture = ExtResource("1_jfijs")
-sort_order = 3
+sort_order = 4
 marker_color = Color(0.74902, 0.184314, 0.184314, 1)
 metadata/_custom_type_script = "uid://brc0m0h8phc05"
