@@ -77,13 +77,14 @@ func refresh():
 				_cell_id(Vector2i(x + 1, y + 1)),
 			]
 			var mask := 0
-			for piece in _pieces(ids):
-				var best: int = -3
-				for k in 4:
-					if piece & (1 << k):
-						best = max(best, ids[k])
-				if best == source_id:
-					mask |= piece
+			for k in 4:
+				if _is_filled(ids[k]):
+					mask |= 1 << k
 			if mask == 0:
 				continue
-			display_layer.set_cell(Vector2i(x, y), 0, MASK_TO_CELL[mask])
+			var c: Vector2i = MASK_TO_CELL[mask]
+			for k in 4:
+				if ids[k] != source_id:
+					continue
+				var q := Vector2i(k & 1, k >> 1)
+				display_layer.set_cell(Vector2i(x, y) * 2 + q, 0, c * 2 + q)

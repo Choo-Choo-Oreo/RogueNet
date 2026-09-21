@@ -111,14 +111,16 @@ func _apply_marker_appearance(data_layer: TileMapLayer, source_id: int, tile_typ
 func _build_display_tile_set(tile_type: TileType) -> TileSet:
 	var source := TileSetAtlasSource.new()
 	source.texture = tile_type.atlas_texture
-	source.texture_region_size = Vector2i(16, 16)
-	if tile_type.shape == TileType.Shape.DUAL_GRID:
-		for row in range(4):
-			for col in range(4):
+	var quarters := tile_type.shape == TileType.Shape.DUAL_GRID
+	source.texture_region_size = Vector2i(8, 8) if quarters else Vector2i(16, 16)
+	if quarters:
+		for row in range(8):
+			for col in range(8):
 				source.create_tile(Vector2i(col, row))
 	else:
 		source.create_tile(tile_type.atlas_coords)
 
 	var tile_set := TileSet.new()
 	tile_set.add_source(source)
+	tile_set.tile_size = Vector2i(8, 8) if quarters else Vector2i(16, 16)
 	return tile_set
