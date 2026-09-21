@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dihccns8611to"
-path="res://.godot/imported/Flesh_Tileset.png-73a4b9aed13c25ec31af27ccc40e7851.ctex"
+uid="uid://jqjd1u0r2jdy"
+path="res://.godot/imported/wall_smooth_stone_normal.png-e34d0a8631e6fd18a6f5625713a7a01c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/tileset/Flesh_Tileset.png"
-dest_files=["res://.godot/imported/Flesh_Tileset.png-73a4b9aed13c25ec31af27ccc40e7851.ctex"]
+source_file="res://resources/gfx/tileset/wall_smooth_stone_normal.png"
+dest_files=["res://.godot/imported/wall_smooth_stone_normal.png-e34d0a8631e6fd18a6f5625713a7a01c.ctex"]
 
 [params]
 

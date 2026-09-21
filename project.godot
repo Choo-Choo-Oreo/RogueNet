@@ -49,7 +49,6 @@ folder_colors={
 "res://game/rooms/": "red",
 "res://resources/": "red",
 "res://scenes/": "blue",
-"res://scenes/dev/": "purple",
 "res://scripts/": "green",
 "res://singletons/": "green"
 }
