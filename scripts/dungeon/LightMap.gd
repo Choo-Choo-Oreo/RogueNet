@@ -31,6 +31,7 @@ var _last_origin := Vector2i(-99999, -99999)
 var _last_light_pos := Vector2(INF, INF)
 var _top_left := Vector2i.ZERO
 var _reached: Array[Vector2i] = []
+var _cost := {}
 
 var _shading: ShaderMaterial = load("res://resources/shaders/normal_lit_material.tres")
 
@@ -77,12 +78,15 @@ func _local_player() -> Node2D:
 
 func _paint(light_pos: Vector2) -> void:
 	_image.fill(Color(1, 0, 0, 1))
+	var gap := ((Vector2(_last_origin) + Vector2(0.5, 0.5)) * CELL - light_pos).length()
 	for cell in _reached:
 		var pixel := cell - _top_left
 		if pixel.x < 0 or pixel.y < 0 or pixel.x >= _image.get_width() or pixel.y >= _image.get_height():
 			continue
 		var centre := (Vector2(cell) + Vector2(0.5, 0.5)) * CELL
-		var fraction := (centre - light_pos).length() / light_radius
+		var straight := (centre - light_pos).length()
+		var walked: float = _cost[cell] * CELL / (STRAIGHT * 1.0824) - gap
+		var fraction := maxf(straight, walked) / light_radius
 		_image.set_pixelv(pixel, Color(minf(fraction, 1.0), 0, 0, 1))
 	_texture.update(_image)
 
@@ -123,6 +127,7 @@ func _flood(origin: Vector2i) -> void:
 				if buckets[next_cost] == null:
 					buckets[next_cost] = []
 				buckets[next_cost].append(next)
+	_cost = cost
 
 func _is_blocked(cell: Vector2i) -> bool:
 	var tile := Vector2i(floori(cell.x * CELL / float(TILE)), floori(cell.y * CELL / float(TILE)))
