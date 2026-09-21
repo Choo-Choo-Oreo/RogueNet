@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://nc00ou41uwkh"
-path="res://.godot/imported/floor_wood_normal.png-332887cf71bc87504aa8ec00def3ff74.ctex"
+uid="uid://dir44tw4dxb6t"
+path="res://.godot/imported/wall_wood_plank.png-d856a1cf4bbb095fffe9477bfc0038bd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/tileset/floor_wood_normal.png"
-dest_files=["res://.godot/imported/floor_wood_normal.png-332887cf71bc87504aa8ec00def3ff74.ctex"]
+source_file="res://resources/gfx/tileset/wall_wood_plank.png"
+dest_files=["res://.godot/imported/wall_wood_plank.png-d856a1cf4bbb095fffe9477bfc0038bd.ctex"]
 
 [params]
 

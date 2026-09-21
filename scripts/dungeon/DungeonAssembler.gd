@@ -54,7 +54,7 @@ static func load_rooms() -> Dictionary:
 		var data = JSON.parse_string(text)
 		if data is Dictionary:
 			rooms[data["id"]] = data
-	return rooms
+	return with_rotations(rooms)
 
 static func dominant_wall_tile(room: Dictionary) -> String:
 	return _dominant_tile(room["walls"], "wall_door")
@@ -69,6 +69,60 @@ static func door_orientation_alt(dir: int) -> int:
 		Dir.NORTH: return TileSetAtlasSource.TRANSFORM_FLIP_H | TileSetAtlasSource.TRANSFORM_FLIP_V
 		Dir.EAST: return TileSetAtlasSource.TRANSFORM_TRANSPOSE | TileSetAtlasSource.TRANSFORM_FLIP_V
 	return 0
+
+static func _rotate_grid(grid: Array, width: int, height: int) -> Array:
+	var rotated: Array = []
+	for y in width:
+		var row: Array = []
+		row.resize(height)
+		rotated.append(row)
+	for y in height:
+		for x in width:
+			rotated[x][height - 1 - y] = grid[y][x]
+	return rotated
+
+static func _rotate_connectors(connectors: Array, height: int) -> Array:
+	var rotated: Array = []
+	for c in connectors:
+		var x: int = int(c["position"]["x"])
+		var y: int = int(c["position"]["y"])
+		rotated.append({"position": {"x": height - 1 - y, "y": x}})
+	return rotated
+
+static func rotate_room(room: Dictionary, quarter_turns: int) -> Dictionary:
+	var turns := posmod(quarter_turns, 4)
+	var result: Dictionary = room.duplicate(true)
+	for i in turns:
+		var w: int = result["width"]
+		var h: int = result["height"]
+		result["floor"] = _rotate_grid(result["floor"], w, h)
+		result["walls"] = _rotate_grid(result["walls"], w, h)
+		result["connectors"] = _rotate_connectors(result["connectors"], h)
+		result["width"] = h
+		result["height"] = w
+	if turns != 0:
+		result["id"] = "%s#r%d" % [room["id"], turns]
+	return result
+
+static func with_rotations(rooms: Dictionary) -> Dictionary:
+	var expanded := rooms.duplicate()
+	for id in rooms.keys():
+		var room: Dictionary = rooms[id]
+		var role: String = room.get("role", "normal")
+		if role == "entrance" or role == "boss":
+			continue
+		var seen := {_signature(room): true}
+		for turns in [1, 2, 3]:
+			var variant := rotate_room(room, turns)
+			var sig := _signature(variant)
+			if seen.has(sig):
+				continue
+			seen[sig] = true
+			expanded[variant["id"]] = variant
+	return expanded
+
+static func _signature(room: Dictionary) -> String:
+	return JSON.stringify([room["floor"], room["walls"], room["connectors"]])
 
 static func _dominant_tile(grid: Array, exclude: String) -> String:
 	var counts := {}

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bdh3k1pjwhi31"
-path="res://.godot/imported/floor_wood.png-4fb304a1f52b76205e0adfcda9dd1761.ctex"
+uid="uid://cx0637cc8ytq6"
+path="res://.godot/imported/wall_rough_cave.png-7503b37f921c7a189834928224f454d9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/tileset/floor_wood.png"
-dest_files=["res://.godot/imported/floor_wood.png-4fb304a1f52b76205e0adfcda9dd1761.ctex"]
+source_file="res://resources/gfx/tileset/wall_rough_cave.png"
+dest_files=["res://.godot/imported/wall_rough_cave.png-7503b37f921c7a189834928224f454d9.ctex"]
 
 [params]
 

@@ -10,7 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://i0cxny0obdye" path="res://resources/gfx/tileset/floor_grass.png" id="8_62u44"]
 [ext_resource type="Texture2D" uid="uid://bx185y82ohydi" path="res://resources/gfx/tileset/floor_smooth_stone.png" id="9_eqchr"]
 [ext_resource type="Texture2D" uid="uid://30t8sgmrsu53" path="res://resources/gfx/tileset/floor_void.png" id="10_beptr"]
-[ext_resource type="Texture2D" uid="uid://bdh3k1pjwhi31" path="res://resources/gfx/tileset/floor_wood.png" id="11_o85wv"]
+[ext_resource type="Texture2D" uid="uid://bdh3k1pjwhi31" path="res://resources/gfx/tileset/floor_wood_planks.png" id="11_o85wv"]
 [ext_resource type="Texture2D" uid="uid://dqhpq8s0o1kqr" path="res://resources/gfx/tileset/wall_cobble_brick.png" id="12_mse36"]
 [ext_resource type="Script" uid="uid://kwiwirkys8xp" path="res://scripts/cells/tiles/StaticTileRender.gd" id="13_b6gtq"]
 [ext_resource type="Texture2D" uid="uid://c807vxen01fgd" path="res://resources/gfx/objects/Door.png" id="14_hvud5"]
@@ -48,7 +48,7 @@ texture = ExtResource("4_p0k0o")
 0:0/0/modulate = Color(0.101961, 0.101961, 0.101961, 1)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jdyau"]
-resource_name = "floor_wood.png"
+resource_name = "floor_wood_planks.png"
 texture = ExtResource("4_p0k0o")
 0:0/0 = 0
 0:0/0/modulate = Color(0.662745, 0.454902, 0.286275, 1)
@@ -340,14 +340,14 @@ source_id = 4
 position = Vector2(8, 8)
 tile_set = SubResource("TileSet_tnqnc")
 
-[node name="floor_wood" type="Node2D" parent="TileRenderer" unique_id=751572871 node_paths=PackedStringArray("data_layer", "display_layer")]
+[node name="floor_wood_planks" type="Node2D" parent="TileRenderer" unique_id=751572871 node_paths=PackedStringArray("data_layer", "display_layer")]
 z_index = 2
 script = ExtResource("5_kgqa5")
 data_layer = NodePath("../FloorData")
 display_layer = NodePath("DisplayLayer")
 source_id = 5
 
-[node name="DisplayLayer" type="TileMapLayer" parent="TileRenderer/floor_wood" unique_id=1952560300]
+[node name="DisplayLayer" type="TileMapLayer" parent="TileRenderer/floor_wood_planks" unique_id=1952560300]
 position = Vector2(8, 8)
 tile_set = SubResource("TileSet_4a6js")
 

@@ -10,7 +10,7 @@ ids = {
 "floor_grass": 2,
 "floor_smooth_stone": 3,
 "floor_void": 4,
-"floor_wood": 5,
+"floor_wood_planks": 5,
 "wall_cobble_brick": 6,
 "wall_door": 8,
 "wall_smooth_stone": 7,

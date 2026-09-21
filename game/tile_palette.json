@@ -14,7 +14,7 @@
 	"floor_void": {
 		"source_id": 4
 	},
-	"floor_wood": {
+	"floor_wood_planks": {
 		"source_id": 5
 	},
 	"wall_cobble_brick": {
