@@ -1,0 +1,207 @@
+{
+	"connectors": [
+		{
+			"position": {
+				"x": 0,
+				"y": 3
+			}
+		},
+		{
+			"position": {
+				"x": 7,
+				"y": 5
+			}
+		}
+	],
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			null,
+			"floor_wood",
+			null
+		],
+		[
+			null,
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			null,
+			"floor_wood",
+			null
+		],
+		[
+			null,
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			null
+		],
+		[
+			null,
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			null
+		],
+		[
+			null,
+			"floor_wood",
+			null,
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			null
+		],
+		[
+			null,
+			"floor_wood",
+			null,
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 1,
+	"height": 8,
+	"id": "Wood_Mixed_8x8",
+	"objects": [
+		{
+			"position": {
+				"x": 40.0,
+				"y": 40.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		},
+		{
+			"position": {
+				"x": 104.0,
+				"y": 104.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		}
+	],
+	"role": "normal",
+	"tags": [
+		"combat",
+		"wood"
+	],
+	"walls": [
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			"wall_smooth_stone",
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			"wall_smooth_stone",
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_door",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			"wall_door"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone"
+		]
+	],
+	"width": 8
+}

@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="TileType" format=3 uid="uid://bhqxi0a0umlel"]
 
 [ext_resource type="Script" uid="uid://brc0m0h8phc05" path="res://scripts/cells/tiles/TileType.gd" id="1_ece4a"]
-[ext_resource type="Texture2D" uid="uid://i0cxny0obdye" path="res://resources/gfx/tileset/floor_grass.png" id="1_jfijs"]
+[ext_resource type="CanvasTexture" path="res://resources/gfx/tileset/floor_grass_lit.tres" id="1_jfijs"]
 
 [resource]
 script = ExtResource("1_ece4a")

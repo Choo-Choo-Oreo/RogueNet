@@ -1,0 +1,173 @@
+{
+	"connectors": [
+		{
+			"position": {
+				"x": 3,
+				"y": 0
+			}
+		},
+		{
+			"position": {
+				"x": 3,
+				"y": 6
+			}
+		}
+	],
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			null
+		],
+		[
+			null,
+			"floor_wood",
+			null,
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			null
+		],
+		[
+			null,
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			null
+		],
+		[
+			null,
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			null,
+			"floor_wood",
+			null
+		],
+		[
+			null,
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			"floor_wood",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 1,
+	"height": 7,
+	"id": "Wood_Cabin_7x7",
+	"objects": [
+		{
+			"position": {
+				"x": 24.0,
+				"y": 24.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		},
+		{
+			"position": {
+				"x": 88.0,
+				"y": 88.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		}
+	],
+	"role": "normal",
+	"tags": [
+		"combat",
+		"wood"
+	],
+	"walls": [
+		[
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_door",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone"
+		],
+		[
+			"wall_smooth_stone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_smooth_stone",
+			null,
+			"wall_smooth_stone",
+			null,
+			null,
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_smooth_stone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_smooth_stone",
+			null,
+			null,
+			null,
+			"wall_smooth_stone",
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_smooth_stone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_door",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone"
+		]
+	],
+	"width": 7
+}
