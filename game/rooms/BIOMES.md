@@ -21,6 +21,16 @@ from on its own:
 | `mine/` | `wall_rough_cave` rock with `wall_wood_plank` timber supports | dirt, wood plank walkways | A mine shaft. Plank tracks run door to door. Timber frames doorways and props up long tunnels. Includes `Mine_Cabin_Cavern_19x15`, a big cavern with a cabin in the middle. |
 | `flesh/` | `wall_flesh` | flesh, smooth stone | Flesh floor slows movement, so stone strips act as fast lanes. |
 
+## `cathedral/` is a stress test, not a designed biome
+
+Added 2026-09-21 to see how generation and rendering hold up at size. It is
+the 20 `dungeon/` rooms with their interiors scaled 3x or 4x (outer wall
+still 1 thick, doors still 1 wide), plus `Cathedral_Boss_Nave_100x100`, which
+is the Dungeon Maker's maximum size. A dive here is about 25,000 room tiles
+inside a roughly 240 x 256 tile box. Because it is a folder in `game/rooms/`,
+`pick_biome()` will choose it like any other biome. Add it to
+`IGNORED_FOLDERS` in `DungeonAssembler.gd` when the test is over.
+
 ## Maze pieces
 
 The assembler grows a dungeon as a tree: it never joins two branches back

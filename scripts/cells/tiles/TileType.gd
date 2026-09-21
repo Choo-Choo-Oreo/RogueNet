@@ -20,6 +20,7 @@ const TERRAIN_SPEED := {
 @export var shape: Shape = Shape.DUAL_GRID
 @export var atlas_coords: Vector2i = Vector2i.ZERO
 @export var orientable: bool = false
+@export var casts_shadow: bool = false
 @export var terrain: Terrain = Terrain.NORMAL
 
 func move_speed() -> float:
