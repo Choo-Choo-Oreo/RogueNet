@@ -65,17 +65,23 @@ possibly the boss, because nothing loops back around.
 ## What is live right now
 
 As of 2026-09-21 `DungeonAssembler` has `list_biomes()`, `pick_biome(seed)`
-and `load_rooms(biome)`. Every subfolder of `game/rooms/` except `tmp` counts
-as a biome, including `fallback/`, which holds the original legacy rooms.
+and `load_rooms(biome)`. Every subfolder of `game/rooms/` that is not in `IGNORED_FOLDERS` counts
+as a biome. `fallback/` holds the original legacy rooms.
 The biome is picked from the dungeon seed, so every peer picks the same one.
 
-`DungeonPainter.gd` and `DungeonDebugView.gd` still call `load_rooms()` with
-no biome. That reads the top level of `game/rooms/`, which no longer has any
-rooms in it. Until they pass `pick_biome(seed)` in, no dungeon generates.
+`DungeonPainter.gd` and `DungeonDebugView.gd` both call
+`load_rooms(pick_biome(seed))`. `fallback/` is in `IGNORED_FOLDERS`, so it is
+never picked as a biome; it only fills in room kinds a biome is missing.
 
-## Known Dungeon Maker gaps
+## Dungeon Maker and biomes
 
-- Export (`_build_export_data()`) writes neither `role` nor `biome`.
-  Re-exporting a room from the tool drops both fields.
-- The recent-rooms list and "Validate All" only look at the top-level
-  folder. The Open dialog can browse into a biome folder.
+Updated 2026-09-21. The Dungeon Maker now:
+
+- builds its tile list from the tiles the renderer has, so a new TileType
+  `.tres` in `resources/tiles/` shows up without compiling `tile_palette.json`;
+- has Role and Biome folder dropdowns, writes both into the JSON, and saves
+  into `game/rooms/<biome>/`. Opening a room sets the biome from its folder;
+- lists rooms, known tags and "Validate All" across every folder here.
+
+Still hard-coded in `DungeonMaker.gd`: the object types (`torch`, `chest`)
+and the enemy types (`mouse`).

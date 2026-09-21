@@ -1,10 +1,13 @@
 # RogueNet Art To-Do
 
+Legend: ✓ done, ✗ not done. Statuses were checked against the files (not by
+running the game), so anything about how it looks or plays is unconfirmed.
+
 Written 2026-09-21 from what is actually in `resources/gfx/` and `game/rooms/`.
 It is a draft. **Silvery Foxy has the final say on style**, and anything marked
 **(decide first)** needs a design answer from Orea before anyone draws it.
 
-How to use it: put your name next to a line before you start (`- [ ] Barrel — Foxy`),
+How to use it: put your name next to a line before you start (`- [✗] Barrel — Foxy`),
 tick it when the PNG is in the repo. Small finished things beat big unfinished things.
 
 ## Where to start
@@ -59,45 +62,45 @@ One door sprite exists (`objects/Door.png`, 3 frames of 16x16: closed, half, ope
 friend of Orea's is already reworking it. It is drawn for a door in the bottom wall of a
 room and the game rotates it for the other three sides.
 
-- [ ] Dungeon door (in progress elsewhere, check before starting)
-- [ ] Cave door: a rough opening or hanging roots, not carpentry
-- [ ] Mine door: timber frame, maybe a plank gate
-- [ ] Flesh door: a sphincter or a membrane. Frames: closed, half, open
-- [ ] Locked or sealed look for a door that doesn't open **(decide first)**
+- [✗] Dungeon door (in progress elsewhere, check before starting)
+- [✗] Cave door: a rough opening or hanging roots, not carpentry
+- [✗] Mine door: timber frame, maybe a plank gate
+- [✗] Flesh door: a sphincter or a membrane. Frames: closed, half, open
+- [✗] Locked or sealed look for a door that doesn't open **(decide first)**
 
 ### New floors
 
 Each biome has two floors today. A third gives room builders something to make paths,
 rugs and hazards with.
 
-- [ ] Carpet or rug (dungeon, cathedral). Red runner with a trim edge.
-- [ ] Cobblestone floor (dungeon). Rougher than smooth stone.
-- [ ] Cracked or mossy smooth stone (dungeon, cave)
-- [ ] Rail track on dirt (mine). Rooms already have plank "tracks" waiting for this.
-- [ ] Gravel or rubble (mine, cave)
-- [ ] Shallow water (cave). Could later slow movement the way flesh does.
-- [ ] Mushroom or moss ground (cave), a stranger cousin of grass
-- [ ] Bone or tooth floor (flesh). Pale, to break up all the red.
-- [ ] Pulsing or wet flesh variant (flesh)
+- [✗] Carpet or rug (dungeon, cathedral). Red runner with a trim edge.
+- [✗] Cobblestone floor (dungeon). Rougher than smooth stone.
+- [✗] Cracked or mossy smooth stone (dungeon, cave)
+- [✗] Rail track on dirt (mine). Rooms already have plank "tracks" waiting for this.
+- [✗] Gravel or rubble (mine, cave)
+- [✗] Shallow water (cave). Could later slow movement the way flesh does.
+- [✗] Mushroom or moss ground (cave), a stranger cousin of grass
+- [✗] Bone or tooth floor (flesh). Pale, to break up all the red.
+- [✗] Pulsing or wet flesh variant (flesh)
 
 ### New walls
 
-- [ ] Mossy or damp stone wall (cave meets dungeon)
-- [ ] Ore vein wall (mine): rough cave rock with a metal or crystal streak
-- [ ] Bookshelf wall (dungeon)
-- [ ] Window or stained glass wall (cathedral)
-- [ ] Iron bars (dungeon). Special: you should see the floor through it **(decide first)**
-- [ ] Bone wall (flesh)
+- [✗] Mossy or damp stone wall (cave meets dungeon)
+- [✗] Ore vein wall (mine): rough cave rock with a metal or crystal streak
+- [✗] Bookshelf wall (dungeon)
+- [✗] Window or stained glass wall (cathedral)
+- [✗] Iron bars (dungeon). Special: you should see the floor through it **(decide first)**
+- [✗] Bone wall (flesh)
 
 ### A whole new biome (later)
 
 The four biomes are dungeon (grey), cave (brown and green), mine (brown) and flesh (red).
 The next one should be a color none of them has. **(decide first)**, pick one:
 
-- [ ] Sewer or flooded ruin: teal water, slimy brick
-- [ ] Ice cavern: pale blue, white
-- [ ] Lava forge: black rock, orange glow
-- [ ] Crypt: bone white, purple
+- [✗] Sewer or flooded ruin: teal water, slimy brick
+- [✗] Ice cavern: pale blue, white
+- [✗] Lava forge: black rock, orange glow
+- [✗] Crypt: bone white, purple
 
 A biome is at least: 1 wall, 2 floors, 1 door, about 6 objects.
 
@@ -111,76 +114,76 @@ If something should animate, put the frames side by side in one PNG like `Tortch
 
 ### Everywhere
 
-- [ ] Torch: more flame frames (it has 2)
-- [ ] Chest: open frame
-- [ ] Chest rarity variants: iron, gold, something cursed **(decide first:** how many rarities)
-- [ ] Barrel
-- [ ] Crate
-- [ ] Clay pot or urn, plus a broken version
-- [ ] Stairs down or exit hatch
-- [ ] Key
-- [ ] Lever or floor switch, on and off
-- [ ] Pressure plate
-- [ ] Spike trap, in and out
-- [ ] Rubble pile
-- [ ] Bones or skeleton remains
-- [ ] Cobweb (corner piece)
-- [ ] Blood or stain decal
+- [✗] Torch: more flame frames (it has 2)
+- [✗] Chest: open frame
+- [✗] Chest rarity variants: iron, gold, something cursed **(decide first:** how many rarities)
+- [✗] Barrel
+- [✗] Crate
+- [✗] Clay pot or urn, plus a broken version
+- [✗] Stairs down or exit hatch
+- [✗] Key
+- [✗] Lever or floor switch, on and off
+- [✗] Pressure plate
+- [✗] Spike trap, in and out
+- [✗] Rubble pile
+- [✗] Bones or skeleton remains
+- [✗] Cobweb (corner piece)
+- [✗] Blood or stain decal
 
 ### Dungeon
 
-- [ ] Wall banner
-- [ ] Table
-- [ ] Chair or stool
-- [ ] Bunk bed (the barracks rooms are empty)
-- [ ] Weapon rack
-- [ ] Bookshelf (object version)
-- [ ] Brazier (a bigger light than a torch)
-- [ ] Shackles or chains
-- [ ] Standing suit of armour
+- [✗] Wall banner
+- [✗] Table
+- [✗] Chair or stool
+- [✗] Bunk bed (the barracks rooms are empty)
+- [✗] Weapon rack
+- [✗] Bookshelf (object version)
+- [✗] Brazier (a bigger light than a torch)
+- [✗] Shackles or chains
+- [✗] Standing suit of armour
 
 ### Cave
 
-- [ ] Stalagmite, 2 or 3 sizes
-- [ ] Glowing mushroom cluster
-- [ ] Crystal cluster
-- [ ] Boulder
-- [ ] Puddle
-- [ ] Hanging roots
-- [ ] Nest with eggs
+- [✗] Stalagmite, 2 or 3 sizes
+- [✗] Glowing mushroom cluster
+- [✗] Crystal cluster
+- [✗] Boulder
+- [✗] Puddle
+- [✗] Hanging roots
+- [✗] Nest with eggs
 
 ### Mine
 
-- [ ] Minecart, empty and full
-- [ ] Ore pile
-- [ ] Pickaxe and shovel, leaning
-- [ ] Hanging lantern
-- [ ] Support beam (top-down post with braces)
-- [ ] Ladder or lift platform (the mine entrance room is built as a lift landing)
-- [ ] Dynamite crate
-- [ ] Cabin furniture: bed, stove, small table (`Mine_Cabin_Cavern` has a house in it)
+- [✗] Minecart, empty and full
+- [✗] Ore pile
+- [✗] Pickaxe and shovel, leaning
+- [✗] Hanging lantern
+- [✗] Support beam (top-down post with braces)
+- [✗] Ladder or lift platform (the mine entrance room is built as a lift landing)
+- [✗] Dynamite crate
+- [✗] Cabin furniture: bed, stove, small table (`Mine_Cabin_Cavern` has a house in it)
 
 ### Flesh
 
 Match `floor_flesh.png`: two reds, two dark reds, white glints, bone tan.
 
-- [ ] Tooth cluster
-- [ ] Eye, open and blinking
-- [ ] Pustule or egg sac
-- [ ] Tendril
-- [ ] Rib bones arching out of the floor
-- [ ] Half-digested adventurer gear
-- [ ] Heart (centrepiece of the flesh boss room, can be bigger than 16x16)
+- [✗] Tooth cluster
+- [✗] Eye, open and blinking
+- [✗] Pustule or egg sac
+- [✗] Tendril
+- [✗] Rib bones arching out of the floor
+- [✗] Half-digested adventurer gear
+- [✗] Heart (centrepiece of the flesh boss room, can be bigger than 16x16)
 
 ### Cathedral and castle
 
-- [ ] Pew
-- [ ] Altar
-- [ ] Candelabra
-- [ ] Statue
-- [ ] Throne
-- [ ] Patch of coloured window light on the floor
-- [ ] Pillar base detail
+- [✗] Pew
+- [✗] Altar
+- [✗] Candelabra
+- [✗] Statue
+- [✗] Throne
+- [✗] Patch of coloured window light on the floor
+- [✗] Pillar base detail
 
 ## 3. Player characters
 
@@ -191,14 +194,14 @@ Frames are 16x16, in strips. What exists:
 | Knight | 4 frames | 4 | 8 | missing | none | none | none | none |
 | Dwarf | 4 frames | 4 | 7 (named "right") | 7 (named "left") | none | none | none | none |
 
-- [ ] Knight: walking west (or confirm the game should just flip east)
-- [ ] Dwarf: even out the frame count (east and west have 7, the knight has 8)
-- [ ] Make file names match between the two (`walking east` vs `walking right`)
-- [ ] Idle, all four directions, both characters
-- [ ] Attack, all four directions. Combat is real-time, so this is the one players see most.
-- [ ] Hurt flash or flinch
-- [ ] Death
-- [ ] More classes **(decide first)**. Don't draw new classes until Orea confirms what they are.
+- [✗] Knight: walking west (or confirm the game should just flip east)
+- [✗] Dwarf: even out the frame count (east and west have 7, the knight has 8)
+- [✗] Make file names match between the two (`walking east` vs `walking right`)
+- [✗] Idle, all four directions, both characters
+- [✗] Attack, all four directions. Combat is real-time, so this is the one players see most.
+- [✗] Hurt flash or flinch
+- [✗] Death
+- [✗] More classes **(decide first)**. Don't draw new classes until Orea confirms what they are.
 
 ## 4. Enemies
 
@@ -206,12 +209,12 @@ Only a rat exists: front and side views, 2 frames each, 4 colors. No back view.
 The roster isn't designed, so everything past the rat is **(decide first)**. These are
 the obvious candidates per biome, to talk through with Orea:
 
-- [ ] Rat: back view, attack, death
-- [ ] Dungeon: skeleton, slime, bat
-- [ ] Cave: spider, bat, mushroom creature
-- [ ] Mine: kobold or undead miner, rock golem
-- [ ] Flesh: blob, eye stalk, tooth worm
-- [ ] One boss per biome, bigger than a tile (32x32 or 48x48). The boss rooms exist and are empty.
+- [✗] Rat: back view, attack, death
+- [✗] Dungeon: skeleton, slime, bat
+- [✗] Cave: spider, bat, mushroom creature
+- [✗] Mine: kobold or undead miner, rock golem
+- [✗] Flesh: blob, eye stalk, tooth worm
+- [✗] One boss per biome, bigger than a tile (32x32 or 48x48). The boss rooms exist and are empty.
 
 Each enemy needs what the rat has, plus an attack and a death.
 
@@ -220,45 +223,45 @@ Each enemy needs what the rat has, plus an attack and a death.
 These exist as plain Godot scenes with no art: health bar, hotbar, hotbar slot, death
 screen, main menu, pause menu, settings.
 
-- [ ] Health bar frame and fill
-- [ ] Hotbar slot, normal and selected
-- [ ] Button style: normal, hover, pressed
-- [ ] Panel or window frame (a 9-slice piece: corners, edges, middle)
-- [ ] Mouse cursor
-- [ ] Death screen art
-- [ ] Game logo and main menu background
-- [ ] Item icons, 16x16 **(decide first:** the item list doesn't exist yet)
-- [ ] Rarity frames or colors for loot **(decide first:** how many rarities)
-- [ ] Skill tree icons **(decide first)**
-- [ ] Map icons: entrance, boss, treasure, you-are-here. There is no map yet, and a big dungeon badly needs one.
-- [ ] A pixel font, or pick a free one
+- [✗] Health bar frame and fill
+- [✗] Hotbar slot, normal and selected
+- [✗] Button style: normal, hover, pressed
+- [✗] Panel or window frame (a 9-slice piece: corners, edges, middle)
+- [✗] Mouse cursor
+- [✗] Death screen art
+- [✗] Game logo and main menu background
+- [✗] Item icons, 16x16 **(decide first:** the item list doesn't exist yet)
+- [✗] Rarity frames or colors for loot **(decide first:** how many rarities)
+- [✗] Skill tree icons **(decide first)**
+- [✗] Map icons: entrance, boss, treasure, you-are-here. There is no map yet, and a big dungeon badly needs one.
+- [✗] A pixel font, or pick a free one
 
 ## 6. Effects
 
 Small strips of frames, 16x16 unless noted.
 
-- [ ] Hit spark
-- [ ] Weapon slash arc
-- [ ] Footstep dust
-- [ ] Flesh squish or splat
-- [ ] Chest opening sparkle
-- [ ] Enemy death puff
-- [ ] Torch smoke or embers
+- [✗] Hit spark
+- [✗] Weapon slash arc
+- [✗] Footstep dust
+- [✗] Flesh squish or splat
+- [✗] Chest opening sparkle
+- [✗] Enemy death puff
+- [✗] Torch smoke or embers
 
 ## 7. Town hub (later)
 
 The town is the menu hub where players gather before a dive. The scene is an empty stub
 and nothing about its look is decided, so all of this is **(decide first)**.
 
-- [ ] Outdoor ground: grass, path, plaza stone
-- [ ] Building walls and roofs
-- [ ] Guild hall interior (the dive is launched from here)
-- [ ] Notice board, the thing you click to queue a dive
-- [ ] NPCs: guild master, shopkeeper
-- [ ] Props: well, fence, lamp post, market stall
+- [✗] Outdoor ground: grass, path, plaza stone
+- [✗] Building walls and roofs
+- [✗] Guild hall interior (the dive is launched from here)
+- [✗] Notice board, the thing you click to queue a dive
+- [✗] NPCs: guild master, shopkeeper
+- [✗] Props: well, fence, lamp post, market stall
 
 ## 8. Much later
 
-- [ ] Steam store art: capsule, header, library images
-- [ ] Trailer stills
-- [ ] App icon (the project still has Godot's default `icon.svg`)
+- [✗] Steam store art: capsule, header, library images
+- [✗] Trailer stills
+- [✗] App icon (the project still has Godot's default `icon.svg`)

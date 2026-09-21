@@ -559,6 +559,28 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "bandit_camp_small"
 
+[node name="RoleRow" type="HBoxContainer" parent="UI/LeftPanel/RoomInfo"]
+layout_mode = 2
+
+[node name="RoleLabel" type="Label" parent="UI/LeftPanel/RoomInfo/RoleRow"]
+layout_mode = 2
+text = "Role"
+
+[node name="RoleOption" type="OptionButton" parent="UI/LeftPanel/RoomInfo/RoleRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BiomeRow" type="HBoxContainer" parent="UI/LeftPanel/RoomInfo"]
+layout_mode = 2
+
+[node name="BiomeLabel" type="Label" parent="UI/LeftPanel/RoomInfo/BiomeRow"]
+layout_mode = 2
+text = "Biome folder"
+
+[node name="BiomeOption" type="OptionButton" parent="UI/LeftPanel/RoomInfo/BiomeRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
 [node name="TemplateRow" type="HBoxContainer" parent="UI/LeftPanel/RoomInfo"]
 layout_mode = 2
 
@@ -856,6 +878,8 @@ text = ""
 [connection signal="value_changed" from="UI/LeftPanel/RoomInfo/WidthRow/WidthSpinBox" to="." method="_on_width_changed"]
 [connection signal="value_changed" from="UI/LeftPanel/RoomInfo/HeightRow/HeightSpinBox" to="." method="_on_height_changed"]
 [connection signal="text_changed" from="UI/LeftPanel/RoomInfo/IdRow/IdLineEdit" to="." method="_on_id_changed"]
+[connection signal="item_selected" from="UI/LeftPanel/RoomInfo/RoleRow/RoleOption" to="." method="_on_role_selected"]
+[connection signal="item_selected" from="UI/LeftPanel/RoomInfo/BiomeRow/BiomeOption" to="." method="_on_biome_selected"]
 [connection signal="pressed" from="UI/LeftPanel/RoomInfo/TemplateRow/ApplyTemplateButton" to="." method="_on_apply_template_pressed"]
 [connection signal="pressed" from="UI/LeftPanel/RoomInfo/FlipRow/FlipHorizontalButton" to="." method="_on_flip_horizontal_pressed"]
 [connection signal="pressed" from="UI/LeftPanel/RoomInfo/FlipRow/FlipVerticalButton" to="." method="_on_flip_vertical_pressed"]

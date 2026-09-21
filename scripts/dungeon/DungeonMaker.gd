@@ -2,7 +2,12 @@ extends Node2D
 
 const TILE_SIZE := 16
 const OBJECT_HIT_RADIUS := 8.0
-const PALETTE_PATH := "res://game/tile_palette.json"
+const ROOMS_DIR := "res://game/rooms/"
+const ROOM_ROLES := ["normal", "corridor", "entrance", "boss"]
+## Which 16px cell of a dual-grid sheet to show as the palette thumbnail.
+## Floors: the fully filled cell. Walls: the cell that shows the front face.
+const FLOOR_ICON_CELL := Vector2i(2, 1)
+const WALL_ICON_CELL := Vector2i(1, 2)
 const WORLD_OFFSET := Vector2(16, 550)
 const ROOM_FILL_COLOR := Color(0.26, 0.32, 0.26, 1.0)
 const ROOM_OUTSIDE_COLOR := Color(0.14, 0.14, 0.16, 1.0)
@@ -55,6 +60,8 @@ const SPAWNER_MODE_COLOR := Color(0.85, 0.35, 0.85)
 @onready var width_spin_box: SpinBox = $UI/LeftPanel/RoomInfo/WidthRow/WidthSpinBox
 @onready var height_spin_box: SpinBox = $UI/LeftPanel/RoomInfo/HeightRow/HeightSpinBox
 @onready var id_line_edit: LineEdit = $UI/LeftPanel/RoomInfo/IdRow/IdLineEdit
+@onready var role_option: OptionButton = $UI/LeftPanel/RoomInfo/RoleRow/RoleOption
+@onready var biome_option: OptionButton = $UI/LeftPanel/RoomInfo/BiomeRow/BiomeOption
 @onready var template_option: OptionButton = $UI/LeftPanel/RoomInfo/TemplateRow/TemplateOption
 @onready var tag_line_edit: LineEdit = $UI/LeftPanel/RoomInfo/TagsSection/TagInputRow/TagLineEdit
 @onready var tags_list: ItemList = $UI/LeftPanel/RoomInfo/TagsSection/TagsList
@@ -92,6 +99,9 @@ const SPAWNER_MODE_COLOR := Color(0.85, 0.35, 0.85)
 var width: int = 5
 var height: int = 5
 var room_id: String = ""
+var room_role: String = "normal"
+## The folder under game/rooms/ this room is saved into. "" is the top level.
+var room_biome: String = ""
 var tags: Array[String] = []
 var floor_names: Array = []
 var walls_names: Array = []
@@ -178,6 +188,7 @@ func _ready() -> void:
 	_populate_spawner_palette()
 	_update_test_button()
 	_setup_template_option()
+	_setup_role_and_biome_options()
 	_setup_room_file_dialog()
 	_setup_overwrite_confirm_dialog()
 	_style_mode_button(connector_mode_button, CONNECTOR_MODE_COLOR)
@@ -314,23 +325,28 @@ func _style_mode_button(button: Button, color: Color) -> void:
 	button.add_theme_stylebox_override("pressed", style)
 	button.add_theme_stylebox_override("hover_pressed", style)
 
+## Built from the TileRenderer's children rather than tile_palette.json.
+## TileInitialize makes one child per TileType .tres in resources/tiles/ (it
+## runs before this script's _ready), so a new tile shows up here by itself.
 func _load_palette() -> Dictionary:
-	var file := FileAccess.open(PALETTE_PATH, FileAccess.READ)
-	if file == null:
-		push_warning("Could not open %s" % PALETTE_PATH)
-		return {}
-	var data = JSON.parse_string(file.get_as_text())
-	return data if data is Dictionary else {}
+	var result := {}
+	for child in tile_renderer.get_children():
+		if child is DualGridRender or child is StaticTileRender:
+			var layer := "wall" if child.data_layer == wall_data_layer else "floor"
+			result[String(child.name)] = {"source_id": child.source_id, "layer": layer}
+	return result
 
 func _populate_palette_lists() -> void:
 	_style_selection_highlight(floor_palette_list, PAINT_MODE_COLOR)
 	_style_selection_highlight(wall_palette_list, PAINT_MODE_COLOR)
 	floor_palette_list.fixed_icon_size = Vector2i(16, 16)
 	wall_palette_list.fixed_icon_size = Vector2i(16, 16)
-	for tile_name in palette.keys():
-		if tile_name.begins_with("floor_"):
+	var tile_names := palette.keys()
+	tile_names.sort()
+	for tile_name in tile_names:
+		if palette[tile_name]["layer"] == "floor":
 			floor_tile_names.append(tile_name)
-		elif tile_name.begins_with("wall_"):
+		else:
 			wall_tile_names.append(tile_name)
 	_rebuild_floor_palette_list("")
 	_rebuild_wall_palette_list("")
@@ -340,14 +356,14 @@ func _rebuild_floor_palette_list(filter_text: String) -> void:
 	for tile_name in floor_tile_names:
 		if filter_text != "" and not tile_name.to_lower().contains(filter_text.to_lower()):
 			continue
-		floor_palette_list.add_item(tile_name, _make_tile_icon(floor_data_layer.tile_set, palette[tile_name]["source_id"]))
+		floor_palette_list.add_item(tile_name, _make_tile_icon(tile_name))
 
 func _rebuild_wall_palette_list(filter_text: String) -> void:
 	wall_palette_list.clear()
 	for tile_name in wall_tile_names:
 		if filter_text != "" and not tile_name.to_lower().contains(filter_text.to_lower()):
 			continue
-		wall_palette_list.add_item(tile_name, _make_tile_icon(wall_data_layer.tile_set, palette[tile_name]["source_id"]))
+		wall_palette_list.add_item(tile_name, _make_tile_icon(tile_name))
 
 func _on_floor_search_changed(new_text: String) -> void:
 	_rebuild_floor_palette_list(new_text.strip_edges())
@@ -355,14 +371,41 @@ func _on_floor_search_changed(new_text: String) -> void:
 func _on_wall_search_changed(new_text: String) -> void:
 	_rebuild_wall_palette_list(new_text.strip_edges())
 
-func _make_tile_icon(tile_set: TileSet, source_id: int) -> Texture2D:
+## A 16x16 piece of the tile's real art, cut from the sheet its DisplayLayer
+## draws with. Falls back to the marker color if there is no art to cut from.
+func _make_tile_icon(tile_name: String) -> Texture2D:
+	var pair = tile_renderer.get_node_or_null(tile_name)
+	var texture: Texture2D = null
+	if pair != null and pair.display_layer != null and pair.display_layer.tile_set != null:
+		var display_set: TileSet = pair.display_layer.tile_set
+		if display_set.get_source_count() > 0:
+			var source := display_set.get_source(display_set.get_source_id(0)) as TileSetAtlasSource
+			if source != null:
+				texture = source.texture
+	# The lit tiles are CanvasTextures (art + normal map); the icon wants the art.
+	var canvas := texture as CanvasTexture
+	if canvas != null:
+		texture = canvas.diffuse_texture
+	if texture == null:
+		return _make_marker_swatch(tile_name)
+	var cell := FLOOR_ICON_CELL
+	if pair is StaticTileRender:
+		cell = pair.atlas_coords
+	elif palette[tile_name]["layer"] == "wall":
+		cell = WALL_ICON_CELL
+	var atlas := AtlasTexture.new()
+	atlas.atlas = texture
+	atlas.region = Rect2(Vector2(cell) * TILE_SIZE, Vector2(TILE_SIZE, TILE_SIZE))
+	return atlas
+
+func _make_marker_swatch(tile_name: String) -> Texture2D:
 	var color := Color.WHITE
-	if tile_set != null:
-		var source := tile_set.get_source(source_id)
-		if source is TileSetAtlasSource:
-			var tile_data: TileData = source.get_tile_data(Vector2i.ZERO, 0)
-			if tile_data:
-				color = tile_data.modulate
+	var data_layer: TileMapLayer = wall_data_layer if palette[tile_name]["layer"] == "wall" else floor_data_layer
+	var source := data_layer.tile_set.get_source(palette[tile_name]["source_id"]) as TileSetAtlasSource
+	if source != null:
+		var tile_data: TileData = source.get_tile_data(Vector2i.ZERO, 0)
+		if tile_data:
+			color = tile_data.modulate
 	return _make_color_swatch(color)
 
 func _make_color_swatch(color: Color) -> Texture2D:
@@ -411,49 +454,84 @@ func _setup_template_option() -> void:
 	template_option.add_item("Blank", 0)
 	template_option.add_item("Hollow Box", 1)
 
+func _setup_role_and_biome_options() -> void:
+	role_option.clear()
+	for role in ROOM_ROLES:
+		role_option.add_item(role)
+	biome_option.clear()
+	biome_option.add_item("(none)")
+	for folder in _room_folders():
+		if folder != "":
+			biome_option.add_item(folder)
+	_show_role_and_biome()
+
+## Points the two dropdowns at room_role / room_biome.
+func _show_role_and_biome() -> void:
+	role_option.select(max(ROOM_ROLES.find(room_role), 0))
+	biome_option.select(0)
+	for i in range(biome_option.item_count):
+		if biome_option.get_item_text(i) == room_biome:
+			biome_option.select(i)
+
+func _on_role_selected(index: int) -> void:
+	room_role = role_option.get_item_text(index)
+
+func _on_biome_selected(index: int) -> void:
+	room_biome = "" if index == 0 else biome_option.get_item_text(index)
+
 func _setup_room_file_dialog() -> void:
 	room_file_dialog.access = FileDialog.ACCESS_RESOURCES
 	room_file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	room_file_dialog.add_filter("*.json", "Room JSON")
-	room_file_dialog.current_dir = "res://game/rooms"
+	room_file_dialog.current_dir = ROOMS_DIR
 	room_file_dialog.file_selected.connect(_on_room_file_selected)
 
 func _setup_overwrite_confirm_dialog() -> void:
 	overwrite_confirm_dialog.confirmed.connect(_on_overwrite_confirmed)
 
+## The top level of game/rooms/ (as "") plus every folder in it. Biomes are
+## folders, so a new biome folder is picked up without touching this script.
+func _room_folders() -> Array:
+	var folders := [""]
+	var dir := DirAccess.open(ROOMS_DIR)
+	if dir != null:
+		var sub_folders := dir.get_directories()
+		sub_folders.sort()
+		for folder in sub_folders:
+			folders.append(folder)
+	return folders
+
+## Every room file, as a path relative to game/rooms/ ("cave/Cave_Bend_5x5.json").
+func _list_room_files() -> Array:
+	var files := []
+	for folder in _room_folders():
+		var dir := DirAccess.open(ROOMS_DIR + folder)
+		if dir == null:
+			continue
+		for file_name in dir.get_files():
+			if file_name.ends_with(".json"):
+				files.append(file_name if folder == "" else folder + "/" + file_name)
+	files.sort()
+	return files
+
 func _refresh_recent_rooms() -> void:
 	recent_rooms_list.clear()
-	var dir := DirAccess.open("res://game/rooms")
-	if dir == null:
-		return
-	dir.list_dir_begin()
-	var file_name := dir.get_next()
-	while file_name != "":
-		if not dir.current_is_dir() and file_name.ends_with(".json"):
-			recent_rooms_list.add_item(file_name)
-		file_name = dir.get_next()
-	dir.list_dir_end()
+	for room_file in _list_room_files():
+		recent_rooms_list.add_item(room_file)
 
 func _on_recent_room_selected(index: int) -> void:
-	var file_name := recent_rooms_list.get_item_text(index)
-	_on_room_file_selected("res://game/rooms/" + file_name)
+	_on_room_file_selected(ROOMS_DIR + recent_rooms_list.get_item_text(index))
 
 func _refresh_known_tags() -> void:
 	var seen := {}
-	var dir := DirAccess.open("res://game/rooms")
-	if dir != null:
-		dir.list_dir_begin()
-		var file_name := dir.get_next()
-		while file_name != "":
-			if not dir.current_is_dir() and file_name.ends_with(".json"):
-				var file := FileAccess.open("res://game/rooms/" + file_name, FileAccess.READ)
-				if file != null:
-					var data = JSON.parse_string(file.get_as_text())
-					if data is Dictionary:
-						for tag in data.get("tags", []):
-							seen[str(tag)] = true
-			file_name = dir.get_next()
-		dir.list_dir_end()
+	for room_file in _list_room_files():
+		var file := FileAccess.open(ROOMS_DIR + room_file, FileAccess.READ)
+		if file == null:
+			continue
+		var data = JSON.parse_string(file.get_as_text())
+		if data is Dictionary:
+			for tag in data.get("tags", []):
+				seen[str(tag)] = true
 	known_tags_list.clear()
 	var tag_names := seen.keys()
 	tag_names.sort()
@@ -1176,6 +1254,23 @@ func _apply_tile(layer: String, cell: Vector2i, value) -> void:
 			var alt := _door_orientation_alt(cell) if DOOR_TILE_NAMES.has(value) else 0
 			wall_data_layer.set_cell(cell, palette[value]["source_id"], Vector2i.ZERO, alt)
 		walls_names[cell.y][cell.x] = value
+	_queue_tile_refresh()
+
+var _tile_refresh_queued := false
+
+## _apply_tile runs once per cell, and a fill or paste can be thousands of
+## cells. This folds them into one refresh_all() at the end of the frame.
+## The explicit refresh is still needed: walls draw differently next to void
+## floor, but they only listen to the wall layer, so a floor edit alone
+## wouldn't redraw them.
+func _queue_tile_refresh() -> void:
+	if _tile_refresh_queued:
+		return
+	_tile_refresh_queued = true
+	_run_tile_refresh.call_deferred()
+
+func _run_tile_refresh() -> void:
+	_tile_refresh_queued = false
 	tile_renderer.refresh_all()
 
 func _fill_rect(from_cell: Vector2i, to_cell: Vector2i) -> void:
@@ -1772,6 +1867,13 @@ func _on_room_file_selected(path: String) -> void:
 		_show_export_status("Invalid room file: " + path)
 		return
 	_load_room_data(data)
+	# The folder is what the game reads as the biome, so it wins over the
+	# "biome" field when a room is opened from inside game/rooms/.
+	if path.begins_with(ROOMS_DIR):
+		var folder := path.get_base_dir().trim_prefix(ROOMS_DIR.trim_suffix("/")).trim_prefix("/")
+		if not folder.contains("/"):
+			room_biome = folder
+			_show_role_and_biome()
 	_refresh_recent_rooms()
 	_show_export_status("Loaded " + path)
 
@@ -1784,6 +1886,9 @@ func _load_room_data(data: Dictionary) -> void:
 
 	room_id = str(data.get("id", ""))
 	id_line_edit.text = room_id
+	room_role = str(data.get("role", "normal"))
+	room_biome = str(data.get("biome", ""))
+	_show_role_and_biome()
 
 	tags.clear()
 	tags_list.clear()
@@ -1827,11 +1932,12 @@ func _on_export_pressed() -> void:
 		return
 
 	var data := _build_export_data()
-	var path := "res://game/rooms/%s.json" % room_id
+	var folder := "" if room_biome == "" else room_biome + "/"
+	var path := "%s%s%s.json" % [ROOMS_DIR, folder, room_id]
 	if FileAccess.file_exists(path):
 		pending_export_data = data
 		pending_export_path = path
-		overwrite_confirm_dialog.dialog_text = "A room named '%s' already exists. Overwrite it?" % room_id
+		overwrite_confirm_dialog.dialog_text = "%s already exists. Overwrite it?" % path
 		overwrite_confirm_dialog.popup_centered()
 		return
 	_write_room_file(path, data)
@@ -1840,9 +1946,10 @@ func _on_overwrite_confirmed() -> void:
 	_write_room_file(pending_export_path, pending_export_data)
 
 func _build_export_data() -> Dictionary:
-	return {
+	var data := {
 		"format": 1,
 		"id": room_id,
+		"role": room_role,
 		"tags": tags,
 		"width": width,
 		"height": height,
@@ -1851,6 +1958,9 @@ func _build_export_data() -> Dictionary:
 		"objects": _serialize_objects(),
 		"connectors": _serialize_connectors(),
 	}
+	if room_biome != "":
+		data["biome"] = room_biome
+	return data
 
 func _write_room_file(path: String, data: Dictionary) -> void:
 	var file := FileAccess.open(path, FileAccess.WRITE)
@@ -1864,22 +1974,13 @@ func _write_room_file(path: String, data: Dictionary) -> void:
 	_refresh_known_tags()
 
 func _on_validate_all_pressed() -> void:
-	var dir := DirAccess.open("res://game/rooms")
-	if dir == null:
-		_show_export_status("Could not open game/rooms")
-		return
 	var total := 0
 	var failed := []
-	dir.list_dir_begin()
-	var file_name := dir.get_next()
-	while file_name != "":
-		if not dir.current_is_dir() and file_name.ends_with(".json"):
-			total += 1
-			var errors := _validate_room_file("res://game/rooms/" + file_name)
-			if not errors.is_empty():
-				failed.append("%s: %s" % [file_name, ", ".join(errors)])
-		file_name = dir.get_next()
-	dir.list_dir_end()
+	for room_file in _list_room_files():
+		total += 1
+		var errors := _validate_room_file(ROOMS_DIR + room_file)
+		if not errors.is_empty():
+			failed.append("%s: %s" % [room_file, ", ".join(errors)])
 	if failed.is_empty():
 		_show_export_status("Validated %d room(s) — all OK" % total)
 	else:
