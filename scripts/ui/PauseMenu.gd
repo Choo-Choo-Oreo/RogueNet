@@ -27,11 +27,11 @@ func _open() -> void:
 # The panel is anchored to the centre, so growing it by half the size each way keeps it centred
 # however many buttons are showing.
 func _fit_panel() -> void:
-	var size := buttons.get_combined_minimum_size() + PANEL_PADDING
-	panel.offset_left = -size.x / 2.0
-	panel.offset_right = size.x / 2.0
-	panel.offset_top = -size.y / 2.0
-	panel.offset_bottom = size.y / 2.0
+	var panel_size := buttons.get_combined_minimum_size() + PANEL_PADDING
+	panel.offset_left = -panel_size.x / 2.0
+	panel.offset_right = panel_size.x / 2.0
+	panel.offset_top = -panel_size.y / 2.0
+	panel.offset_bottom = panel_size.y / 2.0
 
 func _close() -> void:
 	_close_settings_panel()
