@@ -40,6 +40,9 @@ func _on_join_button_pressed():
 	multiplayer.connected_to_server.connect(_on_connected_to_server, CONNECT_ONE_SHOT)
 	print("Joining host: ", host_steam_id)
 
+	await get_tree().create_timer(5.0).timeout
+	print("Status after 5s: ", multiplayer.multiplayer_peer.get_connection_status())
+
 func _on_connected_to_server():
 	NetworkSync.session_mode = NetworkSync.SessionMode.CLIENT
 	NetworkSync.report_player_name.rpc_id(1, Steam.getPersonaName())
