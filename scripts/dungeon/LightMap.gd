@@ -15,16 +15,14 @@ const PATH_SLACK := 1.1
 @export var player_root: Node
 @export var light_radius := 128.0
 @export var view_half := 320
-# Other players show as a glow of the same radius and steps as a player's light (you see their
-# light, not what they see): it lights nothing but itself.
-@export var halo_color := Color(1.0, 0.9, 0.7)
-@export_range(0.0, 1.0) var halo_strength := 0.35
 
 var _wall_data: TileMapLayer
 var _floor_data: TileMapLayer
 var _void_id: int
 var _open_door_id: int
-# The local player's light: its window of cells and the flood results inside it.
+const MAX_OTHERS := 3
+
+# One light per player: its own window of cells and the flood results inside it.
 class Light:
 	var image: Image
 	var texture: ImageTexture
@@ -36,9 +34,7 @@ class Light:
 	var light_pos := Vector2.ZERO
 
 var _local: Light
-var _halos := {}  # other player's node -> the glow sprite drawn on them
-var _halo_material: ShaderMaterial
-var _halo_texture: ImageTexture
+var _others := {}  # other player's node -> Light (vision is shared; at most MAX_OTHERS are drawn)
 var _side := 0
 var _sprite: Sprite2D
 var _blocked_cache := {}
@@ -61,7 +57,6 @@ func _ready() -> void:
 	_open_door_id = tile_initialize.tile_registry.get_id("wall_door_open")
 	_side = int(view_half * 2.0 / CELL) + 1
 	_local = _make_light()
-	_make_halo_assets()
 	_glow_image = Image.create(1, 1, false, Image.FORMAT_RGBA8)
 	_glow_image.fill(Color(0, 0, 0, 1))
 	_glow_texture = ImageTexture.create_from_image(_glow_image)
@@ -110,9 +105,9 @@ func _process(_delta: float) -> void:
 	var player := _local_player()
 	if player == null:
 		return
-	_update_light(_local, player)
+	_update_light(_local, player, true)
 	_shading.set_shader_parameter("light_pos", _local.light_pos)
-	_update_halos()
+	_update_others()
 
 func _local_player() -> Node2D:
 	for child in player_root.get_children():
@@ -127,52 +122,46 @@ func _make_light() -> Light:
 	light.texture = ImageTexture.create_from_image(light.image)
 	return light
 
-# Floods and paints the local light, only when the player moved to a new cell or moved within it.
-func _update_light(light: Light, player: Node2D) -> void:
+# Floods and paints one player's light, only when they moved to a new cell or moved within it.
+func _update_light(light: Light, player: Node2D, is_local: bool) -> void:
 	light.light_pos = (player.global_position + Vector2(TILE / 2.0, TILE / 2.0)).round()
 	var origin := Vector2i((light.light_pos / CELL).floor())
 	if origin != light.last_origin:
 		light.last_origin = origin
-		_flood(light, origin)
+		_flood(light, origin, is_local)
 		light.last_light_pos = Vector2(INF, INF)
 	if light.light_pos != light.last_light_pos:
 		light.last_light_pos = light.light_pos
 		_paint(light)
 
-# Every other player gets a soft glow, however far away they are. It sits above the darkness
-# (z 2001, added on top), so it shows where they are without lighting the ground around them.
-func _update_halos() -> void:
-	var present := {}
+# Vision is shared: every other player carries their own light, however far from the local player
+# (a ranger can see through a frontliner's eyes). The shaders take the brightest of all the lights,
+# so up to MAX_OTHERS others are drawn.
+func _update_others() -> void:
+	var present: Array[Node2D] = []
 	for child in player_root.get_children():
 		if not child.is_multiplayer_authority():
-			present[child] = true
-	for player in _halos.keys():
+			present.append(child as Node2D)
+	for player in _others.keys():
 		if not is_instance_valid(player) or not present.has(player):
-			_halos[player].queue_free()
-			_halos.erase(player)
+			_others.erase(player)
+	var smooth: ShaderMaterial = _sprite.material
+	var positions := PackedVector2Array([Vector2.ZERO, Vector2.ZERO, Vector2.ZERO])
+	var count := 0
 	for player in present:
-		if not _halos.has(player):
-			_halos[player] = _make_halo()
-		_halos[player].position = (player.global_position + Vector2(TILE / 2.0, TILE / 2.0)).round()
-
-func _make_halo() -> Sprite2D:
-	var halo := Sprite2D.new()
-	halo.texture = _halo_texture
-	halo.scale = Vector2.ONE * light_radius * 2.0
-	halo.material = _halo_material
-	halo.z_index = 2001
-	add_child(halo)
-	return halo
-
-# One white pixel stretched to the light's size; the shader draws the stepped disc on it.
-func _make_halo_assets() -> void:
-	var pixel := Image.create(1, 1, false, Image.FORMAT_RGBA8)
-	pixel.fill(Color.WHITE)
-	_halo_texture = ImageTexture.create_from_image(pixel)
-	_halo_material = ShaderMaterial.new()
-	_halo_material.shader = load("res://resources/shaders/light_halo.gdshader")
-	_halo_material.set_shader_parameter("halo_color", halo_color)
-	_halo_material.set_shader_parameter("strength", halo_strength)
+		if count >= MAX_OTHERS:
+			break
+		if not _others.has(player):
+			_others[player] = _make_light()
+		var light: Light = _others[player]
+		_update_light(light, player, false)
+		count += 1
+		smooth.set_shader_parameter("other_map_%d" % count, light.texture)
+		smooth.set_shader_parameter("other_origin_%d" % count, Vector2(light.top_left * CELL))
+		positions[count - 1] = light.light_pos
+	smooth.set_shader_parameter("other_count", count)
+	_shading.set_shader_parameter("other_lights", positions)
+	_shading.set_shader_parameter("other_light_count", count)
 
 func _scan_glow_sources(tiles: Rect2i) -> void:
 	_glow_sources.clear()
@@ -222,14 +211,15 @@ func _paint_glow() -> void:
 		_glow_image.set_pixelv(pixel, Color(color.r, color.g, color.b, minf(fraction, 1.0)))
 	_glow_texture.update(_glow_image)
 
-func _flood(light: Light, origin: Vector2i) -> void:
+func _flood(light: Light, origin: Vector2i, is_local: bool) -> void:
 	_blocked_cache.clear()
 	var reached := light.reached
 	reached.clear()
 	var half := int(_side / 2.0)
 	light.top_left = origin - Vector2i(half, half)
-	_sprite.position = Vector2(light.top_left * CELL)
-	_sprite.material.set_shader_parameter("window_origin", _sprite.position)
+	if is_local:
+		_sprite.position = Vector2(light.top_left * CELL)
+		_sprite.material.set_shader_parameter("window_origin", _sprite.position)
 	var radius_cells := light_radius / CELL
 	var max_cost := int(radius_cells * STRAIGHT * PATH_SLACK)
 	var cost := {origin: 0}
