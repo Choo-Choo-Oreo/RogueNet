@@ -5,10 +5,28 @@ extends Control
 @onready var player_list: VBoxContainer = $HSplitContainer/PlayerListPanel/PlayersBox/PlayerList
 @onready var sidebar: Panel = $Sidebar
 @onready var player_list_panel: VSplitContainer = $HSplitContainer/PlayerListPanel
+@onready var chat_log: RichTextLabel = $HSplitContainer/PlayerListPanel/ChatPanel/ChatLog
+@onready var chat_input: LineEdit = $HSplitContainer/PlayerListPanel/ChatPanel/ChatInputRow/ChatInput
+@onready var send_button: Button = $HSplitContainer/PlayerListPanel/ChatPanel/ChatInputRow/SendButton
 
 func _ready() -> void:
 	refresh_player_list()
 	_apply_session_mode()
+	chat_log.scroll_following = true
+	send_button.pressed.connect(_send_chat)
+	chat_input.text_submitted.connect(func(_text): _send_chat())
+
+# Enter in the input box or the Send button both come here.
+func _send_chat() -> void:
+	var text := chat_input.text.strip_edges()
+	chat_input.clear()
+	if not text.is_empty():
+		NetworkSync.send_chat(text)
+	chat_input.grab_focus()
+
+func add_chat_line(line: String) -> void:
+	# [lb] stops a player's text from being read as formatting tags.
+	chat_log.append_text(line.replace("[", "[lb]") + "\n")
 
 func _apply_session_mode() -> void:
 	match NetworkSync.session_mode:

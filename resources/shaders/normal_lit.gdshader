@@ -19,19 +19,26 @@ void vertex() {
 	world_pos = (MODEL_MATRIX * vec4(VERTEX, 0.0, 1.0)).xy;
 }
 
-void fragment() {
-	vec3 normal = normalize(texture(NORMAL_TEXTURE, UV).xyz * 2.0 - 1.0);
-	vec2 nearest = light_pos;
-	for (int i = 0; i < 3; i++) {
-		if (i < other_light_count && length(other_lights[i] - world_pos) < length(nearest - world_pos)) {
-			nearest = other_lights[i];
-		}
-	}
-	vec2 to_light = nearest - world_pos;
+// How much one light brightens or darkens a pixel.
+float light_shade(vec3 normal, vec2 light) {
+	vec2 to_light = light - world_pos;
 	// The normal maps are green-up, screen y is down, so flip y for the light direction.
 	vec3 light_dir = normalize(vec3(to_light.x, -to_light.y, light_height));
 	float tilt = max(dot(normal, light_dir), 0.0) - light_dir.z;
 	float falloff = 1.0 - clamp(length(to_light) / reach, 0.0, 1.0);
 	float shade = floor(tilt * strength * steps + 0.5) / steps;
-	COLOR.rgb *= 1.0 + shade * falloff;
+	return shade * falloff;
+}
+
+void fragment() {
+	vec3 normal = normalize(texture(NORMAL_TEXTURE, UV).xyz * 2.0 - 1.0);
+	// Add the lights instead of picking the nearest one: switching light at the halfway point
+	// between two players made a hard seam. Each light fades out smoothly, so the sum has none.
+	float total = light_shade(normal, light_pos);
+	for (int i = 0; i < 3; i++) {
+		if (i < other_light_count) {
+			total += light_shade(normal, other_lights[i]);
+		}
+	}
+	COLOR.rgb *= 1.0 + clamp(total, -1.0, 1.0);
 }

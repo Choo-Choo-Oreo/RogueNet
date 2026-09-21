@@ -8,6 +8,9 @@ func _on_copy_id_button_pressed():
 	pass
 
 func _on_host_button_pressed():
+	if not SteamManager.online:
+		print("Steam is not running or you are offline. Start Steam (and go online) to host.")
+		return
 	var peer = SteamMultiplayerPeer.new()
 	var error = peer.create_host(0)
 
@@ -24,6 +27,9 @@ func _on_host_button_pressed():
 	get_tree().change_scene_to_file("res://scenes/ui/town/MainTown.tscn")
 
 func _on_join_button_pressed():
+	if not SteamManager.online:
+		print("Steam is not running or you are offline. Start Steam (and go online) to join.")
+		return
 	var host_id_text = $HSplitContainer/ConnectPanel/LineEdit.text.strip_edges()
 	if host_id_text.is_empty() or not host_id_text.is_valid_int():
 		print("Enter a valid host Steam ID before joining.")

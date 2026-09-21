@@ -56,6 +56,7 @@ func _on_end_mission_button_pressed() -> void:
 func _return_to_town() -> void:
 	if multiplayer.is_server():
 		NetworkSync.missions.clear()
+		NetworkSync.dive_members.clear()
 	get_tree().change_scene_to_file(TOWN_SCENE)
 
 func _on_main_menu_button_pressed() -> void:

@@ -9,16 +9,12 @@ func _on_play_pressed() -> void:
 	panel_settings.add_child(settings_scene)
 
 func _on_singleplayer_pressed() -> void:
-	var peer = SteamMultiplayerPeer.new()
-	var error = peer.create_host(0)
-	if error != OK:
-		print("Failed to host: ", error)
-		return
-	multiplayer.multiplayer_peer = peer
+	# No listen socket: nobody can join a singleplayer game, and it works without Steam.
+	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
 	NetworkSync.session_mode = NetworkSync.SessionMode.SINGLEPLAYER
 	NetworkSync.reset_session()
-	NetworkSync.peer_steam_ids[1] = Steam.getSteamID()
-	NetworkSync.peer_names[1] = Steam.getPersonaName()
+	NetworkSync.peer_steam_ids[1] = Steam.getSteamID() if SteamManager.online else 0
+	NetworkSync.peer_names[1] = Steam.getPersonaName() if SteamManager.online else "Player"
 	get_tree().change_scene_to_file("res://scenes/ui/town/MainTown.tscn")
 
 func _on_dungeon_maker_pressed() -> void:

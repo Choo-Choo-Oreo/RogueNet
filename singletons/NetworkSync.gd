@@ -12,6 +12,9 @@ var peer_steam_ids: Dictionary = {}
 
 var dungeon_seed: int = 0
 
+# Host only: the peers in the mission that was started. PlayerSpawner spawns just these.
+var dive_members: Array = []
+
 func _ready() -> void:
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 	multiplayer.peer_disconnected.connect(func(id):
@@ -29,6 +32,7 @@ func _ready() -> void:
 
 func reset_session() -> void:
 	missions.clear()
+	dive_members.clear()
 	peer_steam_ids.clear()
 	peer_names.clear()
 	dungeon_seed = 0
@@ -37,6 +41,33 @@ func _on_server_disconnected() -> void:
 	multiplayer.multiplayer_peer = null
 	reset_session()
 	get_tree().change_scene_to_file("res://scenes/ui/MainMenu.tscn")
+
+const MAX_CHAT_LENGTH := 200
+
+# Chat goes through the host, which stamps the sender's name and sends the line to everyone.
+func send_chat(text: String) -> void:
+	if multiplayer.is_server():
+		_broadcast_chat(1, text)
+	else:
+		report_chat.rpc_id(1, text)
+
+@rpc("any_peer", "reliable")
+func report_chat(text: String) -> void:
+	if not multiplayer.is_server():
+		return
+	_broadcast_chat(multiplayer.get_remote_sender_id(), text)
+
+func _broadcast_chat(sender_id: int, text: String) -> void:
+	var line := "%s: %s" % [peer_names.get(sender_id, str(sender_id)), text.substr(0, MAX_CHAT_LENGTH)]
+	receive_chat(line)
+	for peer_id in multiplayer.get_peers():
+		receive_chat.rpc_id(peer_id, line)
+
+@rpc("authority", "reliable")
+func receive_chat(line: String) -> void:
+	var scene := get_tree().current_scene
+	if scene and scene.has_method("add_chat_line"):
+		scene.add_chat_line(line)
 
 @rpc("any_peer", "reliable")
 func report_steam_id(steam_id: int) -> void:
@@ -203,6 +234,7 @@ func _start_mission(peer_id: int, mission_id: int) -> void:
 		return
 	var members: Array = missions[mission_id]["members"]
 	var mission_seed := randi()
+	dive_members = members.duplicate()
 	for member_id in members:
 		if member_id == 1:
 			receive_start_mission(mission_seed)
