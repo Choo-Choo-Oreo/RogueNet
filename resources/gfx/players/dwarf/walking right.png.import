@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cux5gw2824cf8"
-path="res://.godot/imported/Walking South.png-a534d07aaba23c624c256ed656cb7994.ctex"
+uid="uid://ctu2d4ft5d3bc"
+path="res://.godot/imported/walking right.png-6f47d7564da9ba4db6f2cdc23427a90f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://players/Dwarve/Walking South.png"
-dest_files=["res://.godot/imported/Walking South.png-a534d07aaba23c624c256ed656cb7994.ctex"]
+source_file="res://resources/gfx/players/dwarf/walking right.png"
+dest_files=["res://.godot/imported/walking right.png-6f47d7564da9ba4db6f2cdc23427a90f.ctex"]
 
 [params]
 
