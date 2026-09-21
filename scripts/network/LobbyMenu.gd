@@ -17,6 +17,7 @@ func _on_host_button_pressed():
 
 	multiplayer.multiplayer_peer = peer
 	NetworkSync.session_mode = NetworkSync.SessionMode.HOST
+	NetworkSync.reset_session()
 	NetworkSync.peer_steam_ids[1] = Steam.getSteamID()
 	NetworkSync.peer_names[1] = Steam.getPersonaName()
 	print("Hosting. My Steam ID: ", Steam.getSteamID())

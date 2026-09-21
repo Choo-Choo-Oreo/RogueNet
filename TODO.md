@@ -74,12 +74,31 @@ Last verified: 2026-09-21 (after commit `3f9aaa4`, plus uncommitted lighting, no
 - [✗] Loot, stats and skill tree data (no files found)
 
 ## Multiplayer and structure
-- [✗] Start-dive crash: `receive_mission_members` in `NetworkSync.gd` calls `.hide()` on `get_node_or_null("PanelMain")` without a null check (line 211)
+- [✓] Re-host shows the old client twice: `NetworkSync.reset_session()` now exists and is called from `PauseMenu.gd`, `MainTown.gd`, `MainMenu.gd`, `LobbyMenu.gd` and `_on_server_disconnected`. Orea confirmed the new pause-menu flow works; the re-host retest itself (host, queue, start, main menu, host again, client rejoins shows once) hasn't been done
+- [✓] Host-only "End Mission" button in the pause menu (`PauseMenu.gd` / `PauseMenu.tscn`): sends everyone back to the town, panel resizes to fit; confirmed working by Orea
+- [✗] Other players' lights: each client only floods light for the local player (see also "Other players' vision" under Rendering). Needs one light map per visible player, min-combined in `light_smooth.gdshader`, plus per-pixel nearest light for the normal shading
+- [✗] Start-dive crash: `receive_mission_members` in `NetworkSync.gd` calls `.hide()` on `get_node_or_null("PanelMain")` without a null check (line 211); also listed as audit item 2 below
 - [✗] Netcode decision (`CLAUDE.md` networking line still says "note here once decided")
 - [✗] Dungeon instancing (only the basic part: every member loads the dungeon scene with one shared seed; no per-party instance hosted by the party lead)
 - [✗] Persistent town (research only)
 - [✗] Lobby and menu backlog (`PanelLobby` still in `MainMenu.tscn`, line 102)
 - [✗] Optional boss-player role (only `mouse.gd`, in an "antagonist" folder)
+
+## Networking audit (2026-09-21): verify first, then decide
+Found by reading the code, nothing was playtested. For each item: first check it's a real problem, then decide the fix. Items 1 and 2 of the audit are covered above (reset_session done; late Guild click is the start-dive crash).
+- [✗] Disconnect leaves the peer in `missions[x]["members"]`; a dead peer gets `rpc_id` calls and a creator who leaves orphans the mission. Verify: join a mission, close the client, then start or click Guild on the host and watch for errors. Fix idea: erase the peer from every mission on `peer_disconnected`, and reassign or delete the mission if the creator left
+- [✗] `PlayerSpawner` spawns everyone connected, not just the mission party (ghost avatars for players still in town, spawner errors on clients without `/root/Dungeon`). Verify: host and two clients, only two dive, look at the third's screen. Fix idea: spawn only for mission members (part of the "who is in this dive" pass)
+- [✗] The dive needs the host to be in it (`PlayerSpawner` returns early on non-servers), so a mission without the host loads an empty dungeon; matters for `is_dedicated` and the party-lead-hosts vision. Verify: is_dedicated with a client as creator. Decide together with the netcode decision
+- [✗] No "I'm loaded" handshake between scene change and spawn (and `_send_existing_missions` can hit a client that hasn't loaded GuildTown yet). Verify: test with a slow client or a big dungeon. Fix idea: client tells the server once its scene is ready, then the server spawns and sends state
+- [✗] `receive_mission_members` also force-shows `PanelMission` for every member on any join or leave; Back in shared-party mode never leaves the mission. Verify: join a mission, press Back, have someone else join. Fix idea: split into a data update and a UI update
+- [✗] Singleplayer opens a real Steam listen socket (`MainMenu.gd` line 12), so anyone with your Steam ID can join and solo play needs Steam running. Verify: try Singleplayer with Steam closed. Fix idea: `OfflineMultiplayerPeer` (`DungeonMaker` already uses it)
+- [✗] Join has no failure path: `connection_failed` only prints, the peer isn't nulled, the one-shot `connected_to_server` stays attached, a second Join double-connects, Back mid-connect frees the menu anyway. Verify: join a wrong or offline host ID twice. Fix idea: null the peer and disconnect the signal on failure, disable Join while connecting
+- [✗] Dead code: `report_steam_id` never called (so `peer_steam_ids` only holds the host); `report_move_state` / `receive_move_state` never called and reference a missing `apply_move_animation`; `is_dedicated` isn't synced; dedicated mode `mission_id = creator_id` overwrites a second mission. Verify: grep for callers; decide keep or delete
+- [✗] Position streamed every frame (`PlayerController.gd` 23-26), relayed to every peer including ones in town. Verify: Network profiler with a client standing still. Fix idea: one reliable "moving to tile X" per step (movement is tile-based). Also feeds the other-players'-lights work
+- [✗] Trust: positions, names and the privacy string are unvalidated. Decide as part of the netcode decision (fits the Terraria-style model, but should be a conscious choice)
+- [✗] `receive_*` functions call `get_tree().current_scene.get_node_or_null(...)` without a null check on `current_scene` (null briefly during scene changes; `receive_player_names` already guards). Verify: spam Guild during a scene change. Fix: one shared guard
+- [✗] Root cause of several items above: `NetworkSync` reaches into the scene tree by hard-coded path and pushes UI changes. Bigger fix: `NetworkSync` holds the state and emits signals, scenes read it in `_ready` and subscribe. Revisit with the netcode decision
+- [✗] Export bug (not networking): `_build_floor_speeds` (`PlayerController.gd` line 72), `TileInitialize.gd` line 35 and `CompileTilePalette.gd` line 16 filter with `ends_with(".tres")`; in exported builds files become `.tres.remap`, so floor speeds fall to 1.0 and tile loading may break. Verify: export a test build. Fix idea: strip a trailing `.remap` before checking or loading
 
 ## Debug controls
 - [✗] F4: Debug Settings (bool, opens a menu)

@@ -27,8 +27,15 @@ func _ready() -> void:
 			main_town.refresh_player_list()
 	)
 
+func reset_session() -> void:
+	missions.clear()
+	peer_steam_ids.clear()
+	peer_names.clear()
+	dungeon_seed = 0
+
 func _on_server_disconnected() -> void:
 	multiplayer.multiplayer_peer = null
+	reset_session()
 	get_tree().change_scene_to_file("res://scenes/ui/MainMenu.tscn")
 
 @rpc("any_peer", "reliable")

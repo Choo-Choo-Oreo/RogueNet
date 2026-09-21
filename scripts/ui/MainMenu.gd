@@ -16,6 +16,7 @@ func _on_singleplayer_pressed() -> void:
 		return
 	multiplayer.multiplayer_peer = peer
 	NetworkSync.session_mode = NetworkSync.SessionMode.SINGLEPLAYER
+	NetworkSync.reset_session()
 	NetworkSync.peer_steam_ids[1] = Steam.getSteamID()
 	NetworkSync.peer_names[1] = Steam.getPersonaName()
 	get_tree().change_scene_to_file("res://scenes/ui/town/MainTown.tscn")
