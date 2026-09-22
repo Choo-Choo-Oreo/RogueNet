@@ -20,15 +20,21 @@ func _process(delta: float) -> void:
 	_update_facing_animation(delta)
 	if not is_multiplayer_authority():
 		return
-	if multiplayer.is_server():
-		NetworkSync._relay_position(1, global_position)
-	else:
-		NetworkSync.report_position.rpc_id(1, global_position)
+	# The connection drops a moment before the scene changes when a player leaves; skip sending then.
+	if _is_connected():
+		if multiplayer.is_server():
+			NetworkSync._relay_position(1, global_position)
+		else:
+			NetworkSync.report_position.rpc_id(1, global_position)
 	var mouse_world := get_global_mouse_position()
 	var to_mouse := (mouse_world - global_position) * camera_mouse_weight
 	if to_mouse.length() > camera_max_offset:
 		to_mouse = to_mouse.normalized() * camera_max_offset
 	$Camera2D.position = to_mouse
+
+func _is_connected() -> bool:
+	var peer := multiplayer.multiplayer_peer
+	return peer != null and peer.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTED
 
 func _update_facing_animation(delta: float) -> void:
 	if is_multiplayer_authority():
@@ -105,15 +111,32 @@ func _move_one_tile(direction: Vector2) -> void:
 	tween.tween_property(self, "global_position", target_global, step_time)
 	tween.finished.connect(func(): is_moving = false)
 
+const MOVE_ACTIONS := {
+	"ui_right": Vector2.RIGHT,
+	"ui_left": Vector2.LEFT,
+	"ui_up": Vector2.UP,
+	"ui_down": Vector2.DOWN,
+}
+
+# The movement keys currently held, oldest first, so the newest press decides the direction.
+var _held: Array = []
+
+func _input(event: InputEvent) -> void:
+	if not is_multiplayer_authority():
+		return
+	for action in MOVE_ACTIONS:
+		if event.is_action_pressed(action):
+			_held.erase(action)
+			_held.append(action)
+		elif event.is_action_released(action):
+			_held.erase(action)
+
 func _physics_process(_delta: float) -> void:
 	if not is_multiplayer_authority():
 		return
+	# Drop keys that are no longer down (a release can be missed, for example when focus is lost).
+	_held = _held.filter(func(action): return Input.is_action_pressed(action))
 	if is_moving:
 		return
-	var direction := Vector2.ZERO
-	if Input.is_action_pressed("ui_right"): direction = Vector2.RIGHT
-	elif Input.is_action_pressed("ui_left"): direction = Vector2.LEFT
-	elif Input.is_action_pressed("ui_up"): direction = Vector2.UP
-	elif Input.is_action_pressed("ui_down"): direction = Vector2.DOWN
-	if direction != Vector2.ZERO:
-		_move_one_tile(direction)
+	if not _held.is_empty():
+		_move_one_tile(MOVE_ACTIONS[_held.back()])
