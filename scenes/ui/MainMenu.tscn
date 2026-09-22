@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://bqee185h6kanu"]
 
 [ext_resource type="Script" uid="uid://cw4p2iop2rv0i" path="res://scripts/ui/MainMenu.gd" id="1_vjtqc"]
-[ext_resource type="AudioStream" uid="uid://c1aywv5g5xg27" path="res://resources/sfx/music/Menu-Music.mp3" id="2_6jbdy"]
 [ext_resource type="PackedScene" path="res://scenes/ui/SettingsMenu.tscn" id="2_iwbf0"]
 [ext_resource type="PackedScene" uid="uid://c4v1uy6b6afx5" path="res://scenes/ui/MultiplayerMenu.tscn" id="3_2ysvc"]
 
@@ -114,12 +113,6 @@ grow_vertical = 2
 
 [node name="MultiplayerLobby" parent="PanelLobby" unique_id=672080569 instance=ExtResource("3_2ysvc")]
 layout_mode = 1
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=280040554]
-stream = ExtResource("2_6jbdy")
-volume_db = -6.382
-autoplay = true
-bus = &"Music"
 
 [connection signal="pressed" from="HSplitContainer/VSplitContainer/VBoxContainer/Singleplayer" to="." method="_on_singleplayer_pressed"]
 [connection signal="pressed" from="HSplitContainer/VSplitContainer/VBoxContainer/Multiplayer" to="." method="_on_play_pressed"]

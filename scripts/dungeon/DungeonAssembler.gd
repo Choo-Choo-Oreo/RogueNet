@@ -88,7 +88,7 @@ static func _read_folder(folder: String) -> Dictionary:
 	dir.list_dir_begin()
 	var file_name := dir.get_next()
 	while file_name != "":
-		if file_name.ends_with(".json"):
+		if file_name.ends_with(".json") and file_name != "defines.json":
 			file_names.append(file_name)
 		file_name = dir.get_next()
 	dir.list_dir_end()
@@ -104,6 +104,13 @@ static func load_rooms(biome: String = "") -> Dictionary:
 	var rooms := _read_folder(ROOMS_DIR + (biome + "/" if biome != "" else ""))
 	_fill_from_fallback(rooms)
 	return with_rotations(rooms)
+
+static func load_defines(biome: String) -> Dictionary:
+	if biome == "":
+		return {}
+	var text := FileAccess.get_file_as_string(ROOMS_DIR + biome + "/defines.json")
+	var data = JSON.parse_string(text)
+	return data if data is Dictionary else {}
 
 static func dominant_wall_tile(room: Dictionary) -> String:
 	return _dominant_tile(room["walls"], "wall_door")
@@ -197,10 +204,14 @@ class Placement:
 	var suppressed_connectors: Array[Vector2i] = []
 
 ## dungeon_seed: RNG seed, same value on host and every client -> identical layout.
-static func generate(rooms: Dictionary, dungeon_seed: int) -> Array[Placement]:
+static func generate(rooms: Dictionary, dungeon_seed: int, defines: Dictionary = {}) -> Array[Placement]:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = dungeon_seed
-	var target_count := rng.randi_range(MIN_ROOM_COUNT, MAX_ROOM_COUNT)
+	var room_count: Dictionary = defines.get("room_count", {})
+	var min_count: int = room_count.get("min", MIN_ROOM_COUNT)
+	var max_count: int = room_count.get("max", MAX_ROOM_COUNT)
+	var target_count := rng.randi_range(min_count, max_count)
+	var tag_weights: Dictionary = defines.get("tag_weights", {})
 
 	var entrance_id := ""
 	var boss_id := ""
@@ -248,7 +259,7 @@ static func generate(rooms: Dictionary, dungeon_seed: int) -> Array[Placement]:
 	while open_connectors.size() > 0 and placements.size() < normal_budget:
 		var entry: Dictionary = open_connectors.pop_front()
 		var avoid_dead_ends: bool = placements.size() < normal_budget - DEAD_END_AVOIDANCE_MARGIN
-		if not _try_place(rooms, pool_ids, entry, placements, occupied, open_connectors, rng, avoid_dead_ends):
+		if not _try_place(rooms, pool_ids, entry, placements, occupied, open_connectors, rng, avoid_dead_ends, tag_weights):
 			_lock(placements[entry["placement_index"]], entry["local_pos"])
 
 	for entry in open_connectors:
@@ -267,7 +278,7 @@ static func generate(rooms: Dictionary, dungeon_seed: int) -> Array[Placement]:
 
 	return placements
 
-static func generate_with_retry(rooms: Dictionary, dungeon_seed: int, max_attempts: int = 20) -> Array[Placement]:
+static func generate_with_retry(rooms: Dictionary, dungeon_seed: int, defines: Dictionary = {}, max_attempts: int = 20) -> Array[Placement]:
 	var need_boss := false
 	var need_treasure := false
 	for id in rooms:
@@ -278,14 +289,14 @@ static func generate_with_retry(rooms: Dictionary, dungeon_seed: int, max_attemp
 			need_treasure = true
 
 	for attempt in max_attempts:
-		var placements := generate(rooms, dungeon_seed + attempt)
+		var placements := generate(rooms, dungeon_seed + attempt, defines)
 		if not placements.is_empty() and _satisfies_requirements(rooms, placements, need_boss, need_treasure):
 			if attempt > 0:
 				push_warning("DungeonAssembler: seed %d needed %d retr%s (used seed %d)" % [dungeon_seed, attempt, "y" if attempt == 1 else "ies", dungeon_seed + attempt])
 			return placements
 
 	push_warning("DungeonAssembler: no complete layout found in %d attempts from seed %d — using attempt 0 anyway" % [max_attempts, dungeon_seed])
-	return generate(rooms, dungeon_seed)
+	return generate(rooms, dungeon_seed, defines)
 
 static func _satisfies_requirements(rooms: Dictionary, placements: Array[Placement], need_boss: bool, need_treasure: bool) -> bool:
 	var has_boss := false
@@ -298,14 +309,13 @@ static func _satisfies_requirements(rooms: Dictionary, placements: Array[Placeme
 			has_treasure = true
 	return (not need_boss or has_boss) and (not need_treasure or has_treasure)
 
-static func _try_place(rooms: Dictionary, candidate_ids: Array, entry: Dictionary, placements: Array[Placement], occupied: Array[Rect2i], open_connectors: Array, rng: RandomNumberGenerator, avoid_dead_ends: bool) -> bool:
+static func _try_place(rooms: Dictionary, candidate_ids: Array, entry: Dictionary, placements: Array[Placement], occupied: Array[Rect2i], open_connectors: Array, rng: RandomNumberGenerator, avoid_dead_ends: bool, tag_weights: Dictionary) -> bool:
 	var from_placement: Placement = placements[entry["placement_index"]]
 	var from_world: Vector2i = from_placement.offset + entry["local_pos"]
 	var need_dir: int = _opposite(entry["dir"])
 	var target_cell: Vector2i = from_world + _dir_step(entry["dir"])
 
-	var shuffled_ids: Array = candidate_ids.duplicate()
-	_shuffle(shuffled_ids, rng)
+	var shuffled_ids: Array = _weighted_shuffle(candidate_ids, rooms, tag_weights, rng)
 	if avoid_dead_ends:
 		var multi: Array = []
 		var single: Array = []
@@ -478,3 +488,21 @@ static func _shuffle(arr: Array, rng: RandomNumberGenerator) -> void:
 		var tmp = arr[i]
 		arr[i] = arr[j]
 		arr[j] = tmp
+
+static func _room_weight(room: Dictionary, tag_weights: Dictionary) -> float:
+	var weight: float = tag_weights.get(room.get("role", "normal"), 1.0)
+	for tag in (room.get("tags", []) as Array):
+		weight *= tag_weights.get(tag, 1.0)
+	return max(weight, 0.0001)
+
+# Same effect as _shuffle when every weight is 1.0; a lower-weight room just tends
+# to sort later, so it's picked less often without ever being impossible to pick.
+static func _weighted_shuffle(ids: Array, rooms: Dictionary, tag_weights: Dictionary, rng: RandomNumberGenerator) -> Array:
+	var keyed: Array = []
+	for id in ids:
+		keyed.append([pow(rng.randf(), 1.0 / _room_weight(rooms[id], tag_weights)), id])
+	keyed.sort_custom(func(a, b): return a[0] > b[0])
+	var result: Array = []
+	for pair in keyed:
+		result.append(pair[1])
+	return result

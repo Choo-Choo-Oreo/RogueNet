@@ -112,3 +112,7 @@ Found by reading the code, nothing was playtested. For each item: first check it
 - [✗] F4: Debug Settings (bool, opens a menu)
 - [✗] F5: Debug Overlay (bool, on/off)
 - Note: F5 is already bound to `debug_dungeon_layout` in the input map (`project.godot`, used by `DungeonDebugView.gd` to print a layout to the console); rebind one of them or the two will fire together
+
+## Input and controls (parked, 2026-09-21)
+- [✗] Rebindable keys: a settings UI to remap the input map actions, with the new bindings saved (`ConfigFileHandler.gd` already handles saved settings, so remaps likely belong there too)
+- [✗] Controller support: after rebinding is done, not before (Orea's call)

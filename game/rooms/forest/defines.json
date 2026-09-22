@@ -1,0 +1,5 @@
+{
+	"room_count": { "min": 20, "max": 30 },
+	"tag_weights": { "maze": 1.5, "corridor": 0.5 },
+	"music": "res://resources/sfx/music/The-Lone-Forest.mp3"
+}

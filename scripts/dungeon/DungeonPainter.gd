@@ -10,9 +10,12 @@ func _ready() -> void:
 	var wall_data: TileMapLayer = tile_initialize.get_node("WallData")
 	var registry: TileTypeRegistry = tile_initialize.tile_registry
 
-	var rooms := DungeonAssembler.load_rooms(DungeonAssembler.pick_biome(NetworkSync.dungeon_seed))
-	var placements := DungeonAssembler.generate_with_retry(rooms, NetworkSync.dungeon_seed)
+	var biome := DungeonAssembler.pick_biome(NetworkSync.dungeon_seed)
+	var defines := DungeonAssembler.load_defines(biome)
+	var rooms := DungeonAssembler.load_rooms(biome)
+	var placements := DungeonAssembler.generate_with_retry(rooms, NetworkSync.dungeon_seed, defines)
 	_paint(rooms, placements, floor_data, wall_data, registry)
+	MusicManager.play_for_biome(defines)
 
 func _paint(rooms: Dictionary, placements: Array, floor_data: TileMapLayer, wall_data: TileMapLayer, registry: TileTypeRegistry) -> void:
 	for p in placements:

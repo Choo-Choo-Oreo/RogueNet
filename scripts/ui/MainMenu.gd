@@ -2,6 +2,9 @@ extends Control
 
 @onready var panel_settings: Panel = $PanelSettings
 
+func _ready() -> void:
+	MusicManager.play_menu()
+
 func _on_play_pressed() -> void:
 	_close_settings_panel()
 	panel_settings.visible = true

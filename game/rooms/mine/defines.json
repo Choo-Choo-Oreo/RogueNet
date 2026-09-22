@@ -1,0 +1,5 @@
+{
+	"room_count": { "min": 20, "max": 30 },
+	"tag_weights": { "maze": 0.6, "corridor": 1.4 },
+	"music": "res://resources/sfx/music/Groovy.mp3"
+}

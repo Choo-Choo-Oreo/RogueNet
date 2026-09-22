@@ -10,6 +10,7 @@ extends Control
 @onready var send_button: Button = $HSplitContainer/PlayerListPanel/ChatPanel/ChatInputRow/SendButton
 
 func _ready() -> void:
+	MusicManager.stop()
 	refresh_player_list()
 	_apply_session_mode()
 	chat_log.scroll_following = true

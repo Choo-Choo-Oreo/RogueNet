@@ -19,11 +19,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		_dump_layout(NetworkSync.dungeon_seed)
 
 func _dump_layout(dungeon_seed: int) -> void:
-	var rooms := DungeonAssembler.load_rooms(DungeonAssembler.pick_biome(dungeon_seed))
+	var biome := DungeonAssembler.pick_biome(dungeon_seed)
+	var defines := DungeonAssembler.load_defines(biome)
+	var rooms := DungeonAssembler.load_rooms(biome)
 	if rooms.is_empty():
 		print("DungeonDebugView: no rooms loaded")
 		return
-	var placements := DungeonAssembler.generate_with_retry(rooms, dungeon_seed)
+	var placements := DungeonAssembler.generate_with_retry(rooms, dungeon_seed, defines)
 	if placements.is_empty():
 		print("DungeonDebugView: generation failed")
 		return
