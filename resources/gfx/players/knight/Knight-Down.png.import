@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cjyd46u0cnwon"
-path="res://.godot/imported/Walking North.png-c284e5b0ec4810e6061f158803d9ac6b.ctex"
+uid="uid://vrudjiun63d1"
+path="res://.godot/imported/Knight-Down.png-7af6393ca8721e38b1542cfefd01a6ca.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/players/knight/Walking North.png"
-dest_files=["res://.godot/imported/Walking North.png-c284e5b0ec4810e6061f158803d9ac6b.ctex"]
+source_file="res://resources/gfx/players/knight/Knight-Down.png"
+dest_files=["res://.godot/imported/Knight-Down.png-7af6393ca8721e38b1542cfefd01a6ca.ctex"]
 
 [params]
 

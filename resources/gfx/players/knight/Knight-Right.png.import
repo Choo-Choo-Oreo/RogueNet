@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dbenj64eovqh3"
-path="res://.godot/imported/Walking North.png-c02afa828c684a216f94d262bd61d795.ctex"
+uid="uid://cpvivpnqpoi0j"
+path="res://.godot/imported/Knight-Right.png-720cf6c1db334b90cd541375c351c094.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/players/dwarf/Walking North.png"
-dest_files=["res://.godot/imported/Walking North.png-c02afa828c684a216f94d262bd61d795.ctex"]
+source_file="res://resources/gfx/players/knight/Knight-Right.png"
+dest_files=["res://.godot/imported/Knight-Right.png-720cf6c1db334b90cd541375c351c094.ctex"]
 
 [params]
 

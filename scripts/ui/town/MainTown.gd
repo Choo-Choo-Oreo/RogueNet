@@ -2,6 +2,8 @@ extends Control
 
 @onready var panel_main: Panel = $PanelMain
 @onready var panel_guild: Panel = $PanelGuild
+@onready var panel_character: Panel = $PanelCharacter
+@onready var current_character_label: Label = $PanelCharacter/VBoxContainer/CurrentLabel
 @onready var player_list: VBoxContainer = $HSplitContainer/PlayerListPanel/PlayersBox/PlayerList
 @onready var sidebar: Panel = $Sidebar
 @onready var player_list_panel: VSplitContainer = $HSplitContainer/PlayerListPanel
@@ -12,6 +14,7 @@ extends Control
 func _ready() -> void:
 	MusicManager.stop()
 	refresh_player_list()
+	refresh_character_label()
 	_apply_session_mode()
 	chat_log.scroll_following = true
 	send_button.pressed.connect(_send_chat)
@@ -64,3 +67,28 @@ func _on_leave_button_pressed() -> void:
 	multiplayer.multiplayer_peer = null
 	NetworkSync.reset_session()
 	get_tree().change_scene_to_file("res://scenes/ui/MainMenu.tscn")
+
+func refresh_character_label() -> void:
+	var character_id: String = NetworkSync.peer_characters.get(multiplayer.get_unique_id(), "knight")
+	current_character_label.text = "Current: " + character_id.capitalize()
+
+func _on_swap_characters_button_pressed() -> void:
+	panel_main.hide()
+	panel_character.show()
+
+func _on_character_back_button_pressed() -> void:
+	panel_character.hide()
+	panel_main.show()
+
+func _choose_character(character_id: String) -> void:
+	if multiplayer.is_server():
+		NetworkSync._set_character(1, character_id)
+	else:
+		NetworkSync.report_player_character.rpc_id(1, character_id)
+	refresh_character_label()
+
+func _on_knight_button_pressed() -> void:
+	_choose_character("knight")
+
+func _on_dwarf_button_pressed() -> void:
+	_choose_character("dwarf")

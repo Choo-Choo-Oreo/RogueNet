@@ -191,12 +191,13 @@ Frames are 16x16, in strips. What exists:
 
 | | North | South | East | West | Idle | Attack | Hurt | Death |
 |---|---|---|---|---|---|---|---|---|
-| Knight | 4 frames | 4 | 8 | missing | none | none | none | none |
-| Dwarf | 4 frames | 4 | 7 (named "right") | 7 (named "left") | none | none | none | none |
+| Knight | 4 frames | 4 | 8 | 8 | none | none | none | none |
+| Dwarf | 4 frames | 4 | 7 | 7 (placeholder, see below) | none | none | none | none |
 
-- [✗] Knight: walking west (or confirm the game should just flip east)
-- [✗] Dwarf: even out the frame count (east and west have 7, the knight has 8)
-- [✗] Make file names match between the two (`walking east` vs `walking right`)
+- [✓] Knight: walking west, 2026-09-22 (`Knight-Left.png`) — real art, confirmed by pixel diff to be an exact mirror of `Knight-Right.png`. Wired into `Knight.tres` as a proper `SideLeft` animation (was briefly using the flip trick instead, which Orea flagged as not actually hooked up correctly — fixed)
+- [✗] Dwarf: even out the frame count (east/west have 7, the knight has 8)
+- [✗] Dwarf: `Dwarf-Left.png` is still a placeholder — it was byte-for-byte identical to `Dwarf-Right.png` (confirmed by pixel diff) until Orea started manually flipping it frame by frame on 2026-09-22; not done as of this note
+- [✓] Make file names match between the two, 2026-09-22: both are now `Knight-Up/Down/Left/Right.png` / `Dwarf-Up/Down/Left/Right.png`
 - [✗] Idle, all four directions, both characters
 - [✗] Attack, all four directions. Combat is real-time, so this is the one players see most.
 - [✗] Hurt flash or flinch

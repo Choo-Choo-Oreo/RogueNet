@@ -16,11 +16,30 @@ var _last_anim_position := Vector2.ZERO
 var _facing_direction := Vector2.DOWN
 var _anim_idle_time := 0.0
 
+const CHARACTERS := {
+	"knight": "res://resources/gfx/players/knight/Knight.tres",
+	"dwarf": "res://resources/gfx/players/dwarf/Dwarf.tres",
+}
+const DEFAULT_CHARACTER := "knight"
+
+func set_character(character_id: String) -> void:
+	$AnimatedSprite2D.sprite_frames = load(CHARACTERS.get(character_id, CHARACTERS[DEFAULT_CHARACTER]))
+
+# Some characters (eg. the dwarf) have real, separately-drawn left/right art; others (eg. the
+# knight) have one side image that gets mirrored. Play whichever the current sprite_frames provides.
+func _play_side(is_left: bool) -> void:
+	var frames: SpriteFrames = $AnimatedSprite2D.sprite_frames
+	if frames.has_animation("SideLeft") and frames.has_animation("SideRight"):
+		$AnimatedSprite2D.flip_h = false
+		$AnimatedSprite2D.play("SideLeft" if is_left else "SideRight")
+	else:
+		$AnimatedSprite2D.flip_h = is_left
+		$AnimatedSprite2D.play("Side")
+
 func _process(delta: float) -> void:
 	_update_facing_animation(delta)
 	if not is_multiplayer_authority():
 		return
-	# The connection drops a moment before the scene changes when a player leaves; skip sending then.
 	if _is_connected():
 		if multiplayer.is_server():
 			NetworkSync._relay_position(1, global_position)
@@ -42,8 +61,7 @@ func _update_facing_animation(delta: float) -> void:
 			$AnimatedSprite2D.stop()
 			return
 		if abs(_facing_direction.x) > abs(_facing_direction.y):
-			$AnimatedSprite2D.play("Side")
-			$AnimatedSprite2D.flip_h = _facing_direction.x < 0
+			_play_side(_facing_direction.x < 0)
 		else:
 			$AnimatedSprite2D.play("Back" if _facing_direction.y < 0 else "Front")
 		return
@@ -56,8 +74,7 @@ func _update_facing_animation(delta: float) -> void:
 		return
 	_anim_idle_time = 0.0
 	if abs(delta_pos.x) > abs(delta_pos.y):
-		$AnimatedSprite2D.play("Side")
-		$AnimatedSprite2D.flip_h = delta_pos.x < 0
+		_play_side(delta_pos.x < 0)
 	else:
 		$AnimatedSprite2D.play("Back" if delta_pos.y < 0 else "Front")
 

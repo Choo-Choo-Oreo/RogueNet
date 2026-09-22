@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cux5gw2824cf8"
-path="res://.godot/imported/Walking South.png-d8eaca87a4e864b22070dcd732637e0c.ctex"
+uid="uid://0yq3tfk10e6j"
+path="res://.godot/imported/Knight-Up.png-efb8a410966bffe440a02b4111d5d8ab.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/players/dwarf/Walking South.png"
-dest_files=["res://.godot/imported/Walking South.png-d8eaca87a4e864b22070dcd732637e0c.ctex"]
+source_file="res://resources/gfx/players/knight/Knight-Up.png"
+dest_files=["res://.godot/imported/Knight-Up.png-efb8a410966bffe440a02b4111d5d8ab.ctex"]
 
 [params]
 

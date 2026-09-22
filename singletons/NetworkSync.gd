@@ -186,6 +186,37 @@ func receive_player_names(names: Dictionary) -> void:
 	if main_town and main_town.has_method("refresh_player_list"):
 		main_town.refresh_player_list()
 
+# peer_id -> "knight"/"dwarf", which sprite each player shows in the dungeon.
+var peer_characters: Dictionary = {}
+
+@rpc("any_peer", "reliable")
+func report_player_character(character_id: String) -> void:
+	if not multiplayer.is_server():
+		return
+	_set_character(multiplayer.get_remote_sender_id(), character_id)
+
+func _set_character(peer_id: int, character_id: String) -> void:
+	peer_characters[peer_id] = character_id
+	for other_id in multiplayer.get_peers():
+		receive_player_characters.rpc_id(other_id, peer_characters)
+	receive_player_characters(peer_characters)
+
+@rpc("authority", "reliable")
+func receive_player_characters(characters: Dictionary) -> void:
+	peer_characters = characters
+	var scene := get_tree().current_scene
+	if scene == null:
+		return
+	if scene.has_method("refresh_character_label"):
+		scene.refresh_character_label()
+	var player_root := scene.get_node_or_null("Player")
+	if player_root == null:
+		return
+	for peer_id in peer_characters:
+		var player := player_root.get_node_or_null(str(peer_id))
+		if player and player.has_method("set_character"):
+			player.set_character(peer_characters[peer_id])
+
 @rpc("any_peer", "reliable")
 func report_join_mission(mission_id: int, password: String) -> void:
 	if not multiplayer.is_server():

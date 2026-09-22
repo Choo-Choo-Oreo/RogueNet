@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ob51wly8uv5m"
-path="res://.godot/imported/walking left.png-7fdb36042ed6744b7b473cf9ff2eac86.ctex"
+uid="uid://cux5gw2824cf8"
+path="res://.godot/imported/Dwarf-Down.png-4916cd350d4de07562c82d4e518730d1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/players/dwarf/walking left.png"
-dest_files=["res://.godot/imported/walking left.png-7fdb36042ed6744b7b473cf9ff2eac86.ctex"]
+source_file="res://resources/gfx/players/dwarf/Dwarf-Down.png"
+dest_files=["res://.godot/imported/Dwarf-Down.png-4916cd350d4de07562c82d4e518730d1.ctex"]
 
 [params]
 
