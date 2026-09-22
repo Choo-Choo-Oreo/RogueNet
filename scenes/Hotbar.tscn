@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://bkb0hagy6t6yt"]
+
+[ext_resource type="PackedScene" uid="uid://cs8xl7xoga6r5" path="res://scenes/hotbarslot.tscn" id="1_1074w"]
+[ext_resource type="Script" path="res://scripts/player/player.protagonist/hotbar.gd" id="1_ry1on"]
+
+[node name="CanvasLayer" type="CanvasLayer" unique_id=1093126358]
+script = ExtResource("1_ry1on")
+
+[node name="Slots" type="HBoxContainer" parent="." unique_id=711204023]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -176.0
+offset_top = -64.0
+offset_right = 176.0
+grow_horizontal = 2
+grow_vertical = 0
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, -70)
+offset_transform_visual_only = false
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Slot1" parent="Slots" unique_id=1447679452 instance=ExtResource("1_1074w")]
+layout_mode = 2
+offset_transform_enabled = true
+
+[node name="Slot2" parent="Slots" unique_id=773713625 instance=ExtResource("1_1074w")]
+layout_mode = 2
+offset_transform_enabled = true
+
+[node name="Slot3" parent="Slots" unique_id=1099736157 instance=ExtResource("1_1074w")]
+layout_mode = 2
+offset_transform_enabled = true
+
+[node name="Slot4" parent="Slots" unique_id=1870470697 instance=ExtResource("1_1074w")]
+layout_mode = 2
+offset_transform_enabled = true
+
+[node name="Slot5" parent="Slots" unique_id=1537969387 instance=ExtResource("1_1074w")]
+layout_mode = 2
+offset_transform_enabled = true

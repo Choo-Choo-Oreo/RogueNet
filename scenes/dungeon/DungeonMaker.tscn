@@ -16,6 +16,8 @@
 [ext_resource type="Texture2D" uid="uid://c807vxen01fgd" path="res://resources/gfx/objects/Door.png" id="14_hvud5"]
 [ext_resource type="Texture2D" uid="uid://cgplkwatxa2fv" path="res://resources/gfx/tileset/wall_smooth_stone.png" id="15_jjsgu"]
 [ext_resource type="Script" path="res://scripts/dungeon/DungeonMakerOverlay.gd" id="16_ovrly"]
+[ext_resource type="Script" path="res://scripts/dungeon/RoomBrowserSourceList.gd" id="17_rbsrc"]
+[ext_resource type="Script" path="res://scripts/dungeon/RoomBrowserFolderList.gd" id="18_rbdst"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_op54d"]
 resource_name = "floor_dirt.png"
@@ -269,6 +271,8 @@ sources/0 = SubResource("TileSetAtlasSource_hbm6m")
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_painttool"]
 
+[sub_resource type="ButtonGroup" id="ButtonGroup_roomviewsize"]
+
 [node name="DungeonMaker" type="Node2D" unique_id=989925086]
 script = ExtResource("1_u5pr7")
 
@@ -404,8 +408,161 @@ z_index = 200
 title = "Load Room"
 size = Vector2i(600, 400)
 
+[node name="RoomBrowserPopup" type="Window" parent="."]
+title = "Room Library"
+size = Vector2i(760, 540)
+visible = false
+
+[node name="BrowserVBox" type="VBoxContainer" parent="RoomBrowserPopup"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+
+[node name="BrowserFilterRow" type="HBoxContainer" parent="RoomBrowserPopup/BrowserVBox"]
+layout_mode = 2
+
+[node name="BrowserSearchEdit" type="LineEdit" parent="RoomBrowserPopup/BrowserVBox/BrowserFilterRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Search rooms or tags..."
+
+[node name="BrowserSortOption" type="OptionButton" parent="RoomBrowserPopup/BrowserVBox/BrowserFilterRow"]
+layout_mode = 2
+tooltip_text = "Sort rooms"
+
+[node name="BrowserViewSizeRow" type="HBoxContainer" parent="RoomBrowserPopup/BrowserVBox/BrowserFilterRow"]
+layout_mode = 2
+
+[node name="ViewSmallButton" type="Button" parent="RoomBrowserPopup/BrowserVBox/BrowserFilterRow/BrowserViewSizeRow"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_roomviewsize")
+tooltip_text = "Small thumbnails, more rooms per screen"
+text = "S"
+
+[node name="ViewMediumButton" type="Button" parent="RoomBrowserPopup/BrowserVBox/BrowserFilterRow/BrowserViewSizeRow"]
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_roomviewsize")
+tooltip_text = "Medium thumbnails"
+text = "M"
+
+[node name="ViewLargeButton" type="Button" parent="RoomBrowserPopup/BrowserVBox/BrowserFilterRow/BrowserViewSizeRow"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_roomviewsize")
+tooltip_text = "Large thumbnails, easier to see"
+text = "L"
+
+[node name="BrowserSplitRow" type="HBoxContainer" parent="RoomBrowserPopup/BrowserVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BrowserFolderPanel" type="VBoxContainer" parent="RoomBrowserPopup/BrowserVBox/BrowserSplitRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+
+[node name="BrowserFolderLabel" type="Label" parent="RoomBrowserPopup/BrowserVBox/BrowserSplitRow/BrowserFolderPanel"]
+layout_mode = 2
+text = "Folders"
+
+[node name="BrowserFolderList" type="ItemList" parent="RoomBrowserPopup/BrowserVBox/BrowserSplitRow/BrowserFolderPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("18_rbdst")
+
+[node name="BrowserNewFolderButton" type="Button" parent="RoomBrowserPopup/BrowserVBox/BrowserSplitRow/BrowserFolderPanel"]
+layout_mode = 2
+text = "+ New Folder"
+
+[node name="BrowserItemList" type="ItemList" parent="RoomBrowserPopup/BrowserVBox/BrowserSplitRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("17_rbsrc")
+
+[node name="BrowserContextMenu" type="PopupMenu" parent="RoomBrowserPopup/BrowserVBox/BrowserSplitRow/BrowserItemList"]
+
+[node name="BrowserButtonRow" type="HBoxContainer" parent="RoomBrowserPopup/BrowserVBox"]
+layout_mode = 2
+alignment = 2
+
+[node name="BrowserFilesButton" type="Button" parent="RoomBrowserPopup/BrowserVBox/BrowserButtonRow"]
+layout_mode = 2
+text = "Browse Files..."
+
+[node name="BrowserCloseButton" type="Button" parent="RoomBrowserPopup/BrowserVBox/BrowserButtonRow"]
+layout_mode = 2
+text = "Close"
+
+[node name="NewRoomFolderDialog" type="ConfirmationDialog" parent="."]
+title = "New Room Folder"
+size = Vector2i(360, 130)
+
+[node name="NewFolderVBox" type="VBoxContainer" parent="NewRoomFolderDialog"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+
+[node name="NewFolderLabel" type="Label" parent="NewRoomFolderDialog/NewFolderVBox"]
+layout_mode = 2
+text = "Folder / type name"
+
+[node name="NewFolderLineEdit" type="LineEdit" parent="NewRoomFolderDialog/NewFolderVBox"]
+layout_mode = 2
+placeholder_text = "e.g. traps, puzzle, cathedral"
+
+[node name="SaveLocationDialog" type="Window" parent="."]
+title = "Choose Save Location"
+size = Vector2i(360, 460)
+visible = false
+
+[node name="SaveLocationVBox" type="VBoxContainer" parent="SaveLocationDialog"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+
+[node name="SaveLocationLabel" type="Label" parent="SaveLocationDialog/SaveLocationVBox"]
+layout_mode = 2
+autowrap_mode = 2
+text = "Save this room into:"
+
+[node name="SaveLocationFolderList" type="ItemList" parent="SaveLocationDialog/SaveLocationVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SaveLocationNewFolderButton" type="Button" parent="SaveLocationDialog/SaveLocationVBox"]
+layout_mode = 2
+text = "+ New Folder"
+
+[node name="SaveLocationButtonRow" type="HBoxContainer" parent="SaveLocationDialog/SaveLocationVBox"]
+layout_mode = 2
+alignment = 2
+
+[node name="SaveLocationCancelButton" type="Button" parent="SaveLocationDialog/SaveLocationVBox/SaveLocationButtonRow"]
+layout_mode = 2
+text = "Cancel"
+
+[node name="SaveLocationConfirmButton" type="Button" parent="SaveLocationDialog/SaveLocationVBox/SaveLocationButtonRow"]
+layout_mode = 2
+text = "Save Here"
+
 [node name="OverwriteConfirmDialog" type="ConfirmationDialog" parent="."]
 title = "Overwrite Room?"
+size = Vector2i(420, 140)
+
+[node name="DeleteRoomConfirmDialog" type="ConfirmationDialog" parent="."]
+title = "Delete Room?"
 size = Vector2i(420, 140)
 
 [node name="SpawnerSettingsDialog" type="ConfirmationDialog" parent="."]
@@ -468,7 +625,7 @@ offset_left = 16.0
 offset_top = 16.0
 offset_right = 340.0
 offset_bottom = 47.0
-text = "TEST MODE — arrow keys to move, Esc to quit"
+text = "TEST MODE — arrow keys to move, R to restart, K to kill enemies, Esc to quit"
 
 [node name="QuitTestButton" type="Button" parent="TestHUD"]
 offset_left = 16.0
@@ -476,6 +633,20 @@ offset_top = 52.0
 offset_right = 176.0
 offset_bottom = 83.0
 text = "■ Quit Test"
+
+[node name="RestartTestButton" type="Button" parent="TestHUD"]
+offset_left = 16.0
+offset_top = 88.0
+offset_right = 176.0
+offset_bottom = 119.0
+text = "⟳ Restart Test"
+
+[node name="KillEnemiesTestButton" type="Button" parent="TestHUD"]
+offset_left = 16.0
+offset_top = 124.0
+offset_right = 176.0
+offset_bottom = 155.0
+text = "✕ Kill Enemies"
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=733060813]
 
@@ -607,10 +778,14 @@ text = "Flip ⇵ Vertical"
 
 [node name="RecentRoomsLabel" type="Label" parent="UI/LeftPanel/RoomInfo"]
 layout_mode = 2
-text = "Recent Rooms (click to load)"
+text = "Room Library (click to load)"
+
+[node name="RoomSearchEdit" type="LineEdit" parent="UI/LeftPanel/RoomInfo"]
+layout_mode = 2
+placeholder_text = "Search rooms or tags..."
 
 [node name="RecentRoomsList" type="ItemList" parent="UI/LeftPanel/RoomInfo"]
-custom_minimum_size = Vector2(0, 80)
+custom_minimum_size = Vector2(0, 160)
 layout_mode = 2
 
 [node name="TagsSection" type="VBoxContainer" parent="UI/LeftPanel/RoomInfo" unique_id=714858522]
@@ -765,31 +940,10 @@ fixed_icon_size = Vector2i(24, 24)
 custom_minimum_size = Vector2(0, 140)
 layout_mode = 2
 
-[node name="RotateRow" type="HBoxContainer" parent="UI/RightPanel/ObjectSection"]
+[node name="ObjectHintLabel" type="Label" parent="UI/RightPanel/ObjectSection"]
 layout_mode = 2
-
-[node name="RotateLeftButton" type="Button" parent="UI/RightPanel/ObjectSection/RotateRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "⟲ Rotate Left"
-
-[node name="RotateRightButton" type="Button" parent="UI/RightPanel/ObjectSection/RotateRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "⟳ Rotate Right"
-
-[node name="ObjectActionsRow" type="HBoxContainer" parent="UI/RightPanel/ObjectSection"]
-layout_mode = 2
-
-[node name="DuplicateObjectButton" type="Button" parent="UI/RightPanel/ObjectSection/ObjectActionsRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Duplicate"
-
-[node name="DeleteObjectButton" type="Button" parent="UI/RightPanel/ObjectSection/ObjectActionsRow" unique_id=1160472891]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Delete Selected"
+autowrap_mode = 2
+text = "Shift+wheel rotates the selection, Ctrl+V duplicates it, Backspace/Delete removes it."
 
 [node name="ConnectorHeader" type="Button" parent="UI/RightPanel"]
 layout_mode = 2
@@ -874,6 +1028,25 @@ text = ""
 [connection signal="pressed" from="UI/BackButton" to="." method="_on_back_pressed"]
 [connection signal="pressed" from="UI/LoadRoomButton" to="." method="_on_load_room_pressed"]
 [connection signal="pressed" from="UI/FrameRoomButton" to="." method="_on_frame_room_pressed"]
+[connection signal="close_requested" from="RoomBrowserPopup" to="RoomBrowserPopup" method="hide"]
+[connection signal="text_changed" from="RoomBrowserPopup/BrowserVBox/BrowserFilterRow/BrowserSearchEdit" to="." method="_on_room_browser_search_changed"]
+[connection signal="item_selected" from="RoomBrowserPopup/BrowserVBox/BrowserFilterRow/BrowserSortOption" to="." method="_on_room_browser_sort_selected"]
+[connection signal="pressed" from="RoomBrowserPopup/BrowserVBox/BrowserFilterRow/BrowserViewSizeRow/ViewSmallButton" to="." method="_on_room_browser_view_small_pressed"]
+[connection signal="pressed" from="RoomBrowserPopup/BrowserVBox/BrowserFilterRow/BrowserViewSizeRow/ViewMediumButton" to="." method="_on_room_browser_view_medium_pressed"]
+[connection signal="pressed" from="RoomBrowserPopup/BrowserVBox/BrowserFilterRow/BrowserViewSizeRow/ViewLargeButton" to="." method="_on_room_browser_view_large_pressed"]
+[connection signal="item_selected" from="RoomBrowserPopup/BrowserVBox/BrowserSplitRow/BrowserFolderPanel/BrowserFolderList" to="." method="_on_room_browser_folder_selected"]
+[connection signal="pressed" from="RoomBrowserPopup/BrowserVBox/BrowserSplitRow/BrowserFolderPanel/BrowserNewFolderButton" to="." method="_on_new_folder_button_pressed"]
+[connection signal="item_selected" from="RoomBrowserPopup/BrowserVBox/BrowserSplitRow/BrowserItemList" to="." method="_on_room_browser_item_selected"]
+[connection signal="item_clicked" from="RoomBrowserPopup/BrowserVBox/BrowserSplitRow/BrowserItemList" to="." method="_on_room_browser_item_clicked"]
+[connection signal="id_pressed" from="RoomBrowserPopup/BrowserVBox/BrowserSplitRow/BrowserItemList/BrowserContextMenu" to="." method="_on_room_browser_context_menu_id_pressed"]
+[connection signal="pressed" from="RoomBrowserPopup/BrowserVBox/BrowserButtonRow/BrowserFilesButton" to="." method="_on_room_browser_browse_files_pressed"]
+[connection signal="pressed" from="RoomBrowserPopup/BrowserVBox/BrowserButtonRow/BrowserCloseButton" to="RoomBrowserPopup" method="hide"]
+[connection signal="confirmed" from="NewRoomFolderDialog" to="." method="_on_new_room_folder_confirmed"]
+[connection signal="confirmed" from="DeleteRoomConfirmDialog" to="." method="_on_delete_room_confirmed"]
+[connection signal="close_requested" from="SaveLocationDialog" to="SaveLocationDialog" method="hide"]
+[connection signal="pressed" from="SaveLocationDialog/SaveLocationVBox/SaveLocationNewFolderButton" to="." method="_on_new_folder_button_pressed"]
+[connection signal="pressed" from="SaveLocationDialog/SaveLocationVBox/SaveLocationButtonRow/SaveLocationCancelButton" to="SaveLocationDialog" method="hide"]
+[connection signal="pressed" from="SaveLocationDialog/SaveLocationVBox/SaveLocationButtonRow/SaveLocationConfirmButton" to="." method="_on_save_location_confirmed"]
 [connection signal="toggled" from="UI/LeftPanel/RoomInfoHeader" to="." method="_on_room_info_header_toggled"]
 [connection signal="value_changed" from="UI/LeftPanel/RoomInfo/WidthRow/WidthSpinBox" to="." method="_on_width_changed"]
 [connection signal="value_changed" from="UI/LeftPanel/RoomInfo/HeightRow/HeightSpinBox" to="." method="_on_height_changed"]
@@ -883,6 +1056,7 @@ text = ""
 [connection signal="pressed" from="UI/LeftPanel/RoomInfo/TemplateRow/ApplyTemplateButton" to="." method="_on_apply_template_pressed"]
 [connection signal="pressed" from="UI/LeftPanel/RoomInfo/FlipRow/FlipHorizontalButton" to="." method="_on_flip_horizontal_pressed"]
 [connection signal="pressed" from="UI/LeftPanel/RoomInfo/FlipRow/FlipVerticalButton" to="." method="_on_flip_vertical_pressed"]
+[connection signal="text_changed" from="UI/LeftPanel/RoomInfo/RoomSearchEdit" to="." method="_on_room_search_changed"]
 [connection signal="item_selected" from="UI/LeftPanel/RoomInfo/RecentRoomsList" to="." method="_on_recent_room_selected"]
 [connection signal="pressed" from="UI/LeftPanel/RoomInfo/TagsSection/TagInputRow/AddTagButton" to="." method="_on_add_tag_pressed"]
 [connection signal="pressed" from="UI/LeftPanel/RoomInfo/TagsSection/RemoveTagButton" to="." method="_on_remove_tag_pressed"]
@@ -902,10 +1076,6 @@ text = ""
 [connection signal="toggled" from="UI/RightPanel/ObjectSection/SnapToggleButton" to="." method="_on_object_snap_toggled"]
 [connection signal="text_changed" from="UI/RightPanel/ObjectSection/ObjectSearchEdit" to="." method="_on_object_search_changed"]
 [connection signal="item_selected" from="UI/RightPanel/ObjectSection/ObjectPaletteList" to="." method="_on_object_palette_selected"]
-[connection signal="pressed" from="UI/RightPanel/ObjectSection/RotateRow/RotateLeftButton" to="." method="_on_rotate_left_pressed"]
-[connection signal="pressed" from="UI/RightPanel/ObjectSection/RotateRow/RotateRightButton" to="." method="_on_rotate_right_pressed"]
-[connection signal="pressed" from="UI/RightPanel/ObjectSection/ObjectActionsRow/DuplicateObjectButton" to="." method="_on_duplicate_object_pressed"]
-[connection signal="pressed" from="UI/RightPanel/ObjectSection/ObjectActionsRow/DeleteObjectButton" to="." method="_on_delete_object_pressed"]
 [connection signal="toggled" from="UI/RightPanel/ConnectorHeader" to="." method="_on_connector_header_toggled"]
 [connection signal="toggled" from="UI/RightPanel/ConnectorSection/ConnectorModeButton" to="." method="_on_connector_mode_toggled"]
 [connection signal="toggled" from="UI/RightPanel/SpawnerHeader" to="." method="_on_spawner_header_toggled"]
@@ -918,3 +1088,5 @@ text = ""
 [connection signal="pressed" from="UI/TestButton" to="." method="_on_test_pressed"]
 [connection signal="confirmed" from="SpawnerSettingsDialog" to="." method="_on_spawner_settings_confirmed"]
 [connection signal="pressed" from="TestHUD/QuitTestButton" to="." method="_on_quit_test_pressed"]
+[connection signal="pressed" from="TestHUD/RestartTestButton" to="." method="_on_restart_test_pressed"]
+[connection signal="pressed" from="TestHUD/KillEnemiesTestButton" to="." method="_on_kill_enemies_pressed"]

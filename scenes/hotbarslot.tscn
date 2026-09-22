@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://cs8xl7xoga6r5"]
+
+[ext_resource type="Script" path="res://scripts/player/player.protagonist/hotbarslot.gd" id="1_vh5wx"]
+
+[node name="Hotbarslot" type="PanelContainer" unique_id=1447679452]
+custom_minimum_size = Vector2(64, 64)
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_vh5wx")
+
+[node name="KeyLabel" type="Label" parent="." unique_id=1582082706]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, -25)
+offset_transform_visual_only = false
+theme_override_font_sizes/font_size = 10
+
+[node name="AbilityLabel" type="Label" parent="." unique_id=326090853]
+layout_mode = 2
+horizontal_alignment = 1

@@ -4,26 +4,26 @@
 	"connectors": [
 		{
 			"position": {
-				"x": 14,
-				"y": 0
+				"x": 14.0,
+				"y": 0.0
 			}
 		},
 		{
 			"position": {
-				"x": 14,
-				"y": 28
+				"x": 14.0,
+				"y": 28.0
 			}
 		},
 		{
 			"position": {
-				"x": 0,
-				"y": 14
+				"x": 0.0,
+				"y": 14.0
 			}
 		},
 		{
 			"position": {
-				"x": 28,
-				"y": 14
+				"x": 28.0,
+				"y": 14.0
 			}
 		}
 	],
@@ -928,8 +928,8 @@
 			null
 		]
 	],
-	"format": 1,
-	"height": 29,
+	"format": 1.0,
+	"height": 29.0,
 	"id": "Liquid_Maze_Checker_29x29",
 	"objects": [],
 	"role": "normal",
@@ -1838,5 +1838,5 @@
 			"wall_smooth_stone"
 		]
 	],
-	"width": 29
+	"width": 29.0
 }
