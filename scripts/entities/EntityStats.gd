@@ -9,7 +9,15 @@ const FALLBACK_ATTRIBUTE := 0
 const FALLBACK_RESISTANCE := 0
 
 var max_health: int = FALLBACK_HEALTH
-var current_health: int = FALLBACK_HEALTH
+
+## -1 means "never explicitly set" -> reads as max_health until something
+## (taking damage, healing, a future save loader) sets a real value.
+var _current_health: int = -1
+var current_health: int:
+	get:
+		return max_health if _current_health < 0 else _current_health
+	set(value):
+		_current_health = value
 
 var strength: int = FALLBACK_ATTRIBUTE
 var dexterity: int = FALLBACK_ATTRIBUTE
