@@ -896,13 +896,7 @@ func _on_recent_room_selected(index: int) -> void:
 ## Reads and parses a room JSON file, relative to ROOMS_DIR. Empty
 ## Dictionary on any failure (missing file, invalid JSON).
 func _read_room_file(room_file: String) -> Dictionary:
-	var file := FileAccess.open(ROOMS_DIR + room_file, FileAccess.READ)
-	if file == null:
-		return {}
-	var data = JSON.parse_string(file.get_as_text())
-	if not (data is Dictionary):
-		return {}
-	return data
+	return JsonOnloading.load_dict(ROOMS_DIR + room_file)
 
 func _build_room_thumbnail(data: Dictionary, thumb_size: int = ROOM_THUMB_SIZE) -> ImageTexture:
 	var thumb_width: int = int(data.get("width", 0))
@@ -2314,12 +2308,11 @@ func _stop_test() -> void:
 	queue_redraw()
 
 func _on_room_file_selected(path: String) -> void:
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null:
+	if not FileAccess.file_exists(path):
 		_show_export_status("Failed to open " + path)
 		return
-	var data = JSON.parse_string(file.get_as_text())
-	if not (data is Dictionary):
+	var data := JsonOnloading.load_dict(path)
+	if data.is_empty():
 		_show_export_status("Invalid room file: " + path)
 		return
 	_load_room_data(data)
@@ -2457,12 +2450,9 @@ func _build_export_data() -> Dictionary:
 	return data
 
 func _write_room_file(path: String, data: Dictionary) -> void:
-	var file := FileAccess.open(path, FileAccess.WRITE)
-	if file == null:
+	if not JsonOnloading.write_dict(path, data):
 		_show_export_status("Failed to open %s for writing" % path)
 		return
-	file.store_string(JSON.stringify(data, "\t"))
-	file.close()
 	_show_export_status("Exported to " + path)
 	_refresh_recent_rooms()
 	_refresh_known_tags()
@@ -2482,12 +2472,11 @@ func _on_validate_all_pressed() -> void:
 
 func _validate_room_file(path: String) -> Array[String]:
 	var errors: Array[String] = []
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null:
+	if not FileAccess.file_exists(path):
 		errors.append("could not open")
 		return errors
-	var data = JSON.parse_string(file.get_as_text())
-	if not (data is Dictionary):
+	var data := JsonOnloading.load_dict(path)
+	if data.is_empty():
 		errors.append("not valid JSON object")
 		return errors
 	if str(data.get("id", "")).strip_edges() == "":

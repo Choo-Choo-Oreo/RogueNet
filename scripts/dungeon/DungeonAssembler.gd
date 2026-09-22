@@ -94,9 +94,8 @@ static func _read_folder(folder: String) -> Dictionary:
 	dir.list_dir_end()
 	file_names.sort()
 	for name in file_names:
-		var text := FileAccess.get_file_as_string(folder + name)
-		var data = JSON.parse_string(text)
-		if data is Dictionary:
+		var data := JsonOnloading.load_dict(folder + name)
+		if data.has("id"):
 			rooms[data["id"]] = data
 	return rooms
 
@@ -108,9 +107,7 @@ static func load_rooms(biome: String = "") -> Dictionary:
 static func load_defines(biome: String) -> Dictionary:
 	if biome == "":
 		return {}
-	var text := FileAccess.get_file_as_string(ROOMS_DIR + biome + "/defines.json")
-	var data = JSON.parse_string(text)
-	return data if data is Dictionary else {}
+	return JsonOnloading.load_dict(ROOMS_DIR + biome + "/defines.json")
 
 static func dominant_wall_tile(room: Dictionary) -> String:
 	return _dominant_tile(room["walls"], "wall_door")

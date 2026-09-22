@@ -27,8 +27,6 @@ func _run() -> void:
 
 	ResourceSaver.save(registry, REGISTRY_PATH)
 
-	var file := FileAccess.open(OUTPUT_PATH, FileAccess.WRITE)
-	file.store_string(JSON.stringify(palette, "\t"))
-	file.close()
+	JsonOnloading.write_dict(OUTPUT_PATH, palette)
 
 	print("Compiled tile palette: ", palette.size(), " entries -> ", OUTPUT_PATH)
