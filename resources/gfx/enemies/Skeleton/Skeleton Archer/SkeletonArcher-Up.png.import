@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bf1688dhrfcpo"
-path="res://.godot/imported/Walking_South.png-dfb2b2586444dfbf248aa428c9c63515.ctex"
+uid="uid://b43gnv1j0hfuj"
+path="res://.godot/imported/SkeletonArcher-Up.png-c9bf370adcd065fd28146f8363612f65.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/enemies/Skeleton/Skeleton Archer/Walking_South.png"
-dest_files=["res://.godot/imported/Walking_South.png-dfb2b2586444dfbf248aa428c9c63515.ctex"]
+source_file="res://resources/gfx/enemies/Skeleton/Skeleton Archer/SkeletonArcher-Up.png"
+dest_files=["res://.godot/imported/SkeletonArcher-Up.png-c9bf370adcd065fd28146f8363612f65.ctex"]
 
 [params]
 

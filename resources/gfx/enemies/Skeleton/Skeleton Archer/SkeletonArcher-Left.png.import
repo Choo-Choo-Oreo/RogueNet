@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dmqgsicq1fune"
-path="res://.godot/imported/walking_sideways.png-359752296b21dd9c1f173a41c6740da3.ctex"
+uid="uid://du4mufavfs0ib"
+path="res://.godot/imported/SkeletonArcher-Left.png-33579f0c05382ae6607f882a2fbeb183.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/enemies/Skeleton/Skeleton Archer/walking_sideways.png"
-dest_files=["res://.godot/imported/walking_sideways.png-359752296b21dd9c1f173a41c6740da3.ctex"]
+source_file="res://resources/gfx/enemies/Skeleton/Skeleton Archer/SkeletonArcher-Left.png"
+dest_files=["res://.godot/imported/SkeletonArcher-Left.png-33579f0c05382ae6607f882a2fbeb183.ctex"]
 
 [params]
 
