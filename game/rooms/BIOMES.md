@@ -67,7 +67,10 @@ possibly the boss, because nothing loops back around.
 
 As of 2026-09-21 `DungeonAssembler` has `list_biomes()`, `pick_biome(seed)`
 and `load_rooms(biome)`. Every subfolder of `game/rooms/` that is not in `IGNORED_FOLDERS` counts
-as a biome. `fallback/` holds the original legacy rooms.
+as a biome. `fallback/` holds exactly one room per kind the assembler can
+ask for: `Entrance_15x15`, `Boss_Vault_11x11`, `Treasure_Vault_5x5`,
+`Corridor_3x9` and `Brick_Arena_9x9` (normal). Trimmed to that on
+2026-09-22; the other legacy rooms are in git history if needed.
 The biome is picked from the dungeon seed, so every peer picks the same one.
 
 `DungeonPainter.gd` and `DungeonDebugView.gd` both call
