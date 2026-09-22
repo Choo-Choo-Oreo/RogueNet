@@ -12,7 +12,8 @@ var peer_steam_ids: Dictionary = {}
 
 var dungeon_seed: int = 0
 
-# Host only: the peers in the mission that was started. PlayerSpawner spawns just these.
+# The peers in the mission that was started, known to every diver (the start message carries it).
+# PlayerSpawner spawns just these, and positions and End Mission only go to them.
 var dive_members: Array = []
 
 func _ready() -> void:
@@ -91,8 +92,12 @@ func report_position(pos: Vector2) -> void:
 
 func _relay_position(sender_id: int, pos: Vector2) -> void:
 	for peer_id in multiplayer.get_peers():
-		if peer_id != sender_id:
-			receive_position.rpc_id(peer_id, sender_id, pos)
+		if peer_id == sender_id:
+			continue
+		# Players still in the town have no dungeon to move anyone in.
+		if not dive_members.is_empty() and peer_id not in dive_members:
+			continue
+		receive_position.rpc_id(peer_id, sender_id, pos)
 
 @rpc("authority", "unreliable_ordered")
 func receive_position(player_id: int, pos: Vector2) -> void:
@@ -234,17 +239,34 @@ func _start_mission(peer_id: int, mission_id: int) -> void:
 		return
 	var members: Array = missions[mission_id]["members"]
 	var mission_seed := randi()
-	dive_members = members.duplicate()
 	for member_id in members:
 		if member_id == 1:
-			receive_start_mission(mission_seed)
+			receive_start_mission(mission_seed, members)
 		else:
-			receive_start_mission.rpc_id(member_id, mission_seed)
+			receive_start_mission.rpc_id(member_id, mission_seed, members)
 
 @rpc("authority", "reliable")
-func receive_start_mission(mission_seed: int) -> void:
+func receive_start_mission(mission_seed: int, members: Array) -> void:
 	dungeon_seed = mission_seed
+	dive_members = members.duplicate()
 	get_tree().change_scene_to_file("res://scenes/dungeon/Dungeon.tscn")
+
+# Host only: sends the divers (not the players in the town) back to the town.
+func end_mission() -> void:
+	if not multiplayer.is_server():
+		return
+	var divers := dive_members.duplicate()
+	missions.clear()
+	for peer_id in divers:
+		if peer_id == 1:
+			receive_return_to_town()
+		else:
+			receive_return_to_town.rpc_id(peer_id)
+
+@rpc("authority", "reliable")
+func receive_return_to_town() -> void:
+	dive_members.clear()
+	get_tree().change_scene_to_file("res://scenes/ui/town/MainTown.tscn")
 
 func _broadcast_members(mission_id: int) -> void:
 	var members: Array = missions[mission_id]["members"]

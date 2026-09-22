@@ -1085,10 +1085,6 @@ tile_set = SubResource("TileSet_trv1a")
 script = ExtResource("6_dungeonpainter")
 tile_initialize = NodePath("../TileInitialize")
 
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=869598577]
-_spawnable_scenes = PackedStringArray("uid://djuwmio4x8p12")
-spawn_path = NodePath("../Player")
-
 [node name="Player" type="Node2D" parent="." unique_id=2019608533]
 script = ExtResource("2_playerspawner")
 

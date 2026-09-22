@@ -5,7 +5,6 @@ extends Control
 @onready var buttons: VBoxContainer = $Panel/VBoxContainer
 @onready var end_mission_button: Button = $Panel/VBoxContainer/EndMissionButton
 
-const TOWN_SCENE := "res://scenes/ui/town/MainTown.tscn"
 const PANEL_PADDING := Vector2(60, 60)
 
 func _ready() -> void:
@@ -50,14 +49,7 @@ func _on_end_mission_button_pressed() -> void:
 	if not multiplayer.is_server():
 		return
 	_close()
-	_return_to_town.rpc()
-
-@rpc("authority", "call_local", "reliable")
-func _return_to_town() -> void:
-	if multiplayer.is_server():
-		NetworkSync.missions.clear()
-		NetworkSync.dive_members.clear()
-	get_tree().change_scene_to_file(TOWN_SCENE)
+	NetworkSync.end_mission()
 
 func _on_main_menu_button_pressed() -> void:
 	multiplayer.multiplayer_peer = null
