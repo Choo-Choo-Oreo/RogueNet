@@ -1,0 +1,467 @@
+{
+	"base_floor": "floor_dirt",
+	"biome": "forest",
+	"connectors": [
+		{
+			"position": {
+				"x": 6,
+				"y": 0
+			}
+		},
+		{
+			"position": {
+				"x": 0,
+				"y": 6
+			}
+		},
+		{
+			"position": {
+				"x": 12,
+				"y": 6
+			}
+		},
+		{
+			"position": {
+				"x": 6,
+				"y": 12
+			}
+		}
+	],
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_water",
+			"floor_water",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_water",
+			"floor_water",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_water",
+			"floor_dirt",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_dirt",
+			"floor_water",
+			"floor_water",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			"floor_dirt",
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			null
+		],
+		[
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt"
+		],
+		[
+			null,
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_water",
+			"floor_water",
+			"floor_dirt",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_water",
+			"floor_water",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_water",
+			"floor_water",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_water",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 1,
+	"height": 13,
+	"id": "Forest_Boss_Grove_13x13",
+	"objects": [
+		{
+			"position": {
+				"x": 104.0,
+				"y": 24.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		},
+		{
+			"position": {
+				"x": 40.0,
+				"y": 104.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		},
+		{
+			"position": {
+				"x": 168.0,
+				"y": 104.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		},
+		{
+			"position": {
+				"x": 104.0,
+				"y": 168.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		}
+	],
+	"role": "boss",
+	"tags": [
+		"combat",
+		"forest"
+	],
+	"walls": [
+		[
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_door",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark"
+		],
+		[
+			"wall_forest_dark",
+			null,
+			null,
+			"wall_forest_dark",
+			"wall_forest_dark",
+			null,
+			null,
+			null,
+			"wall_forest_dark",
+			null,
+			null,
+			null,
+			"wall_forest_dark"
+		],
+		[
+			"wall_forest_dark",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest_dark"
+		],
+		[
+			"wall_forest_dark",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest_dark"
+		],
+		[
+			"wall_forest_dark",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest_dark"
+		],
+		[
+			"wall_forest_dark",
+			"wall_forest_dark",
+			null,
+			"wall_forest_dark",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest_dark",
+			null,
+			"wall_forest_dark"
+		],
+		[
+			"wall_door",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_door"
+		],
+		[
+			"wall_forest_dark",
+			null,
+			"wall_forest_dark",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest_dark",
+			"wall_forest_dark"
+		],
+		[
+			"wall_forest_dark",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest_dark",
+			null,
+			"wall_forest_dark"
+		],
+		[
+			"wall_forest_dark",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest_dark"
+		],
+		[
+			"wall_forest_dark",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest_dark"
+		],
+		[
+			"wall_forest_dark",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest_dark"
+		],
+		[
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_door",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark"
+		]
+	],
+	"width": 13
+}

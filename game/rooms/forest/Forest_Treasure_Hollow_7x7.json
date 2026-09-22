@@ -1,0 +1,161 @@
+{
+	"base_floor": "floor_dirt",
+	"biome": "forest",
+	"connectors": [
+		{
+			"position": {
+				"x": 3,
+				"y": 0
+			}
+		}
+	],
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			null,
+			null,
+			"floor_dirt",
+			null,
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_water",
+			null
+		],
+		[
+			null,
+			null,
+			"floor_dirt",
+			null,
+			"floor_water",
+			"floor_water",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_water",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 1,
+	"height": 7,
+	"id": "Forest_Treasure_Hollow_7x7",
+	"objects": [
+		{
+			"position": {
+				"x": 24.0,
+				"y": 88.0
+			},
+			"rotation": 0.0,
+			"type": "chest"
+		}
+	],
+	"role": "normal",
+	"tags": [
+		"treasure",
+		"forest"
+	],
+	"walls": [
+		[
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_door",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark"
+		],
+		[
+			"wall_forest_dark",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest_dark"
+		],
+		[
+			"wall_forest_dark",
+			null,
+			"wall_forest_dark",
+			"wall_forest_dark",
+			null,
+			"wall_forest_dark",
+			"wall_forest_dark"
+		],
+		[
+			"wall_forest_dark",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest_dark"
+		],
+		[
+			"wall_forest_dark",
+			"wall_forest_dark",
+			null,
+			"wall_forest_dark",
+			null,
+			null,
+			"wall_forest_dark"
+		],
+		[
+			"wall_forest_dark",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest_dark"
+		],
+		[
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark"
+		]
+	],
+	"width": 7
+}

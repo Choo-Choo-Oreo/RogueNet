@@ -1,0 +1,297 @@
+{
+	"base_floor": "floor_dirt",
+	"biome": "forest",
+	"connectors": [
+		{
+			"position": {
+				"x": 5,
+				"y": 0
+			}
+		},
+		{
+			"position": {
+				"x": 0,
+				"y": 4
+			}
+		},
+		{
+			"position": {
+				"x": 10,
+				"y": 4
+			}
+		}
+	],
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			"floor_dirt",
+			"floor_dirt",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt"
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_water",
+			"floor_water",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 1,
+	"height": 9,
+	"id": "Forest_Pond_11x9",
+	"objects": [
+		{
+			"position": {
+				"x": 24.0,
+				"y": 24.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		},
+		{
+			"position": {
+				"x": 152.0,
+				"y": 24.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		},
+		{
+			"position": {
+				"x": 56.0,
+				"y": 120.0
+			},
+			"rotation": 0.0,
+			"type": "chest"
+		}
+	],
+	"role": "normal",
+	"tags": [
+		"combat",
+		"forest"
+	],
+	"walls": [
+		[
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_door",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark"
+		],
+		[
+			"wall_forest_dark",
+			null,
+			null,
+			null,
+			"wall_forest_dark",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest_dark"
+		],
+		[
+			"wall_forest_dark",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest_dark"
+		],
+		[
+			"wall_forest_dark",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest_dark"
+		],
+		[
+			"wall_door",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_door"
+		],
+		[
+			"wall_forest_dark",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest_dark"
+		],
+		[
+			"wall_forest_dark",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest_dark"
+		],
+		[
+			"wall_forest_dark",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest_dark",
+			null,
+			"wall_forest_dark"
+		],
+		[
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark",
+			"wall_forest_dark"
+		]
+	],
+	"width": 11
+}

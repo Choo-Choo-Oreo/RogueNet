@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dhp6uc5e4rv6k"
-path="res://.godot/imported/wall_forest.png-e504fb3959d1a532a240e66470926da2.ctex"
+uid="uid://bsi736rgocas1"
+path="res://.godot/imported/wall_forest_dark.png-a08d5ae8ddf209ee78a36c226b900b4d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/tileset/wall_forest.png"
-dest_files=["res://.godot/imported/wall_forest.png-e504fb3959d1a532a240e66470926da2.ctex"]
+source_file="res://resources/gfx/tileset/wall_forest_dark.png"
+dest_files=["res://.godot/imported/wall_forest_dark.png-a08d5ae8ddf209ee78a36c226b900b4d.ctex"]
 
 [params]
 

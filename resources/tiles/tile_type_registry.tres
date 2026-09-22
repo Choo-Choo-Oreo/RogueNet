@@ -18,8 +18,9 @@ ids = {
 "wall_door": 8,
 "wall_door_open": 9,
 "wall_flesh": 10,
+"wall_forest_dark": 16,
 "wall_rough_cave": 11,
 "wall_smooth_stone": 7,
 "wall_wood_plank": 12
 }
-next_id = 16
+next_id = 17
