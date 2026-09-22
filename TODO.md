@@ -11,6 +11,7 @@ Last verified: 2026-09-21 (after commit `3f9aaa4`, plus uncommitted lighting, no
 - [✓] Dev scenes (`SilverTest`, `HubMPTest`) removed (only harmless `.godot/editor` cache files remain)
 - [✓] Everything committed (working tree clean)
 - [✗] Debug PNG swaps kept out of commits (can't tell which PNG changes were debug swaps; check `d4b0558`, which refreshed the smooth stone and cobble textures)
+- [✓] Dead-code audit and cleanup (2026-09-22): removed the whole orphaned `tim`/`knight`/`mouse` prototype cluster and its `Health`/`health_bar`/`death_screen`/`hotbar`/`hotbarslot`/`ability` scripts and scenes — none of it was reachable from `PlayerController`, `PlayerSpawner`, `Dungeon.tscn` or `MainTown.tscn`. Also removed: `resources/shaders/light_halo.gdshader` (unused since the halo lighting experiment was reverted), the dead `PanelLobby` node in `MainMenu.tscn`, and `game/tile_palette.json`. Art textures under `resources/gfx/players/knight/` were left alone — only code/scenes were touched. Underlying gaps these leave (real player health, real enemies, boss-player role) are re-tracked further down, unmarked as done
 
 ## Dungeon generation
 - [✓] Random room rotation (rotate-and-expand in `DungeonAssembler.gd`)
@@ -24,7 +25,7 @@ Last verified: 2026-09-21 (after commit `3f9aaa4`, plus uncommitted lighting, no
 - [✓] Biome loading: `load_rooms(pick_biome(seed))` in `DungeonPainter.gd` and `DungeonDebugView.gd`, `IGNORED_FOLDERS := ["fallback"]`
 - [✓] Fallback rooms: `_fill_from_fallback` fills missing room kinds from `game/rooms/fallback/`
 - [✓] Wall tiles in `tile_type_registry.tres`: `wall_flesh`, `wall_rough_cave`, `wall_wood_plank` (ids 10-12)
-- [✓] Dungeon Maker tile list builds itself from the `TileRenderer` children, so it no longer needs `game/tile_palette.json` (the file is still three walls behind, and nothing reads it now; not run in Godot yet)
+- [✓] Dungeon Maker tile list builds itself from the `TileRenderer` children, so it no longer needs `game/tile_palette.json`; the stale file itself was deleted 2026-09-22 (not run in Godot yet). `CompileTilePalette.gd` is kept — it's an `@tool extends EditorScript` run manually from the Script Editor, not dead, and still assigns tile ids into `tile_type_registry.tres`
 - [✓] Dungeon Maker room list, known tags and "Validate All" look inside the biome folders
 
 ### Pinned (parked on purpose, revisit only if it comes up)
@@ -68,8 +69,8 @@ Last verified: 2026-09-21 (after commit `3f9aaa4`, plus uncommitted lighting, no
 ## Gameplay
 - [✓] Flesh terrain tier (`terrain = 1` in `floor_flesh.tres`, code committed)
 - [✗] `DIFFICULT` and `SEVERE` tried on real floors (flesh is the only floor with a terrain value)
-- [✓] Health and damage component (`Health.gd`, health bar, death screen)
-- [✗] Enemies beyond the mouse (only `mouse.gd` and `PlaceholderMouse.gd` found)
+- [✗] Health and damage component: unmarked 2026-09-22. `Health.gd`, `health_bar.gd` and `death_screen.gd` existed but were only ever wired to standalone `tim`/`knight`/`mouse` test scenes, never to `PlayerController.gd` (the real multiplayer player has no health at all). That whole prototype cluster was removed in the dead-code cleanup below; a real one still needs building against `PlayerController`
+- [✗] Enemies beyond `PlaceholderMouse.gd` (the stand-in for Dungeon Maker's enemy spawners; the old `player.antagonist/mouse.gd` prototype was removed, see below)
 - [✗] Objects and spawners finished
 - [✗] Loot, stats and skill tree data (no files found)
 
@@ -86,8 +87,8 @@ Last verified: 2026-09-21 (after commit `3f9aaa4`, plus uncommitted lighting, no
 - [✗] Netcode decision (`CLAUDE.md` networking line still says "note here once decided")
 - [✗] Dungeon instancing (only the basic part: every member loads the dungeon scene with one shared seed; no per-party instance hosted by the party lead)
 - [✗] Persistent town (research only)
-- [✗] Lobby and menu backlog (`PanelLobby` still in `MainMenu.tscn`, line 102)
-- [✗] Optional boss-player role (only `mouse.gd`, in an "antagonist" folder)
+- [✗] Lobby and menu backlog (dead `PanelLobby` node itself removed 2026-09-22; the Single/Multiplayer split and other backlog ideas are still open)
+- [✗] Optional boss-player role (the old `player.antagonist/mouse.gd` stub was removed 2026-09-22 as dead code; nothing built toward this yet)
 
 ## Networking audit (2026-09-21): verify first, then decide
 Found by reading the code, nothing was playtested. For each item: first check it's a real problem, then decide the fix. Items 1 and 2 of the audit are covered above (reset_session done; late Guild click is the start-dive crash).
