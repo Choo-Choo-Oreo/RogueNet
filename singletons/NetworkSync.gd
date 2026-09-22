@@ -70,14 +70,6 @@ func receive_chat(line: String) -> void:
 	if scene and scene.has_method("add_chat_line"):
 		scene.add_chat_line(line)
 
-@rpc("any_peer", "reliable")
-func report_steam_id(steam_id: int) -> void:
-	if not multiplayer.is_server():
-		return
-	peer_steam_ids[multiplayer.get_remote_sender_id()] = steam_id
-	for peer_id in multiplayer.get_peers():
-		receive_steam_ids.rpc_id(peer_id, peer_steam_ids)
-
 @rpc("authority", "reliable")
 func receive_steam_ids(ids: Dictionary) -> void:
 	peer_steam_ids = ids
@@ -108,26 +100,6 @@ func receive_position(player_id: int, pos: Vector2) -> void:
 	var player := scene.get_node_or_null("Player/" + str(player_id))
 	if player:
 		player.global_position = pos
-
-@rpc("any_peer", "reliable")
-func report_move_state(direction: Vector2, moving: bool) -> void:
-	if not multiplayer.is_server():
-		return
-	_relay_move_state(multiplayer.get_remote_sender_id(), direction, moving)
-
-func _relay_move_state(sender_id: int, direction: Vector2, moving: bool) -> void:
-	for peer_id in multiplayer.get_peers():
-		if peer_id != sender_id:
-			receive_move_state.rpc_id(peer_id, sender_id, direction, moving)
-
-@rpc("authority", "reliable")
-func receive_move_state(player_id: int, direction: Vector2, moving: bool) -> void:
-	var scene := get_tree().current_scene
-	if scene == null:
-		return
-	var player := scene.get_node_or_null("Player/" + str(player_id))
-	if player:
-		player.apply_move_animation(direction, moving)
 
 var missions: Dictionary = {}
 
@@ -204,6 +176,15 @@ func _join_mission(peer_id: int, mission_id: int, password: String) -> void:
 	if not missions.has(mission_id):
 		return
 	var mission: Dictionary = missions[mission_id]
+	# Joining a mission that already started would leave that player waiting in a panel for a dive
+	# they are not part of, so tell them instead (through the town chat).
+	if mission.get("started", false):
+		var notice := "The mission has already started."
+		if peer_id == 1:
+			receive_chat(notice)
+		else:
+			receive_chat.rpc_id(peer_id, notice)
+		return
 	if mission["privacy"] == "password" and mission["password"] != password:
 		if peer_id == 1:
 			receive_join_rejected(mission_id)
@@ -239,6 +220,7 @@ func _start_mission(peer_id: int, mission_id: int) -> void:
 		return
 	var members: Array = missions[mission_id]["members"]
 	var mission_seed := randi()
+	missions[mission_id]["started"] = true
 	for member_id in members:
 		if member_id == 1:
 			receive_start_mission(mission_seed, members)
@@ -256,7 +238,10 @@ func end_mission() -> void:
 	if not multiplayer.is_server():
 		return
 	var divers := dive_members.duplicate()
-	missions.clear()
+	# End each mission properly (not just clear the list) so every player's mission list and panel
+	# is told, including anyone still in the town.
+	for mission_id in missions.keys():
+		_end_mission(mission_id)
 	for peer_id in divers:
 		if peer_id == 1:
 			receive_return_to_town()
@@ -323,4 +308,4 @@ func receive_mission_ended(mission_id: int) -> void:
 	var mission_screen := main_town.get_node_or_null("PanelMission/GuildMission")
 	if mission_screen and mission_screen.current_mission_id == mission_id:
 		main_town.get_node_or_null("PanelMission").hide()
-		main_town.get_node_or_null("PanelGuild").show()
+		main_town.get_node_or_null("PanelGuild" if is_dedicated else "PanelMain").show()

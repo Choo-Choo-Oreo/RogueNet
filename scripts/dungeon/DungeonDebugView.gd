@@ -14,7 +14,8 @@ const ROLE_CHAR := {
 }
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("debug_dungeon_layout"):
+	# The action lives in project.godot; a copy without it would error on every key press.
+	if InputMap.has_action("debug_dungeon_layout") and event.is_action_pressed("debug_dungeon_layout"):
 		_dump_layout(NetworkSync.dungeon_seed)
 
 func _dump_layout(dungeon_seed: int) -> void:
