@@ -26,6 +26,19 @@ func _ready() -> void:
 		for peer_id in multiplayer.get_peers():
 			receive_steam_ids.rpc_id(peer_id, peer_steam_ids)
 			receive_player_names.rpc_id(peer_id, peer_names)
+		# A disconnect never used to touch missions at all, so a dropped player stayed
+		# listed as a member forever. Clean them out the same way an explicit Leave does.
+		for mission_id in missions.keys():
+			var mission: Dictionary = missions[mission_id]
+			if id not in mission["members"]:
+				continue
+			if id == mission["creator_id"]:
+				_end_mission(mission_id)
+			else:
+				mission["members"].erase(id)
+				mission.get("ready", {}).erase(id)
+				_cancel_countdown(mission_id, "Countdown cancelled — the party changed.")
+				_broadcast_members(mission_id)
 		var main_town := get_tree().current_scene
 		if main_town and main_town.has_method("refresh_player_list"):
 			main_town.refresh_player_list()
@@ -33,6 +46,7 @@ func _ready() -> void:
 
 func reset_session() -> void:
 	missions.clear()
+	_countdowns.clear()
 	dive_members.clear()
 	peer_steam_ids.clear()
 	peer_names.clear()
@@ -69,6 +83,12 @@ func receive_chat(line: String) -> void:
 	var scene := get_tree().current_scene
 	if scene and scene.has_method("add_chat_line"):
 		scene.add_chat_line(line)
+
+# Same chat pipe as _broadcast_chat, but for system lines (mission countdown) that aren't from a player.
+func _announce(text: String) -> void:
+	receive_chat(text)
+	for peer_id in multiplayer.get_peers():
+		receive_chat.rpc_id(peer_id, text)
 
 @rpc("authority", "reliable")
 func receive_steam_ids(ids: Dictionary) -> void:
@@ -195,6 +215,11 @@ func _join_mission(peer_id: int, mission_id: int, password: String) -> void:
 	var members: Array = mission["members"]
 	if peer_id not in members:
 		members.append(peer_id)
+		if peer_id != mission["creator_id"]:
+			var ready_map: Dictionary = mission.get("ready", {})
+			ready_map[peer_id] = false
+			mission["ready"] = ready_map
+		_cancel_countdown(mission_id, "Countdown cancelled — the party changed.")
 	print("Player %d joined mission %d" % [peer_id, mission_id])
 	_broadcast_members(mission_id)
 
@@ -213,10 +238,95 @@ func report_start_mission(mission_id: int) -> void:
 		return
 	_start_mission(multiplayer.get_remote_sender_id(), mission_id)
 
+const MISSION_COUNTDOWN_SECONDS := 10
+const MISSION_COUNTDOWN_READY_SKIP := 3
+
+# mission_id -> {"remaining": int, "accum": float}, server-side only.
+var _countdowns: Dictionary = {}
+
 func _start_mission(peer_id: int, mission_id: int) -> void:
 	if not missions.has(mission_id):
 		return
 	if peer_id != missions[mission_id]["creator_id"]:
+		return
+	if _countdowns.has(mission_id):
+		return
+	# Nobody's waiting on anybody — solo dives count too, since there are no non-creator
+	# members to be un-ready, so this also covers the singleplayer/solo-host case.
+	if _all_non_creators_ready(mission_id):
+		_launch_mission(mission_id)
+		return
+	_countdowns[mission_id] = {"remaining": MISSION_COUNTDOWN_SECONDS, "accum": 0.0}
+	_announce("Mission starting in %d..." % MISSION_COUNTDOWN_SECONDS)
+
+func _process(delta: float) -> void:
+	# Check _countdowns first: multiplayer.is_server() logs an engine error if called with
+	# no peer assigned (eg. after backing out to the main menu), and _process always runs.
+	if _countdowns.is_empty() or multiplayer.multiplayer_peer == null or not multiplayer.is_server():
+		return
+	for mission_id in _countdowns.keys():
+		var countdown: Dictionary = _countdowns[mission_id]
+		countdown["accum"] += delta
+		if countdown["accum"] < 1.0:
+			continue
+		countdown["accum"] -= 1.0
+		countdown["remaining"] -= 1
+		if countdown["remaining"] <= 0:
+			_countdowns.erase(mission_id)
+			_launch_mission(mission_id)
+		else:
+			_announce("Mission starting in %d..." % countdown["remaining"])
+
+func _cancel_countdown(mission_id: int, reason: String = "") -> void:
+	if not _countdowns.erase(mission_id):
+		return
+	if reason != "":
+		_announce(reason)
+
+func _all_non_creators_ready(mission_id: int) -> bool:
+	var mission: Dictionary = missions[mission_id]
+	var ready_map: Dictionary = mission.get("ready", {})
+	for member_id in mission["members"]:
+		if member_id == mission["creator_id"]:
+			continue
+		if not ready_map.get(member_id, false):
+			return false
+	return true
+
+@rpc("any_peer", "reliable")
+func report_set_ready(mission_id: int, is_ready: bool) -> void:
+	if not multiplayer.is_server():
+		return
+	_set_ready(multiplayer.get_remote_sender_id(), mission_id, is_ready)
+
+func _set_ready(peer_id: int, mission_id: int, is_ready: bool) -> void:
+	if not missions.has(mission_id):
+		return
+	var mission: Dictionary = missions[mission_id]
+	if peer_id == mission["creator_id"]:
+		return
+	var ready_map: Dictionary = mission.get("ready", {})
+	ready_map[peer_id] = is_ready
+	mission["ready"] = ready_map
+	_broadcast_members(mission_id)
+	if not _countdowns.has(mission_id) or not _all_non_creators_ready(mission_id):
+		return
+	var countdown: Dictionary = _countdowns[mission_id]
+	if countdown["remaining"] > MISSION_COUNTDOWN_READY_SKIP:
+		countdown["remaining"] = MISSION_COUNTDOWN_READY_SKIP
+		_announce("Everyone's ready — mission starting in %d..." % MISSION_COUNTDOWN_READY_SKIP)
+
+@rpc("any_peer", "reliable")
+func report_cancel_countdown(mission_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+	var sender_id := multiplayer.get_remote_sender_id()
+	if not missions.has(mission_id) or sender_id != missions[mission_id]["creator_id"]:
+		return
+	_cancel_countdown(mission_id, "Mission start cancelled.")
+
+func _launch_mission(mission_id: int) -> void:
+	if not missions.has(mission_id):
 		return
 	var members: Array = missions[mission_id]["members"]
 	var mission_seed := randi()
@@ -254,22 +364,25 @@ func receive_return_to_town() -> void:
 	get_tree().change_scene_to_file("res://scenes/ui/town/MainTown.tscn")
 
 func _broadcast_members(mission_id: int) -> void:
-	var members: Array = missions[mission_id]["members"]
+	var mission: Dictionary = missions[mission_id]
+	var members: Array = mission["members"]
+	var ready_states: Dictionary = mission.get("ready", {})
+	var creator_id: int = mission["creator_id"]
 	for peer_id in members:
 		if peer_id == 1:
-			receive_mission_members(mission_id, members)
+			receive_mission_members(mission_id, members, ready_states, creator_id)
 		else:
-			receive_mission_members.rpc_id(peer_id, mission_id, members)
+			receive_mission_members.rpc_id(peer_id, mission_id, members, ready_states, creator_id)
 
 @rpc("authority", "reliable")
-func receive_mission_members(mission_id: int, members: Array) -> void:
+func receive_mission_members(mission_id: int, members: Array, ready_states: Dictionary, creator_id: int) -> void:
 	var main_town := get_tree().current_scene
 	# Not in the town (for example already in the dungeon): nothing to update.
 	if main_town == null or main_town.get_node_or_null("PanelMission") == null:
 		return
 	var mission_screen := main_town.get_node_or_null("PanelMission/GuildMission")
 	if mission_screen:
-		mission_screen.set_members(mission_id, members)
+		mission_screen.set_members(mission_id, members, ready_states, creator_id)
 	main_town.get_node_or_null("PanelMain").hide()
 	main_town.get_node_or_null("PanelGuild").hide()
 	main_town.get_node_or_null("PanelMission").show()
@@ -289,9 +402,12 @@ func _leave_mission(peer_id: int, mission_id: int) -> void:
 		return
 	var members: Array = mission["members"]
 	members.erase(peer_id)
+	mission.get("ready", {}).erase(peer_id)
+	_cancel_countdown(mission_id, "Countdown cancelled — the party changed.")
 	_broadcast_members(mission_id)
 
 func _end_mission(mission_id: int) -> void:
+	_countdowns.erase(mission_id)
 	missions.erase(mission_id)
 	receive_mission_ended(mission_id)
 	for peer_id in multiplayer.get_peers():
