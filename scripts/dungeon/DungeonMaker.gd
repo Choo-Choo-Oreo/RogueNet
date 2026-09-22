@@ -16,6 +16,37 @@ const GRID_LINE_COLOR := Color(1, 1, 1, 0.08)
 const ROOM_BORDER_COLOR := Color(0.9, 0.85, 0.3, 1.0)
 const RECT_PREVIEW_FILL := Color(1, 1, 1, 0.25)
 const RECT_PREVIEW_BORDER := Color(1, 1, 1, 0.9)
+const ROOM_THUMB_SIZE := 28
+const ROOM_BROWSER_THUMB_SMALL := 40
+const ROOM_BROWSER_THUMB_MEDIUM := 64
+const ROOM_BROWSER_THUMB_LARGE := 96
+const ROOM_BROWSER_COLUMN_PADDING := 32
+const ROOM_BROWSER_ACCENT_COLOR := Color(0.4, 0.75, 0.95)
+const ROOM_THUMB_VOID_COLOR := Color(0.1, 0.1, 0.12, 1.0)
+const ROOM_THUMB_FLOOR_COLOR := Color(0.55, 0.55, 0.62, 1.0)
+const ROOM_THUMB_WALL_COLOR := Color(0.22, 0.22, 0.25, 1.0)
+const ROOM_THUMB_DOOR_COLOR := Color(0.85, 0.65, 0.25, 1.0)
+## Keyword -> color for thumbnail tinting, checked against a tile's name
+## (e.g. "floor_dirt" matches "dirt") so different materials read as
+## different colors instead of every floor/wall looking flat grey. Matched
+## in order, so put more specific keywords ("cobble", "brick") before broad
+## ones if that ever matters.
+const ROOM_THUMB_MATERIAL_COLORS := {
+	"dirt": Color(0.5, 0.36, 0.22),
+	"grass": Color(0.35, 0.62, 0.32),
+	"lava": Color(0.85, 0.35, 0.15),
+	"acid": Color(0.65, 0.85, 0.2),
+	"water": Color(0.25, 0.55, 0.85),
+	"flesh": Color(0.75, 0.32, 0.38),
+	"wood": Color(0.55, 0.4, 0.24),
+	"cobble": Color(0.55, 0.42, 0.4),
+	"brick": Color(0.55, 0.42, 0.4),
+	"cave": Color(0.42, 0.38, 0.34),
+	"rough": Color(0.42, 0.38, 0.34),
+	"forest": Color(0.22, 0.4, 0.24),
+	"stone": Color(0.58, 0.58, 0.62),
+	"void": ROOM_THUMB_VOID_COLOR,
+}
 const OBJECT_MARKER_TEXTURES := {
 	"torch": "res://resources/gfx/objects/Tortch.png",
 	"chest": "res://resources/gfx/objects/Chest_Wood.png",
@@ -45,6 +76,22 @@ const SPAWNER_MODE_COLOR := Color(0.85, 0.35, 0.85)
 
 @onready var camera: Camera2D = $Camera2D
 @onready var room_file_dialog: FileDialog = $RoomFileDialog
+@onready var room_browser_popup: Window = $RoomBrowserPopup
+@onready var room_browser_search_edit: LineEdit = $RoomBrowserPopup/BrowserVBox/BrowserFilterRow/BrowserSearchEdit
+@onready var room_browser_view_small_button: Button = $RoomBrowserPopup/BrowserVBox/BrowserFilterRow/BrowserViewSizeRow/ViewSmallButton
+@onready var room_browser_view_medium_button: Button = $RoomBrowserPopup/BrowserVBox/BrowserFilterRow/BrowserViewSizeRow/ViewMediumButton
+@onready var room_browser_view_large_button: Button = $RoomBrowserPopup/BrowserVBox/BrowserFilterRow/BrowserViewSizeRow/ViewLargeButton
+@onready var room_browser_folder_list: ItemList = $RoomBrowserPopup/BrowserVBox/BrowserSplitRow/BrowserFolderPanel/BrowserFolderList
+@onready var room_browser_new_folder_button: Button = $RoomBrowserPopup/BrowserVBox/BrowserSplitRow/BrowserFolderPanel/BrowserNewFolderButton
+@onready var room_browser_item_list: ItemList = $RoomBrowserPopup/BrowserVBox/BrowserSplitRow/BrowserItemList
+@onready var room_browser_sort_option: OptionButton = $RoomBrowserPopup/BrowserVBox/BrowserFilterRow/BrowserSortOption
+@onready var room_browser_context_menu: PopupMenu = $RoomBrowserPopup/BrowserVBox/BrowserSplitRow/BrowserItemList/BrowserContextMenu
+@onready var delete_room_confirm_dialog: ConfirmationDialog = $DeleteRoomConfirmDialog
+@onready var new_room_folder_dialog: ConfirmationDialog = $NewRoomFolderDialog
+@onready var new_room_folder_line_edit: LineEdit = $NewRoomFolderDialog/NewFolderVBox/NewFolderLineEdit
+@onready var save_location_dialog: Window = $SaveLocationDialog
+@onready var save_location_label: Label = $SaveLocationDialog/SaveLocationVBox/SaveLocationLabel
+@onready var save_location_folder_list: ItemList = $SaveLocationDialog/SaveLocationVBox/SaveLocationFolderList
 
 @onready var room_info_header: Button = $UI/LeftPanel/RoomInfoHeader
 @onready var room_info: VBoxContainer = $UI/LeftPanel/RoomInfo
@@ -68,6 +115,7 @@ const SPAWNER_MODE_COLOR := Color(0.85, 0.35, 0.85)
 @onready var known_tags_list: ItemList = $UI/LeftPanel/RoomInfo/TagsSection/KnownTagsList
 @onready var validation_label: Label = $UI/LeftPanel/RoomInfo/ValidationLabel
 @onready var recent_rooms_list: ItemList = $UI/LeftPanel/RoomInfo/RecentRoomsList
+@onready var room_search_edit: LineEdit = $UI/LeftPanel/RoomInfo/RoomSearchEdit
 @onready var floor_palette_list: ItemList = $UI/LeftPanel/PaletteSection/FloorPaletteList
 @onready var wall_palette_list: ItemList = $UI/LeftPanel/PaletteSection/WallPaletteList
 @onready var eraser_button: Button = $UI/LeftPanel/PaletteSection/EraserButton
@@ -103,6 +151,16 @@ var room_role: String = "normal"
 ## The folder under game/rooms/ this room is saved into. "" is the top level.
 var room_biome: String = ""
 var tags: Array[String] = []
+var room_search_filter: String = ""
+var room_browser_filter: String = ""
+## "" means "All Rooms"; otherwise a folder name under game/rooms/.
+var room_browser_folder_filter: String = ""
+var room_browser_thumb_size: int = ROOM_BROWSER_THUMB_MEDIUM
+enum RoomSortMode { NAME, SIZE, ROLE }
+var room_browser_sort_mode: int = RoomSortMode.NAME
+var room_browser_context_target: String = ""
+var pending_delete_room_file: String = ""
+var room_browser_click_pending_file: String = ""
 var floor_names: Array = []
 var walls_names: Array = []
 
@@ -190,7 +248,10 @@ func _ready() -> void:
 	_setup_template_option()
 	_setup_role_and_biome_options()
 	_setup_room_file_dialog()
+	_setup_room_browser_popup()
 	_setup_overwrite_confirm_dialog()
+	_setup_delete_confirm_dialog()
+	_style_selection_highlight(save_location_folder_list, ROOM_BROWSER_ACCENT_COLOR)
 	_style_mode_button(connector_mode_button, CONNECTOR_MODE_COLOR)
 	_style_mode_button(eraser_button, ERASER_MODE_COLOR)
 	_update_camera_bounds()
@@ -316,14 +377,31 @@ func _add_circle_octants(cells: Dictionary, c: Vector2i, x: int, y: int) -> void
 	cells[c + Vector2i(y, -x)] = true
 	cells[c + Vector2i(x, -y)] = true
 
+## Explicitly styles every button state (not just "pressed") so a toggle
+## button's label always renders against a background we control, rather
+## than whatever the inherited theme happens to use for "normal"/"hover".
 func _style_mode_button(button: Button, color: Color) -> void:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(color.r, color.g, color.b, 0.55)
-	style.border_color = color
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(4)
-	button.add_theme_stylebox_override("pressed", style)
-	button.add_theme_stylebox_override("hover_pressed", style)
+	var pressed_style := StyleBoxFlat.new()
+	pressed_style.bg_color = Color(color.r, color.g, color.b, 0.55)
+	pressed_style.border_color = color
+	pressed_style.set_border_width_all(2)
+	pressed_style.set_corner_radius_all(4)
+	button.add_theme_stylebox_override("pressed", pressed_style)
+	button.add_theme_stylebox_override("hover_pressed", pressed_style)
+
+	var normal_style := StyleBoxFlat.new()
+	normal_style.bg_color = Color(0.15, 0.15, 0.18, 0.6)
+	normal_style.border_color = Color(color.r, color.g, color.b, 0.4)
+	normal_style.set_border_width_all(1)
+	normal_style.set_corner_radius_all(4)
+	button.add_theme_stylebox_override("normal", normal_style)
+	button.add_theme_stylebox_override("hover", normal_style)
+	button.add_theme_stylebox_override("focus", normal_style)
+
+	button.add_theme_color_override("font_color", Color(0.9, 0.9, 0.92))
+	button.add_theme_color_override("font_hover_color", Color(1, 1, 1))
+	button.add_theme_color_override("font_pressed_color", Color(1, 1, 1))
+	button.add_theme_color_override("font_hover_pressed_color", Color(1, 1, 1))
 
 ## Built from the TileRenderer's children rather than tile_palette.json.
 ## TileInitialize makes one child per TileType .tres in resources/tiles/ (it
@@ -486,6 +564,275 @@ func _setup_room_file_dialog() -> void:
 	room_file_dialog.current_dir = ROOMS_DIR
 	room_file_dialog.file_selected.connect(_on_room_file_selected)
 
+## A bigger, filterable, thumbnail-grid version of the Room Library list,
+## opened by the Load Room button. FileDialog itself can't show custom
+## thumbnails for arbitrary files, so this replaces it as the primary way
+## to browse rooms; room_file_dialog stays around as a fallback for loading
+## a JSON file from outside game/rooms/.
+func _setup_room_browser_popup() -> void:
+	room_browser_item_list.icon_mode = ItemList.ICON_MODE_TOP
+	room_browser_item_list.same_column_width = true
+	# max_columns defaults to 1 (single column); 0 tells the ItemList to fit
+	# as many fixed_column_width columns as the current width allows, and to
+	# re-wrap automatically if the popup is resized.
+	room_browser_item_list.max_columns = 0
+	_style_selection_highlight(room_browser_item_list, ROOM_BROWSER_ACCENT_COLOR)
+	_style_selection_highlight(room_browser_folder_list, ROOM_BROWSER_ACCENT_COLOR)
+	_style_mode_button(room_browser_view_small_button, ROOM_BROWSER_ACCENT_COLOR)
+	_style_mode_button(room_browser_view_medium_button, ROOM_BROWSER_ACCENT_COLOR)
+	_style_mode_button(room_browser_view_large_button, ROOM_BROWSER_ACCENT_COLOR)
+	room_browser_sort_option.clear()
+	room_browser_sort_option.add_item("Name", RoomSortMode.NAME)
+	room_browser_sort_option.add_item("Size", RoomSortMode.SIZE)
+	room_browser_sort_option.add_item("Role", RoomSortMode.ROLE)
+	room_browser_context_menu.clear()
+	room_browser_context_menu.add_item("Duplicate", 0)
+	room_browser_context_menu.add_item("Delete", 1)
+	room_browser_folder_list.room_dropped.connect(_on_room_dropped_on_folder)
+	room_browser_item_list.drag_started.connect(_on_room_browser_drag_started)
+	# Control's own gui_input signal (not the _gui_input virtual) -- this only
+	# observes input, it doesn't replace ItemList's built-in click/selection
+	# handling, so selection and scrolling keep working exactly as before.
+	room_browser_item_list.gui_input.connect(_on_room_browser_item_list_gui_input)
+	_apply_room_browser_thumb_size(ROOM_BROWSER_THUMB_MEDIUM)
+	_refresh_room_browser_folder_list()
+
+func _on_load_room_pressed() -> void:
+	room_browser_click_pending_file = ""
+	_refresh_room_browser_folder_list()
+	_refresh_room_browser()
+	room_browser_popup.popup_centered()
+
+func _on_room_browser_view_small_pressed() -> void:
+	_apply_room_browser_thumb_size(ROOM_BROWSER_THUMB_SMALL)
+
+func _on_room_browser_view_medium_pressed() -> void:
+	_apply_room_browser_thumb_size(ROOM_BROWSER_THUMB_MEDIUM)
+
+func _on_room_browser_view_large_pressed() -> void:
+	_apply_room_browser_thumb_size(ROOM_BROWSER_THUMB_LARGE)
+
+func _apply_room_browser_thumb_size(thumb_size: int) -> void:
+	room_browser_thumb_size = thumb_size
+	room_browser_item_list.fixed_icon_size = Vector2i(thumb_size, thumb_size)
+	room_browser_item_list.fixed_column_width = thumb_size + ROOM_BROWSER_COLUMN_PADDING
+	_refresh_room_browser()
+
+## Rebuilds the folder sidebar: "All Rooms" plus every folder under
+## game/rooms/. These are real directories on disk -- the same ones a room's
+## saved location already determines its biome from -- just presented here
+## as free-form organisation folders a person can add to, instead of a fixed
+## biome picker.
+func _refresh_room_browser_folder_list() -> void:
+	var previous := room_browser_folder_filter
+	room_browser_folder_list.clear()
+	room_browser_folder_list.add_item("All Rooms")
+	for folder in _room_folders():
+		if folder != "":
+			room_browser_folder_list.add_item(folder)
+	for i in range(room_browser_folder_list.item_count):
+		var label := "" if i == 0 else room_browser_folder_list.get_item_text(i)
+		if label == previous:
+			room_browser_folder_list.select(i)
+			return
+	room_browser_folder_filter = ""
+	room_browser_folder_list.select(0)
+
+func _on_room_browser_folder_selected(index: int) -> void:
+	room_browser_folder_filter = "" if index == 0 else room_browser_folder_list.get_item_text(index)
+	_refresh_room_browser()
+
+func _on_new_folder_button_pressed() -> void:
+	new_room_folder_line_edit.text = ""
+	new_room_folder_dialog.popup_centered()
+	new_room_folder_line_edit.grab_focus()
+
+func _on_new_room_folder_confirmed() -> void:
+	var folder_name := new_room_folder_line_edit.text.strip_edges()
+	if folder_name == "" or folder_name.contains("/") or folder_name.contains("\\") or folder_name.contains(".."):
+		_show_export_status("Folder names can't contain / \\ or ..")
+		return
+	var dir := DirAccess.open(ROOMS_DIR)
+	if dir == null:
+		return
+	dir.make_dir(folder_name)
+	room_browser_folder_filter = folder_name
+	# Folders double as the Room Info biome dropdown's options, so keep it in
+	# sync too -- a folder created here is immediately usable to save into.
+	_setup_role_and_biome_options()
+	_refresh_room_browser_folder_list()
+	_refresh_room_browser()
+	# "+ New Folder" can also be opened from the save-location picker; if
+	# that's what's currently up, refresh it too and select the new folder.
+	if save_location_dialog.visible:
+		_refresh_save_location_folder_list(folder_name)
+
+## Rebuilds the room browser grid from the current search text and folder
+## filter. Item metadata holds the room's path (relative to ROOMS_DIR) so
+## the display label can show just the room's id.
+func _refresh_room_browser() -> void:
+	room_browser_click_pending_file = ""
+	room_browser_item_list.clear()
+	var needle := room_browser_filter.strip_edges().to_lower()
+	var entries := []
+	for room_file in _list_room_files():
+		if room_browser_folder_filter != "" and not room_file.begins_with(room_browser_folder_filter + "/"):
+			continue
+		var data := _read_room_file(room_file)
+		if data.is_empty():
+			continue
+		if needle != "" and not _room_matches_filter(room_file, data, needle):
+			continue
+		var label: String = str(data.get("id", "")) if data.get("id", "") != "" else room_file.get_file().get_basename()
+		entries.append({"room_file": room_file, "data": data, "label": label})
+	entries.sort_custom(_room_browser_entry_less_than)
+	for entry in entries:
+		room_browser_item_list.add_item(entry["label"], _build_room_thumbnail(entry["data"], room_browser_thumb_size))
+		var item_index := room_browser_item_list.item_count - 1
+		room_browser_item_list.set_item_tooltip(item_index, entry["room_file"])
+		room_browser_item_list.set_item_metadata(item_index, entry["room_file"])
+
+## Comparator used to order the room browser grid according to
+## room_browser_sort_mode. Falls back to alphabetical on ties (and for the
+## default Name mode itself).
+func _room_browser_entry_less_than(a: Dictionary, b: Dictionary) -> bool:
+	match room_browser_sort_mode:
+		RoomSortMode.SIZE:
+			var area_a: int = int(a["data"].get("width", 0)) * int(a["data"].get("height", 0))
+			var area_b: int = int(b["data"].get("width", 0)) * int(b["data"].get("height", 0))
+			if area_a != area_b:
+				return area_a < area_b
+		RoomSortMode.ROLE:
+			var role_a: String = str(a["data"].get("role", ""))
+			var role_b: String = str(b["data"].get("role", ""))
+			if role_a != role_b:
+				return role_a < role_b
+	return a["label"].to_lower() < b["label"].to_lower()
+
+func _on_room_browser_sort_selected(index: int) -> void:
+	room_browser_sort_mode = index
+	_refresh_room_browser()
+
+func _on_room_browser_search_changed(new_text: String) -> void:
+	room_browser_filter = new_text
+	_refresh_room_browser()
+
+## item_selected fires on mouse-DOWN, before Godot knows whether this press
+## will turn into a drag -- loading and closing the popup immediately would
+## make click-and-hold-to-drag impossible. So this only remembers which room
+## was pressed; the actual load happens on mouse-UP (_on_room_browser_item_list_gui_input),
+## and only if no drag started in between (_on_room_browser_drag_started).
+## That way holding as long as you like before moving still lets a drag
+## start, while a plain press-and-release still opens the room immediately.
+func _on_room_browser_item_selected(index: int) -> void:
+	room_browser_click_pending_file = room_browser_item_list.get_item_metadata(index)
+
+func _on_room_browser_drag_started() -> void:
+	room_browser_click_pending_file = ""
+
+func _on_room_browser_item_list_gui_input(event: InputEvent) -> void:
+	if not (event is InputEventMouseButton) or event.button_index != MOUSE_BUTTON_LEFT or event.pressed:
+		return
+	if room_browser_click_pending_file == "":
+		return
+	var room_file := room_browser_click_pending_file
+	room_browser_click_pending_file = ""
+	_on_room_file_selected(ROOMS_DIR + room_file)
+	room_browser_popup.hide()
+
+func _on_room_browser_browse_files_pressed() -> void:
+	room_browser_popup.hide()
+	room_file_dialog.popup_centered_ratio(0.5)
+
+## Right-click support for the room grid: item_selected (left click) still
+## loads the room, this only opens the Duplicate/Delete menu on other buttons.
+func _on_room_browser_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
+	if mouse_button_index != MOUSE_BUTTON_RIGHT:
+		return
+	room_browser_click_pending_file = ""
+	var room_file = room_browser_item_list.get_item_metadata(index)
+	if not (room_file is String):
+		return
+	room_browser_context_target = room_file
+	var screen_pos: Vector2 = room_browser_item_list.get_screen_transform() * at_position
+	room_browser_context_menu.popup(Rect2i(Vector2i(screen_pos), Vector2i.ZERO))
+
+func _on_room_browser_context_menu_id_pressed(id: int) -> void:
+	if room_browser_context_target == "":
+		return
+	match id:
+		0:
+			_duplicate_room_file(room_browser_context_target)
+		1:
+			_confirm_delete_room_file(room_browser_context_target)
+
+## Copies a room file within the same folder, appending " (copy)" to its id
+## (and, if that name's already taken, " (copy 2)", " (copy 3)", ...).
+func _duplicate_room_file(room_file: String) -> void:
+	var data := _read_room_file(room_file)
+	if data.is_empty():
+		return
+	var base_id: String = str(data.get("id", room_file.get_file().get_basename()))
+	var folder := room_file.get_base_dir()
+	var folder_prefix := "" if folder == "" else folder + "/"
+	var new_id := base_id + " (copy)"
+	var suffix := 2
+	while FileAccess.file_exists("%s%s%s.json" % [ROOMS_DIR, folder_prefix, new_id]):
+		new_id = "%s (copy %d)" % [base_id, suffix]
+		suffix += 1
+	data["id"] = new_id
+	_write_room_file("%s%s%s.json" % [ROOMS_DIR, folder_prefix, new_id], data)
+	_refresh_room_browser()
+
+func _confirm_delete_room_file(room_file: String) -> void:
+	pending_delete_room_file = room_file
+	delete_room_confirm_dialog.dialog_text = "Delete \"%s\"? This can't be undone." % room_file
+	delete_room_confirm_dialog.popup_centered()
+
+func _setup_delete_confirm_dialog() -> void:
+	delete_room_confirm_dialog.confirmed.connect(_on_delete_room_confirmed)
+
+func _on_delete_room_confirmed() -> void:
+	if pending_delete_room_file == "":
+		return
+	var dir := DirAccess.open(ROOMS_DIR)
+	if dir != null:
+		dir.remove(pending_delete_room_file)
+	_show_export_status("Deleted " + pending_delete_room_file)
+	pending_delete_room_file = ""
+	_refresh_room_browser()
+	_refresh_recent_rooms()
+	_refresh_known_tags()
+
+## Called when a room thumbnail is dragged onto a folder in the sidebar
+## (see RoomBrowserSourceList.gd / RoomBrowserFolderList.gd). Moves the file
+## on disk and keeps its "biome" field in sync with the new folder, the same
+## way _on_save_location_confirmed() does for newly-exported rooms.
+func _on_room_dropped_on_folder(room_file: String, target_folder: String) -> void:
+	var current_folder := room_file.get_base_dir()
+	if current_folder == target_folder:
+		return
+	var file_name := room_file.get_file()
+	var new_rel := file_name if target_folder == "" else target_folder + "/" + file_name
+	if FileAccess.file_exists(ROOMS_DIR + new_rel):
+		_show_export_status("A room named %s already exists in that folder" % file_name)
+		return
+	var dir := DirAccess.open(ROOMS_DIR)
+	if dir == null or dir.rename(room_file, new_rel) != OK:
+		_show_export_status("Failed to move " + room_file)
+		return
+	var data := _read_room_file(new_rel)
+	if data.is_empty():
+		_show_export_status("Moved to " + new_rel)
+	else:
+		if target_folder != "":
+			data["biome"] = target_folder
+		else:
+			data.erase("biome")
+		_write_room_file(ROOMS_DIR + new_rel, data)
+	_refresh_room_browser_folder_list()
+	_refresh_room_browser()
+
 func _setup_overwrite_confirm_dialog() -> void:
 	overwrite_confirm_dialog.confirmed.connect(_on_overwrite_confirmed)
 
@@ -516,22 +863,95 @@ func _list_room_files() -> Array:
 
 func _refresh_recent_rooms() -> void:
 	recent_rooms_list.clear()
+	recent_rooms_list.icon_mode = ItemList.ICON_MODE_LEFT
+	recent_rooms_list.fixed_icon_size = Vector2i(ROOM_THUMB_SIZE, ROOM_THUMB_SIZE)
+	var needle := room_search_filter.strip_edges().to_lower()
 	for room_file in _list_room_files():
-		recent_rooms_list.add_item(room_file)
+		var data := _read_room_file(room_file)
+		if data.is_empty():
+			continue
+		if needle != "" and not _room_matches_filter(room_file, data, needle):
+			continue
+		recent_rooms_list.add_item(room_file, _build_room_thumbnail(data))
+
+func _on_room_search_changed(new_text: String) -> void:
+	room_search_filter = new_text
+	_refresh_recent_rooms()
+
+## True if the room's file name, room ID, or any tag contains needle.
+## needle is expected to already be lowercased.
+func _room_matches_filter(room_file: String, data: Dictionary, needle: String) -> bool:
+	if room_file.to_lower().contains(needle):
+		return true
+	if str(data.get("id", "")).to_lower().contains(needle):
+		return true
+	for tag in data.get("tags", []):
+		if str(tag).to_lower().contains(needle):
+			return true
+	return false
 
 func _on_recent_room_selected(index: int) -> void:
 	_on_room_file_selected(ROOMS_DIR + recent_rooms_list.get_item_text(index))
 
+## Reads and parses a room JSON file, relative to ROOMS_DIR. Empty
+## Dictionary on any failure (missing file, invalid JSON).
+func _read_room_file(room_file: String) -> Dictionary:
+	var file := FileAccess.open(ROOMS_DIR + room_file, FileAccess.READ)
+	if file == null:
+		return {}
+	var data = JSON.parse_string(file.get_as_text())
+	if not (data is Dictionary):
+		return {}
+	return data
+
+func _build_room_thumbnail(data: Dictionary, thumb_size: int = ROOM_THUMB_SIZE) -> ImageTexture:
+	var thumb_width: int = int(data.get("width", 0))
+	var thumb_height: int = int(data.get("height", 0))
+	if thumb_width <= 0 or thumb_height <= 0:
+		return null
+	var floor_grid: Array = data.get("floor", [])
+	var walls_grid: Array = data.get("walls", [])
+	var img := Image.create(thumb_width, thumb_height, false, Image.FORMAT_RGBA8)
+	for y in range(thumb_height):
+		var floor_row: Array = floor_grid[y] if y < floor_grid.size() else []
+		var walls_row: Array = walls_grid[y] if y < walls_grid.size() else []
+		for x in range(thumb_width):
+			var wall_value = walls_row[x] if x < walls_row.size() else null
+			var floor_value = floor_row[x] if x < floor_row.size() else null
+			var color := ROOM_THUMB_VOID_COLOR
+			if wall_value != null and str(wall_value) != "":
+				var wall_name := str(wall_value)
+				color = ROOM_THUMB_DOOR_COLOR if wall_name.contains("door") else _thumbnail_material_color(wall_name, ROOM_THUMB_WALL_COLOR, true)
+			elif floor_value != null and str(floor_value) != "":
+				color = _thumbnail_material_color(str(floor_value), ROOM_THUMB_FLOOR_COLOR, false)
+			img.set_pixel(x, y, color)
+	img.resize(thumb_size, thumb_size, Image.INTERPOLATE_NEAREST)
+	return ImageTexture.create_from_image(img)
+
+## Colors a tile by material keyword (see ROOM_THUMB_MATERIAL_COLORS) so
+## different floor/wall types are visually distinct in room thumbnails, e.g.
+## lava reads as orange and grass as green instead of everything being the
+## same flat grey. Walls get a darkened version of their material's color --
+## some materials (e.g. "flesh") name both a floor and a wall tile, and
+## without this a wall would render as the exact same color as the floor
+## next to it and disappear. A tile name matching no known keyword still
+## gets a consistent color (hashed from its name, at the fallback's
+## brightness so floors stay lighter than walls) rather than flat grey.
+func _thumbnail_material_color(tile_name: String, fallback: Color, is_wall: bool) -> Color:
+	var lower := tile_name.to_lower()
+	for keyword in ROOM_THUMB_MATERIAL_COLORS.keys():
+		if lower.contains(keyword):
+			var base: Color = ROOM_THUMB_MATERIAL_COLORS[keyword]
+			return base.darkened(0.4) if is_wall else base
+	var hue := float(tile_name.hash() % 360) / 360.0
+	return Color.from_hsv(hue, 0.4, fallback.v)
+
 func _refresh_known_tags() -> void:
 	var seen := {}
 	for room_file in _list_room_files():
-		var file := FileAccess.open(ROOMS_DIR + room_file, FileAccess.READ)
-		if file == null:
-			continue
-		var data = JSON.parse_string(file.get_as_text())
-		if data is Dictionary:
-			for tag in data.get("tags", []):
-				seen[str(tag)] = true
+		var data := _read_room_file(room_file)
+		for tag in data.get("tags", []):
+			seen[str(tag)] = true
 	known_tags_list.clear()
 	var tag_names := seen.keys()
 	tag_names.sort()
@@ -720,8 +1140,13 @@ func _on_tool_select_pressed() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if test_mode_active:
-		if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
-			_stop_test()
+		if event is InputEventKey and event.pressed and not event.echo:
+			if event.keycode == KEY_ESCAPE:
+				_stop_test()
+			elif event.keycode == KEY_R:
+				_restart_test()
+			elif event.keycode == KEY_K:
+				_kill_all_test_enemies()
 		return
 	if event is InputEventMouseMotion:
 		_update_hover()
@@ -752,12 +1177,17 @@ func _handle_shortcut(event: InputEventKey) -> bool:
 		_redo()
 		return true
 	if event.ctrl_pressed and event.keycode == KEY_V:
-		_paste_clipboard()
+		# Ctrl+V duplicates the current object/group selection when there is
+		# one; otherwise it falls back to pasting a copied tile region.
+		if not multi_selected_indices.is_empty():
+			_duplicate_multi_selection()
+		else:
+			_paste_clipboard()
 		return true
 	if event.ctrl_pressed and event.keycode == KEY_D:
 		_duplicate_multi_selection()
 		return true
-	if event.keycode == KEY_DELETE:
+	if event.keycode == KEY_DELETE or event.keycode == KEY_BACKSPACE:
 		_delete_selected()
 		return true
 	if event.keycode == KEY_LEFT or event.keycode == KEY_RIGHT or event.keycode == KEY_UP or event.keycode == KEY_DOWN:
@@ -793,6 +1223,10 @@ func _deselect_all() -> void:
 	_set_spawner_mode_active(false)
 	_clear_multi_selection()
 	marquee_active = false
+	# Cancel any in-progress box paint / line-shape drag too, otherwise its
+	# preview outline is left stuck on screen since nothing clears it.
+	rect_paint_active = false
+	shape_drag_active = false
 	queue_redraw()
 
 func _delete_selected() -> void:
@@ -858,10 +1292,10 @@ func _handle_camera_input(event: InputEvent) -> void:
 			camera_dragging = event.pressed
 		elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
 			_handle_right_click()
-		elif event.pressed and event.shift_pressed and object_mode_active and event.button_index == MOUSE_BUTTON_WHEEL_UP:
-			_adjust_pending_rotation(ROTATE_STEP_DEGREES)
-		elif event.pressed and event.shift_pressed and object_mode_active and event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			_adjust_pending_rotation(-ROTATE_STEP_DEGREES)
+		elif event.pressed and event.shift_pressed and event.button_index == MOUSE_BUTTON_WHEEL_UP and (object_mode_active or not multi_selected_indices.is_empty()):
+			_adjust_rotation_input(ROTATE_STEP_DEGREES)
+		elif event.pressed and event.shift_pressed and event.button_index == MOUSE_BUTTON_WHEEL_DOWN and (object_mode_active or not multi_selected_indices.is_empty()):
+			_adjust_rotation_input(-ROTATE_STEP_DEGREES)
 		elif event.pressed and event.ctrl_pressed and (eraser_active or selected_tile_name != "") and event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			_adjust_brush_size(1)
 		elif event.pressed and event.ctrl_pressed and (eraser_active or selected_tile_name != "") and event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
@@ -902,9 +1336,36 @@ func _delete_at_mouse() -> void:
 	if has_player_spawner and player_spawner_cell == cell:
 		_clear_player_spawner_with_undo()
 
+## Shift+wheel means two different things depending on context: adjusting the
+## rotation an about-to-be-placed object will spawn with, or rotating the
+## object(s) currently selected in the room.
+func _adjust_rotation_input(delta_degrees: float) -> void:
+	if object_mode_active:
+		_adjust_pending_rotation(delta_degrees)
+	else:
+		_rotate_multi_selection(delta_degrees)
+
 func _adjust_pending_rotation(delta_degrees: float) -> void:
 	pending_object_rotation = fmod(pending_object_rotation + delta_degrees + 360.0, 360.0)
 	queue_redraw()
+
+func _rotate_multi_selection(delta_degrees: float) -> void:
+	if multi_selected_indices.is_empty():
+		return
+	var old_rotations := {}
+	var new_rotations := {}
+	for index in multi_selected_indices:
+		old_rotations[index] = objects[index]["rotation"]
+		new_rotations[index] = fmod(old_rotations[index] + delta_degrees + 360.0, 360.0)
+		_set_object_rotation(index, new_rotations[index])
+	_push_undo(
+		func():
+			for index in old_rotations.keys():
+				_set_object_rotation(index, old_rotations[index]),
+		func():
+			for index in new_rotations.keys():
+				_set_object_rotation(index, new_rotations[index])
+	)
 
 func _adjust_brush_size(delta: int) -> void:
 	brush_size = clampi(brush_size + delta, BRUSH_SIZE_MIN, BRUSH_SIZE_MAX)
@@ -1400,43 +1861,10 @@ func _make_object_marker(pos: Vector2, object_type: String, rotation_degrees: fl
 	marker.rotation_degrees = rotation_degrees
 	return marker
 
-func _on_rotate_left_pressed() -> void:
-	_rotate_selected_object(-ROTATE_STEP_DEGREES)
-
-func _on_rotate_right_pressed() -> void:
-	_rotate_selected_object(ROTATE_STEP_DEGREES)
-
-func _rotate_selected_object(delta_degrees: float) -> void:
-	var selected := objects_list.get_selected_items()
-	if selected.is_empty():
-		return
-	var index: int = selected[0]
-	var old_rotation = objects[index]["rotation"]
-	var new_rotation := fmod(old_rotation + delta_degrees + 360.0, 360.0)
-	_set_object_rotation(index, new_rotation)
-	_push_undo(
-		func(): _set_object_rotation(index, old_rotation),
-		func(): _set_object_rotation(index, new_rotation)
-	)
-
 func _set_object_rotation(index: int, rotation_degrees: float) -> void:
 	objects[index]["rotation"] = rotation_degrees
 	object_markers[index].rotation_degrees = rotation_degrees
 	_refresh_object_list_item(index)
-
-func _on_duplicate_object_pressed() -> void:
-	var selected := objects_list.get_selected_items()
-	if selected.is_empty():
-		return
-	var source = objects[selected[0]]
-	var obj := {"type": source["type"], "position": source["position"] + Vector2(8, 8), "rotation": source["rotation"]}
-	var index := objects.size()
-	_insert_object(obj, index)
-	objects_list.select(index)
-	_push_undo(
-		func(): _delete_object_at(index),
-		func(): _insert_object(obj.duplicate(), index)
-	)
 
 func _on_delete_object_pressed() -> void:
 	var selected := objects_list.get_selected_items()
@@ -1789,7 +2217,11 @@ func _start_test() -> void:
 	test_hud.visible = true
 	camera.enabled = false
 	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
+	_spawn_test_entities()
 
+## Puts a fresh player + enemy spawner timers into the room. Used both to
+## enter Test mode and to restart it without leaving/re-entering.
+func _spawn_test_entities() -> void:
 	test_player = load(PLAYER_CONTROLLER_SCENE_PATH).instantiate()
 	test_player.name = "1"
 	test_player.global_position = WORLD_OFFSET + _cell_top_left(player_spawner_cell)
@@ -1798,6 +2230,49 @@ func _start_test() -> void:
 
 	for spawner in enemy_spawners:
 		_start_enemy_spawner_timer(spawner)
+
+## Frees the test player, spawner timers, and any spawned enemies, but leaves
+## the offline multiplayer peer and editor UI state untouched so a restart
+## can immediately call _spawn_test_entities() again.
+func _teardown_test_entities() -> void:
+	# set_process(false) first: PlayerController's queued-for-deletion node
+	# still gets one more _process() this frame otherwise, and it reads
+	# multiplayer.get_unique_id(), which errors once the peer is gone.
+	# remove_child() before queue_free() so the name "1" is free again right
+	# away — restart adds a new player named "1" in the same call, and
+	# queue_free() alone leaves the old one occupying that name until its
+	# deferred removal, which makes Godot rename the new node and breaks its
+	# multiplayer-authority check (and with it, the player camera).
+	if is_instance_valid(test_player):
+		test_player.set_process(false)
+		test_player.set_physics_process(false)
+		remove_child(test_player)
+		test_player.queue_free()
+	test_player = null
+	for timer in test_spawn_timers:
+		if is_instance_valid(timer):
+			timer.queue_free()
+	test_spawn_timers.clear()
+	_kill_all_test_enemies()
+
+func _kill_all_test_enemies() -> void:
+	for enemy in test_spawned_enemies:
+		if is_instance_valid(enemy):
+			enemy.set_process(false)
+			enemy.queue_free()
+	test_spawned_enemies.clear()
+
+func _on_kill_enemies_pressed() -> void:
+	_kill_all_test_enemies()
+
+func _on_restart_test_pressed() -> void:
+	_restart_test()
+
+func _restart_test() -> void:
+	if not test_mode_active:
+		return
+	_teardown_test_entities()
+	_spawn_test_entities()
 
 func _cell_top_left(cell: Vector2i) -> Vector2:
 	return Vector2(cell.x * TILE_SIZE, cell.y * TILE_SIZE)
@@ -1829,33 +2304,14 @@ func _on_quit_test_pressed() -> void:
 
 func _stop_test() -> void:
 	test_mode_active = false
-	# set_process(false) first: PlayerController's queued-for-deletion node
-	# still gets one more _process() this frame otherwise, and it reads
-	# multiplayer.get_unique_id(), which errors once the peer below is gone.
-	if is_instance_valid(test_player):
-		test_player.set_process(false)
-		test_player.set_physics_process(false)
-		test_player.queue_free()
-	test_player = null
+	_teardown_test_entities()
 	multiplayer.multiplayer_peer = null
-	for timer in test_spawn_timers:
-		if is_instance_valid(timer):
-			timer.queue_free()
-	test_spawn_timers.clear()
-	for enemy in test_spawned_enemies:
-		if is_instance_valid(enemy):
-			enemy.set_process(false)
-			enemy.queue_free()
-	test_spawned_enemies.clear()
 	camera.enabled = true
 	camera.make_current()
 	$UI.visible = true
 	overlay.visible = true
 	test_hud.visible = false
 	queue_redraw()
-
-func _on_load_room_pressed() -> void:
-	room_file_dialog.popup_centered_ratio(0.5)
 
 func _on_room_file_selected(path: String) -> void:
 	var file := FileAccess.open(path, FileAccess.READ)
@@ -1934,16 +2390,54 @@ func _on_export_pressed() -> void:
 	var data := _build_export_data()
 	var folder := "" if room_biome == "" else room_biome + "/"
 	var path := "%s%s%s.json" % [ROOMS_DIR, folder, room_id]
+	pending_export_data = data
 	if FileAccess.file_exists(path):
-		pending_export_data = data
 		pending_export_path = path
 		overwrite_confirm_dialog.dialog_text = "%s already exists. Overwrite it?" % path
 		overwrite_confirm_dialog.popup_centered()
 		return
-	_write_room_file(path, data)
+	# A brand-new room -- confirm where it's actually going instead of
+	# silently trusting whatever the Room Info biome dropdown was left on.
+	_show_save_location_dialog()
 
 func _on_overwrite_confirmed() -> void:
 	_write_room_file(pending_export_path, pending_export_data)
+
+func _show_save_location_dialog() -> void:
+	save_location_label.text = "Save \"%s\" into:" % room_id
+	_refresh_save_location_folder_list(room_biome)
+	save_location_dialog.popup_centered()
+
+func _refresh_save_location_folder_list(preferred_folder: String) -> void:
+	save_location_folder_list.clear()
+	save_location_folder_list.add_item("(none - top level)")
+	var select_index := 0
+	for folder in _room_folders():
+		if folder == "":
+			continue
+		save_location_folder_list.add_item(folder)
+		if folder == preferred_folder:
+			select_index = save_location_folder_list.item_count - 1
+	save_location_folder_list.select(select_index)
+
+func _on_save_location_confirmed() -> void:
+	var selected := save_location_folder_list.get_selected_items()
+	var folder_name := "" if selected.is_empty() or selected[0] == 0 else save_location_folder_list.get_item_text(selected[0])
+	room_biome = folder_name
+	_show_role_and_biome()
+	if folder_name != "":
+		pending_export_data["biome"] = folder_name
+	else:
+		pending_export_data.erase("biome")
+	save_location_dialog.hide()
+	var folder := "" if folder_name == "" else folder_name + "/"
+	var path := "%s%s%s.json" % [ROOMS_DIR, folder, room_id]
+	if FileAccess.file_exists(path):
+		pending_export_path = path
+		overwrite_confirm_dialog.dialog_text = "%s already exists. Overwrite it?" % path
+		overwrite_confirm_dialog.popup_centered()
+		return
+	_write_room_file(path, pending_export_data)
 
 func _build_export_data() -> Dictionary:
 	var data := {

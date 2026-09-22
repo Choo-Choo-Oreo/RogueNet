@@ -4,26 +4,26 @@
 	"connectors": [
 		{
 			"position": {
-				"x": 26,
-				"y": 0
+				"x": 26.0,
+				"y": 0.0
 			}
 		},
 		{
 			"position": {
-				"x": 26,
-				"y": 51
+				"x": 26.0,
+				"y": 51.0
 			}
 		},
 		{
 			"position": {
-				"x": 0,
-				"y": 26
+				"x": 0.0,
+				"y": 26.0
 			}
 		},
 		{
 			"position": {
-				"x": 51,
-				"y": 26
+				"x": 51.0,
+				"y": 26.0
 			}
 		}
 	],
@@ -2837,8 +2837,8 @@
 			null
 		]
 	],
-	"format": 1,
-	"height": 52,
+	"format": 1.0,
+	"height": 52.0,
 	"id": "Liquid_Boss_Lava_Lake_52x52",
 	"objects": [],
 	"role": "boss",
@@ -5656,5 +5656,5 @@
 			"wall_smooth_stone"
 		]
 	],
-	"width": 52
+	"width": 52.0
 }
