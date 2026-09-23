@@ -52,7 +52,7 @@ const OBJECT_MARKER_TEXTURES := {
 	"chest": "res://resources/gfx/objects/Chest_Wood.png",
 }
 const CONNECTOR_TEXTURE_PATH := "res://resources/gfx/objects/Door.png"
-const PLAYER_SPAWNER_TEXTURE_PATH := "res://resources/gfx/players/knight/Knight-Down.png"
+const PLAYER_SPAWNER_TEXTURE_PATH := "res://resources/gfx/players/player.protagonist/knight/Knight-Down.png"
 const PLAYER_CONTROLLER_SCENE_PATH := "res://scenes/player/PlayerController.tscn"
 const PLACEHOLDER_ENEMY_SCENE_PATH := "res://scenes/dungeon/PlaceholderMouse.tscn"
 const ENEMY_TYPE_NAMES := ["mouse"]

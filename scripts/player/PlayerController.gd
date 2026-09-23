@@ -4,8 +4,8 @@ extends CharacterBody2D
 @onready var animator: DirectionalAnimator = $DirectionalAnimator
 
 const CHARACTERS := {
-	"knight": "res://resources/gfx/players/knight/Knight.tres",
-	"dwarf": "res://resources/gfx/players/dwarf/Dwarf.tres",
+	"knight": "res://resources/gfx/players/player.protagonist/knight/Knight.tres",
+	"dwarf": "res://resources/gfx/players/player.protagonist/dwarf/Dwarf.tres",
 }
 const DEFAULT_CHARACTER := "knight"
 
