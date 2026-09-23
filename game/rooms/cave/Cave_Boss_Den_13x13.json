@@ -2,28 +2,48 @@
 	"biome": "cave",
 	"connectors": [
 		{
-			"position": {
-				"x": 6,
+			"a": {
+				"x": 4,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 8,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
-				"y": 6
-			}
+				"y": 5
+			},
+			"b": {
+				"x": 0,
+				"y": 7
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 12,
-				"y": 6
-			}
+				"y": 5
+			},
+			"b": {
+				"x": 12,
+				"y": 7
+			},
+			"free": true
 		},
 		{
-			"position": {
-				"x": 6,
+			"a": {
+				"x": 4,
 				"y": 12
-			}
+			},
+			"b": {
+				"x": 8,
+				"y": 12
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -32,21 +52,6 @@
 			null,
 			null,
 			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null
-		],
-		[
-			null,
-			null,
-			null,
-			null,
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
@@ -60,35 +65,23 @@
 		[
 			null,
 			null,
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
+			null,
 			null,
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
+			"floor_dirt",
+			null,
+			null,
 			null,
 			null
 		],
 		[
 			null,
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			null
-		],
-		[
 			null,
+			"floor_dirt",
+			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
 			null,
@@ -96,10 +89,7 @@
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
-			"floor_dirt",
 			null,
-			"floor_dirt",
-			"floor_dirt",
 			null
 		],
 		[
@@ -119,6 +109,36 @@
 		],
 		[
 			null,
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt"
+		],
+		[
+			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
@@ -130,6 +150,36 @@
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
+			"floor_dirt"
+		],
+		[
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt"
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			"floor_dirt",
 			null
 		],
 		[
@@ -149,36 +199,6 @@
 		],
 		[
 			null,
-			"floor_dirt",
-			"floor_dirt",
-			null,
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			null,
-			"floor_dirt",
-			"floor_dirt",
-			null
-		],
-		[
-			null,
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			null
-		],
-		[
-			null,
 			null,
 			"floor_dirt",
 			"floor_dirt",
@@ -212,18 +232,18 @@
 			null,
 			null,
 			null,
-			null,
-			null,
-			null,
-			null,
-			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
 			null,
 			null,
 			null,
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 13,
 	"id": "Cave_Boss_Den_13x13",
 	"objects": [
@@ -271,14 +291,14 @@
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave",
-			"wall_rough_cave",
-			"wall_rough_cave",
+			"wall_door",
+			"wall_door",
+			"wall_door",
+			"wall_door",
 			"wall_door",
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave",
-			"wall_rough_cave",
-			"wall_rough_cave",
 			"wall_rough_cave"
 		],
 		[
@@ -337,21 +357,6 @@
 			null,
 			null,
 			"wall_rough_cave",
-			null,
-			null,
-			"wall_rough_cave"
-		],
-		[
-			"wall_rough_cave",
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
 			null,
 			null,
 			"wall_rough_cave"
@@ -372,7 +377,7 @@
 			"wall_door"
 		],
 		[
-			"wall_rough_cave",
+			"wall_door",
 			null,
 			null,
 			null,
@@ -384,7 +389,22 @@
 			null,
 			null,
 			null,
-			"wall_rough_cave"
+			"wall_door"
+		],
+		[
+			"wall_door",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_door"
 		],
 		[
 			"wall_rough_cave",
@@ -447,15 +467,15 @@
 			"wall_rough_cave"
 		],
 		[
-			"wall_rough_cave",
-			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_door",
-			"wall_rough_cave",
-			"wall_rough_cave",
+			"wall_door",
+			"wall_door",
+			"wall_door",
+			"wall_door",
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave",

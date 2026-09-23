@@ -3,10 +3,15 @@
 	"biome": "flesh",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 2
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 2
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -46,7 +51,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 5,
 	"id": "Flesh_Closet_5x5",
 	"objects": [],

@@ -2,10 +2,15 @@
 	"base_floor": "floor_flesh",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 2
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 2
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -45,7 +50,7 @@
 			"floor_smooth_stone"
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 5,
 	"id": "Flesh_Closes_5x5",
 	"objects": [],

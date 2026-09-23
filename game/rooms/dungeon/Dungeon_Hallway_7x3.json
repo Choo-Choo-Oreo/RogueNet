@@ -2,13 +2,21 @@
 	"biome": "dungeon",
 	"connectors": [
 		{
-			"position": {
+			"a": {
+				"x": 6,
+				"y": 1
+			},
+			"b": {
 				"x": 6,
 				"y": 1
 			}
 		},
 		{
-			"position": {
+			"a": {
+				"x": 0,
+				"y": 1
+			},
+			"b": {
 				"x": 0,
 				"y": 1
 			}
@@ -43,7 +51,7 @@
 			"floor_smooth_stone"
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 3,
 	"id": "Dungeon_Hallway_7x3",
 	"objects": [

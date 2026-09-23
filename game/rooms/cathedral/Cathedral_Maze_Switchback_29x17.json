@@ -2,15 +2,23 @@
 	"biome": "cathedral",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 0,
-				"y": 2
+				"y": 1
+			},
+			"b": {
+				"x": 0,
+				"y": 3
 			}
 		},
 		{
-			"position": {
+			"a": {
 				"x": 28,
-				"y": 14
+				"y": 13
+			},
+			"b": {
+				"x": 28,
+				"y": 15
 			}
 		}
 	],
@@ -543,7 +551,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 17,
 	"id": "Cathedral_Maze_Switchback_29x17",
 	"objects": [],
@@ -629,7 +637,38 @@
 			"wall_cobble_brick"
 		],
 		[
+			"wall_door",
+			null,
+			null,
+			null,
 			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_door",
 			null,
 			null,
 			null,
@@ -701,37 +740,6 @@
 			null,
 			null,
 			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			null,
-			null,
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			null,
-			null,
-			null,
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
@@ -989,37 +997,6 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
-			null,
-			null,
-			null,
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			null,
-			null,
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
 			null,
 			null,
 			null,
@@ -1091,7 +1068,38 @@
 			null,
 			null,
 			null,
-			"wall_cobble_brick"
+			"wall_door"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			"wall_door"
 		],
 		[
 			"wall_cobble_brick",

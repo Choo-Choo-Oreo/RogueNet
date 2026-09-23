@@ -2,25 +2,41 @@
 	"biome": "development",
 	"connectors": [
 		{
-			"position": {
+			"a": {
+				"x": 12,
+				"y": 0
+			},
+			"b": {
 				"x": 12,
 				"y": 0
 			}
 		},
 		{
-			"position": {
+			"a": {
+				"x": 12,
+				"y": 24
+			},
+			"b": {
 				"x": 12,
 				"y": 24
 			}
 		},
 		{
-			"position": {
+			"a": {
+				"x": 0,
+				"y": 12
+			},
+			"b": {
 				"x": 0,
 				"y": 12
 			}
 		},
 		{
-			"position": {
+			"a": {
+				"x": 24,
+				"y": 12
+			},
+			"b": {
 				"x": 24,
 				"y": 12
 			}
@@ -703,7 +719,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 25,
 	"id": "Development_Boss_Checkerboard_25x25",
 	"objects": [

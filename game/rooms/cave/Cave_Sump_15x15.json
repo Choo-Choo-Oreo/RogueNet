@@ -3,16 +3,26 @@
 	"biome": "cave",
 	"connectors": [
 		{
-			"position": {
+			"a": {
+				"x": 0,
+				"y": 4
+			},
+			"b": {
 				"x": 0,
 				"y": 5
-			}
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 14,
 				"y": 9
-			}
+			},
+			"b": {
+				"x": 14,
+				"y": 9
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -85,8 +95,8 @@
 			null
 		],
 		[
-			null,
-			null,
+			"floor_dirt",
+			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
@@ -272,7 +282,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 15,
 	"id": "Cave_Sump_15x15",
 	"objects": [],
@@ -359,8 +369,8 @@
 			"wall_rough_cave"
 		],
 		[
-			"wall_rough_cave",
-			"wall_rough_cave",
+			"wall_door",
+			null,
 			null,
 			null,
 			null,

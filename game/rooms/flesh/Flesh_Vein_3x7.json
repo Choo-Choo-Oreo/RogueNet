@@ -3,16 +3,26 @@
 	"biome": "flesh",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 1,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 1,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 1,
 				"y": 6
-			}
+			},
+			"b": {
+				"x": 1,
+				"y": 6
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -52,7 +62,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 7,
 	"id": "Flesh_Vein_3x7",
 	"objects": [

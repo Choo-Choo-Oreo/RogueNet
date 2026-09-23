@@ -1,36 +1,56 @@
 {
 	"connectors": [
 		{
-			"position": {
-				"x": 2,
+			"a": {
+				"x": 1,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 3,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 2,
 				"y": 4
-			}
+			},
+			"b": {
+				"x": 2,
+				"y": 4
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 2
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 3
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 4,
 				"y": 2
-			}
+			},
+			"b": {
+				"x": 4,
+				"y": 2
+			},
+			"free": true
 		}
 	],
 	"floor": [
 		[
 			null,
-			null,
 			"floor_smooth_stone",
-			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
 			null
 		],
 		[
@@ -48,7 +68,7 @@
 			"floor_smooth_stone"
 		],
 		[
-			null,
+			"floor_smooth_stone",
 			"floor_smooth_stone",
 			"floor_smooth_stone",
 			"floor_smooth_stone",
@@ -62,7 +82,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 5,
 	"id": "Treasure_Vault_5x5",
 	"objects": [
@@ -98,9 +118,9 @@
 	"walls": [
 		[
 			"wall_smooth_stone",
-			"wall_smooth_stone",
 			"wall_door",
-			"wall_smooth_stone",
+			"wall_door",
+			"wall_door",
 			"wall_smooth_stone"
 		],
 		[
@@ -118,7 +138,7 @@
 			"wall_door"
 		],
 		[
-			"wall_smooth_stone",
+			"wall_door",
 			null,
 			null,
 			null,

@@ -3,22 +3,37 @@
 	"biome": "flesh",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 7,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 7,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 14,
 				"y": 5
-			}
+			},
+			"b": {
+				"x": 14,
+				"y": 5
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 8
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 8
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -244,7 +259,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 13,
 	"id": "Flesh_Maze_Artery_Fork_15x13",
 	"objects": [],

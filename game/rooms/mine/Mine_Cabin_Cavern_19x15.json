@@ -2,28 +2,48 @@
 	"biome": "mine",
 	"connectors": [
 		{
-			"position": {
+			"a": {
+				"x": 8,
+				"y": 0
+			},
+			"b": {
 				"x": 9,
 				"y": 0
-			}
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
+				"x": 0,
+				"y": 6
+			},
+			"b": {
 				"x": 0,
 				"y": 7
-			}
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
+				"x": 18,
+				"y": 6
+			},
+			"b": {
 				"x": 18,
 				"y": 7
-			}
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
+				"x": 8,
+				"y": 14
+			},
+			"b": {
 				"x": 9,
 				"y": 14
-			}
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -187,7 +207,7 @@
 			"floor_wood_planks",
 			"floor_wood_planks",
 			"floor_wood_planks",
-			null,
+			"floor_wood_planks",
 			"floor_wood_planks",
 			"floor_wood_planks",
 			"floor_wood_planks",
@@ -343,7 +363,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 15,
 	"id": "Mine_Cabin_Cavern_19x15",
 	"objects": [
@@ -443,7 +463,7 @@
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave",
-			"wall_rough_cave",
+			"wall_door",
 			"wall_door",
 			"wall_rough_cave",
 			"wall_rough_cave",
@@ -561,7 +581,7 @@
 			"wall_rough_cave"
 		],
 		[
-			"wall_rough_cave",
+			"wall_door",
 			null,
 			null,
 			null,
@@ -579,7 +599,7 @@
 			null,
 			null,
 			null,
-			"wall_rough_cave"
+			"wall_door"
 		],
 		[
 			"wall_door",
@@ -594,7 +614,7 @@
 			null,
 			null,
 			null,
-			"wall_door",
+			null,
 			null,
 			null,
 			null,
@@ -737,7 +757,7 @@
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave",
-			"wall_rough_cave",
+			"wall_door",
 			"wall_door",
 			"wall_rough_cave",
 			"wall_rough_cave",

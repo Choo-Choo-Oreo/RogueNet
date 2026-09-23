@@ -2,26 +2,42 @@
 	"biome": "dungeon",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 4,
+				"y": 0
+			},
+			"b": {
+				"x": 5,
 				"y": 0
 			}
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 4
+			},
+			"b": {
+				"x": 0,
+				"y": 5
 			}
 		},
 		{
-			"position": {
+			"a": {
 				"x": 8,
 				"y": 4
+			},
+			"b": {
+				"x": 8,
+				"y": 5
 			}
 		},
 		{
-			"position": {
+			"a": {
 				"x": 4,
+				"y": 8
+			},
+			"b": {
+				"x": 5,
 				"y": 8
 			}
 		}
@@ -33,7 +49,7 @@
 			null,
 			null,
 			null,
-			null,
+			"floor_smooth_stone",
 			null,
 			null,
 			null
@@ -83,15 +99,15 @@
 			null
 		],
 		[
+			"floor_smooth_stone",
+			"floor_smooth_stone",
 			null,
 			"floor_smooth_stone",
-			null,
 			"floor_smooth_stone",
 			"floor_smooth_stone",
 			"floor_smooth_stone",
 			"floor_smooth_stone",
-			"floor_smooth_stone",
-			null
+			"floor_smooth_stone"
 		],
 		[
 			null,
@@ -121,13 +137,13 @@
 			null,
 			null,
 			null,
-			null,
+			"floor_smooth_stone",
 			null,
 			null,
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 9,
 	"id": "Dungeon_Maze_Dejavu_9x9",
 	"objects": [
@@ -160,7 +176,7 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_door",
-			"wall_cobble_brick",
+			"wall_door",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick"
@@ -210,7 +226,7 @@
 			"wall_door"
 		],
 		[
-			"wall_cobble_brick",
+			"wall_door",
 			null,
 			"wall_cobble_brick",
 			null,
@@ -218,7 +234,7 @@
 			null,
 			null,
 			null,
-			"wall_cobble_brick"
+			"wall_door"
 		],
 		[
 			"wall_cobble_brick",
@@ -248,7 +264,7 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_door",
-			"wall_cobble_brick",
+			"wall_door",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick"

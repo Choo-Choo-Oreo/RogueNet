@@ -2,13 +2,21 @@
 	"biome": "dungeon",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 3,
+				"y": 0
+			},
+			"b": {
+				"x": 4,
 				"y": 0
 			}
 		},
 		{
-			"position": {
+			"a": {
+				"x": 3,
+				"y": 11
+			},
+			"b": {
 				"x": 4,
 				"y": 11
 			}
@@ -136,7 +144,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 12,
 	"id": "Dungeon_Stone_Killzone_8x12",
 	"objects": [
@@ -198,7 +206,7 @@
 			"wall_smooth_stone",
 			"wall_smooth_stone",
 			"wall_door",
-			"wall_smooth_stone",
+			"wall_door",
 			"wall_smooth_stone",
 			"wall_smooth_stone",
 			"wall_smooth_stone"
@@ -307,7 +315,7 @@
 			"wall_smooth_stone",
 			"wall_smooth_stone",
 			"wall_smooth_stone",
-			"wall_smooth_stone",
+			"wall_door",
 			"wall_door",
 			"wall_smooth_stone",
 			"wall_smooth_stone",

@@ -3,22 +3,32 @@
 	"biome": "forest",
 	"connectors": [
 		{
-			"position": {
+			"a": {
+				"x": 1,
+				"y": 0
+			},
+			"b": {
 				"x": 2,
 				"y": 0
-			}
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 2,
 				"y": 10
-			}
+			},
+			"b": {
+				"x": 2,
+				"y": 10
+			},
+			"free": true
 		}
 	],
 	"floor": [
 		[
 			null,
-			null,
+			"floor_dirt",
 			"floor_dirt",
 			null,
 			null
@@ -94,7 +104,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 11,
 	"id": "Forest_Trail_5x11",
 	"objects": [],
@@ -113,7 +123,7 @@
 	"walls": [
 		[
 			"wall_forest",
-			"wall_forest",
+			"wall_door",
 			"wall_door",
 			"wall_forest",
 			"wall_forest"

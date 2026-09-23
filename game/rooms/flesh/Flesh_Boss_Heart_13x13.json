@@ -3,28 +3,48 @@
 	"biome": "flesh",
 	"connectors": [
 		{
-			"position": {
-				"x": 6,
+			"a": {
+				"x": 5,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 7,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 6
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 6
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 12,
 				"y": 6
-			}
+			},
+			"b": {
+				"x": 12,
+				"y": 6
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
+				"x": 5,
+				"y": 12
+			},
+			"b": {
 				"x": 6,
 				"y": 12
-			}
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -34,9 +54,9 @@
 			null,
 			null,
 			null,
+			"floor_flesh",
 			null,
-			null,
-			null,
+			"floor_flesh",
 			null,
 			null,
 			null,
@@ -214,7 +234,7 @@
 			null,
 			null,
 			null,
-			null,
+			"floor_flesh",
 			null,
 			null,
 			null,
@@ -224,7 +244,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 13,
 	"id": "Flesh_Boss_Heart_13x13",
 	"objects": [
@@ -273,9 +293,9 @@
 			"wall_flesh",
 			"wall_flesh",
 			"wall_flesh",
-			"wall_flesh",
 			"wall_door",
-			"wall_flesh",
+			"wall_door",
+			"wall_door",
 			"wall_flesh",
 			"wall_flesh",
 			"wall_flesh",
@@ -453,7 +473,7 @@
 			"wall_flesh",
 			"wall_flesh",
 			"wall_flesh",
-			"wall_flesh",
+			"wall_door",
 			"wall_door",
 			"wall_flesh",
 			"wall_flesh",

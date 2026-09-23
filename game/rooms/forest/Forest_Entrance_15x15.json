@@ -3,28 +3,48 @@
 	"biome": "forest",
 	"connectors": [
 		{
-			"position": {
-				"x": 7,
+			"a": {
+				"x": 5,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 9,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
-				"y": 7
-			}
+				"y": 6
+			},
+			"b": {
+				"x": 0,
+				"y": 8
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 14,
-				"y": 7
-			}
+				"y": 6
+			},
+			"b": {
+				"x": 14,
+				"y": 8
+			},
+			"free": true
 		},
 		{
-			"position": {
-				"x": 7,
+			"a": {
+				"x": 6,
 				"y": 14
-			}
+			},
+			"b": {
+				"x": 10,
+				"y": 14
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -34,11 +54,11 @@
 			null,
 			null,
 			null,
-			null,
-			null,
 			"floor_dirt",
-			null,
-			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
 			null,
 			null,
 			null,
@@ -131,10 +151,10 @@
 			null
 		],
 		[
-			null,
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
+			"floor_dirt",
 			"floor_grass",
 			"floor_grass",
 			"floor_grass",
@@ -145,7 +165,7 @@
 			"floor_grass",
 			"floor_dirt",
 			"floor_dirt",
-			null
+			"floor_dirt"
 		],
 		[
 			"floor_dirt",
@@ -165,21 +185,21 @@
 			"floor_dirt"
 		],
 		[
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
 			null,
 			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_grass",
-			"floor_grass",
-			"floor_grass",
-			"floor_grass",
-			"floor_grass",
-			"floor_grass",
-			"floor_grass",
-			"floor_grass",
-			null,
-			"floor_dirt",
-			null
+			"floor_dirt"
 		],
 		[
 			null,
@@ -258,7 +278,7 @@
 			null,
 			"floor_dirt",
 			"floor_dirt",
-			null,
+			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
 			"floor_water",
@@ -273,18 +293,18 @@
 			null,
 			null,
 			null,
-			null,
 			"floor_dirt",
-			null,
-			null,
-			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
 			null,
 			null,
 			null,
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 15,
 	"id": "Forest_Entrance_15x15",
 	"objects": [
@@ -333,15 +353,15 @@
 			"wall_forest",
 			"wall_forest",
 			"wall_forest",
-			"wall_forest",
-			"wall_forest",
+			"wall_door",
+			"wall_door",
+			"wall_door",
+			"wall_door",
 			"wall_door",
 			"wall_forest",
 			"wall_forest",
 			"wall_forest",
 			"wall_forest",
-			"wall_forest",
-			"wall_forest",
 			"wall_forest"
 		],
 		[
@@ -426,23 +446,6 @@
 			null,
 			null,
 			"wall_forest",
-			null,
-			"wall_forest"
-		],
-		[
-			"wall_forest",
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
 			null,
 			"wall_forest"
 		],
@@ -464,7 +467,24 @@
 			"wall_door"
 		],
 		[
-			"wall_forest",
+			"wall_door",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_door"
+		],
+		[
+			"wall_door",
 			null,
 			null,
 			null,
@@ -478,7 +498,7 @@
 			null,
 			"wall_forest",
 			null,
-			"wall_forest"
+			"wall_door"
 		],
 		[
 			"wall_forest",
@@ -557,7 +577,7 @@
 			"wall_forest",
 			null,
 			null,
-			"wall_forest",
+			null,
 			null,
 			null,
 			null,
@@ -566,7 +586,6 @@
 			"wall_forest"
 		],
 		[
-			"wall_forest",
 			"wall_forest",
 			"wall_forest",
 			"wall_forest",
@@ -574,9 +593,10 @@
 			"wall_forest",
 			"wall_forest",
 			"wall_door",
-			"wall_forest",
-			"wall_forest",
-			"wall_forest",
+			"wall_door",
+			"wall_door",
+			"wall_door",
+			"wall_door",
 			"wall_forest",
 			"wall_forest",
 			"wall_forest",

@@ -2,15 +2,23 @@
 	"biome": "cathedral",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 16,
-				"y": 2
+				"y": 1
+			},
+			"b": {
+				"x": 16,
+				"y": 3
 			}
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
-				"y": 2
+				"y": 1
+			},
+			"b": {
+				"x": 0,
+				"y": 3
 			}
 		}
 	],
@@ -111,7 +119,7 @@
 			"floor_smooth_stone"
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 5,
 	"id": "Cathedral_Hallway_17x5",
 	"objects": [
@@ -157,7 +165,7 @@
 			"wall_smooth_stone"
 		],
 		[
-			"wall_smooth_stone",
+			"wall_door",
 			null,
 			null,
 			null,
@@ -173,7 +181,7 @@
 			null,
 			null,
 			null,
-			"wall_smooth_stone"
+			"wall_door"
 		],
 		[
 			"wall_door",
@@ -195,7 +203,7 @@
 			"wall_door"
 		],
 		[
-			"wall_smooth_stone",
+			"wall_door",
 			null,
 			null,
 			null,
@@ -211,7 +219,7 @@
 			null,
 			null,
 			null,
-			"wall_smooth_stone"
+			"wall_door"
 		],
 		[
 			"wall_smooth_stone",

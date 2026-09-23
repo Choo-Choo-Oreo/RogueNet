@@ -2,14 +2,22 @@
 	"biome": "cathedral",
 	"connectors": [
 		{
-			"position": {
-				"x": 3,
+			"a": {
+				"x": 2,
+				"y": 21
+			},
+			"b": {
+				"x": 4,
 				"y": 21
 			}
 		},
 		{
-			"position": {
-				"x": 27,
+			"a": {
+				"x": 26,
+				"y": 21
+			},
+			"b": {
+				"x": 28,
 				"y": 21
 			}
 		}
@@ -720,7 +728,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 22,
 	"id": "Cathedral_Maze_Uturn_30x22",
 	"objects": [
@@ -1452,7 +1460,8 @@
 		[
 			"wall_cobble_brick",
 			"wall_cobble_brick",
-			"wall_cobble_brick",
+			"wall_door",
+			"wall_door",
 			"wall_door",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
@@ -1475,10 +1484,9 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
 			"wall_door",
-			"wall_cobble_brick",
+			"wall_door",
+			"wall_door",
 			"wall_cobble_brick"
 		]
 	],

@@ -3,16 +3,26 @@
 	"biome": "flesh",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 12,
 				"y": 2
-			}
+			},
+			"b": {
+				"x": 12,
+				"y": 2
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 6
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 6
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -152,7 +162,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 9,
 	"id": "Flesh_Maze_Kink_13x9",
 	"objects": [],

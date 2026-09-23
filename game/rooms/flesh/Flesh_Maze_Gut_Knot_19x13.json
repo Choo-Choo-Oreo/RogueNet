@@ -3,28 +3,48 @@
 	"biome": "flesh",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 18,
 				"y": 3
-			}
+			},
+			"b": {
+				"x": 18,
+				"y": 3
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 4
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 4
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 18,
 				"y": 6
-			}
+			},
+			"b": {
+				"x": 18,
+				"y": 6
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 9
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 9
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -302,7 +322,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 13,
 	"id": "Flesh_Maze_Gut_Knot_19x13",
 	"objects": [],
@@ -316,7 +336,7 @@
 		},
 		{
 			"position": {
-				"x": 0,
+				"x": 1,
 				"y": 9
 			}
 		}

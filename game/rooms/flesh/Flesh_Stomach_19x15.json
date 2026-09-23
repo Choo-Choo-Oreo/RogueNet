@@ -3,22 +3,37 @@
 	"biome": "flesh",
 	"connectors": [
 		{
-			"position": {
-				"x": 9,
+			"a": {
+				"x": 8,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 10,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 7
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 7
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
+				"x": 18,
+				"y": 6
+			},
+			"b": {
 				"x": 18,
 				"y": 7
-			}
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -31,9 +46,9 @@
 			null,
 			null,
 			null,
-			null,
 			"floor_flesh",
-			null,
+			"floor_flesh",
+			"floor_flesh",
 			null,
 			null,
 			null,
@@ -54,8 +69,8 @@
 			null,
 			"floor_flesh",
 			"floor_flesh",
-			null,
-			null,
+			"floor_flesh",
+			"floor_flesh",
 			null,
 			null,
 			"floor_flesh",
@@ -150,7 +165,7 @@
 		],
 		[
 			null,
-			null,
+			"floor_flesh",
 			"floor_flesh",
 			"floor_flesh",
 			null,
@@ -166,8 +181,8 @@
 			"floor_flesh",
 			"floor_flesh",
 			"floor_flesh",
-			null,
-			null
+			"floor_flesh",
+			"floor_flesh"
 		],
 		[
 			"floor_flesh",
@@ -192,7 +207,7 @@
 		],
 		[
 			null,
-			null,
+			"floor_flesh",
 			"floor_flesh",
 			"floor_flesh",
 			"floor_flesh",
@@ -208,7 +223,7 @@
 			"floor_flesh",
 			"floor_flesh",
 			null,
-			null,
+			"floor_flesh",
 			null
 		],
 		[
@@ -338,7 +353,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 15,
 	"id": "Flesh_Stomach_19x15",
 	"objects": [],
@@ -377,7 +392,8 @@
 			"wall_flesh",
 			"wall_flesh",
 			"wall_flesh",
-			"wall_flesh",
+			"wall_door",
+			"wall_door",
 			"wall_door",
 			"wall_flesh",
 			"wall_flesh",
@@ -386,7 +402,6 @@
 			"wall_flesh",
 			"wall_flesh",
 			"wall_flesh",
-			"wall_flesh",
 			"wall_flesh"
 		],
 		[
@@ -400,52 +415,10 @@
 			"wall_flesh",
 			null,
 			null,
-			"wall_flesh",
-			"wall_flesh",
-			"wall_flesh",
-			"wall_flesh",
-			null,
-			"wall_flesh",
-			"wall_flesh",
-			"wall_flesh",
-			"wall_flesh"
-		],
-		[
-			"wall_flesh",
-			"wall_flesh",
-			"wall_flesh",
-			"wall_flesh",
-			"wall_flesh",
-			"wall_flesh",
-			"wall_flesh",
-			"wall_flesh",
-			"wall_flesh",
-			null,
-			null,
-			"wall_flesh",
-			null,
 			null,
 			null,
 			"wall_flesh",
 			"wall_flesh",
-			"wall_flesh",
-			"wall_flesh"
-		],
-		[
-			"wall_flesh",
-			"wall_flesh",
-			"wall_flesh",
-			"wall_flesh",
-			"wall_flesh",
-			"wall_flesh",
-			"wall_flesh",
-			"wall_flesh",
-			"wall_flesh",
-			"wall_flesh",
-			null,
-			null,
-			null,
-			null,
 			null,
 			"wall_flesh",
 			"wall_flesh",
@@ -464,6 +437,48 @@
 			"wall_flesh",
 			null,
 			null,
+			"wall_flesh",
+			null,
+			null,
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
 			null,
 			null,
 			"wall_flesh",
@@ -496,24 +511,24 @@
 		],
 		[
 			"wall_flesh",
-			"wall_flesh",
-			null,
-			null,
-			"wall_flesh",
-			"wall_flesh",
-			"wall_flesh",
-			"wall_flesh",
-			"wall_flesh",
-			null,
-			null,
-			null,
-			null,
-			null,
 			null,
 			null,
 			null,
 			"wall_flesh",
-			"wall_flesh"
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_door"
 		],
 		[
 			"wall_door",
@@ -538,23 +553,23 @@
 		],
 		[
 			"wall_flesh",
-			"wall_flesh",
 			null,
 			null,
 			null,
-			null,
-			null,
-			"wall_flesh",
-			null,
-			"wall_flesh",
 			null,
 			null,
 			null,
 			"wall_flesh",
 			null,
+			"wall_flesh",
+			null,
+			null,
 			null,
 			"wall_flesh",
+			null,
+			null,
 			"wall_flesh",
+			null,
 			"wall_flesh"
 		],
 		[

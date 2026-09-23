@@ -2,25 +2,41 @@
 	"biome": "dungeon",
 	"connectors": [
 		{
-			"position": {
+			"a": {
+				"x": 1,
+				"y": 0
+			},
+			"b": {
 				"x": 2,
 				"y": 0
 			}
 		},
 		{
-			"position": {
+			"a": {
+				"x": 1,
+				"y": 4
+			},
+			"b": {
 				"x": 2,
 				"y": 4
 			}
 		},
 		{
-			"position": {
+			"a": {
+				"x": 0,
+				"y": 2
+			},
+			"b": {
 				"x": 0,
 				"y": 2
 			}
 		},
 		{
-			"position": {
+			"a": {
+				"x": 4,
+				"y": 2
+			},
+			"b": {
 				"x": 4,
 				"y": 2
 			}
@@ -63,7 +79,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 5,
 	"id": "Dungeon_Treasure_Vault_5x5",
 	"objects": [
@@ -100,7 +116,7 @@
 	"walls": [
 		[
 			"wall_smooth_stone",
-			"wall_smooth_stone",
+			"wall_door",
 			"wall_door",
 			"wall_smooth_stone",
 			"wall_smooth_stone"
@@ -128,7 +144,7 @@
 		],
 		[
 			"wall_smooth_stone",
-			"wall_smooth_stone",
+			"wall_door",
 			"wall_door",
 			"wall_smooth_stone",
 			"wall_smooth_stone"

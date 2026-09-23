@@ -3,16 +3,26 @@
 	"biome": "cave",
 	"connectors": [
 		{
-			"position": {
+			"a": {
+				"x": 2,
+				"y": 8
+			},
+			"b": {
 				"x": 3,
 				"y": 8
-			}
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 11,
 				"y": 8
-			}
+			},
+			"b": {
+				"x": 11,
+				"y": 8
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -155,7 +165,7 @@
 		[
 			null,
 			null,
-			null,
+			"floor_dirt",
 			"floor_dirt",
 			null,
 			null,
@@ -170,7 +180,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 9,
 	"id": "Cave_Maze_Undercut_15x9",
 	"objects": [],
@@ -327,7 +337,7 @@
 		[
 			"wall_rough_cave",
 			"wall_rough_cave",
-			"wall_rough_cave",
+			"wall_door",
 			"wall_door",
 			"wall_rough_cave",
 			"wall_rough_cave",

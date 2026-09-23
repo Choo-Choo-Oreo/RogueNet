@@ -3,46 +3,76 @@
 	"biome": "cave",
 	"connectors": [
 		{
-			"position": {
+			"a": {
+				"x": 1,
+				"y": 0
+			},
+			"b": {
 				"x": 2,
 				"y": 0
-			}
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 10,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 10,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 16,
 				"y": 3
-			}
+			},
+			"b": {
+				"x": 16,
+				"y": 3
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 6
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 6
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 16,
 				"y": 9
-			}
+			},
+			"b": {
+				"x": 16,
+				"y": 9
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 10,
 				"y": 12
-			}
+			},
+			"b": {
+				"x": 10,
+				"y": 12
+			},
+			"free": true
 		}
 	],
 	"floor": [
 		[
 			null,
-			null,
+			"floor_dirt",
 			"floor_dirt",
 			null,
 			null,
@@ -288,7 +318,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 13,
 	"id": "Cave_Maze_Burrows_17x13",
 	"objects": [],
@@ -320,7 +350,7 @@
 	"walls": [
 		[
 			"wall_rough_cave",
-			"wall_rough_cave",
+			"wall_door",
 			"wall_door",
 			"wall_rough_cave",
 			"wall_rough_cave",

@@ -3,16 +3,26 @@
 	"biome": "flesh",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 14,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 14,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 2,
 				"y": 14
-			}
+			},
+			"b": {
+				"x": 2,
+				"y": 14
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -302,7 +312,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 15,
 	"id": "Flesh_Maze_Peristalsis_17x15",
 	"objects": [],
@@ -323,7 +333,7 @@
 		{
 			"position": {
 				"x": 14,
-				"y": 0
+				"y": 1
 			}
 		}
 	],

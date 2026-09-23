@@ -2,22 +2,37 @@
 	"biome": "mine",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 4,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 4,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 4
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 4
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 4,
 				"y": 8
-			}
+			},
+			"b": {
+				"x": 4,
+				"y": 8
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -121,7 +136,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 9,
 	"id": "Mine_Collapsed_Tunnel_9x9",
 	"objects": [

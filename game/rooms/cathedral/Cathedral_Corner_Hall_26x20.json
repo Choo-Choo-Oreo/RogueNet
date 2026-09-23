@@ -2,14 +2,22 @@
 	"biome": "cathedral",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 25,
-				"y": 5
+				"y": 4
+			},
+			"b": {
+				"x": 25,
+				"y": 6
 			}
 		},
 		{
-			"position": {
-				"x": 5,
+			"a": {
+				"x": 4,
+				"y": 19
+			},
+			"b": {
+				"x": 6,
 				"y": 19
 			}
 		}
@@ -576,7 +584,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 20,
 	"id": "Cathedral_Corner_Hall_26x20",
 	"objects": [
@@ -622,7 +630,7 @@
 		{
 			"position": {
 				"x": 1,
-				"y": 19
+				"y": 18
 			}
 		},
 		{
@@ -799,7 +807,35 @@
 			null,
 			null,
 			null,
-			"wall_cobble_brick"
+			"wall_door"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_door"
 		],
 		[
 			"wall_cobble_brick",
@@ -924,34 +960,6 @@
 			null,
 			null,
 			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
@@ -1194,13 +1202,13 @@
 			"wall_cobble_brick"
 		],
 		[
-			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_door",
-			"wall_cobble_brick",
+			"wall_door",
+			"wall_door",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",

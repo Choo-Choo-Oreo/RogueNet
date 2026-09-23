@@ -3,28 +3,48 @@
 	"biome": "forest",
 	"connectors": [
 		{
-			"position": {
+			"a": {
+				"x": 3,
+				"y": 0
+			},
+			"b": {
 				"x": 5,
 				"y": 0
-			}
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
+				"x": 0,
+				"y": 4
+			},
+			"b": {
 				"x": 0,
 				"y": 5
-			}
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 10,
 				"y": 5
-			}
+			},
+			"b": {
+				"x": 10,
+				"y": 5
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 5,
 				"y": 10
-			}
+			},
+			"b": {
+				"x": 5,
+				"y": 10
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -32,8 +52,8 @@
 			null,
 			null,
 			null,
-			null,
-			null,
+			"floor_dirt",
+			"floor_dirt",
 			"floor_dirt",
 			null,
 			null,
@@ -81,7 +101,7 @@
 			null
 		],
 		[
-			null,
+			"floor_dirt",
 			"floor_dirt",
 			null,
 			"floor_dirt",
@@ -172,7 +192,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 11,
 	"id": "Forest_Thicket_11x11",
 	"objects": [],
@@ -200,8 +220,8 @@
 			"wall_forest",
 			"wall_forest",
 			"wall_forest",
-			"wall_forest",
-			"wall_forest",
+			"wall_door",
+			"wall_door",
 			"wall_door",
 			"wall_forest",
 			"wall_forest",
@@ -249,7 +269,7 @@
 			"wall_forest"
 		],
 		[
-			"wall_forest",
+			"wall_door",
 			null,
 			"wall_forest",
 			null,

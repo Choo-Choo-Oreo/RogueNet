@@ -2,10 +2,15 @@
 	"biome": "mine",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 3
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 3
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -87,7 +92,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 7,
 	"id": "Mine_Maze_Drift_9x7",
 	"objects": [

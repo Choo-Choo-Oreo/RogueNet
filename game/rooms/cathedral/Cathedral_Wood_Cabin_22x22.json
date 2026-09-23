@@ -2,14 +2,22 @@
 	"biome": "cathedral",
 	"connectors": [
 		{
-			"position": {
-				"x": 11,
+			"a": {
+				"x": 10,
+				"y": 0
+			},
+			"b": {
+				"x": 12,
 				"y": 0
 			}
 		},
 		{
-			"position": {
-				"x": 11,
+			"a": {
+				"x": 10,
+				"y": 21
+			},
+			"b": {
+				"x": 12,
 				"y": 21
 			}
 		}
@@ -544,7 +552,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 22,
 	"id": "Cathedral_Wood_Cabin_22x22",
 	"objects": [
@@ -632,7 +640,8 @@
 			"wall_wood_plank",
 			"wall_wood_plank",
 			"wall_wood_plank",
-			"wall_wood_plank",
+			"wall_door",
+			"wall_door",
 			"wall_door",
 			"wall_wood_plank",
 			"wall_wood_plank",
@@ -642,7 +651,6 @@
 			"wall_wood_plank",
 			"wall_wood_plank",
 			"wall_wood_plank",
-			"wall_wood_plank",
 			"wall_wood_plank"
 		],
 		[
@@ -1126,7 +1134,6 @@
 			"wall_wood_plank"
 		],
 		[
-			"wall_wood_plank",
 			"wall_wood_plank",
 			"wall_wood_plank",
 			"wall_wood_plank",
@@ -1138,7 +1145,8 @@
 			"wall_wood_plank",
 			"wall_wood_plank",
 			"wall_door",
-			"wall_wood_plank",
+			"wall_door",
+			"wall_door",
 			"wall_wood_plank",
 			"wall_wood_plank",
 			"wall_wood_plank",

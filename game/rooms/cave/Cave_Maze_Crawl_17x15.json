@@ -3,16 +3,26 @@
 	"biome": "cave",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 2,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 2,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 14,
 				"y": 14
-			}
+			},
+			"b": {
+				"x": 15,
+				"y": 14
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -298,11 +308,11 @@
 			null,
 			null,
 			"floor_dirt",
-			null,
+			"floor_dirt",
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 15,
 	"id": "Cave_Maze_Crawl_17x15",
 	"objects": [],
@@ -317,7 +327,7 @@
 		{
 			"position": {
 				"x": 2,
-				"y": 0
+				"y": 1
 			}
 		},
 		{
@@ -614,7 +624,7 @@
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_door",
-			"wall_rough_cave",
+			"wall_door",
 			"wall_rough_cave"
 		]
 	],

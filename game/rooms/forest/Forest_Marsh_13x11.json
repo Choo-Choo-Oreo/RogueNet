@@ -3,22 +3,37 @@
 	"biome": "forest",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 0,
-				"y": 3
-			}
+				"y": 2
+			},
+			"b": {
+				"x": 0,
+				"y": 4
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
+				"x": 12,
+				"y": 5
+			},
+			"b": {
 				"x": 12,
 				"y": 7
-			}
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 4,
 				"y": 10
-			}
+			},
+			"b": {
+				"x": 4,
+				"y": 10
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -53,7 +68,7 @@
 			null
 		],
 		[
-			null,
+			"floor_dirt",
 			"floor_dirt",
 			"floor_water",
 			"floor_water",
@@ -62,6 +77,21 @@
 			"floor_water",
 			"floor_water",
 			"floor_water",
+			"floor_water",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_water",
+			"floor_water",
+			"floor_dirt",
 			"floor_water",
 			"floor_dirt",
 			"floor_dirt",
@@ -70,21 +100,6 @@
 		[
 			"floor_dirt",
 			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_water",
-			"floor_water",
-			"floor_dirt",
-			"floor_water",
-			"floor_dirt",
-			"floor_dirt",
-			null
-		],
-		[
-			null,
-			"floor_dirt",
 			"floor_water",
 			"floor_dirt",
 			"floor_dirt",
@@ -110,7 +125,7 @@
 			"floor_water",
 			"floor_water",
 			"floor_dirt",
-			null
+			"floor_dirt"
 		],
 		[
 			null,
@@ -125,7 +140,7 @@
 			"floor_dirt",
 			"floor_water",
 			"floor_dirt",
-			null
+			"floor_dirt"
 		],
 		[
 			null,
@@ -188,7 +203,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 11,
 	"id": "Forest_Marsh_13x11",
 	"objects": [],
@@ -243,7 +258,22 @@
 			"wall_forest"
 		],
 		[
-			"wall_forest",
+			"wall_door",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_door",
 			null,
 			null,
 			null,
@@ -285,7 +315,7 @@
 			null,
 			null,
 			null,
-			"wall_forest"
+			"wall_door"
 		],
 		[
 			"wall_forest",
@@ -300,22 +330,7 @@
 			null,
 			null,
 			null,
-			"wall_forest"
-		],
-		[
-			"wall_forest",
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			"wall_forest"
+			"wall_door"
 		],
 		[
 			"wall_forest",

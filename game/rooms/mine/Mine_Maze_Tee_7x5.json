@@ -2,22 +2,37 @@
 	"biome": "mine",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 1
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 1
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 6,
 				"y": 1
-			}
+			},
+			"b": {
+				"x": 6,
+				"y": 1
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 3,
 				"y": 4
-			}
+			},
+			"b": {
+				"x": 3,
+				"y": 4
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -67,7 +82,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 5,
 	"id": "Mine_Maze_Tee_7x5",
 	"objects": [],

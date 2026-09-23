@@ -2,28 +2,48 @@
 	"biome": "mine",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 2,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 2,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 8,
 				"y": 2
-			}
+			},
+			"b": {
+				"x": 8,
+				"y": 2
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 6
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 6
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 6,
 				"y": 8
-			}
+			},
+			"b": {
+				"x": 6,
+				"y": 8
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -127,7 +147,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 9,
 	"id": "Mine_Maze_Crosscut_9x9",
 	"objects": [],

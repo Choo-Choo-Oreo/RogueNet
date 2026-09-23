@@ -2,28 +2,48 @@
 	"biome": "mine",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 3,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 3,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 3
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 3
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 6,
 				"y": 3
-			}
+			},
+			"b": {
+				"x": 6,
+				"y": 3
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 3,
 				"y": 6
-			}
+			},
+			"b": {
+				"x": 3,
+				"y": 6
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -91,7 +111,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 7,
 	"id": "Mine_Treasure_Stash_7x7",
 	"objects": [

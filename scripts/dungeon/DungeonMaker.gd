@@ -2439,9 +2439,15 @@ func _load_room_data(data: Dictionary) -> void:
 		_insert_object(obj, objects.size())
 
 	for conn_data in data.get("connectors", []):
-		var pos_data = conn_data.get("position", {})
-		var cell := Vector2i(int(pos_data.get("x", 0)), int(pos_data.get("y", 0)))
-		_insert_connector(cell, connectors.size())
+		# Accepts format 1 ({"position"}) and format 2 ({"a", "b"}). The editor
+		# still only places single cells, so a wider run is carried along
+		# untouched in "b" (and saved back out as-is) until it can edit runs.
+		var conn := Connector.upgrade(conn_data)
+		_insert_connector(Connector.a(conn), connectors.size())
+		if Connector.b(conn) != Connector.a(conn):
+			connectors[connectors.size() - 1]["b"] = Connector.b(conn)
+		if Connector.is_free(conn):
+			connectors[connectors.size() - 1]["free"] = true
 
 	_update_camera_bounds()
 	camera.position = WORLD_OFFSET + Vector2(width, height) * TILE_SIZE / 2.0
@@ -2509,7 +2515,7 @@ func _on_save_location_confirmed() -> void:
 
 func _build_export_data() -> Dictionary:
 	var data := {
-		"format": 1,
+		"format": Connector.FORMAT,
 		"id": room_id,
 		"role": room_role,
 		"tags": tags,
@@ -2564,14 +2570,10 @@ func _validate_room_file(path: String) -> Array[String]:
 		errors.append("floor grid size mismatch")
 	if not (wall_grid is Array) or wall_grid.size() != h or (h > 0 and wall_grid[0].size() != w):
 		errors.append("walls grid size mismatch")
+	var probe := {"width": w, "height": h, "connectors": []}
 	for connector in data.get("connectors", []):
-		var pos = connector.get("position", {})
-		var cx: int = int(pos.get("x", -1))
-		var cy: int = int(pos.get("y", -1))
-		var in_bounds: bool = cx >= 0 and cx < w and cy >= 0 and cy < h
-		var on_boundary: bool = in_bounds and (cx == 0 or cx == w - 1 or cy == 0 or cy == h - 1)
-		if not on_boundary:
-			errors.append("connector out of bounds")
+		probe["connectors"].append(Connector.upgrade(connector))
+	errors.append_array(Connector.validate(probe))
 	return errors
 
 func _validate_room() -> Array[String]:
@@ -2609,7 +2611,7 @@ func _serialize_connectors() -> Array:
 	var result := []
 	for connector in connectors:
 		var pos: Vector2i = connector["position"]
-		result.append({"position": {"x": pos.x, "y": pos.y}})
+		result.append(Connector.make(pos, connector.get("b", pos), connector.get("free", false)))
 	return result
 
 func _show_export_status(message: String) -> void:

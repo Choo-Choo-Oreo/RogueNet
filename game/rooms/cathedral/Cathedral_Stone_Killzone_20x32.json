@@ -2,14 +2,22 @@
 	"biome": "cathedral",
 	"connectors": [
 		{
-			"position": {
-				"x": 8,
+			"a": {
+				"x": 7,
+				"y": 0
+			},
+			"b": {
+				"x": 9,
 				"y": 0
 			}
 		},
 		{
-			"position": {
-				"x": 11,
+			"a": {
+				"x": 10,
+				"y": 31
+			},
+			"b": {
+				"x": 12,
 				"y": 31
 			}
 		}
@@ -720,7 +728,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 32,
 	"id": "Cathedral_Stone_Killzone_20x32",
 	"objects": [
@@ -821,7 +829,8 @@
 			"wall_smooth_stone",
 			"wall_smooth_stone",
 			"wall_smooth_stone",
-			"wall_smooth_stone",
+			"wall_door",
+			"wall_door",
 			"wall_door",
 			"wall_smooth_stone",
 			"wall_smooth_stone",
@@ -832,7 +841,6 @@
 			"wall_smooth_stone",
 			"wall_smooth_stone",
 			"wall_smooth_stone",
-			"wall_smooth_stone",
 			"wall_smooth_stone"
 		],
 		[
@@ -1496,7 +1504,6 @@
 			"wall_smooth_stone"
 		],
 		[
-			"wall_smooth_stone",
 			"wall_smooth_stone",
 			"wall_smooth_stone",
 			"wall_smooth_stone",
@@ -1508,7 +1515,8 @@
 			"wall_smooth_stone",
 			"wall_smooth_stone",
 			"wall_door",
-			"wall_smooth_stone",
+			"wall_door",
+			"wall_door",
 			"wall_smooth_stone",
 			"wall_smooth_stone",
 			"wall_smooth_stone",

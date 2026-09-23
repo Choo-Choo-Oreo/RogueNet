@@ -2,16 +2,26 @@
 	"biome": "mine",
 	"connectors": [
 		{
-			"position": {
+			"a": {
+				"x": 3,
+				"y": 0
+			},
+			"b": {
 				"x": 4,
 				"y": 0
-			}
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
+				"x": 3,
+				"y": 10
+			},
+			"b": {
 				"x": 4,
 				"y": 10
-			}
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -137,7 +147,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 11,
 	"id": "Mine_Timber_Hall_9x11",
 	"objects": [
@@ -168,7 +178,7 @@
 			"wall_wood_plank",
 			"wall_wood_plank",
 			"wall_wood_plank",
-			"wall_wood_plank",
+			"wall_door",
 			"wall_door",
 			"wall_wood_plank",
 			"wall_wood_plank",
@@ -278,7 +288,7 @@
 			"wall_wood_plank",
 			"wall_wood_plank",
 			"wall_wood_plank",
-			"wall_wood_plank",
+			"wall_door",
 			"wall_door",
 			"wall_wood_plank",
 			"wall_wood_plank",

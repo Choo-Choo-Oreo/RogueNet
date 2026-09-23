@@ -2,16 +2,26 @@
 	"biome": "cave",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 2,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 2,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 4,
 				"y": 3
-			}
+			},
+			"b": {
+				"x": 4,
+				"y": 3
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -51,7 +61,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 5,
 	"id": "Cave_Bend_5x5",
 	"objects": [

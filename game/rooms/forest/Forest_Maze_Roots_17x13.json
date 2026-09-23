@@ -3,40 +3,70 @@
 	"biome": "forest",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 3,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 3,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
+				"x": 9,
+				"y": 0
+			},
+			"b": {
 				"x": 10,
 				"y": 0
-			}
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 16,
 				"y": 4
-			}
+			},
+			"b": {
+				"x": 16,
+				"y": 4
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
-				"y": 7
-			}
+				"y": 6
+			},
+			"b": {
+				"x": 0,
+				"y": 8
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 16,
 				"y": 10
-			}
+			},
+			"b": {
+				"x": 16,
+				"y": 10
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 7,
 				"y": 12
-			}
+			},
+			"b": {
+				"x": 7,
+				"y": 12
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -50,7 +80,7 @@
 			null,
 			null,
 			null,
-			null,
+			"floor_dirt",
 			"floor_dirt",
 			null,
 			null,
@@ -155,7 +185,7 @@
 			null
 		],
 		[
-			null,
+			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
@@ -193,7 +223,7 @@
 			null
 		],
 		[
-			null,
+			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
 			null,
@@ -288,7 +318,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 13,
 	"id": "Forest_Maze_Roots_17x13",
 	"objects": [],
@@ -328,7 +358,7 @@
 			"wall_forest",
 			"wall_forest",
 			"wall_forest",
-			"wall_forest",
+			"wall_door",
 			"wall_door",
 			"wall_forest",
 			"wall_forest",
@@ -433,7 +463,7 @@
 			"wall_forest"
 		],
 		[
-			"wall_forest",
+			"wall_door",
 			null,
 			null,
 			null,
@@ -471,7 +501,7 @@
 			"wall_forest"
 		],
 		[
-			"wall_forest",
+			"wall_door",
 			null,
 			null,
 			"wall_forest",

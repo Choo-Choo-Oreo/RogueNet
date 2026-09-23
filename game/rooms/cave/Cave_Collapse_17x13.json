@@ -3,28 +3,48 @@
 	"biome": "cave",
 	"connectors": [
 		{
-			"position": {
+			"a": {
+				"x": 7,
+				"y": 0
+			},
+			"b": {
 				"x": 8,
 				"y": 0
-			}
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 6
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 6
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 16,
 				"y": 6
-			}
+			},
+			"b": {
+				"x": 16,
+				"y": 6
+			},
+			"free": true
 		},
 		{
-			"position": {
-				"x": 8,
+			"a": {
+				"x": 7,
 				"y": 12
-			}
+			},
+			"b": {
+				"x": 9,
+				"y": 12
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -36,7 +56,7 @@
 			null,
 			null,
 			null,
-			null,
+			"floor_dirt",
 			"floor_dirt",
 			null,
 			null,
@@ -264,9 +284,9 @@
 			null,
 			null,
 			null,
-			null,
 			"floor_dirt",
-			null,
+			"floor_dirt",
+			"floor_dirt",
 			null,
 			null,
 			null,
@@ -276,7 +296,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 13,
 	"id": "Cave_Collapse_17x13",
 	"objects": [
@@ -307,7 +327,7 @@
 		},
 		{
 			"position": {
-				"x": 16,
+				"x": 15,
 				"y": 6
 			}
 		}
@@ -325,7 +345,7 @@
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave",
-			"wall_rough_cave",
+			"wall_door",
 			"wall_door",
 			"wall_rough_cave",
 			"wall_rough_cave",
@@ -553,9 +573,9 @@
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave",
-			"wall_rough_cave",
 			"wall_door",
-			"wall_rough_cave",
+			"wall_door",
+			"wall_door",
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave",

@@ -64,11 +64,11 @@ func _dump_layout(dungeon_seed: int) -> void:
 				elif room["floor"][y][x] != null:
 					grid[gy][gx] = ch
 		for c in room["connectors"]:
-			var lx := int(c["position"]["x"])
-			var ly := int(c["position"]["y"])
-			var gx: int = p.offset.x + lx - min_pos.x
-			var gy: int = p.offset.y + ly - min_pos.y
-			grid[gy][gx] = "x" if Vector2i(lx, ly) in p.locked_connectors else "o"
+			var anchor := Connector.a(c)
+			for cell in Connector.cells(c):
+				var gx: int = p.offset.x + cell.x - min_pos.x
+				var gy: int = p.offset.y + cell.y - min_pos.y
+				grid[gy][gx] = "x" if anchor in p.locked_connectors else "o"
 
 	print("=== Dungeon layout, seed=%d, rooms=%d ===" % [dungeon_seed, placements.size()])
 	for row in grid:

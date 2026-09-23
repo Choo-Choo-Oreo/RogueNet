@@ -2,16 +2,26 @@
 	"biome": "mine",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 5,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 5,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 1,
 				"y": 10
-			}
+			},
+			"b": {
+				"x": 1,
+				"y": 10
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -115,7 +125,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 11,
 	"id": "Mine_Maze_Switchback_7x11",
 	"objects": [],

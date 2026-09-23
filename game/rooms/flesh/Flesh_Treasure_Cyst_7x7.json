@@ -3,28 +3,48 @@
 	"biome": "flesh",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 3,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 4,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 3
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 3
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 6,
 				"y": 3
-			}
+			},
+			"b": {
+				"x": 6,
+				"y": 3
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 3,
 				"y": 6
-			}
+			},
+			"b": {
+				"x": 3,
+				"y": 6
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -33,7 +53,7 @@
 			null,
 			null,
 			null,
-			null,
+			"floor_flesh",
 			null,
 			null
 		],
@@ -92,7 +112,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 7,
 	"id": "Flesh_Treasure_Cyst_7x7",
 	"objects": [
@@ -116,7 +136,7 @@
 			"wall_flesh",
 			"wall_flesh",
 			"wall_door",
-			"wall_flesh",
+			"wall_door",
 			"wall_flesh",
 			"wall_flesh"
 		],

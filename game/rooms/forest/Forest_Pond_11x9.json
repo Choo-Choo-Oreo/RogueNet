@@ -3,22 +3,37 @@
 	"biome": "forest",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 5,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 5,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
-				"y": 4
-			}
+				"y": 3
+			},
+			"b": {
+				"x": 0,
+				"y": 5
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 10,
-				"y": 4
-			}
+				"y": 3
+			},
+			"b": {
+				"x": 10,
+				"y": 5
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -62,17 +77,17 @@
 			null
 		],
 		[
-			null,
-			"floor_dirt",
-			"floor_water",
-			"floor_water",
-			"floor_water",
-			"floor_water",
-			"floor_water",
-			"floor_water",
 			"floor_dirt",
 			"floor_dirt",
-			null
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt"
 		],
 		[
 			"floor_dirt",
@@ -88,9 +103,9 @@
 			"floor_dirt"
 		],
 		[
-			null,
 			"floor_dirt",
 			"floor_dirt",
+			"floor_dirt",
 			"floor_water",
 			"floor_water",
 			"floor_water",
@@ -98,7 +113,7 @@
 			"floor_water",
 			"floor_dirt",
 			"floor_dirt",
-			null
+			"floor_dirt"
 		],
 		[
 			null,
@@ -140,7 +155,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 9,
 	"id": "Forest_Pond_11x9",
 	"objects": [
@@ -223,7 +238,7 @@
 			"wall_forest"
 		],
 		[
-			"wall_forest",
+			"wall_door",
 			null,
 			null,
 			null,
@@ -233,7 +248,7 @@
 			null,
 			null,
 			null,
-			"wall_forest"
+			"wall_door"
 		],
 		[
 			"wall_door",
@@ -249,7 +264,7 @@
 			"wall_door"
 		],
 		[
-			"wall_forest",
+			"wall_door",
 			null,
 			null,
 			null,
@@ -259,7 +274,7 @@
 			null,
 			null,
 			null,
-			"wall_forest"
+			"wall_door"
 		],
 		[
 			"wall_forest",

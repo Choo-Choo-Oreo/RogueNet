@@ -2,21 +2,33 @@
 	"biome": "dungeon",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 3,
+				"y": 0
+			},
+			"b": {
+				"x": 4,
 				"y": 0
 			}
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 2
+			},
+			"b": {
+				"x": 0,
+				"y": 3
 			}
 		},
 		{
-			"position": {
+			"a": {
 				"x": 6,
 				"y": 2
+			},
+			"b": {
+				"x": 6,
+				"y": 3
 			}
 		}
 	],
@@ -26,7 +38,7 @@
 			null,
 			null,
 			null,
-			null,
+			"floor_smooth_stone",
 			null,
 			null
 		],
@@ -35,7 +47,7 @@
 			null,
 			null,
 			"floor_smooth_stone",
-			null,
+			"floor_smooth_stone",
 			null,
 			null
 		],
@@ -49,13 +61,13 @@
 			null
 		],
 		[
-			null,
-			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
 			null,
 			"floor_smooth_stone",
 			null,
-			null,
-			null
+			"floor_smooth_stone",
+			"floor_smooth_stone"
 		],
 		[
 			null,
@@ -67,7 +79,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 5,
 	"id": "Dungeon_Maze_Tee_7x5",
 	"objects": [
@@ -99,7 +111,7 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_door",
-			"wall_cobble_brick",
+			"wall_door",
 			"wall_cobble_brick",
 			"wall_cobble_brick"
 		],
@@ -108,7 +120,7 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			null,
-			"wall_cobble_brick",
+			null,
 			"wall_cobble_brick",
 			"wall_cobble_brick"
 		],
@@ -122,13 +134,13 @@
 			"wall_door"
 		],
 		[
-			"wall_cobble_brick",
-			"wall_cobble_brick",
+			"wall_door",
+			null,
 			"wall_cobble_brick",
 			null,
 			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick"
+			null,
+			"wall_door"
 		],
 		[
 			"wall_cobble_brick",

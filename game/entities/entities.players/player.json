@@ -50,6 +50,18 @@
 				"anchor": "target"
 			}
 		},
-		{}
+		{
+			"kind": "taunt",
+			"interval": 12.0,
+			"radius_tiles": 6.0,
+			"duration": 4.0,
+			"max_targets": 24,
+			"effect": {
+				"texture": "res://resources/gfx/effects/effects.arcana/arcana.entropia.png",
+				"frame_count": 8,
+				"speed": 16.0,
+				"anchor": "target"
+			}
+		}
 	]
 }

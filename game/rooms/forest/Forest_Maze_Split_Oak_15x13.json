@@ -3,22 +3,37 @@
 	"biome": "forest",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 4,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 4,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
+				"x": 14,
+				"y": 7
+			},
+			"b": {
 				"x": 14,
 				"y": 8
-			}
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 6,
 				"y": 12
-			}
+			},
+			"b": {
+				"x": 6,
+				"y": 12
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -156,7 +171,7 @@
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
-			null
+			"floor_dirt"
 		],
 		[
 			null,
@@ -244,7 +259,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 13,
 	"id": "Forest_Maze_Split_Oak_15x13",
 	"objects": [],
@@ -402,7 +417,7 @@
 			null,
 			null,
 			null,
-			"wall_forest"
+			"wall_door"
 		],
 		[
 			"wall_forest",

@@ -3,16 +3,26 @@
 	"biome": "flesh",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 12,
 				"y": 1
-			}
+			},
+			"b": {
+				"x": 12,
+				"y": 1
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 12,
 				"y": 7
-			}
+			},
+			"b": {
+				"x": 12,
+				"y": 7
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -152,7 +162,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 9,
 	"id": "Flesh_Maze_Reflux_13x9",
 	"objects": [],
@@ -160,7 +170,7 @@
 	"spawn_cells": [
 		{
 			"position": {
-				"x": 12,
+				"x": 11,
 				"y": 7
 			}
 		}

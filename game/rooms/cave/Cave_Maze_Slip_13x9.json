@@ -3,16 +3,26 @@
 	"biome": "cave",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 1
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 1
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
+				"x": 12,
+				"y": 6
+			},
+			"b": {
 				"x": 12,
 				"y": 7
-			}
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -119,7 +129,7 @@
 			null,
 			null,
 			"floor_dirt",
-			null
+			"floor_dirt"
 		],
 		[
 			null,
@@ -152,7 +162,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 9,
 	"id": "Cave_Maze_Slip_13x9",
 	"objects": [],
@@ -160,7 +170,7 @@
 	"spawn_cells": [
 		{
 			"position": {
-				"x": 12,
+				"x": 11,
 				"y": 7
 			}
 		}
@@ -273,7 +283,7 @@
 			"wall_rough_cave",
 			"wall_rough_cave",
 			null,
-			"wall_rough_cave"
+			"wall_door"
 		],
 		[
 			"wall_rough_cave",

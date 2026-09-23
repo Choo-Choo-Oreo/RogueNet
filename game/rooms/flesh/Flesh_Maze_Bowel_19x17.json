@@ -3,10 +3,15 @@
 	"biome": "flesh",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 18,
 				"y": 8
-			}
+			},
+			"b": {
+				"x": 18,
+				"y": 8
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -368,7 +373,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 17,
 	"id": "Flesh_Maze_Bowel_19x17",
 	"objects": [

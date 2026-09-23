@@ -2,38 +2,62 @@
 	"biome": "dungeon",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 3,
+				"y": 0
+			},
+			"b": {
+				"x": 4,
 				"y": 0
 			}
 		},
 		{
-			"position": {
+			"a": {
 				"x": 7,
 				"y": 0
+			},
+			"b": {
+				"x": 8,
+				"y": 0
 			}
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 5
+			},
+			"b": {
+				"x": 0,
+				"y": 6
 			}
 		},
 		{
-			"position": {
+			"a": {
 				"x": 10,
 				"y": 5
+			},
+			"b": {
+				"x": 10,
+				"y": 6
 			}
 		},
 		{
-			"position": {
+			"a": {
 				"x": 3,
+				"y": 10
+			},
+			"b": {
+				"x": 4,
 				"y": 10
 			}
 		},
 		{
-			"position": {
+			"a": {
 				"x": 7,
+				"y": 10
+			},
+			"b": {
+				"x": 8,
 				"y": 10
 			}
 		}
@@ -44,11 +68,11 @@
 			null,
 			null,
 			null,
+			"floor_smooth_stone",
 			null,
 			null,
 			null,
-			null,
-			null,
+			"floor_smooth_stone",
 			null,
 			null
 		],
@@ -118,7 +142,7 @@
 			null
 		],
 		[
-			null,
+			"floor_smooth_stone",
 			"floor_smooth_stone",
 			null,
 			"floor_smooth_stone",
@@ -128,7 +152,7 @@
 			"floor_smooth_stone",
 			null,
 			"floor_smooth_stone",
-			null
+			"floor_smooth_stone"
 		],
 		[
 			null,
@@ -174,16 +198,16 @@
 			null,
 			null,
 			null,
+			"floor_smooth_stone",
 			null,
 			null,
 			null,
-			null,
-			null,
+			"floor_smooth_stone",
 			null,
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 11,
 	"id": "Dungeon_Maze_Hub_11x11",
 	"objects": [],
@@ -212,11 +236,11 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_door",
-			"wall_cobble_brick",
+			"wall_door",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_door",
-			"wall_cobble_brick",
+			"wall_door",
 			"wall_cobble_brick",
 			"wall_cobble_brick"
 		],
@@ -286,7 +310,7 @@
 			"wall_door"
 		],
 		[
-			"wall_cobble_brick",
+			"wall_door",
 			null,
 			"wall_cobble_brick",
 			null,
@@ -296,7 +320,7 @@
 			null,
 			"wall_cobble_brick",
 			null,
-			"wall_cobble_brick"
+			"wall_door"
 		],
 		[
 			"wall_cobble_brick",
@@ -342,11 +366,11 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_door",
-			"wall_cobble_brick",
+			"wall_door",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_door",
-			"wall_cobble_brick",
+			"wall_door",
 			"wall_cobble_brick",
 			"wall_cobble_brick"
 		]

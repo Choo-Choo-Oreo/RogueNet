@@ -3,22 +3,37 @@
 	"biome": "cave",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 7,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 7,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 16,
 				"y": 5
-			}
+			},
+			"b": {
+				"x": 16,
+				"y": 5
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 9
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 10
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -213,7 +228,7 @@
 			null
 		],
 		[
-			null,
+			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
 			null,
@@ -308,7 +323,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 15,
 	"id": "Cave_Maze_Stalagmite_Ring_17x15",
 	"objects": [],
@@ -529,7 +544,7 @@
 			"wall_rough_cave"
 		],
 		[
-			"wall_rough_cave",
+			"wall_door",
 			null,
 			null,
 			"wall_rough_cave",

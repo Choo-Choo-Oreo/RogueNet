@@ -3,22 +3,37 @@
 	"biome": "flesh",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 3,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 3,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 16,
 				"y": 9
-			}
+			},
+			"b": {
+				"x": 16,
+				"y": 9
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 3,
 				"y": 16
-			}
+			},
+			"b": {
+				"x": 3,
+				"y": 16
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -346,7 +361,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 17,
 	"id": "Flesh_Maze_Folds_17x17",
 	"objects": [],

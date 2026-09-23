@@ -178,6 +178,9 @@ func _input(event: InputEvent) -> void:
 ## target -- see AttackEffect.effect_position().
 func _try_attack() -> void:
 	var attack: Dictionary = _current_attack()
+	if attack.get("kind", "") == "taunt":
+		_try_taunt(attack)
+		return
 	var amount: int = attack.get("amount", 0)
 	if _is_dead or grid_mover.is_moving or _attack_timer > 0.0 or amount <= 0:
 		return
@@ -212,6 +215,28 @@ func _try_attack() -> void:
 		effect.global_position = AttackEffect.effect_position(global_position, target_global, effect_data)
 		effect.play(effect_data, target_global - global_position)
 	deal_damage.call()
+
+## Taunt slot ("kind": "taunt" in player.json): enemies within radius_tiles
+## (nearest max_targets of them) are forced onto this player for `duration`
+## seconds. Its own cooldown (`interval`) so it never locks out the attacks.
+var _taunt_ready_msec := 0
+
+func _try_taunt(attack: Dictionary) -> void:
+	var now := Time.get_ticks_msec()
+	if _is_dead or now < _taunt_ready_msec:
+		return
+	_taunt_ready_msec = now + int(attack.get("interval", 12.0) * 1000.0)
+	NetworkSync.report_taunt(
+		int(str(name)),
+		attack.get("radius_tiles", 6.0),
+		attack.get("duration", 4.0),
+		attack.get("max_targets", 24))
+	var effect_data: Dictionary = attack.get("effect", {})
+	if not effect_data.is_empty():
+		var effect: AttackEffect = ATTACK_EFFECT_SCENE.instantiate()
+		get_tree().current_scene.add_child(effect)
+		effect.global_position = AttackEffect.effect_position(global_position, global_position, effect_data)
+		effect.play(effect_data, Vector2.RIGHT)
 
 const PROJECTILE_SCENE := preload("res://scenes/entities/ProjectileController.tscn")
 

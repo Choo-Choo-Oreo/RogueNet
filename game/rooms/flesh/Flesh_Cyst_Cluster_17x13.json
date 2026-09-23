@@ -3,22 +3,37 @@
 	"biome": "flesh",
 	"connectors": [
 		{
-			"position": {
+			"a": {
+				"x": 0,
+				"y": 3
+			},
+			"b": {
 				"x": 0,
 				"y": 4
-			}
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 16,
 				"y": 8
-			}
+			},
+			"b": {
+				"x": 16,
+				"y": 8
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
+				"x": 7,
+				"y": 12
+			},
+			"b": {
 				"x": 8,
 				"y": 12
-			}
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -80,30 +95,11 @@
 			null
 		],
 		[
-			null,
-			"floor_flesh",
-			null,
-			"floor_flesh",
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			"floor_flesh",
-			"floor_flesh",
-			"floor_flesh",
 			"floor_flesh",
 			"floor_flesh",
 			null,
-			null
-		],
-		[
 			"floor_flesh",
-			"floor_flesh",
-			"floor_flesh",
-			"floor_flesh",
-			"floor_flesh",
+			null,
 			null,
 			null,
 			null,
@@ -118,6 +114,25 @@
 			null
 		],
 		[
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null,
+			null
+		],
+		[
 			null,
 			"floor_flesh",
 			null,
@@ -171,7 +186,7 @@
 			"floor_flesh",
 			null,
 			"floor_flesh",
-			null,
+			"floor_flesh",
 			null
 		],
 		[
@@ -241,7 +256,7 @@
 			null,
 			"floor_flesh",
 			"floor_flesh",
-			null,
+			"floor_flesh",
 			null,
 			null,
 			"floor_flesh",
@@ -258,7 +273,7 @@
 			null,
 			null,
 			null,
-			null,
+			"floor_flesh",
 			"floor_flesh",
 			null,
 			null,
@@ -270,7 +285,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 13,
 	"id": "Flesh_Cyst_Cluster_17x13",
 	"objects": [],
@@ -352,7 +367,7 @@
 			"wall_flesh"
 		],
 		[
-			"wall_flesh",
+			"wall_door",
 			null,
 			"wall_flesh",
 			null,
@@ -443,7 +458,7 @@
 			null,
 			"wall_flesh",
 			null,
-			"wall_flesh",
+			null,
 			"wall_flesh"
 		],
 		[
@@ -513,7 +528,7 @@
 			"wall_flesh",
 			null,
 			null,
-			"wall_flesh",
+			null,
 			"wall_flesh",
 			"wall_flesh",
 			null,
@@ -530,7 +545,7 @@
 			"wall_flesh",
 			"wall_flesh",
 			"wall_flesh",
-			"wall_flesh",
+			"wall_door",
 			"wall_door",
 			"wall_flesh",
 			"wall_flesh",

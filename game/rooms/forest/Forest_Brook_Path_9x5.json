@@ -3,16 +3,26 @@
 	"biome": "forest",
 	"connectors": [
 		{
-			"position": {
+			"a": {
+				"x": 0,
+				"y": 1
+			},
+			"b": {
 				"x": 0,
 				"y": 2
-			}
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 8,
 				"y": 2
-			}
+			},
+			"b": {
+				"x": 8,
+				"y": 2
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -28,7 +38,7 @@
 			null
 		],
 		[
-			null,
+			"floor_dirt",
 			"floor_dirt",
 			"floor_water",
 			"floor_water",
@@ -72,7 +82,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 5,
 	"id": "Forest_Brook_Path_9x5",
 	"objects": [],
@@ -101,7 +111,7 @@
 			"wall_forest"
 		],
 		[
-			"wall_forest",
+			"wall_door",
 			null,
 			null,
 			null,

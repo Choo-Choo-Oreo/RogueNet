@@ -2,40 +2,70 @@
 	"biome": "mine",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 5,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 6,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 3
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 4
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 10,
 				"y": 3
-			}
+			},
+			"b": {
+				"x": 10,
+				"y": 4
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
+				"x": 0,
+				"y": 6
+			},
+			"b": {
 				"x": 0,
 				"y": 7
-			}
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
+				"x": 10,
+				"y": 6
+			},
+			"b": {
 				"x": 10,
 				"y": 7
-			}
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 5,
 				"y": 10
-			}
+			},
+			"b": {
+				"x": 6,
+				"y": 10
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -183,7 +213,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 11,
 	"id": "Mine_Maze_Hub_11x11",
 	"objects": [],
@@ -208,7 +238,7 @@
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_door",
-			"wall_rough_cave",
+			"wall_door",
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave",
@@ -254,7 +284,7 @@
 			"wall_door"
 		],
 		[
-			"wall_rough_cave",
+			"wall_door",
 			null,
 			null,
 			"wall_wood_plank",
@@ -264,7 +294,7 @@
 			"wall_wood_plank",
 			null,
 			null,
-			"wall_rough_cave"
+			"wall_door"
 		],
 		[
 			"wall_rough_cave",
@@ -280,7 +310,7 @@
 			"wall_rough_cave"
 		],
 		[
-			"wall_rough_cave",
+			"wall_door",
 			null,
 			null,
 			"wall_wood_plank",
@@ -290,7 +320,7 @@
 			"wall_wood_plank",
 			null,
 			null,
-			"wall_rough_cave"
+			"wall_door"
 		],
 		[
 			"wall_door",
@@ -338,7 +368,7 @@
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_door",
-			"wall_rough_cave",
+			"wall_door",
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave",

@@ -3,22 +3,37 @@
 	"biome": "flesh",
 	"connectors": [
 		{
-			"position": {
+			"a": {
+				"x": 4,
+				"y": 0
+			},
+			"b": {
 				"x": 5,
 				"y": 0
-			}
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 3
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 3
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 10,
 				"y": 3
-			}
+			},
+			"b": {
+				"x": 10,
+				"y": 3
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -27,7 +42,7 @@
 			null,
 			null,
 			null,
-			null,
+			"floor_flesh",
 			null,
 			null,
 			null,
@@ -114,7 +129,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 7,
 	"id": "Flesh_Stone_Causeway_11x7",
 	"objects": [
@@ -154,7 +169,7 @@
 			"wall_flesh",
 			"wall_flesh",
 			"wall_flesh",
-			"wall_flesh",
+			"wall_door",
 			"wall_door",
 			"wall_flesh",
 			"wall_flesh",

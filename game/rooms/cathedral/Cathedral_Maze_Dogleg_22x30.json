@@ -2,14 +2,22 @@
 	"biome": "cathedral",
 	"connectors": [
 		{
-			"position": {
-				"x": 3,
+			"a": {
+				"x": 2,
+				"y": 0
+			},
+			"b": {
+				"x": 4,
 				"y": 0
 			}
 		},
 		{
-			"position": {
-				"x": 19,
+			"a": {
+				"x": 18,
+				"y": 29
+			},
+			"b": {
+				"x": 20,
 				"y": 29
 			}
 		}
@@ -736,7 +744,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 30,
 	"id": "Cathedral_Maze_Dogleg_22x30",
 	"objects": [
@@ -808,7 +816,8 @@
 		[
 			"wall_cobble_brick",
 			"wall_cobble_brick",
-			"wall_cobble_brick",
+			"wall_door",
+			"wall_door",
 			"wall_door",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
@@ -826,7 +835,6 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
-			"wall_cobble_brick",
 			"wall_cobble_brick"
 		],
 		[
@@ -1502,7 +1510,6 @@
 			"wall_cobble_brick"
 		],
 		[
-			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
@@ -1522,7 +1529,8 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_door",
-			"wall_cobble_brick",
+			"wall_door",
+			"wall_door",
 			"wall_cobble_brick"
 		]
 	],

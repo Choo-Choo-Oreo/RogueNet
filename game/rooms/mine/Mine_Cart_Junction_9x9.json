@@ -2,28 +2,48 @@
 	"biome": "mine",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 4,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 5,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 4
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 5
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 8,
 				"y": 4
-			}
+			},
+			"b": {
+				"x": 8,
+				"y": 5
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 4,
 				"y": 8
-			}
+			},
+			"b": {
+				"x": 5,
+				"y": 8
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -127,7 +147,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 9,
 	"id": "Mine_Cart_Junction_9x9",
 	"objects": [
@@ -184,7 +204,7 @@
 			"wall_rough_cave",
 			"wall_wood_plank",
 			"wall_door",
-			"wall_wood_plank",
+			"wall_door",
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave"
@@ -234,7 +254,7 @@
 			"wall_door"
 		],
 		[
-			"wall_wood_plank",
+			"wall_door",
 			null,
 			null,
 			null,
@@ -242,7 +262,7 @@
 			null,
 			null,
 			null,
-			"wall_wood_plank"
+			"wall_door"
 		],
 		[
 			"wall_rough_cave",
@@ -272,7 +292,7 @@
 			"wall_rough_cave",
 			"wall_wood_plank",
 			"wall_door",
-			"wall_wood_plank",
+			"wall_door",
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave"

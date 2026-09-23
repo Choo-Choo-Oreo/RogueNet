@@ -3,16 +3,26 @@
 	"biome": "flesh",
 	"connectors": [
 		{
-			"position": {
+			"a": {
+				"x": 3,
+				"y": 0
+			},
+			"b": {
 				"x": 4,
 				"y": 0
-			}
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 4,
 				"y": 10
-			}
+			},
+			"b": {
+				"x": 4,
+				"y": 10
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -20,7 +30,7 @@
 			null,
 			null,
 			null,
-			null,
+			"floor_flesh",
 			null,
 			null,
 			null,
@@ -138,7 +148,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 11,
 	"id": "Flesh_Ribcage_9x11",
 	"objects": [
@@ -193,7 +203,7 @@
 			"wall_flesh",
 			"wall_flesh",
 			"wall_flesh",
-			"wall_flesh",
+			"wall_door",
 			"wall_door",
 			"wall_flesh",
 			"wall_flesh",

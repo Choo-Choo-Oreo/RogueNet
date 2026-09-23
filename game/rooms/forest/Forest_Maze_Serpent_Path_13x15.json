@@ -3,16 +3,26 @@
 	"biome": "forest",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 1,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 1,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
+				"x": 10,
+				"y": 14
+			},
+			"b": {
 				"x": 11,
 				"y": 14
-			}
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -237,12 +247,12 @@
 			null,
 			null,
 			null,
-			null,
+			"floor_dirt",
 			"floor_dirt",
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 15,
 	"id": "Forest_Maze_Serpent_Path_13x15",
 	"objects": [],
@@ -257,7 +267,7 @@
 		{
 			"position": {
 				"x": 11,
-				"y": 14
+				"y": 13
 			}
 		}
 	],
@@ -487,7 +497,7 @@
 			"wall_forest",
 			"wall_forest",
 			"wall_forest",
-			"wall_forest",
+			"wall_door",
 			"wall_door",
 			"wall_forest"
 		]

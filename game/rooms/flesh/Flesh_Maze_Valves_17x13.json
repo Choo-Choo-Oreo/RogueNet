@@ -3,28 +3,48 @@
 	"biome": "flesh",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 5,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 5,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 16,
 				"y": 4
-			}
+			},
+			"b": {
+				"x": 16,
+				"y": 4
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 7
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 7
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 11,
 				"y": 12
-			}
+			},
+			"b": {
+				"x": 11,
+				"y": 12
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -276,7 +296,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 13,
 	"id": "Flesh_Maze_Valves_17x13",
 	"objects": [],

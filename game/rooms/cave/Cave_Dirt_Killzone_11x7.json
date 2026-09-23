@@ -2,16 +2,26 @@
 	"biome": "cave",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 0,
-				"y": 3
-			}
+				"y": 2
+			},
+			"b": {
+				"x": 0,
+				"y": 4
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 10,
-				"y": 3
-			}
+				"y": 2
+			},
+			"b": {
+				"x": 10,
+				"y": 4
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -42,43 +52,43 @@
 			null
 		],
 		[
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
 			null,
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
-			null,
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			null
+			"floor_dirt"
 		],
 		[
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			null,
 			null,
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
-			null,
-			null,
-			null,
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			null
+			"floor_dirt"
 		],
 		[
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
 			null,
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
-			null,
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			null
+			"floor_dirt"
 		],
 		[
 			null,
@@ -107,7 +117,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 7,
 	"id": "Cave_Dirt_Killzone_11x7",
 	"objects": [
@@ -193,7 +203,7 @@
 			"wall_rough_cave"
 		],
 		[
-			"wall_rough_cave",
+			"wall_door",
 			null,
 			null,
 			null,
@@ -203,7 +213,7 @@
 			null,
 			null,
 			null,
-			"wall_rough_cave"
+			"wall_door"
 		],
 		[
 			"wall_door",
@@ -219,7 +229,7 @@
 			"wall_door"
 		],
 		[
-			"wall_rough_cave",
+			"wall_door",
 			null,
 			null,
 			null,
@@ -229,7 +239,7 @@
 			null,
 			null,
 			null,
-			"wall_rough_cave"
+			"wall_door"
 		],
 		[
 			"wall_rough_cave",

@@ -37,6 +37,13 @@ func note_hit() -> void:
 	_active_timer = ACTIVE_ALERT_SECONDS
 	_active_tier = State.ATTACK
 
+## Gives up entirely (leash / unreachable target): drops the sticky window so
+## the enemy falls back to Patrol until a sense fires again.
+func forget() -> void:
+	_active_timer = 0.0
+	_active_tier = State.PATROL
+	state = State.PATROL
+
 ## Per-enemy-type toggle, e.g. rat_blind's "senses": {"sight": false} JSON
 ## key -- keys match this node's own property names (touch/sight/hearing/
 ## smell/taste). A plain bool is shorthand for "enabled"; a dictionary (e.g.

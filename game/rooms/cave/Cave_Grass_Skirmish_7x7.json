@@ -2,25 +2,35 @@
 	"biome": "cave",
 	"connectors": [
 		{
-			"position": {
-				"x": 3,
+			"a": {
+				"x": 2,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 4,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 3
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 4
+			},
+			"free": true
 		}
 	],
 	"floor": [
 		[
 			null,
 			null,
-			null,
-			null,
-			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
 			null,
 			null
 		],
@@ -43,7 +53,7 @@
 			null
 		],
 		[
-			null,
+			"floor_grass",
 			"floor_grass",
 			"floor_grass",
 			"floor_grass",
@@ -52,7 +62,7 @@
 			null
 		],
 		[
-			null,
+			"floor_grass",
 			"floor_grass",
 			"floor_grass",
 			"floor_grass",
@@ -79,7 +89,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 7,
 	"id": "Cave_Grass_Skirmish_7x7",
 	"objects": [
@@ -117,10 +127,10 @@
 		[
 			"wall_rough_cave",
 			"wall_rough_cave",
-			"wall_rough_cave",
+			"wall_door",
+			"wall_door",
 			"wall_door",
 			"wall_rough_cave",
-			"wall_rough_cave",
 			"wall_rough_cave"
 		],
 		[
@@ -151,7 +161,7 @@
 			"wall_rough_cave"
 		],
 		[
-			"wall_rough_cave",
+			"wall_door",
 			null,
 			null,
 			null,

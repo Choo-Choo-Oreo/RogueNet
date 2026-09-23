@@ -2,21 +2,33 @@
 	"biome": "cathedral",
 	"connectors": [
 		{
-			"position": {
-				"x": 14,
+			"a": {
+				"x": 13,
+				"y": 0
+			},
+			"b": {
+				"x": 15,
 				"y": 0
 			}
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
-				"y": 14
+				"y": 13
+			},
+			"b": {
+				"x": 0,
+				"y": 15
 			}
 		},
 		{
-			"position": {
+			"a": {
 				"x": 28,
-				"y": 20
+				"y": 19
+			},
+			"b": {
+				"x": 28,
+				"y": 21
 			}
 		}
 	],
@@ -921,7 +933,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 29,
 	"id": "Cathedral_Maze_Labyrinth_29x29",
 	"objects": [],
@@ -995,7 +1007,8 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
-			"wall_cobble_brick",
+			"wall_door",
+			"wall_door",
 			"wall_door",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
@@ -1009,7 +1022,6 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
-			"wall_cobble_brick",
 			"wall_cobble_brick"
 		],
 		[
@@ -1373,37 +1385,6 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
-			null,
-			null,
-			null,
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			null,
-			null,
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			null,
-			null,
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
 			null,
 			null,
 			null,
@@ -1447,7 +1428,38 @@
 			"wall_cobble_brick"
 		],
 		[
+			"wall_door",
+			null,
+			null,
+			null,
 			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_door",
 			null,
 			null,
 			null,
@@ -1556,37 +1568,6 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			null,
-			null,
-			null,
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			null,
-			null,
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
@@ -1661,7 +1642,38 @@
 			null,
 			null,
 			null,
-			"wall_cobble_brick"
+			"wall_door"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			"wall_door"
 		],
 		[
 			"wall_cobble_brick",

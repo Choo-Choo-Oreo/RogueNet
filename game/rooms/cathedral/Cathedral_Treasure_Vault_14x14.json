@@ -2,25 +2,41 @@
 	"biome": "cathedral",
 	"connectors": [
 		{
-			"position": {
-				"x": 7,
+			"a": {
+				"x": 6,
+				"y": 0
+			},
+			"b": {
+				"x": 8,
 				"y": 0
 			}
 		},
 		{
-			"position": {
-				"x": 7,
+			"a": {
+				"x": 6,
+				"y": 13
+			},
+			"b": {
+				"x": 8,
 				"y": 13
 			}
 		},
 		{
-			"position": {
+			"a": {
+				"x": 0,
+				"y": 7
+			},
+			"b": {
 				"x": 0,
 				"y": 7
 			}
 		},
 		{
-			"position": {
+			"a": {
+				"x": 13,
+				"y": 7
+			},
+			"b": {
 				"x": 13,
 				"y": 7
 			}
@@ -36,7 +52,7 @@
 			"floor_smooth_stone",
 			"floor_smooth_stone",
 			"floor_smooth_stone",
-			"floor_smooth_stone",
+			null,
 			null,
 			null,
 			null,
@@ -244,7 +260,7 @@
 			"floor_smooth_stone",
 			"floor_smooth_stone",
 			"floor_smooth_stone",
-			"floor_smooth_stone",
+			null,
 			null,
 			null,
 			null,
@@ -252,7 +268,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 14,
 	"id": "Cathedral_Treasure_Vault_14x14",
 	"objects": [
@@ -294,9 +310,9 @@
 			"wall_smooth_stone",
 			"wall_smooth_stone",
 			"wall_smooth_stone",
-			"wall_smooth_stone",
 			"wall_door",
-			"wall_smooth_stone",
+			"wall_door",
+			"wall_door",
 			"wall_smooth_stone",
 			"wall_smooth_stone",
 			"wall_smooth_stone",
@@ -502,9 +518,9 @@
 			"wall_smooth_stone",
 			"wall_smooth_stone",
 			"wall_smooth_stone",
-			"wall_smooth_stone",
 			"wall_door",
-			"wall_smooth_stone",
+			"wall_door",
+			"wall_door",
 			"wall_smooth_stone",
 			"wall_smooth_stone",
 			"wall_smooth_stone",

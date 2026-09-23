@@ -92,7 +92,17 @@ func is_tile_occupied(tile: Vector2i) -> bool:
 	for body in _tile_occupants(tile):
 		if body != _body:
 			return true
-	return false
+	var holder = _reserved.get(tile)
+	return holder != null and is_instance_valid(holder) and holder != _body
+
+## Destination tiles of steps already in progress (tile -> the body stepping
+## onto it). A body only counts as standing on a tile once its position floors
+## into it, which for a multi-frame step happens late -- so without this, two
+## creatures could both see the same tile as free and both step onto it.
+## Claimed in move_one_tile, released when that step's tween finishes; an entry
+## whose body was freed mid-step is ignored (is_instance_valid) rather than
+## needing cleanup. Ghosts never reserve, same as they never count as occupants.
+static var _reserved: Dictionary = {}  # Vector2i -> Node2D
 
 func _is_blocked(target_global: Vector2) -> bool:
 	if wall_data == null:
@@ -106,13 +116,21 @@ func _is_blocked(target_global: Vector2) -> bool:
 ## speed_scale lets a caller slow this one step down (e.g. an enemy that's
 ## investigating a noise rather than actively chasing, at half speed) without
 ## touching move_time itself, which stays the entity's normal baseline.
-func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> void:
+## Returns false if the step was refused (wall, or another living creature on or
+## already stepping onto the destination -- ghosts are exempt both ways).
+func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> bool:
 	var origin_global: Vector2 = _body.global_position
 	var target_global := origin_global + direction * tile_size
 	if _is_blocked(target_global):
-		return
+		return false
+	var is_ghost: bool = "stats" in _body and _body.stats != null and _body.stats.is_ghost
+	var target_tile := Vector2i(floori(target_global.x / tile_size), floori(target_global.y / tile_size))
+	if not is_ghost and is_tile_occupied(target_tile):
+		return false
 	facing_direction = direction
 	is_moving = true
+	if not is_ghost:
+		_reserved[target_tile] = _body
 
 	# Terrain speed is decided by whichever tile has the majority of the body
 	# on it, not the destination tile the instant the step starts -- so the
@@ -127,4 +145,8 @@ func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> void:
 	var tween := create_tween()
 	tween.tween_property(_body, "global_position", midpoint, half_time / origin_speed)
 	tween.tween_property(_body, "global_position", target_global, half_time / target_speed)
-	tween.finished.connect(func(): is_moving = false)
+	tween.finished.connect(func():
+		is_moving = false
+		if _reserved.get(target_tile) == _body:
+			_reserved.erase(target_tile))
+	return true

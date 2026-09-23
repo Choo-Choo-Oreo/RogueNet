@@ -3,16 +3,26 @@
 	"biome": "cave",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 18,
 				"y": 5
-			}
+			},
+			"b": {
+				"x": 18,
+				"y": 5
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
+				"x": 0,
+				"y": 6
+			},
+			"b": {
 				"x": 0,
 				"y": 7
-			}
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -143,7 +153,7 @@
 			"floor_dirt"
 		],
 		[
-			null,
+			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
@@ -290,7 +300,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 13,
 	"id": "Cave_Maze_Drip_Gallery_19x13",
 	"objects": [],
@@ -304,7 +314,7 @@
 		},
 		{
 			"position": {
-				"x": 0,
+				"x": 1,
 				"y": 7
 			}
 		}
@@ -441,7 +451,7 @@
 			"wall_door"
 		],
 		[
-			"wall_rough_cave",
+			"wall_door",
 			null,
 			null,
 			null,

@@ -79,6 +79,7 @@ Example (`Dungeon_Brick_Arena_9x9.json`, trimmed):
 
 ```json
 {
+	"format": 2,
 	"biome": "dungeon",
 	"id": "Dungeon_Brick_Arena_9x9",
 	"width": 9,
@@ -86,8 +87,8 @@ Example (`Dungeon_Brick_Arena_9x9.json`, trimmed):
 	"role": "normal",
 	"tags": ["combat", "brick"],
 	"connectors": [
-		{ "position": { "x": 4, "y": 0 } },
-		{ "position": { "x": 4, "y": 8 } }
+		{ "a": { "x": 4, "y": 0 }, "b": { "x": 4, "y": 0 } },
+		{ "a": { "x": 4, "y": 8 }, "b": { "x": 4, "y": 8 } }
 	],
 	"spawn_cells": [
 		{ "position": { "x": 7, "y": 4 } },
@@ -104,9 +105,16 @@ Example (`Dungeon_Brick_Arena_9x9.json`, trimmed):
 Notes:
 - `width`/`height` are in tiles; `floor`/`walls` are 2D arrays indexed
   `[y][x]`, each cell either a tile id from `game/tiles/` or `null`.
-- `connectors` are door positions on the room's edge — a `"wall_door"` cell
-  in `walls` at that position gets replaced with an open/sealed door tile
-  by the assembler depending on how it connects during generation.
+- `connectors` (format 2) are the openings on the room's edge: a straight
+  run of cells from `a` to `b`, both included, `a` being the top/left end
+  (`a` equal to `b` is a single-cell opening). Runs must sit on one edge and
+  not include a corner. They only describe the opening -- doors are a separate
+  idea, still to come (see CONNECTORS_TRACKER.md). For now a `"wall_door"`
+  cell in `walls` at a connector is still what the painter turns into an
+  open/sealed door tile, and the assembler only joins single-cell
+  connectors; a wider run is loaded and validated but warned about.
+  Old files with `{ "position": ... }` connectors (format 1) still load: they
+  are upgraded in memory.
 - `spawn_cells` are candidate enemy-spawn tiles for this room; skip cells
   in `entrance`/`boss` rooms and anything tagged `"treasure"` (the
   assembler enforces this, but keep it in mind when adding new rooms by

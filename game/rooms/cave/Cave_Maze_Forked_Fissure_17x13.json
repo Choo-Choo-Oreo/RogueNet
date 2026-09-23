@@ -3,22 +3,37 @@
 	"biome": "cave",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 3,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 3,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 16,
 				"y": 7
-			}
+			},
+			"b": {
+				"x": 16,
+				"y": 8
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
+				"x": 9,
+				"y": 12
+			},
+			"b": {
 				"x": 10,
 				"y": 12
-			}
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -191,7 +206,7 @@
 			null,
 			"floor_dirt",
 			"floor_dirt",
-			null
+			"floor_dirt"
 		],
 		[
 			null,
@@ -260,7 +275,7 @@
 			null,
 			null,
 			null,
-			null,
+			"floor_dirt",
 			"floor_dirt",
 			null,
 			null,
@@ -270,7 +285,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 13,
 	"id": "Cave_Maze_Forked_Fissure_17x13",
 	"objects": [],
@@ -463,7 +478,7 @@
 			"wall_rough_cave",
 			null,
 			null,
-			"wall_rough_cave"
+			"wall_door"
 		],
 		[
 			"wall_rough_cave",
@@ -532,7 +547,7 @@
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave",
-			"wall_rough_cave",
+			"wall_door",
 			"wall_door",
 			"wall_rough_cave",
 			"wall_rough_cave",

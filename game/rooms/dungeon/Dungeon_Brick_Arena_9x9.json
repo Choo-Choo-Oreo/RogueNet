@@ -2,13 +2,21 @@
 	"biome": "dungeon",
 	"connectors": [
 		{
-			"position": {
+			"a": {
+				"x": 3,
+				"y": 0
+			},
+			"b": {
 				"x": 4,
 				"y": 0
 			}
 		},
 		{
-			"position": {
+			"a": {
+				"x": 3,
+				"y": 8
+			},
+			"b": {
 				"x": 4,
 				"y": 8
 			}
@@ -115,7 +123,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 9,
 	"id": "Dungeon_Brick_Arena_9x9",
 	"objects": [
@@ -176,7 +184,7 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
-			"wall_cobble_brick",
+			"wall_door",
 			"wall_door",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
@@ -264,7 +272,7 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
-			"wall_cobble_brick",
+			"wall_door",
 			"wall_door",
 			"wall_cobble_brick",
 			"wall_cobble_brick",

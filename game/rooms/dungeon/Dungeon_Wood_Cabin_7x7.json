@@ -2,13 +2,21 @@
 	"biome": "dungeon",
 	"connectors": [
 		{
-			"position": {
+			"a": {
+				"x": 3,
+				"y": 0
+			},
+			"b": {
 				"x": 3,
 				"y": 0
 			}
 		},
 		{
-			"position": {
+			"a": {
+				"x": 3,
+				"y": 6
+			},
+			"b": {
 				"x": 3,
 				"y": 6
 			}
@@ -79,7 +87,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 7,
 	"id": "Dungeon_Wood_Cabin_7x7",
 	"objects": [

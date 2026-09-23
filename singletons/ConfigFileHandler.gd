@@ -20,6 +20,9 @@ func _ready() -> void:
 	var vsync_on: bool = config.get_value("video", "Vsync", true)
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if vsync_on else DisplayServer.VSYNC_DISABLED)
 
+	var fullscreen_on: bool = config.get_value("video", "Fullscreen", true)
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if fullscreen_on else DisplayServer.WINDOW_MODE_WINDOWED)
+
 func save_audio_setting(key: String, value) -> void:
 	config.set_value("audio", key, value)
 	config.save(SETTINGS_FILE_PATH)

@@ -2,8 +2,12 @@
 	"biome": "dungeon",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 4,
+				"y": 0
+			},
+			"b": {
+				"x": 5,
 				"y": 0
 			}
 		}
@@ -15,7 +19,7 @@
 			null,
 			null,
 			null,
-			null,
+			"floor_smooth_stone",
 			null,
 			null,
 			null
@@ -109,7 +113,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 9,
 	"id": "Dungeon_Maze_Spiral_9x9",
 	"objects": [
@@ -142,7 +146,7 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_door",
-			"wall_cobble_brick",
+			"wall_door",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick"

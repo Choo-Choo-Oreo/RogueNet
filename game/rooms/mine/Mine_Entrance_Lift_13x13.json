@@ -2,28 +2,48 @@
 	"biome": "mine",
 	"connectors": [
 		{
-			"position": {
+			"a": {
+				"x": 5,
+				"y": 0
+			},
+			"b": {
 				"x": 6,
 				"y": 0
-			}
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
+				"x": 0,
+				"y": 5
+			},
+			"b": {
 				"x": 0,
 				"y": 6
-			}
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
+				"x": 12,
+				"y": 5
+			},
+			"b": {
 				"x": 12,
 				"y": 6
-			}
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
+				"x": 5,
+				"y": 12
+			},
+			"b": {
 				"x": 6,
 				"y": 12
-			}
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -223,7 +243,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 13,
 	"id": "Mine_Entrance_Lift_13x13",
 	"objects": [
@@ -272,7 +292,7 @@
 			"wall_wood_plank",
 			"wall_wood_plank",
 			"wall_wood_plank",
-			"wall_wood_plank",
+			"wall_door",
 			"wall_door",
 			"wall_wood_plank",
 			"wall_wood_plank",
@@ -342,7 +362,7 @@
 			"wall_wood_plank"
 		],
 		[
-			"wall_wood_plank",
+			"wall_door",
 			null,
 			null,
 			null,
@@ -354,7 +374,7 @@
 			null,
 			null,
 			null,
-			"wall_wood_plank"
+			"wall_door"
 		],
 		[
 			"wall_door",
@@ -452,7 +472,7 @@
 			"wall_wood_plank",
 			"wall_wood_plank",
 			"wall_wood_plank",
-			"wall_wood_plank",
+			"wall_door",
 			"wall_door",
 			"wall_wood_plank",
 			"wall_wood_plank",

@@ -2,28 +2,48 @@
 	"biome": "cave",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 4,
 				"y": 4
-			}
+			},
+			"b": {
+				"x": 4,
+				"y": 5
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
-				"y": 4
-			}
+				"y": 3
+			},
+			"b": {
+				"x": 0,
+				"y": 5
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 2,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 2,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 2,
 				"y": 9
-			}
+			},
+			"b": {
+				"x": 2,
+				"y": 9
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -98,7 +118,7 @@
 			"floor_grass"
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 10,
 	"id": "Cave_Grass_Junction_5x10",
 	"objects": [
@@ -155,7 +175,7 @@
 			"wall_rough_cave"
 		],
 		[
-			"wall_rough_cave",
+			"wall_door",
 			null,
 			null,
 			null,
@@ -169,11 +189,11 @@
 			"wall_door"
 		],
 		[
-			"wall_rough_cave",
+			"wall_door",
 			null,
 			null,
 			null,
-			"wall_rough_cave"
+			"wall_door"
 		],
 		[
 			"wall_rough_cave",

@@ -2,16 +2,26 @@
 	"biome": "cave",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 2,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 2,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 2,
 				"y": 8
-			}
+			},
+			"b": {
+				"x": 2,
+				"y": 8
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -79,7 +89,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 9,
 	"id": "Cave_Winding_Tunnel_5x9",
 	"objects": [

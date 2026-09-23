@@ -3,40 +3,70 @@
 	"biome": "flesh",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 3,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 3,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 10,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 10,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 14,
 				"y": 4
-			}
+			},
+			"b": {
+				"x": 14,
+				"y": 4
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 7
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 7
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 14,
 				"y": 9
-			}
+			},
+			"b": {
+				"x": 14,
+				"y": 9
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 6,
 				"y": 12
-			}
+			},
+			"b": {
+				"x": 6,
+				"y": 12
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -262,7 +292,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 13,
 	"id": "Flesh_Maze_Plexus_15x13",
 	"objects": [],

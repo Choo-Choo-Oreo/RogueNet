@@ -477,6 +477,39 @@ func receive_enemy_damage(enemy_id: int, amount: int, type: String) -> void:
 	if enemy and enemy.has_method("take_damage"):
 		enemy.take_damage(amount, type)
 
+# Taunt ("Rawr", hotbar slot 4): enemy AI only runs on the host, so a client's
+# cast is just a request to the host, which forces the nearest enemies in
+# radius onto the caster. Clients need no reply -- they never run enemy AI.
+func report_taunt(player_id: int, radius_tiles: float, duration: float, max_targets: int) -> void:
+	if multiplayer.multiplayer_peer == null or multiplayer.is_server():
+		_resolve_taunt(player_id, radius_tiles, duration, max_targets)
+	else:
+		request_taunt.rpc_id(1, player_id, radius_tiles, duration, max_targets)
+
+@rpc("any_peer", "reliable")
+func request_taunt(player_id: int, radius_tiles: float, duration: float, max_targets: int) -> void:
+	if not multiplayer.is_server():
+		return
+	_resolve_taunt(player_id, radius_tiles, duration, max_targets)
+
+func _resolve_taunt(player_id: int, radius_tiles: float, duration: float, max_targets: int) -> void:
+	var scene := get_tree().current_scene
+	if scene == null:
+		return
+	var player := scene.get_node_or_null("Player/" + str(player_id))
+	if player == null or player.stats.is_ghost:
+		return
+	var radius_px := radius_tiles * 16.0
+	var in_range: Array = []
+	for enemy in get_tree().get_nodes_in_group("antagonist"):
+		var dist: float = enemy.global_position.distance_to(player.global_position)
+		if dist <= radius_px and enemy.has_method("force_target"):
+			in_range.append([dist, enemy])
+	# Nearest first, capped so one cast can't yank hundreds of enemies at once.
+	in_range.sort_custom(func(a, b): return a[0] < b[0])
+	for i in mini(in_range.size(), max_targets):
+		in_range[i][1].force_target(player, duration)
+
 # Enemy-on-player damage only ever originates on the host (only the host ever
 # runs enemy AI/attacks), so this is a straight broadcast, no any_peer report
 # step needed the way enemy hits have one.

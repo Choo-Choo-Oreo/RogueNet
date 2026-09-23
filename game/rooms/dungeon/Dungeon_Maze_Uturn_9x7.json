@@ -2,13 +2,21 @@
 	"biome": "dungeon",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 1,
+				"y": 6
+			},
+			"b": {
+				"x": 2,
 				"y": 6
 			}
 		},
 		{
-			"position": {
+			"a": {
+				"x": 6,
+				"y": 6
+			},
+			"b": {
 				"x": 7,
 				"y": 6
 			}
@@ -73,27 +81,27 @@
 		[
 			null,
 			"floor_smooth_stone",
+			"floor_smooth_stone",
 			null,
 			null,
 			null,
-			null,
-			null,
+			"floor_smooth_stone",
 			"floor_smooth_stone",
 			null
 		],
 		[
 			null,
 			null,
+			"floor_smooth_stone",
 			null,
 			null,
 			null,
-			null,
-			null,
+			"floor_smooth_stone",
 			null,
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 7,
 	"id": "Dungeon_Maze_Uturn_9x7",
 	"objects": [
@@ -178,22 +186,22 @@
 		[
 			"wall_cobble_brick",
 			null,
+			null,
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
+			null,
 			null,
 			"wall_cobble_brick"
 		],
 		[
 			"wall_cobble_brick",
 			"wall_door",
+			"wall_door",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
+			"wall_door",
 			"wall_door",
 			"wall_cobble_brick"
 		]

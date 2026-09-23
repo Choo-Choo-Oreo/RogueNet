@@ -3,28 +3,48 @@
 	"biome": "forest",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 5,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 5,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 16,
-				"y": 4
-			}
+				"y": 3
+			},
+			"b": {
+				"x": 16,
+				"y": 5
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 10
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 10
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 11,
 				"y": 14
-			}
+			},
+			"b": {
+				"x": 11,
+				"y": 14
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -102,7 +122,7 @@
 			null,
 			"floor_dirt",
 			"floor_dirt",
-			null
+			"floor_dirt"
 		],
 		[
 			null,
@@ -140,7 +160,7 @@
 			null,
 			null,
 			"floor_dirt",
-			null
+			"floor_dirt"
 		],
 		[
 			null,
@@ -314,7 +334,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 15,
 	"id": "Forest_Maze_Bog_Crossing_17x15",
 	"objects": [],
@@ -424,7 +444,7 @@
 			"wall_forest",
 			null,
 			null,
-			"wall_forest"
+			"wall_door"
 		],
 		[
 			"wall_forest",
@@ -462,7 +482,7 @@
 			"wall_forest",
 			"wall_forest",
 			null,
-			"wall_forest"
+			"wall_door"
 		],
 		[
 			"wall_forest",

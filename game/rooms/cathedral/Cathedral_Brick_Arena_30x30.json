@@ -2,14 +2,22 @@
 	"biome": "cathedral",
 	"connectors": [
 		{
-			"position": {
-				"x": 15,
+			"a": {
+				"x": 14,
+				"y": 0
+			},
+			"b": {
+				"x": 16,
 				"y": 0
 			}
 		},
 		{
-			"position": {
-				"x": 15,
+			"a": {
+				"x": 14,
+				"y": 29
+			},
+			"b": {
+				"x": 16,
 				"y": 29
 			}
 		}
@@ -976,7 +984,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 30,
 	"id": "Cathedral_Brick_Arena_30x30",
 	"objects": [
@@ -1084,7 +1092,8 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
-			"wall_cobble_brick",
+			"wall_door",
+			"wall_door",
 			"wall_door",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
@@ -1098,7 +1107,6 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
-			"wall_cobble_brick",
 			"wall_cobble_brick"
 		],
 		[
@@ -1998,7 +2006,6 @@
 			"wall_cobble_brick"
 		],
 		[
-			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
@@ -2014,7 +2021,8 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_door",
-			"wall_cobble_brick",
+			"wall_door",
+			"wall_door",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",

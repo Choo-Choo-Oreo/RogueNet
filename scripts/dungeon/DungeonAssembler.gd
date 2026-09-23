@@ -96,6 +96,9 @@ static func _read_folder(folder: String) -> Dictionary:
 	for name in file_names:
 		var data := JsonOnloading.load_dict(folder + name)
 		if data.has("id"):
+			Connector.upgrade_room(data)
+			for problem in Connector.validate(data):
+				push_warning("Room '%s': %s" % [data["id"], problem])
 			rooms[data["id"]] = data
 	return rooms
 
@@ -143,12 +146,19 @@ static func _rotate_grid(grid: Array, width: int, height: int) -> Array:
 			rotated[x][height - 1 - y] = grid[y][x]
 	return rotated
 
-static func _rotate_connectors(connectors: Array, height: int) -> Array:
+## Spawn cells (and anything else that is a plain {"position"} point).
+static func _rotate_points(points: Array, height: int) -> Array:
 	var rotated: Array = []
-	for c in connectors:
+	for c in points:
 		var x: int = int(c["position"]["x"])
 		var y: int = int(c["position"]["y"])
 		rotated.append({"position": {"x": height - 1 - y, "y": x}})
+	return rotated
+
+static func _rotate_connectors(connectors: Array, height: int) -> Array:
+	var rotated: Array = []
+	for c in connectors:
+		rotated.append(Connector.rotate(c, height))
 	return rotated
 
 static func rotate_room(room: Dictionary, quarter_turns: int) -> Dictionary:
@@ -160,7 +170,7 @@ static func rotate_room(room: Dictionary, quarter_turns: int) -> Dictionary:
 		result["floor"] = _rotate_grid(result["floor"], w, h)
 		result["walls"] = _rotate_grid(result["walls"], w, h)
 		result["connectors"] = _rotate_connectors(result["connectors"], h)
-		result["spawn_cells"] = _rotate_connectors(result.get("spawn_cells", []), h)
+		result["spawn_cells"] = _rotate_points(result.get("spawn_cells", []), h)
 		result["width"] = h
 		result["height"] = w
 	if turns != 0:
@@ -209,6 +219,21 @@ class Placement:
 	var depth: int = 0  # hop count from the entrance, used to find the "farthest" dead end for the boss room
 	var locked_connectors: Array[Vector2i] = []
 	var suppressed_connectors: Array[Vector2i] = []
+	## Which other placement this room was attached to, and the world cell of
+	## the door connecting them (this room's own connector cell, always open
+	## floor once painted) -- -1/unset for the entrance, which has no parent.
+	## Placement is otherwise pure geometry; these two fields exist only so
+	## RoomGraph.gd can rebuild room-to-room adjacency after generation
+	## finishes, for hierarchical/coarse enemy pathfinding across rooms.
+	## Bookkeeping only, no RNG use, so it can't affect the deterministic
+	## layout itself.
+	var parent_index: int = -1
+	var door_cell: Vector2i = Vector2i.ZERO
+	## Connector anchor (local first cell) -> the LOCAL cells of that connector
+	## that actually join another room. A connector with no entry is treated as
+	## joined along its whole length; cells of a wider connector outside its
+	## joint are sealed by the painter.
+	var joint_cells: Dictionary = {}
 
 ## dungeon_seed: RNG seed, same value on host and every client -> identical layout.
 static func generate(rooms: Dictionary, dungeon_seed: int, defines: Dictionary = {}) -> Array[Placement]:
@@ -334,7 +359,10 @@ static func _try_place(rooms: Dictionary, candidate_ids: Array, entry: Dictionar
 	var from_placement: Placement = placements[entry["placement_index"]]
 	var from_world: Vector2i = from_placement.offset + entry["local_pos"]
 	var need_dir: int = _opposite(entry["dir"])
-	var target_cell: Vector2i = from_world + _dir_step(entry["dir"])
+	var step: Vector2i = _dir_step(entry["dir"])
+	var axis: Vector2i = _run_axis(entry["dir"])
+	var target_cell: Vector2i = from_world + step
+	var from_run: Dictionary = _connector_at(rooms[from_placement.room_id], entry["local_pos"])
 
 	var shuffled_ids: Array = _weighted_shuffle(candidate_ids, rooms, tag_weights, rng)
 	if avoid_dead_ends:
@@ -351,58 +379,122 @@ static func _try_place(rooms: Dictionary, candidate_ids: Array, entry: Dictionar
 		var cand_connectors: Array = cand["connectors"].duplicate()
 		_shuffle(cand_connectors, rng)
 		for c in cand_connectors:
-			var local_pos := Vector2i(int(c["position"]["x"]), int(c["position"]["y"]))
+			var local_pos := Connector.a(c)
 			if _connector_dir(cand, local_pos) != need_dir:
 				continue
-			var offset: Vector2i = target_cell - local_pos
-			var rect := Rect2i(offset, Vector2i(cand["width"], cand["height"]))
-			if _overlaps_any(rect, occupied):
-				continue
-			var placement := Placement.new()
-			placement.room_id = cand_id
-			placement.offset = offset
-			placement.depth = from_placement.depth + 1
-			placement.suppressed_connectors.append(local_pos)
-			placements.append(placement)
-			occupied.append(rect)
-			_queue_connectors(cand, placements.size() - 1, open_connectors, local_pos)
-			return true
+			for shift in _join_shifts(from_run, c):
+				var offset: Vector2i = target_cell + axis * shift - local_pos
+				var rect := Rect2i(offset, Vector2i(cand["width"], cand["height"]))
+				if _overlaps_any(rect, occupied):
+					continue
+				var joint := _joint_cells(from_run, c, shift, axis)
+				var placement := Placement.new()
+				placement.room_id = cand_id
+				placement.offset = offset
+				placement.depth = from_placement.depth + 1
+				placement.suppressed_connectors.append(local_pos)
+				placement.parent_index = entry["placement_index"]
+				placement.joint_cells[local_pos] = joint["cand"]
+				from_placement.joint_cells[entry["local_pos"]] = joint["from"]
+				placement.door_cell = from_placement.offset + _middle_cell(joint["from"]) + step
+				placements.append(placement)
+				occupied.append(rect)
+				_queue_connectors(cand, placements.size() - 1, open_connectors, local_pos)
+				return true
 	return false
 
-static func _fit_room_at(rooms: Dictionary, room_id: String, from_placement: Placement, local_pos: Vector2i, placements: Array[Placement], occupied: Array[Rect2i]) -> bool:
+static func _fit_room_at(rooms: Dictionary, room_id: String, from_placement: Placement, local_pos: Vector2i, placements: Array[Placement], occupied: Array[Rect2i], parent_index: int) -> bool:
 	var from_room: Dictionary = rooms[from_placement.room_id]
 	var from_dir: int = _connector_dir(from_room, local_pos)
 	var need_dir: int = _opposite(from_dir)
-	var target_cell: Vector2i = from_placement.offset + local_pos + _dir_step(from_dir)
+	var step: Vector2i = _dir_step(from_dir)
+	var axis: Vector2i = _run_axis(from_dir)
+	var target_cell: Vector2i = from_placement.offset + local_pos + step
+	var from_run: Dictionary = _connector_at(from_room, local_pos)
 
 	var room: Dictionary = rooms[room_id]
 	var connectors: Array = room["connectors"].duplicate()
-	connectors.sort_custom(func(a, b):
-		if a["position"]["y"] != b["position"]["y"]:
-			return a["position"]["y"] < b["position"]["y"]
-		return a["position"]["x"] < b["position"]["x"]
+	connectors.sort_custom(func(p, q):
+		var pa := Connector.a(p)
+		var qa := Connector.a(q)
+		if pa.y != qa.y:
+			return pa.y < qa.y
+		return pa.x < qa.x
 	)
 	for c in connectors:
-		var cand_local := Vector2i(int(c["position"]["x"]), int(c["position"]["y"]))
+		var cand_local := Connector.a(c)
 		if _connector_dir(room, cand_local) != need_dir:
 			continue
-		var offset: Vector2i = target_cell - cand_local
-		var rect := Rect2i(offset, Vector2i(room["width"], room["height"]))
-		if _overlaps_any(rect, occupied):
-			continue
-		var placement := Placement.new()
-		placement.room_id = room_id
-		placement.offset = offset
-		placement.depth = from_placement.depth + 1
-		placement.suppressed_connectors.append(cand_local)
-		placements.append(placement)
-		occupied.append(rect)
-		var extra: Array = []
-		_queue_connectors(room, placements.size() - 1, extra, cand_local)
-		for e in extra:
-			_lock(placements[e["placement_index"]], e["local_pos"])
-		return true
+		for shift in _join_shifts(from_run, c):
+			var offset: Vector2i = target_cell + axis * shift - cand_local
+			var rect := Rect2i(offset, Vector2i(room["width"], room["height"]))
+			if _overlaps_any(rect, occupied):
+				continue
+			var joint := _joint_cells(from_run, c, shift, axis)
+			var placement := Placement.new()
+			placement.room_id = room_id
+			placement.offset = offset
+			placement.depth = from_placement.depth + 1
+			placement.suppressed_connectors.append(cand_local)
+			placement.parent_index = parent_index
+			placement.joint_cells[cand_local] = joint["cand"]
+			from_placement.joint_cells[local_pos] = joint["from"]
+			placement.door_cell = from_placement.offset + _middle_cell(joint["from"]) + step
+			placements.append(placement)
+			occupied.append(rect)
+			var extra: Array = []
+			_queue_connectors(room, placements.size() - 1, extra, cand_local)
+			for e in extra:
+				_lock(placements[e["placement_index"]], e["local_pos"])
+			return true
 	return false
+
+## The connector of `room` whose first cell is `anchor` (connectors are keyed
+## by that cell everywhere else). Falls back to a single cell if not found.
+static func _connector_at(room: Dictionary, anchor: Vector2i) -> Dictionary:
+	for c in room["connectors"]:
+		if Connector.a(c) == anchor:
+			return c
+	return Connector.make(anchor, anchor)
+
+## Which way a run of cells extends for an opening facing `dir`.
+static func _run_axis(dir: int) -> Vector2i:
+	return Vector2i(1, 0) if dir == Dir.NORTH or dir == Dir.SOUTH else Vector2i(0, 1)
+
+## The offsets (in cells along the run, candidate's first cell relative to the
+## from-run's first cell) at which `cand_run` may join `from_run`, best first.
+## Exact mode (neither run is `free`): equal widths only, lined up end to end.
+## Free mode (either run is `free`): any widths, at least one cell overlapping --
+## centred first (a 1-wide passage opens onto the middle of a wide one), then
+## start-aligned, then end-aligned. No RNG here, so seeds stay deterministic.
+static func _join_shifts(from_run: Dictionary, cand_run: Dictionary) -> Array[int]:
+	var from_width := Connector.width(from_run)
+	var cand_width := Connector.width(cand_run)
+	var shifts: Array[int] = []
+	if not (Connector.is_free(from_run) or Connector.is_free(cand_run)):
+		if from_width == cand_width:
+			shifts.append(0)
+		return shifts
+	for s in [floori((from_width - cand_width) / 2.0), 0, from_width - cand_width]:
+		if not shifts.has(s):
+			shifts.append(s)
+	return shifts
+
+## The cells actually shared by the two runs at `shift`, as LOCAL cells of each
+## room ({"from": [...], "cand": [...]}, same order). Any cell of either run
+## outside this overlap has no partner and gets walled off by the painter.
+static func _joint_cells(from_run: Dictionary, cand_run: Dictionary, shift: int, axis: Vector2i) -> Dictionary:
+	var from_cells: Array[Vector2i] = []
+	var cand_cells: Array[Vector2i] = []
+	var from_width := Connector.width(from_run)
+	var cand_width := Connector.width(cand_run)
+	for i in range(maxi(0, shift), mini(from_width - 1, shift + cand_width - 1) + 1):
+		from_cells.append(Connector.a(from_run) + axis * i)
+		cand_cells.append(Connector.a(cand_run) + axis * (i - shift))
+	return {"from": from_cells, "cand": cand_cells}
+
+static func _middle_cell(cells: Array) -> Vector2i:
+	return cells[floori(cells.size() / 2.0)]
 
 const MAX_BOSS_CORRIDOR_EXTENSION := 8
 
@@ -415,26 +507,28 @@ static func _place_farthest(rooms: Dictionary, room_id: String, corridor_ids: Ar
 
 	for c in candidates:
 		var from_placement: Placement = placements[c["placement_index"]]
-		if _fit_room_at(rooms, room_id, from_placement, c["local_pos"], placements, occupied):
+		if _fit_room_at(rooms, room_id, from_placement, c["local_pos"], placements, occupied, c["placement_index"]):
 			from_placement.locked_connectors.erase(c["local_pos"])
 			return true
 
 	if not corridor_ids.is_empty():
 		for c in candidates:
 			var cur_placement: Placement = placements[c["placement_index"]]
+			var cur_index: int = c["placement_index"]
 			var cur_local: Vector2i = c["local_pos"]
 			for extension in MAX_BOSS_CORRIDOR_EXTENSION:
-				if _fit_room_at(rooms, room_id, cur_placement, cur_local, placements, occupied):
+				if _fit_room_at(rooms, room_id, cur_placement, cur_local, placements, occupied, cur_index):
 					cur_placement.locked_connectors.erase(cur_local)
 					return true
 				var extended := false
 				for corridor_id in corridor_ids:
-					if _fit_room_at(rooms, corridor_id, cur_placement, cur_local, placements, occupied):
+					if _fit_room_at(rooms, corridor_id, cur_placement, cur_local, placements, occupied, cur_index):
 						cur_placement.locked_connectors.erase(cur_local)
 						var new_placement: Placement = placements[placements.size() - 1]
 						if new_placement.locked_connectors.is_empty():
 							break  # this corridor dead-ended, can't extend further this way
 						cur_placement = new_placement
+						cur_index = placements.size() - 1
 						cur_local = new_placement.locked_connectors[0]
 						extended = true
 						break
@@ -452,7 +546,7 @@ static func _place_any_locked(rooms: Dictionary, room_ids: Array, placements: Ar
 	for c in candidates:
 		var from_placement: Placement = placements[c["placement_index"]]
 		for room_id in room_ids:
-			if _fit_room_at(rooms, room_id, from_placement, c["local_pos"], placements, occupied):
+			if _fit_room_at(rooms, room_id, from_placement, c["local_pos"], placements, occupied, c["placement_index"]):
 				from_placement.locked_connectors.erase(c["local_pos"])
 				return true
 	push_warning("DungeonAssembler: no treasure room fit any dead end")
@@ -460,13 +554,15 @@ static func _place_any_locked(rooms: Dictionary, room_ids: Array, placements: Ar
 
 static func _queue_connectors(room: Dictionary, placement_index: int, open_connectors: Array, skip_local: Vector2i = Vector2i(-1, -1)) -> void:
 	var connectors: Array = room["connectors"].duplicate()
-	connectors.sort_custom(func(a, b):
-		if a["position"]["y"] != b["position"]["y"]:
-			return a["position"]["y"] < b["position"]["y"]
-		return a["position"]["x"] < b["position"]["x"]
+	connectors.sort_custom(func(p, q):
+		var pa := Connector.a(p)
+		var qa := Connector.a(q)
+		if pa.y != qa.y:
+			return pa.y < qa.y
+		return pa.x < qa.x
 	)
 	for c in connectors:
-		var local_pos := Vector2i(int(c["position"]["x"]), int(c["position"]["y"]))
+		var local_pos := Connector.a(c)
 		if local_pos == skip_local:
 			continue
 		open_connectors.append({

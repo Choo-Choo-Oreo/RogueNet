@@ -3,16 +3,26 @@
 	"biome": "forest",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 2
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 2
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
+				"x": 14,
+				"y": 7
+			},
+			"b": {
 				"x": 14,
 				"y": 8
-			}
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -150,7 +160,7 @@
 			"floor_dirt",
 			null,
 			"floor_dirt",
-			null
+			"floor_dirt"
 		],
 		[
 			null,
@@ -204,7 +214,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 11,
 	"id": "Forest_Maze_Deer_Trail_15x11",
 	"objects": [],
@@ -218,7 +228,7 @@
 		},
 		{
 			"position": {
-				"x": 0,
+				"x": 1,
 				"y": 2
 			}
 		}
@@ -362,7 +372,7 @@
 			null,
 			"wall_forest",
 			null,
-			"wall_forest"
+			"wall_door"
 		],
 		[
 			"wall_forest",

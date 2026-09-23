@@ -2,21 +2,33 @@
 	"biome": "cathedral",
 	"connectors": [
 		{
-			"position": {
-				"x": 11,
+			"a": {
+				"x": 10,
+				"y": 0
+			},
+			"b": {
+				"x": 12,
 				"y": 0
 			}
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
-				"y": 7
+				"y": 6
+			},
+			"b": {
+				"x": 0,
+				"y": 8
 			}
 		},
 		{
-			"position": {
+			"a": {
 				"x": 21,
-				"y": 7
+				"y": 6
+			},
+			"b": {
+				"x": 21,
+				"y": 8
 			}
 		}
 	],
@@ -358,7 +370,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 14,
 	"id": "Cathedral_Maze_Tee_22x14",
 	"objects": [
@@ -408,7 +420,8 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
-			"wall_cobble_brick",
+			"wall_door",
+			"wall_door",
 			"wall_door",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
@@ -418,7 +431,6 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
-			"wall_cobble_brick",
 			"wall_cobble_brick"
 		],
 		[
@@ -515,30 +527,6 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
 			"wall_cobble_brick"
 		],
 		[
@@ -590,7 +578,7 @@
 			"wall_door"
 		],
 		[
-			"wall_cobble_brick",
+			"wall_door",
 			null,
 			null,
 			null,
@@ -611,7 +599,31 @@
 			null,
 			null,
 			null,
-			"wall_cobble_brick"
+			"wall_door"
+		],
+		[
+			"wall_door",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_door"
 		],
 		[
 			"wall_cobble_brick",

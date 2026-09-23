@@ -3,28 +3,48 @@
 	"biome": "flesh",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 4,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 5,
+				"y": 0
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 16,
 				"y": 7
-			}
+			},
+			"b": {
+				"x": 16,
+				"y": 7
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 12
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 12
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 10,
 				"y": 16
-			}
+			},
+			"b": {
+				"x": 11,
+				"y": 16
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -34,7 +54,7 @@
 			null,
 			null,
 			"floor_flesh",
-			null,
+			"floor_flesh",
 			null,
 			null,
 			null,
@@ -277,36 +297,17 @@
 		],
 		[
 			null,
-			null,
-			"floor_flesh",
-			"floor_flesh",
-			"floor_flesh",
-			"floor_flesh",
-			null,
-			"floor_flesh",
-			"floor_flesh",
-			null,
 			"floor_flesh",
 			"floor_flesh",
 			"floor_flesh",
 			"floor_flesh",
 			"floor_flesh",
-			"floor_flesh",
-			null
-		],
-		[
-			null,
-			null,
-			null,
-			"floor_flesh",
-			null,
 			null,
 			"floor_flesh",
 			"floor_flesh",
 			null,
 			"floor_flesh",
 			"floor_flesh",
-			null,
 			"floor_flesh",
 			"floor_flesh",
 			"floor_flesh",
@@ -316,8 +317,23 @@
 		[
 			null,
 			null,
+			null,
+			"floor_flesh",
+			null,
+			null,
 			"floor_flesh",
 			"floor_flesh",
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
 			null,
 			null,
 			"floor_flesh",
@@ -325,7 +341,11 @@
 			null,
 			null,
 			"floor_flesh",
+			"floor_flesh",
 			null,
+			null,
+			"floor_flesh",
+			"floor_flesh",
 			"floor_flesh",
 			null,
 			"floor_flesh",
@@ -344,7 +364,7 @@
 			null,
 			null,
 			"floor_flesh",
-			null,
+			"floor_flesh",
 			null,
 			null,
 			null,
@@ -352,7 +372,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 17,
 	"id": "Flesh_Maze_Sphincter_17x17",
 	"objects": [],
@@ -394,7 +414,7 @@
 			"wall_flesh",
 			"wall_flesh",
 			"wall_door",
-			"wall_flesh",
+			"wall_door",
 			"wall_flesh",
 			"wall_flesh",
 			"wall_flesh",
@@ -637,7 +657,7 @@
 		],
 		[
 			"wall_flesh",
-			"wall_flesh",
+			null,
 			null,
 			null,
 			null,
@@ -685,7 +705,7 @@
 			"wall_flesh",
 			"wall_flesh",
 			null,
-			"wall_flesh",
+			null,
 			null,
 			"wall_flesh",
 			null,
@@ -704,7 +724,7 @@
 			"wall_flesh",
 			"wall_flesh",
 			"wall_door",
-			"wall_flesh",
+			"wall_door",
 			"wall_flesh",
 			"wall_flesh",
 			"wall_flesh",

@@ -3,16 +3,26 @@
 	"biome": "flesh",
 	"connectors": [
 		{
-			"position": {
+			"a": {
 				"x": 6,
 				"y": 4
-			}
+			},
+			"b": {
+				"x": 6,
+				"y": 5
+			},
+			"free": true
 		},
 		{
-			"position": {
+			"a": {
 				"x": 0,
 				"y": 4
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 4
+			},
+			"free": true
 		}
 	],
 	"floor": [
@@ -68,7 +78,7 @@
 			"floor_flesh",
 			"floor_flesh",
 			"floor_flesh",
-			null
+			"floor_flesh"
 		],
 		[
 			null,
@@ -98,7 +108,7 @@
 			null
 		]
 	],
-	"format": 1,
+	"format": 2,
 	"height": 9,
 	"id": "Flesh_Chambers_7x9",
 	"objects": [],
@@ -107,7 +117,7 @@
 		{
 			"position": {
 				"x": 3,
-				"y": 5
+				"y": 6
 			}
 		}
 	],
@@ -165,10 +175,10 @@
 			"wall_flesh",
 			null,
 			"wall_flesh",
-			"wall_door",
+			null,
 			"wall_flesh",
 			null,
-			"wall_flesh"
+			"wall_door"
 		],
 		[
 			"wall_flesh",
