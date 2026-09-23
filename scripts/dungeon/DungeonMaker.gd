@@ -54,8 +54,8 @@ const OBJECT_MARKER_TEXTURES := {
 const CONNECTOR_TEXTURE_PATH := "res://resources/gfx/objects/Door.png"
 const PLAYER_SPAWNER_TEXTURE_PATH := "res://resources/gfx/players/player.protagonist/knight/Knight-Down.png"
 const PLAYER_CONTROLLER_SCENE_PATH := "res://scenes/player/PlayerController.tscn"
-const PLACEHOLDER_ENEMY_SCENE_PATH := "res://scenes/dungeon/PlaceholderMouse.tscn"
 const ENEMY_TYPE_NAMES := ["mouse"]
+const ENEMY_SPAWNER_ICON_COLOR := Color(0.85, 0.25, 0.25)
 const CAMERA_ZOOM_MIN := 0.25
 const CAMERA_ZOOM_MAX := 3.0
 const CAMERA_ZOOM_STEP := 0.9
@@ -87,6 +87,8 @@ const SPAWNER_MODE_COLOR := Color(0.85, 0.35, 0.85)
 @onready var room_browser_sort_option: OptionButton = $RoomBrowserPopup/BrowserVBox/BrowserFilterRow/BrowserSortOption
 @onready var room_browser_context_menu: PopupMenu = $RoomBrowserPopup/BrowserVBox/BrowserSplitRow/BrowserItemList/BrowserContextMenu
 @onready var delete_room_confirm_dialog: ConfirmationDialog = $DeleteRoomConfirmDialog
+@onready var room_browser_folder_context_menu: PopupMenu = $RoomBrowserPopup/BrowserVBox/BrowserSplitRow/BrowserFolderPanel/BrowserFolderList/BrowserFolderContextMenu
+@onready var delete_folder_confirm_dialog: ConfirmationDialog = $DeleteFolderConfirmDialog
 @onready var new_room_folder_dialog: ConfirmationDialog = $NewRoomFolderDialog
 @onready var new_room_folder_line_edit: LineEdit = $NewRoomFolderDialog/NewFolderVBox/NewFolderLineEdit
 @onready var save_location_dialog: Window = $SaveLocationDialog
@@ -161,6 +163,8 @@ var room_browser_sort_mode: int = RoomSortMode.NAME
 var room_browser_context_target: String = ""
 var pending_delete_room_file: String = ""
 var room_browser_click_pending_file: String = ""
+var room_browser_folder_context_target: String = ""
+var pending_delete_folder: String = ""
 var floor_names: Array = []
 var walls_names: Array = []
 
@@ -251,6 +255,7 @@ func _ready() -> void:
 	_setup_room_browser_popup()
 	_setup_overwrite_confirm_dialog()
 	_setup_delete_confirm_dialog()
+	_setup_delete_folder_confirm_dialog()
 	_style_selection_highlight(save_location_folder_list, ROOM_BROWSER_ACCENT_COLOR)
 	_style_mode_button(connector_mode_button, CONNECTOR_MODE_COLOR)
 	_style_mode_button(eraser_button, ERASER_MODE_COLOR)
@@ -588,6 +593,8 @@ func _setup_room_browser_popup() -> void:
 	room_browser_context_menu.clear()
 	room_browser_context_menu.add_item("Duplicate", 0)
 	room_browser_context_menu.add_item("Delete", 1)
+	room_browser_folder_context_menu.clear()
+	room_browser_folder_context_menu.add_item("Delete Folder", 0)
 	room_browser_folder_list.room_dropped.connect(_on_room_dropped_on_folder)
 	room_browser_item_list.drag_started.connect(_on_room_browser_drag_started)
 	# Control's own gui_input signal (not the _gui_input virtual) -- this only
@@ -800,6 +807,59 @@ func _on_delete_room_confirmed() -> void:
 		dir.remove(pending_delete_room_file)
 	_show_export_status("Deleted " + pending_delete_room_file)
 	pending_delete_room_file = ""
+	_refresh_room_browser()
+	_refresh_recent_rooms()
+	_refresh_known_tags()
+
+## Right-click support for the folder sidebar. Index 0 is "All Rooms", which
+## isn't a real folder, so it's excluded.
+func _on_room_browser_folder_list_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
+	if mouse_button_index != MOUSE_BUTTON_RIGHT or index == 0:
+		return
+	room_browser_folder_context_target = room_browser_folder_list.get_item_text(index)
+	var screen_pos: Vector2 = room_browser_folder_list.get_screen_transform() * at_position
+	room_browser_folder_context_menu.popup(Rect2i(Vector2i(screen_pos), Vector2i.ZERO))
+
+func _on_room_browser_folder_context_menu_id_pressed(id: int) -> void:
+	if room_browser_folder_context_target == "":
+		return
+	match id:
+		0:
+			_confirm_delete_folder(room_browser_folder_context_target)
+
+func _confirm_delete_folder(folder_name: String) -> void:
+	pending_delete_folder = folder_name
+	var map_count := 0
+	var dir := DirAccess.open(ROOMS_DIR + folder_name)
+	if dir != null:
+		for file_name in dir.get_files():
+			if file_name.ends_with(".json"):
+				map_count += 1
+	var plural := "" if map_count == 1 else "s"
+	delete_folder_confirm_dialog.dialog_text = "Delete \"%s\" and the %d map%s in it? This can't be undone." % [folder_name, map_count, plural]
+	delete_folder_confirm_dialog.popup_centered()
+
+func _setup_delete_folder_confirm_dialog() -> void:
+	delete_folder_confirm_dialog.confirmed.connect(_on_delete_folder_confirmed)
+
+func _on_delete_folder_confirmed() -> void:
+	if pending_delete_folder == "":
+		return
+	var folder_name := pending_delete_folder
+	pending_delete_folder = ""
+	var dir := DirAccess.open(ROOMS_DIR + folder_name)
+	if dir != null:
+		for file_name in dir.get_files():
+			dir.remove(file_name)
+	var parent_dir := DirAccess.open(ROOMS_DIR)
+	if parent_dir == null or parent_dir.remove(folder_name) != OK:
+		_show_export_status("Failed to delete folder " + folder_name)
+	else:
+		_show_export_status("Deleted folder " + folder_name)
+	if room_browser_folder_filter == folder_name:
+		room_browser_folder_filter = ""
+	_setup_role_and_biome_options()
+	_refresh_room_browser_folder_list()
 	_refresh_room_browser()
 	_refresh_recent_rooms()
 	_refresh_known_tags()
@@ -1971,13 +2031,21 @@ func _make_connector_marker(cell: Vector2i) -> Sprite2D:
 func _populate_spawner_palette() -> void:
 	_style_selection_highlight(spawner_palette_list, SPAWNER_MODE_COLOR)
 	spawner_palette_list.add_item("player_spawner", _make_player_spawner_icon())
-	spawner_palette_list.add_item("enemy_spawner", PlaceholderMouse.make_icon())
+	spawner_palette_list.add_item("enemy_spawner", _make_enemy_spawner_icon())
+	spawner_palette_list.set_item_icon_modulate(1, ENEMY_SPAWNER_ICON_COLOR)
 
 func _make_player_spawner_icon() -> Texture2D:
 	var atlas := AtlasTexture.new()
 	atlas.atlas = load(PLAYER_SPAWNER_TEXTURE_PATH)
 	atlas.region = Rect2(0, 0, TILE_SIZE, TILE_SIZE)
 	return atlas
+
+## Generic placeholder marker/icon for enemy spawners. There's no concrete
+## enemy scene wired up yet (PlaceholderMouse was removed upstream in favor
+## of a shared EnemyController the team hasn't hooked up here), so this is
+## just a tinted square until that's decided.
+func _make_enemy_spawner_icon() -> Texture2D:
+	return preload("res://resources/gfx/placeholders/flat-color.png")
 
 func _cell_center_world(cell: Vector2i) -> Vector2:
 	return Vector2(cell.x * TILE_SIZE + TILE_SIZE / 2.0, cell.y * TILE_SIZE + TILE_SIZE / 2.0)
@@ -2090,7 +2158,9 @@ func _remove_enemy_spawner_with_undo(index: int) -> void:
 func _insert_enemy_spawner(data: Dictionary, index: int) -> void:
 	enemy_spawners.insert(index, data)
 	var marker := Sprite2D.new()
-	marker.texture = PlaceholderMouse.make_icon()
+	marker.texture = _make_enemy_spawner_icon()
+	marker.modulate = ENEMY_SPAWNER_ICON_COLOR
+	marker.scale = Vector2(0.5, 0.5)
 	marker.position = _cell_center_world(data["cell"])
 	spawners_layer.add_child(marker)
 	enemy_spawner_markers.insert(index, marker)
@@ -2287,8 +2357,13 @@ func _start_enemy_spawner_timer(spawner: Dictionary) -> void:
 	)
 	timer.start()
 
+## No concrete enemy scene is wired up yet (see _make_enemy_spawner_icon) —
+## spawns a plain marker so spawn timing/count is still visible in Test mode.
 func _spawn_test_enemy(world_pos: Vector2) -> void:
-	var enemy: Node2D = load(PLACEHOLDER_ENEMY_SCENE_PATH).instantiate()
+	var enemy := Sprite2D.new()
+	enemy.texture = _make_enemy_spawner_icon()
+	enemy.modulate = ENEMY_SPAWNER_ICON_COLOR
+	enemy.scale = Vector2(0.5, 0.5)
 	enemy.global_position = world_pos
 	add_child(enemy)
 	test_spawned_enemies.append(enemy)

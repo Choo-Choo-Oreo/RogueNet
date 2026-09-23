@@ -475,6 +475,8 @@ layout_mode = 2
 size_flags_vertical = 3
 script = ExtResource("18_rbdst")
 
+[node name="BrowserFolderContextMenu" type="PopupMenu" parent="RoomBrowserPopup/BrowserVBox/BrowserSplitRow/BrowserFolderPanel/BrowserFolderList"]
+
 [node name="BrowserNewFolderButton" type="Button" parent="RoomBrowserPopup/BrowserVBox/BrowserSplitRow/BrowserFolderPanel"]
 layout_mode = 2
 text = "+ New Folder"
@@ -563,6 +565,10 @@ size = Vector2i(420, 140)
 
 [node name="DeleteRoomConfirmDialog" type="ConfirmationDialog" parent="."]
 title = "Delete Room?"
+size = Vector2i(420, 140)
+
+[node name="DeleteFolderConfirmDialog" type="ConfirmationDialog" parent="."]
+title = "Delete Folder?"
 size = Vector2i(420, 140)
 
 [node name="SpawnerSettingsDialog" type="ConfirmationDialog" parent="."]
@@ -1035,6 +1041,8 @@ text = ""
 [connection signal="pressed" from="RoomBrowserPopup/BrowserVBox/BrowserFilterRow/BrowserViewSizeRow/ViewMediumButton" to="." method="_on_room_browser_view_medium_pressed"]
 [connection signal="pressed" from="RoomBrowserPopup/BrowserVBox/BrowserFilterRow/BrowserViewSizeRow/ViewLargeButton" to="." method="_on_room_browser_view_large_pressed"]
 [connection signal="item_selected" from="RoomBrowserPopup/BrowserVBox/BrowserSplitRow/BrowserFolderPanel/BrowserFolderList" to="." method="_on_room_browser_folder_selected"]
+[connection signal="item_clicked" from="RoomBrowserPopup/BrowserVBox/BrowserSplitRow/BrowserFolderPanel/BrowserFolderList" to="." method="_on_room_browser_folder_list_clicked"]
+[connection signal="id_pressed" from="RoomBrowserPopup/BrowserVBox/BrowserSplitRow/BrowserFolderPanel/BrowserFolderList/BrowserFolderContextMenu" to="." method="_on_room_browser_folder_context_menu_id_pressed"]
 [connection signal="pressed" from="RoomBrowserPopup/BrowserVBox/BrowserSplitRow/BrowserFolderPanel/BrowserNewFolderButton" to="." method="_on_new_folder_button_pressed"]
 [connection signal="item_selected" from="RoomBrowserPopup/BrowserVBox/BrowserSplitRow/BrowserItemList" to="." method="_on_room_browser_item_selected"]
 [connection signal="item_clicked" from="RoomBrowserPopup/BrowserVBox/BrowserSplitRow/BrowserItemList" to="." method="_on_room_browser_item_clicked"]
@@ -1043,6 +1051,7 @@ text = ""
 [connection signal="pressed" from="RoomBrowserPopup/BrowserVBox/BrowserButtonRow/BrowserCloseButton" to="RoomBrowserPopup" method="hide"]
 [connection signal="confirmed" from="NewRoomFolderDialog" to="." method="_on_new_room_folder_confirmed"]
 [connection signal="confirmed" from="DeleteRoomConfirmDialog" to="." method="_on_delete_room_confirmed"]
+[connection signal="confirmed" from="DeleteFolderConfirmDialog" to="." method="_on_delete_folder_confirmed"]
 [connection signal="close_requested" from="SaveLocationDialog" to="SaveLocationDialog" method="hide"]
 [connection signal="pressed" from="SaveLocationDialog/SaveLocationVBox/SaveLocationNewFolderButton" to="." method="_on_new_folder_button_pressed"]
 [connection signal="pressed" from="SaveLocationDialog/SaveLocationVBox/SaveLocationButtonRow/SaveLocationCancelButton" to="SaveLocationDialog" method="hide"]
