@@ -142,6 +142,18 @@ static func _rotate_connectors(connectors: Array, height: int) -> Array:
 		rotated.append({"position": {"x": height - 1 - y, "y": x}})
 	return rotated
 
+## Same rotation as connectors, but keeps whatever else a spawn cell carries
+## (e.g. its enemy weight table) instead of dropping it.
+static func _rotate_spawn_cells(spawn_cells: Array, height: int) -> Array:
+	var rotated: Array = []
+	for cell in spawn_cells:
+		var x: int = int(cell["position"]["x"])
+		var y: int = int(cell["position"]["y"])
+		var rotated_cell: Dictionary = cell.duplicate(true)
+		rotated_cell["position"] = {"x": height - 1 - y, "y": x}
+		rotated.append(rotated_cell)
+	return rotated
+
 static func rotate_room(room: Dictionary, quarter_turns: int) -> Dictionary:
 	var turns := posmod(quarter_turns, 4)
 	var result: Dictionary = room.duplicate(true)
@@ -151,6 +163,7 @@ static func rotate_room(room: Dictionary, quarter_turns: int) -> Dictionary:
 		result["floor"] = _rotate_grid(result["floor"], w, h)
 		result["walls"] = _rotate_grid(result["walls"], w, h)
 		result["connectors"] = _rotate_connectors(result["connectors"], h)
+		result["spawn_cells"] = _rotate_spawn_cells(result.get("spawn_cells", []), h)
 		result["width"] = h
 		result["height"] = w
 	if turns != 0:
@@ -305,6 +318,22 @@ static func _satisfies_requirements(rooms: Dictionary, placements: Array[Placeme
 		if (r.get("tags", []) as Array).has("treasure"):
 			has_treasure = true
 	return (not need_boss or has_boss) and (not need_treasure or has_treasure)
+
+## World-space spawn cells across every placed room -- {"position": Vector2i,
+## "enemies": Dictionary}. Kept here since it's placement geometry (same
+## local-to-world conversion as connectors/floor tiles), not spawn behavior
+## -- see EnemySpawning for what actually happens with these.
+static func collect_spawn_cells(rooms: Dictionary, placements: Array) -> Array:
+	var cells: Array = []
+	for p in placements:
+		var room: Dictionary = rooms[p.room_id]
+		for cell in room.get("spawn_cells", []):
+			var local := Vector2i(int(cell["position"]["x"]), int(cell["position"]["y"]))
+			cells.append({
+				"position": p.offset + local,
+				"enemies": cell.get("enemies", {}),
+			})
+	return cells
 
 static func _try_place(rooms: Dictionary, candidate_ids: Array, entry: Dictionary, placements: Array[Placement], occupied: Array[Rect2i], open_connectors: Array, rng: RandomNumberGenerator, avoid_dead_ends: bool, tag_weights: Dictionary) -> bool:
 	var from_placement: Placement = placements[entry["placement_index"]]

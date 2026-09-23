@@ -184,14 +184,53 @@ func _try_attack() -> void:
 	_attack_timer = attack.get("interval", 0.5)
 	var target_global := Vector2(target_tile) * grid_mover.tile_size
 	var effect_data: Dictionary = attack.get("effect", {})
+	var deal_damage := func():
+		for enemy in get_tree().get_nodes_in_group("antagonist"):
+			if Vector2i(enemy.global_position / grid_mover.tile_size) == target_tile:
+				enemy.take_damage(amount, attack.get("type", ""))
+	if effect_data.has("attacker") or effect_data.has("target"):
+		_play_bow_effect(effect_data, target_global, deal_damage)
+		return
 	if not effect_data.is_empty():
 		var effect: AttackEffect = ATTACK_EFFECT_SCENE.instantiate()
 		get_tree().current_scene.add_child(effect)
 		effect.global_position = AttackEffect.effect_position(global_position, target_global, effect_data)
 		effect.play(effect_data, target_global - global_position)
-	for enemy in get_tree().get_nodes_in_group("antagonist"):
-		if Vector2i(enemy.global_position / grid_mover.tile_size) == target_tile:
-			enemy.take_damage(amount, attack.get("type", ""))
+	deal_damage.call()
+
+const PROJECTILE_SCENE := preload("res://scenes/entities/ProjectileController.tscn")
+
+## Bow-style attack: the "attacker" effect plays on the player as the shot
+## leaves (purely cosmetic), a real projectile (e.g. the arrow) flies from
+## their center to the target tile's center at a fixed speed, and only on
+## arrival does the "target" hit effect play and the damage land.
+func _play_bow_effect(effect_data: Dictionary, target_global: Vector2, on_hit: Callable) -> void:
+	var direction := target_global - global_position
+	var attacker_data: Dictionary = effect_data.get("attacker", {})
+	if not attacker_data.is_empty():
+		var shot: AttackEffect = ATTACK_EFFECT_SCENE.instantiate()
+		get_tree().current_scene.add_child(shot)
+		shot.global_position = AttackEffect.effect_position(global_position, target_global, attacker_data)
+		shot.play(attacker_data, direction)
+	var projectile_texture: String = effect_data.get("projectile", "")
+	if projectile_texture == "":
+		_land_hit(effect_data, target_global, on_hit)
+		return
+	var projectile: ProjectileController = PROJECTILE_SCENE.instantiate()
+	get_tree().current_scene.add_child(projectile)
+	var center := Vector2(8, 8)
+	projectile.global_position = global_position + center
+	projectile.launch(projectile_texture, target_global + center, grid_mover.tile_size, func():
+		_land_hit(effect_data, target_global, on_hit))
+
+func _land_hit(effect_data: Dictionary, target_global: Vector2, on_hit: Callable) -> void:
+	var target_data: Dictionary = effect_data.get("target", {})
+	if not target_data.is_empty():
+		var hit: AttackEffect = ATTACK_EFFECT_SCENE.instantiate()
+		get_tree().current_scene.add_child(hit)
+		hit.global_position = AttackEffect.effect_position(global_position, target_global, target_data)
+		hit.play(target_data, target_global - global_position)
+	on_hit.call()
 
 func _physics_process(_delta: float) -> void:
 	if not is_multiplayer_authority():

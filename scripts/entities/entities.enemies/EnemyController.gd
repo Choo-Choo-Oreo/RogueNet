@@ -21,14 +21,17 @@ var _wander_timer := 0.0
 var _target: Node2D = null
 var _was_alert := false
 var _size_px: float = 16.0
+var _base_move_time := 0.2
 
 var _attack_amount: int = 0
 var _attack_type: String = ""
 var _attack_interval: float = 1.0
+var _attack_range: int = 1
 var _attack_effect: Dictionary = {}
 var _attack_timer := 0.0
 
 const ATTACK_EFFECT_SCENE := preload("res://scenes/entities/AttackEffect.tscn")
+const PROJECTILE_SCENE := preload("res://scenes/entities/ProjectileController.tscn")
 const ALERTNESS_DATA := {
 	"texture": "res://resources/gfx/effects/Alertness.png",
 	"frame_count": 3,
@@ -38,6 +41,12 @@ const ALERTNESS_DATA := {
 const ENEMY_TYPES := {
 	"rat": "res://game/entities/entities.enemies/rat.json",
 	"rat_blind": "res://game/entities/entities.enemies/rat_blind.json",
+	"bat": "res://game/entities/entities.enemies/bat.json",
+	"hamster": "res://game/entities/entities.enemies/hamster.json",
+	"hamster_flying": "res://game/entities/entities.enemies/hamster_flying.json",
+	"hamster_demonic": "res://game/entities/entities.enemies/hamster_demonic.json",
+	"wolf": "res://game/entities/entities.enemies/wolf.json",
+	"skeleton_archer": "res://game/entities/entities.enemies/skeleton_archer.json",
 }
 
 func set_enemy_type(enemy_id: String) -> void:
@@ -49,10 +58,12 @@ func set_enemy_type(enemy_id: String) -> void:
 	$HealthPixelBar.position = Vector2(_size_px / 2.0, _size_px + 2.0)
 	$HealthPixelBar.setup(stats, 32 if _size_px > grid_mover.tile_size else 16)
 	senses.apply_overrides(data.get("senses", {}))
+	grid_mover.move_time = _base_move_time / float(data.get("speed_multiplier", 1.0))
 	var attack_data: Dictionary = data.get("attack", {})
 	_attack_amount = attack_data.get("amount", 0)
 	_attack_type = attack_data.get("type", "")
 	_attack_interval = attack_data.get("interval", 1.0)
+	_attack_range = attack_data.get("range_tiles", 1)
 	_attack_effect = attack_data.get("effect", {})
 
 func take_damage(amount: int, type: String = "") -> void:
@@ -60,16 +71,17 @@ func take_damage(amount: int, type: String = "") -> void:
 
 func _ready() -> void:
 	add_to_group("antagonist")
+	_base_move_time = grid_mover.move_time
 	if default_enemy_type != "":
 		set_enemy_type(default_enemy_type)
 	_home_position = global_position
 	stats.died.connect(queue_free)
 
 func _process(delta: float) -> void:
-	var adjacent_target := (
+	var can_attack := (
 		senses.state == EnemySenses.State.ATTACK
 		and _target
-		and _is_adjacent(_target)
+		and _in_attack_range(_target)
 	)
 	if grid_mover.is_moving:
 		animator.animate_moving(grid_mover.facing_direction)
@@ -77,7 +89,7 @@ func _process(delta: float) -> void:
 		animator.animate_facing(_target.global_position - global_position)
 	else:
 		animator.animate_idle()
-	if adjacent_target:
+	if can_attack:
 		_attack_timer -= delta
 		if _attack_timer <= 0.0:
 			_attack_timer = _attack_interval
@@ -91,6 +103,9 @@ func _process(delta: float) -> void:
 	_try_step()
 
 func _perform_attack(target: Node2D) -> void:
+	if _attack_effect.has("attacker") or _attack_effect.has("target"):
+		_perform_ranged_attack(target)
+		return
 	if target.has_method("take_damage"):
 		target.take_damage(_attack_amount, _attack_type)
 	if _attack_effect.is_empty():
@@ -99,6 +114,41 @@ func _perform_attack(target: Node2D) -> void:
 	get_tree().current_scene.add_child(effect)
 	effect.global_position = AttackEffect.effect_position(global_position, target.global_position, _attack_effect)
 	effect.play(_attack_effect, target.global_position - global_position)
+
+## Mirrors PlayerController's bow handling: an "attacker" shot effect plays
+## here (cosmetic), a projectile travels to the target if the data has one,
+## and only on arrival does the "target" hit effect play and damage land.
+## A magic attack (no "projectile") skips the travel and lands immediately.
+func _perform_ranged_attack(target: Node2D) -> void:
+	var target_global: Vector2 = target.global_position
+	var direction := target_global - global_position
+	var attacker_data: Dictionary = _attack_effect.get("attacker", {})
+	if not attacker_data.is_empty():
+		var shot: AttackEffect = ATTACK_EFFECT_SCENE.instantiate()
+		get_tree().current_scene.add_child(shot)
+		shot.global_position = AttackEffect.effect_position(global_position, target_global, attacker_data)
+		shot.play(attacker_data, direction)
+	var projectile_texture: String = _attack_effect.get("projectile", "")
+	if projectile_texture == "":
+		_land_ranged_hit(target, target_global)
+		return
+	var projectile: ProjectileController = PROJECTILE_SCENE.instantiate()
+	get_tree().current_scene.add_child(projectile)
+	projectile.global_position = global_position + Vector2(_size_px / 2.0, _size_px / 2.0)
+	projectile.launch(projectile_texture, target_global + Vector2(8, 8), grid_mover.tile_size, func():
+		_land_ranged_hit(target, target_global))
+
+func _land_ranged_hit(target: Node2D, target_global: Vector2) -> void:
+	if not is_instance_valid(target):
+		return
+	if target.has_method("take_damage"):
+		target.take_damage(_attack_amount, _attack_type)
+	var target_data: Dictionary = _attack_effect.get("target", {})
+	if not target_data.is_empty():
+		var hit: AttackEffect = ATTACK_EFFECT_SCENE.instantiate()
+		get_tree().current_scene.add_child(hit)
+		hit.global_position = AttackEffect.effect_position(global_position, target_global, target_data)
+		hit.play(target_data, target_global - global_position)
 
 func _try_step() -> void:
 	_target = _nearest_player()
@@ -127,7 +177,7 @@ func _show_alertness() -> void:
 ## simple case: if the preferred axis is blocked, try the other one instead
 ## of just standing there (e.g. blocked going right, try down/up).
 func _try_pursue_step(target: Node2D) -> void:
-	if _is_adjacent(target):
+	if _in_attack_range(target):
 		return
 	var offset := target.global_position - global_position
 	var horizontal := Vector2.RIGHT if offset.x > 0 else Vector2.LEFT
@@ -137,13 +187,13 @@ func _try_pursue_step(target: Node2D) -> void:
 	if not _try_move(primary) and offset.x != 0 and offset.y != 0:
 		_try_move(secondary)
 
-## Tile-grid (Chebyshev) adjacency -- true for all 8 surrounding tiles, not
-## just the 4 orthogonal ones a raw Euclidean distance<=tile_size check would
-## give (a diagonal neighbor is tile_size*sqrt(2) away). Both entities are
-## always grid-aligned when idle, so this offset divides evenly.
-func _is_adjacent(target: Node2D) -> bool:
+## Tile-grid (Chebyshev) distance check against _attack_range -- melee stays
+## at the old adjacency-only behavior (range 1), ranged/magic attacks (from
+## JSON's attack.range_tiles) can engage and stop pursuing further out. Both
+## entities are always grid-aligned when idle, so this offset divides evenly.
+func _in_attack_range(target: Node2D) -> bool:
 	var offset := Vector2i((target.global_position - global_position) / grid_mover.tile_size)
-	return absi(offset.x) <= 1 and absi(offset.y) <= 1
+	return absi(offset.x) <= _attack_range and absi(offset.y) <= _attack_range
 
 func _try_move(direction: Vector2) -> bool:
 	var target_tile := Vector2i((global_position + direction * grid_mover.tile_size) / grid_mover.tile_size)
