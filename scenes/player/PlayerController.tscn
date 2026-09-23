@@ -1,7 +1,11 @@
 [gd_scene format=3 uid="uid://djuwmio4x8p12"]
 
 [ext_resource type="Script" uid="uid://b8dk1dj5mllej" path="res://scripts/player/PlayerController.gd" id="1_etyb6"]
-[ext_resource type="SpriteFrames" path="res://resources/gfx/players/knight/Knight.tres" id="2_knight"]
+[ext_resource type="SpriteFrames" uid="uid://c6el7gccmvl45" path="res://resources/gfx/players/player.protagonist/knight/Knight.tres" id="2_knight"]
+[ext_resource type="Script" uid="uid://tmoiodv062hv" path="res://scripts/entities/GridMover.gd" id="3_gridmv"]
+[ext_resource type="Script" uid="uid://cd6pygvdtxtny" path="res://scripts/entities/DirectionalAnimator.gd" id="4_diranim"]
+[ext_resource type="Script" uid="uid://df55xnjjg4yfy" path="res://scripts/entities/NetworkPositionRelay.gd" id="5_netrelay"]
+[ext_resource type="Script" uid="uid://cll6insxigr5c" path="res://scripts/entities/MouseFollowCamera.gd" id="6_mousecam"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pctrl"]
 
@@ -21,3 +25,13 @@ shape = SubResource("RectangleShape2D_pctrl")
 [node name="Camera2D" type="Camera2D" parent="." unique_id=222260015]
 enabled = false
 zoom = Vector2(5, 5)
+script = ExtResource("6_mousecam")
+
+[node name="GridMover" type="Node" parent="."]
+script = ExtResource("3_gridmv")
+
+[node name="DirectionalAnimator" type="Node" parent="."]
+script = ExtResource("4_diranim")
+
+[node name="NetworkPositionRelay" type="Node" parent="."]
+script = ExtResource("5_netrelay")

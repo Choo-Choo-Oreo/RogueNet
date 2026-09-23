@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b43gnv1j0hfuj"
-path="res://.godot/imported/SkeletonArcher-Up.png-c9bf370adcd065fd28146f8363612f65.ctex"
+uid="uid://vrudjiun63d1"
+path="res://.godot/imported/Knight-Down.png-5ed21defd50eb9cbebb1cdb367c8e993.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/enemies/Skeleton/Skeleton Archer/SkeletonArcher-Up.png"
-dest_files=["res://.godot/imported/SkeletonArcher-Up.png-c9bf370adcd065fd28146f8363612f65.ctex"]
+source_file="res://resources/gfx/players/player.protagonist/knight/Knight-Down.png"
+dest_files=["res://.godot/imported/Knight-Down.png-5ed21defd50eb9cbebb1cdb367c8e993.ctex"]
 
 [params]
 

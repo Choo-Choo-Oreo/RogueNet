@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cp4gwfpssdo78"
-path="res://.godot/imported/Side_Rat1.png-be1ed8145acc2308c56aa08d427f0040.ctex"
+uid="uid://ctu2d4ft5d3bc"
+path="res://.godot/imported/Dwarf-Right.png-692c6fc037b53d435e788ccdb020b002.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/entities/rat/Side_Rat1.png"
-dest_files=["res://.godot/imported/Side_Rat1.png-be1ed8145acc2308c56aa08d427f0040.ctex"]
+source_file="res://resources/gfx/players/player.protagonist/dwarf/Dwarf-Right.png"
+dest_files=["res://.godot/imported/Dwarf-Right.png-692c6fc037b53d435e788ccdb020b002.ctex"]
 
 [params]
 

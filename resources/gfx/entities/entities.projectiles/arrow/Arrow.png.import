@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cux5gw2824cf8"
-path="res://.godot/imported/Dwarf-Down.png-4916cd350d4de07562c82d4e518730d1.ctex"
+uid="uid://b84avjg8rnsys"
+path="res://.godot/imported/Arrow.png-ae51d3618406cc2ecafe31d6e03140d8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/players/dwarf/Dwarf-Down.png"
-dest_files=["res://.godot/imported/Dwarf-Down.png-4916cd350d4de07562c82d4e518730d1.ctex"]
+source_file="res://resources/gfx/entities/entities.projectiles/arrow/Arrow.png"
+dest_files=["res://.godot/imported/Arrow.png-ae51d3618406cc2ecafe31d6e03140d8.ctex"]
 
 [params]
 

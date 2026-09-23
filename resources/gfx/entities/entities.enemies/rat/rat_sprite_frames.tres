@@ -1,7 +1,7 @@
 [gd_resource type="SpriteFrames" format=3 uid="uid://dhejfud8rinrx"]
 
-[ext_resource type="Texture2D" uid="uid://bxj0ms6twbief" path="res://resources/gfx/entities/rat/Front_Rat1.png" id="1_front"]
-[ext_resource type="Texture2D" uid="uid://cp4gwfpssdo78" path="res://resources/gfx/entities/rat/Side_Rat1.png" id="2_side"]
+[ext_resource type="Texture2D" uid="uid://bxj0ms6twbief" path="res://resources/gfx/entities/entities.enemies/rat/Front_Rat1.png" id="1_front"]
+[ext_resource type="Texture2D" uid="uid://cp4gwfpssdo78" path="res://resources/gfx/entities/entities.enemies/rat/Side_Rat1.png" id="2_side"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_front0"]
 atlas = ExtResource("1_front")

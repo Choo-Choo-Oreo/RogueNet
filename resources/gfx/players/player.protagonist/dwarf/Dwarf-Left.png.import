@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b84avjg8rnsys"
-path="res://.godot/imported/Arrow.png-95056154bb09d6478c10f524179e8192.ctex"
+uid="uid://ob51wly8uv5m"
+path="res://.godot/imported/Dwarf-Left.png-efce6cd223967040e3e48d7540e8a3f4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/entities/Arrow.png"
-dest_files=["res://.godot/imported/Arrow.png-95056154bb09d6478c10f524179e8192.ctex"]
+source_file="res://resources/gfx/players/player.protagonist/dwarf/Dwarf-Left.png"
+dest_files=["res://.godot/imported/Dwarf-Left.png-efce6cd223967040e3e48d7540e8a3f4.ctex"]
 
 [params]
 

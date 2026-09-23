@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b88gx665o02xc"
-path="res://.godot/imported/SkeletonArcher-Down.png-96ddc661deb8c138a126e44fafa61f1a.ctex"
+uid="uid://dbenj64eovqh3"
+path="res://.godot/imported/Dwarf-Up.png-d8137e6d1f59d74dc985ecc257110e93.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/enemies/Skeleton/Skeleton Archer/SkeletonArcher-Down.png"
-dest_files=["res://.godot/imported/SkeletonArcher-Down.png-96ddc661deb8c138a126e44fafa61f1a.ctex"]
+source_file="res://resources/gfx/players/player.protagonist/dwarf/Dwarf-Up.png"
+dest_files=["res://.godot/imported/Dwarf-Up.png-d8137e6d1f59d74dc985ecc257110e93.ctex"]
 
 [params]
 

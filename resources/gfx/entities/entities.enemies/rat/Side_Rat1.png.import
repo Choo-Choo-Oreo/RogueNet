@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bxj0ms6twbief"
-path="res://.godot/imported/Front_Rat1.png-dd9cb61cba3e2dcc1b03e17fb09d8b35.ctex"
+uid="uid://cp4gwfpssdo78"
+path="res://.godot/imported/Side_Rat1.png-e49d1a06011fc400a33cbf6a78631c6c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/entities/rat/Front_Rat1.png"
-dest_files=["res://.godot/imported/Front_Rat1.png-dd9cb61cba3e2dcc1b03e17fb09d8b35.ctex"]
+source_file="res://resources/gfx/entities/entities.enemies/rat/Side_Rat1.png"
+dest_files=["res://.godot/imported/Side_Rat1.png-e49d1a06011fc400a33cbf6a78631c6c.ctex"]
 
 [params]
 

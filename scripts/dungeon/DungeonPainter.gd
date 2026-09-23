@@ -10,7 +10,7 @@ func _ready() -> void:
 	var wall_data: TileMapLayer = tile_initialize.get_node("WallData")
 	var registry: TileTypeRegistry = tile_initialize.tile_registry
 
-	var biome := DungeonAssembler.pick_biome(NetworkSync.dungeon_seed)
+	var biome := NetworkSync.dungeon_biome
 	var defines := DungeonAssembler.load_defines(biome)
 	var rooms := DungeonAssembler.load_rooms(biome)
 	var placements := DungeonAssembler.generate_with_retry(rooms, NetworkSync.dungeon_seed, defines)

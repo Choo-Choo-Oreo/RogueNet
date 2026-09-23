@@ -39,6 +39,15 @@ size_flags_vertical = 4
 theme_override_constants/separation = 14
 alignment = 1
 
+[node name="LocationLabel" type="Label" parent="HSplitContainer/ActionPanel"]
+layout_mode = 2
+text = "PICK LOCATION"
+horizontal_alignment = 1
+
+[node name="LocationOption" type="OptionButton" parent="HSplitContainer/ActionPanel"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+
 [node name="Title" type="Label" parent="HSplitContainer/ActionPanel" unique_id=578555796]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
@@ -81,6 +90,7 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_vertical = 3
 
+[connection signal="item_selected" from="HSplitContainer/ActionPanel/LocationOption" to="." method="_on_location_option_item_selected"]
 [connection signal="pressed" from="HSplitContainer/ActionPanel/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="HSplitContainer/ActionPanel/ReadyButton" to="." method="_on_ready_button_pressed"]
 [connection signal="pressed" from="HSplitContainer/ActionPanel/BackButton" to="." method="_on_back_button_pressed"]

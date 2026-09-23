@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dbenj64eovqh3"
-path="res://.godot/imported/Dwarf-Up.png-4f42e447a6dc0daa4f4c59ec629f9c03.ctex"
+uid="uid://bxj0ms6twbief"
+path="res://.godot/imported/Front_Rat1.png-e268c97c2ab1616cd532fa0a61348451.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/players/dwarf/Dwarf-Up.png"
-dest_files=["res://.godot/imported/Dwarf-Up.png-4f42e447a6dc0daa4f4c59ec629f9c03.ctex"]
+source_file="res://resources/gfx/entities/entities.enemies/rat/Front_Rat1.png"
+dest_files=["res://.godot/imported/Front_Rat1.png-e268c97c2ab1616cd532fa0a61348451.ctex"]
 
 [params]
 

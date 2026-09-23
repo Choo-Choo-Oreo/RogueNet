@@ -11,6 +11,7 @@ var is_dedicated: bool = false
 var peer_steam_ids: Dictionary = {}
 
 var dungeon_seed: int = 0
+var dungeon_biome: String = ""
 
 # The peers in the mission that was started, known to every diver (the start message carries it).
 # PlayerSpawner spawns just these, and positions and End Mission only go to them.
@@ -51,6 +52,7 @@ func reset_session() -> void:
 	peer_steam_ids.clear()
 	peer_names.clear()
 	dungeon_seed = 0
+	dungeon_biome = ""
 
 func _on_server_disconnected() -> void:
 	multiplayer.multiplayer_peer = null
@@ -156,7 +158,7 @@ func report_create_mission(privacy: String, password: String) -> void:
 
 func _create_mission(creator_id: int, privacy: String, password: String) -> void:
 	var mission_id := creator_id
-	missions[mission_id] = {"creator_id": creator_id, "privacy": privacy, "password": password, "members": [creator_id]}
+	missions[mission_id] = {"creator_id": creator_id, "privacy": privacy, "password": password, "members": [creator_id], "location": ""}
 	receive_mission_created(mission_id, creator_id, privacy)
 	for peer_id in multiplayer.get_peers():
 		receive_mission_created.rpc_id(peer_id, mission_id, creator_id, privacy)
@@ -361,16 +363,22 @@ func _launch_mission(mission_id: int) -> void:
 		return
 	var members: Array = missions[mission_id]["members"]
 	var mission_seed := randi()
+	# Picked once, here, by the host — every diver gets told the result instead of
+	# each independently re-picking from their own local game/rooms/ folder list,
+	# which desyncs the moment one machine's folder set differs from another's.
+	var chosen_location: String = missions[mission_id].get("location", "")
+	var mission_biome := chosen_location if chosen_location != "" else DungeonAssembler.pick_biome(mission_seed)
 	missions[mission_id]["started"] = true
 	for member_id in members:
 		if member_id == 1:
-			receive_start_mission(mission_seed, members)
+			receive_start_mission(mission_seed, mission_biome, members)
 		else:
-			receive_start_mission.rpc_id(member_id, mission_seed, members)
+			receive_start_mission.rpc_id(member_id, mission_seed, mission_biome, members)
 
 @rpc("authority", "reliable")
-func receive_start_mission(mission_seed: int, members: Array) -> void:
+func receive_start_mission(mission_seed: int, mission_biome: String, members: Array) -> void:
 	dungeon_seed = mission_seed
+	dungeon_biome = mission_biome
 	dive_members = members.duplicate()
 	get_tree().change_scene_to_file("res://scenes/dungeon/Dungeon.tscn")
 
@@ -399,21 +407,22 @@ func _broadcast_members(mission_id: int) -> void:
 	var members: Array = mission["members"]
 	var ready_states: Dictionary = mission.get("ready", {})
 	var creator_id: int = mission["creator_id"]
+	var location: String = mission.get("location", "")
 	for peer_id in members:
 		if peer_id == 1:
-			receive_mission_members(mission_id, members, ready_states, creator_id)
+			receive_mission_members(mission_id, members, ready_states, creator_id, location)
 		else:
-			receive_mission_members.rpc_id(peer_id, mission_id, members, ready_states, creator_id)
+			receive_mission_members.rpc_id(peer_id, mission_id, members, ready_states, creator_id, location)
 
 @rpc("authority", "reliable")
-func receive_mission_members(mission_id: int, members: Array, ready_states: Dictionary, creator_id: int) -> void:
+func receive_mission_members(mission_id: int, members: Array, ready_states: Dictionary, creator_id: int, location: String) -> void:
 	var main_town := get_tree().current_scene
 	# Not in the town (for example already in the dungeon): nothing to update.
 	if main_town == null or main_town.get_node_or_null("PanelMission") == null:
 		return
 	var mission_screen := main_town.get_node_or_null("PanelMission/GuildMission")
 	if mission_screen:
-		mission_screen.set_members(mission_id, members, ready_states, creator_id)
+		mission_screen.set_members(mission_id, members, ready_states, creator_id, location)
 	main_town.get_node_or_null("PanelMain").hide()
 	main_town.get_node_or_null("PanelGuild").hide()
 	main_town.get_node_or_null("PanelMission").show()
@@ -435,6 +444,24 @@ func _leave_mission(peer_id: int, mission_id: int) -> void:
 	members.erase(peer_id)
 	mission.get("ready", {}).erase(peer_id)
 	_cancel_countdown(mission_id, "Countdown cancelled — the party changed.")
+	_broadcast_members(mission_id)
+
+@rpc("any_peer", "reliable")
+func report_set_location(mission_id: int, location: String) -> void:
+	if not multiplayer.is_server():
+		return
+	_set_location(multiplayer.get_remote_sender_id(), mission_id, location)
+
+func _set_location(peer_id: int, mission_id: int, location: String) -> void:
+	if not missions.has(mission_id):
+		return
+	var mission: Dictionary = missions[mission_id]
+	if peer_id != mission["creator_id"]:
+		return
+	# "" means Random; anything else must be a real folder under game/rooms/.
+	if location != "" and not DungeonAssembler.list_biomes().has(location):
+		return
+	mission["location"] = location
 	_broadcast_members(mission_id)
 
 func _end_mission(mission_id: int) -> void:

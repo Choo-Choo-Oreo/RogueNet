@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cpvivpnqpoi0j"
-path="res://.godot/imported/Knight-Right.png-720cf6c1db334b90cd541375c351c094.ctex"
+path="res://.godot/imported/Knight-Right.png-e3a5a90c2ec685ffce93084d19fdcc1f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/players/knight/Knight-Right.png"
-dest_files=["res://.godot/imported/Knight-Right.png-720cf6c1db334b90cd541375c351c094.ctex"]
+source_file="res://resources/gfx/players/player.protagonist/knight/Knight-Right.png"
+dest_files=["res://.godot/imported/Knight-Right.png-e3a5a90c2ec685ffce93084d19fdcc1f.ctex"]
 
 [params]
 

@@ -1,9 +1,9 @@
 [gd_resource type="SpriteFrames" format=3 uid="uid://c6el7gccmvl45"]
 
-[ext_resource type="Texture2D" uid="uid://0yq3tfk10e6j" path="res://resources/gfx/players/knight/Knight-Up.png" id="1_north"]
-[ext_resource type="Texture2D" uid="uid://vrudjiun63d1" path="res://resources/gfx/players/knight/Knight-Down.png" id="2_south"]
-[ext_resource type="Texture2D" uid="uid://cpvivpnqpoi0j" path="res://resources/gfx/players/knight/Knight-Right.png" id="3_east"]
-[ext_resource type="Texture2D" uid="uid://bmwa8l5sbhlxd" path="res://resources/gfx/players/knight/Knight-Left.png" id="4_west"]
+[ext_resource type="Texture2D" uid="uid://0yq3tfk10e6j" path="res://resources/gfx/players/player.protagonist/knight/Knight-Up.png" id="1_north"]
+[ext_resource type="Texture2D" uid="uid://vrudjiun63d1" path="res://resources/gfx/players/player.protagonist/knight/Knight-Down.png" id="2_south"]
+[ext_resource type="Texture2D" uid="uid://cpvivpnqpoi0j" path="res://resources/gfx/players/player.protagonist/knight/Knight-Right.png" id="3_east"]
+[ext_resource type="Texture2D" uid="uid://bmwa8l5sbhlxd" path="res://resources/gfx/players/player.protagonist/knight/Knight-Left.png" id="4_west"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_north0"]
 atlas = ExtResource("1_north")

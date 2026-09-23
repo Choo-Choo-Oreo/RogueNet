@@ -1,9 +1,9 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" uid="uid://dbenj64eovqh3" path="res://resources/gfx/players/dwarf/Dwarf-Up.png" id="1_up"]
-[ext_resource type="Texture2D" uid="uid://cux5gw2824cf8" path="res://resources/gfx/players/dwarf/Dwarf-Down.png" id="2_down"]
-[ext_resource type="Texture2D" uid="uid://ob51wly8uv5m" path="res://resources/gfx/players/dwarf/Dwarf-Left.png" id="3_left"]
-[ext_resource type="Texture2D" uid="uid://ctu2d4ft5d3bc" path="res://resources/gfx/players/dwarf/Dwarf-Right.png" id="4_right"]
+[ext_resource type="Texture2D" uid="uid://dbenj64eovqh3" path="res://resources/gfx/players/player.protagonist/dwarf/Dwarf-Up.png" id="1_up"]
+[ext_resource type="Texture2D" uid="uid://cux5gw2824cf8" path="res://resources/gfx/players/player.protagonist/dwarf/Dwarf-Down.png" id="2_down"]
+[ext_resource type="Texture2D" uid="uid://ob51wly8uv5m" path="res://resources/gfx/players/player.protagonist/dwarf/Dwarf-Left.png" id="3_left"]
+[ext_resource type="Texture2D" uid="uid://ctu2d4ft5d3bc" path="res://resources/gfx/players/player.protagonist/dwarf/Dwarf-Right.png" id="4_right"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_up0"]
 atlas = ExtResource("1_up")

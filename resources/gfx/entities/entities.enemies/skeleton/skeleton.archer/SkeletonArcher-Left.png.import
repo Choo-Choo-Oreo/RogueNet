@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bmwa8l5sbhlxd"
-path="res://.godot/imported/Knight-Left.png-ac9cad8a4423ba21a1b3d8efd69c8218.ctex"
+uid="uid://du4mufavfs0ib"
+path="res://.godot/imported/SkeletonArcher-Left.png-a3d18489edfd872592e254ff7c3fcfd4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/players/knight/Knight-Left.png"
-dest_files=["res://.godot/imported/Knight-Left.png-ac9cad8a4423ba21a1b3d8efd69c8218.ctex"]
+source_file="res://resources/gfx/entities/entities.enemies/skeleton/skeleton.archer/SkeletonArcher-Left.png"
+dest_files=["res://.godot/imported/SkeletonArcher-Left.png-a3d18489edfd872592e254ff7c3fcfd4.ctex"]
 
 [params]
 
