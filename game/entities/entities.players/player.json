@@ -5,14 +5,31 @@
 	"constitution": 1,
 	"cognitive": 0,
 	"resistances": {},
-	"attack": {
-		"amount": 3,
-		"type": "Physical",
-		"interval": 0.5,
-		"effect": {
-			"texture": "res://resources/gfx/effects/effects.melee/physical.slashing.png",
-			"frame_count": 8,
-			"speed": 16.0
-		}
-	}
+	"attacks": [
+		{
+			"amount": 3,
+			"type": "Physical",
+			"interval": 0.5,
+			"target_mode": "melee",
+			"effect": {
+				"texture": "res://resources/gfx/effects/effects.melee/physical.slashing.png",
+				"frame_count": 8,
+				"speed": 16.0
+			}
+		},
+		{},
+		{
+			"amount": 2,
+			"type": "Entropia",
+			"interval": 0.6,
+			"target_mode": "ranged",
+			"effect": {
+				"texture": "res://resources/gfx/effects/effects.arcana/arcana.entropia.png",
+				"frame_count": 8,
+				"speed": 16.0,
+				"anchor": "target"
+			}
+		},
+		{}
+	]
 }

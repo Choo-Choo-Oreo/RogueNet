@@ -11,11 +11,21 @@ extends Node2D
 ## "midpoint" (default) centers the effect between attacker and target -- a
 ## melee swing or bite happens between the two. "attacker" anchors it on the
 ## attacker's own tile instead: a ranged shot fires FROM the attacker, it
-## isn't drawn hovering out at the target.
+## isn't drawn hovering out at the target. "target" is the reverse, for a
+## magic hit that only plays on the target: offset half a tile off the
+## target's origin, toward the caster, so it lands on whichever edge (or
+## corner, if the caster is diagonal) of the target faces them.
 static func effect_position(attacker_global: Vector2, target_global: Vector2, data: Dictionary) -> Vector2:
-	if data.get("anchor", "midpoint") == "attacker":
-		return attacker_global
-	return (attacker_global + target_global) / 2.0
+	match data.get("anchor", "midpoint"):
+		"attacker":
+			return attacker_global
+		"target":
+			var to_attacker := attacker_global - target_global
+			if to_attacker.length() > 0.0:
+				to_attacker = to_attacker.normalized() * 8.0
+			return target_global + to_attacker
+		_:
+			return (attacker_global + target_global) / 2.0
 
 ## direction points from attacker to target. The art is drawn attacking
 ## left-to-right (attacker on the left, swinging right), so that's the

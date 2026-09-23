@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://drkbbgtkdtsru"
-path="res://.godot/imported/Alertness.png-7403b5ae1940ced3727d0a9bcb3165cf.ctex"
+uid="uid://bwsjyplh1qc2u"
+path="res://.godot/imported/target-physical.bludgeoning.png-1b864d41aef7dae0a08f966699b277e6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/effects/Alertness.png"
-dest_files=["res://.godot/imported/Alertness.png-7403b5ae1940ced3727d0a9bcb3165cf.ctex"]
+source_file="res://resources/gfx/effects/effects.range/target-physical.bludgeoning.png"
+dest_files=["res://.godot/imported/target-physical.bludgeoning.png-1b864d41aef7dae0a08f966699b277e6.ctex"]
 
 [params]
 

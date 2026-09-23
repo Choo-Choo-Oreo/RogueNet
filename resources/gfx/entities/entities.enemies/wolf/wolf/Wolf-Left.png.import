@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://drkbbgtkdtsru"
-path="res://.godot/imported/Alertness.png-7403b5ae1940ced3727d0a9bcb3165cf.ctex"
+uid="uid://dif1hybjffvfq"
+path="res://.godot/imported/Wolf-Left.png-5a2a9ca14b4049b717f043e3608d24b5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/effects/Alertness.png"
-dest_files=["res://.godot/imported/Alertness.png-7403b5ae1940ced3727d0a9bcb3165cf.ctex"]
+source_file="res://resources/gfx/entities/entities.enemies/wolf/wolf/Wolf-Left.png"
+dest_files=["res://.godot/imported/Wolf-Left.png-5a2a9ca14b4049b717f043e3608d24b5.ctex"]
 
 [params]
 

@@ -19,6 +19,8 @@ extends CharacterBody2D
 var _home_position: Vector2 = Vector2.ZERO
 var _wander_timer := 0.0
 var _target: Node2D = null
+var _was_alert := false
+var _size_px: float = 16.0
 
 var _attack_amount: int = 0
 var _attack_type: String = ""
@@ -27,6 +29,11 @@ var _attack_effect: Dictionary = {}
 var _attack_timer := 0.0
 
 const ATTACK_EFFECT_SCENE := preload("res://scenes/entities/AttackEffect.tscn")
+const ALERTNESS_DATA := {
+	"texture": "res://resources/gfx/effects/Alertness.png",
+	"frame_count": 3,
+	"speed": 10.0,
+}
 
 const ENEMY_TYPES := {
 	"rat": "res://game/entities/entities.enemies/rat.json",
@@ -37,10 +44,10 @@ func set_enemy_type(enemy_id: String) -> void:
 	var data := JsonOnloading.load_dict(ENEMY_TYPES[enemy_id])
 	stats.load_from_data(data)
 	$AnimatedSprite2D.sprite_frames = SpriteFramesLoader.build(data["sprite_frames"])
-	var size_px: float = data.get("size_tiles", 1) * grid_mover.tile_size
-	($CollisionShape2D.shape as RectangleShape2D).size = Vector2(size_px, size_px)
-	$HealthPixelBar.position = Vector2(size_px / 2.0, size_px + 2.0)
-	$HealthPixelBar.setup(stats, 32 if size_px > grid_mover.tile_size else 16)
+	_size_px = data.get("size_tiles", 1) * grid_mover.tile_size
+	($CollisionShape2D.shape as RectangleShape2D).size = Vector2(_size_px, _size_px)
+	$HealthPixelBar.position = Vector2(_size_px / 2.0, _size_px + 2.0)
+	$HealthPixelBar.setup(stats, 32 if _size_px > grid_mover.tile_size else 16)
 	senses.apply_overrides(data.get("senses", {}))
 	var attack_data: Dictionary = data.get("attack", {})
 	_attack_amount = attack_data.get("amount", 0)
@@ -96,10 +103,24 @@ func _perform_attack(target: Node2D) -> void:
 func _try_step() -> void:
 	_target = _nearest_player()
 	var state := senses.update(global_position, _target, grid_mover.is_tile_blocked, wander_interval)
+	var is_alert := state == EnemySenses.State.ATTACK
+	if is_alert and not _was_alert:
+		_show_alertness()
+	_was_alert = is_alert
 	if state == EnemySenses.State.ATTACK:
 		_try_pursue_step(_target)
 	else:
 		_try_wander_step()
+
+## One-shot popup above the enemy's head the moment it first notices a
+## player (Patrol -> Attack), reusing AttackEffect as a generic "play this
+## animation once at a position" -- direction is irrelevant here so it's
+## left at the default (no flip/rotation).
+func _show_alertness() -> void:
+	var effect: AttackEffect = ATTACK_EFFECT_SCENE.instantiate()
+	get_tree().current_scene.add_child(effect)
+	effect.global_position = global_position + Vector2(_size_px / 2.0 - 8.0, -12.0)
+	effect.play(ALERTNESS_DATA)
 
 ## Greedy step toward the target -- not real pathfinding, so a straight wall
 ## with no way around it still stops the enemy cold. This only covers the

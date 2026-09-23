@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://drkbbgtkdtsru"
-path="res://.godot/imported/Alertness.png-7403b5ae1940ced3727d0a9bcb3165cf.ctex"
+uid="uid://r63sh3tfp8st"
+path="res://.godot/imported/TileHover.png-6e4763d53cb56bdff7671c6def5b8c68.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/effects/Alertness.png"
-dest_files=["res://.godot/imported/Alertness.png-7403b5ae1940ced3727d0a9bcb3165cf.ctex"]
+source_file="res://resources/gfx/effects/TileHover.png"
+dest_files=["res://.godot/imported/TileHover.png-6e4763d53cb56bdff7671c6def5b8c68.ctex"]
 
 [params]
 

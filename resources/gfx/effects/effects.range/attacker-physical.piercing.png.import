@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://drkbbgtkdtsru"
-path="res://.godot/imported/Alertness.png-7403b5ae1940ced3727d0a9bcb3165cf.ctex"
+uid="uid://ccfb8rbecja40"
+path="res://.godot/imported/attacker-physical.piercing.png-a40735a5b9f189d0e3a5b5c9b68f678e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/effects/Alertness.png"
-dest_files=["res://.godot/imported/Alertness.png-7403b5ae1940ced3727d0a9bcb3165cf.ctex"]
+source_file="res://resources/gfx/effects/effects.range/attacker-physical.piercing.png"
+dest_files=["res://.godot/imported/attacker-physical.piercing.png-a40735a5b9f189d0e3a5b5c9b68f678e.ctex"]
 
 [params]
 

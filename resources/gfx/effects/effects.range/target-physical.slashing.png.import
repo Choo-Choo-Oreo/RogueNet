@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://drkbbgtkdtsru"
-path="res://.godot/imported/Alertness.png-7403b5ae1940ced3727d0a9bcb3165cf.ctex"
+uid="uid://bouask4xk345a"
+path="res://.godot/imported/target-physical.slashing.png-194acb1879f1217a6ae944e27fb63257.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/effects/Alertness.png"
-dest_files=["res://.godot/imported/Alertness.png-7403b5ae1940ced3727d0a9bcb3165cf.ctex"]
+source_file="res://resources/gfx/effects/effects.range/target-physical.slashing.png"
+dest_files=["res://.godot/imported/target-physical.slashing.png-194acb1879f1217a6ae944e27fb63257.ctex"]
 
 [params]
 

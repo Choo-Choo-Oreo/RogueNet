@@ -18,11 +18,17 @@ const PLAYER_DATA_PATH := "res://game/entities/entities.players/player.json"
 const GHOST_DATA_PATH := "res://resources/gfx/players/player.protagonist/ghost/ghost.json"
 
 const ATTACK_EFFECT_SCENE := preload("res://scenes/entities/AttackEffect.tscn")
+const TILE_HOVER_DATA := {
+	"texture": "res://resources/gfx/effects/TileHover.png",
+	"frame_count": 2,
+	"speed": 1.0,
+}
 
-var _attack_amount: int = 0
-var _attack_type: String = ""
-var _attack_interval: float = 0.5
-var _attack_effect: Dictionary = {}
+## Hotbar slots 1-4 (index 0-3) -- an empty {} means the slot has nothing
+## equipped, so number keys ignore it and it never fires. Public so Hotbar
+## can poll it to highlight the active slot.
+var _attacks: Array = []
+var active_slot: int = 0
 var _attack_timer := 0.0
 var _is_dead := false
 
@@ -33,11 +39,10 @@ func set_character(character_id: String) -> void:
 func _load_player_data() -> void:
 	var data := JsonOnloading.load_dict(PLAYER_DATA_PATH)
 	stats.load_from_data(data)
-	var attack_data: Dictionary = data.get("attack", {})
-	_attack_amount = attack_data.get("amount", 0)
-	_attack_type = attack_data.get("type", "")
-	_attack_interval = attack_data.get("interval", 0.5)
-	_attack_effect = attack_data.get("effect", {})
+	_attacks = data.get("attacks", [])
+
+func _current_attack() -> Dictionary:
+	return _attacks[active_slot] if active_slot < _attacks.size() else {}
 
 func take_damage(amount: int, type: String = "") -> void:
 	stats.take_damage(amount, type)
@@ -50,6 +55,9 @@ func _on_died() -> void:
 		return
 	_is_dead = true
 	stats.is_ghost = true
+	# Above every other entity (players/enemies sit at 1000), but below
+	# LightMap's own overlay sprites (2000/2001) so it doesn't fight lighting.
+	z_index = 1500
 	var ghost_data := JsonOnloading.load_dict(GHOST_DATA_PATH)
 	$AnimatedSprite2D.sprite_frames = SpriteFramesLoader.build(ghost_data["sprite_frames"])
 
@@ -66,6 +74,12 @@ func _ready() -> void:
 	add_to_group("protagonist")
 	_load_player_data()
 	stats.died.connect(_on_died)
+	$TileHoverHighlight.sprite_frames = SpriteFramesLoader.build({
+		"frame_size": [16, 16],
+		"animations": {"Play": TILE_HOVER_DATA},
+	})
+	$TileHoverHighlight.play("Play")
+	$TileHoverHighlight.visible = false
 
 func _process(delta: float) -> void:
 	if is_multiplayer_authority():
@@ -74,8 +88,42 @@ func _process(delta: float) -> void:
 		else:
 			animator.animate_idle()
 		_attack_timer = maxf(_attack_timer - delta, 0.0)
+		_update_tile_hover()
 	else:
 		animator.animate_from_position(delta, global_position)
+
+## Always on (both melee and ranged), but hidden over a wall/void tile --
+## nothing is ever a legal target there, same restriction _try_attack()
+## itself enforces below.
+func _update_tile_hover() -> void:
+	var ranged: bool = _current_attack().get("target_mode", "melee") == "ranged"
+	var own_tile := Vector2i(global_position / grid_mover.tile_size)
+	var tile := (
+		Vector2i((get_global_mouse_position() / grid_mover.tile_size).floor()) if ranged
+		else _melee_target_tile(own_tile)
+	)
+	var valid: bool = not _is_dead and not grid_mover.is_tile_blocked(tile)
+	$TileHoverHighlight.visible = valid
+	if valid:
+		$TileHoverHighlight.global_position = Vector2(tile) * grid_mover.tile_size + Vector2(8, 8)
+
+## The 8 tiles ringing the player, ordered by angle starting from due east
+## (matches Vector2.angle()'s 0 = +x, increasing clockwise since y is down).
+const ADJACENT_OFFSETS: Array[Vector2i] = [
+	Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 1), Vector2i(-1, 1),
+	Vector2i(-1, 0), Vector2i(-1, -1), Vector2i(0, -1), Vector2i(1, -1),
+]
+
+## Melee doesn't require clicking exactly on an adjacent tile -- it takes
+## whichever of the 8 surrounding tiles best matches the mouse's direction
+## from the player, so clicking anywhere off to the left hits the one tile
+## to the left instead of missing because the click landed further out.
+func _melee_target_tile(own_tile: Vector2i) -> Vector2i:
+	var to_mouse := get_global_mouse_position() - global_position
+	if to_mouse.length() < 0.001:
+		return own_tile + ADJACENT_OFFSETS[0]
+	var index := int(round(fposmod(to_mouse.angle(), TAU) / (PI / 4.0))) % 8
+	return own_tile + ADJACENT_OFFSETS[index]
 
 const MOVE_ACTIONS := {
 	"ui_right": Vector2.RIGHT,
@@ -87,11 +135,22 @@ const MOVE_ACTIONS := {
 # The movement keys currently held, oldest first, so the newest press decides the direction.
 var _held: Array = []
 
+const SLOT_KEYS := {
+	KEY_1: 0,
+	KEY_2: 1,
+	KEY_3: 2,
+	KEY_4: 3,
+}
+
 func _input(event: InputEvent) -> void:
 	if not is_multiplayer_authority():
 		return
 	if get_viewport().gui_get_focus_owner() is LineEdit:
 		return
+	if event is InputEventKey and event.pressed and SLOT_KEYS.has(event.keycode):
+		var slot: int = SLOT_KEYS[event.keycode]
+		if slot < _attacks.size() and not _attacks[slot].is_empty():
+			active_slot = slot
 	for action in MOVE_ACTIONS:
 		if event.is_action_pressed(action):
 			_held.erase(action)
@@ -101,28 +160,38 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		_try_attack()
 
-## Click a tile adjacent to (including diagonal to) the player to attack it --
-## a 16x16 effect spawns at the midpoint between the player's tile and the
-## clicked tile, and whatever occupies that tile takes damage. Inert (no
-## effect, no cooldown) until the character's JSON supplies an "attack" block.
+## Melee (target_mode "melee", the default) always hits one of the 8 tiles
+## adjacent to the player -- whichever _melee_target_tile() picks for the
+## mouse's direction -- effect between the two. Ranged (target_mode
+## "ranged") can hit any tile clicked instead, effect anchored on the
+## target -- see AttackEffect.effect_position().
 func _try_attack() -> void:
-	if _is_dead or grid_mover.is_moving or _attack_timer > 0.0 or _attack_amount <= 0:
+	var attack: Dictionary = _current_attack()
+	var amount: int = attack.get("amount", 0)
+	if _is_dead or grid_mover.is_moving or _attack_timer > 0.0 or amount <= 0:
 		return
 	var own_tile := Vector2i(global_position / grid_mover.tile_size)
-	var target_tile := Vector2i((get_global_mouse_position() / grid_mover.tile_size).floor())
-	var offset := target_tile - own_tile
-	if offset == Vector2i.ZERO or absi(offset.x) > 1 or absi(offset.y) > 1:
+	var ranged: bool = attack.get("target_mode", "melee") == "ranged"
+	var target_tile: Vector2i
+	if ranged:
+		target_tile = Vector2i((get_global_mouse_position() / grid_mover.tile_size).floor())
+		if target_tile == own_tile:
+			return
+	else:
+		target_tile = _melee_target_tile(own_tile)
+	if grid_mover.is_tile_blocked(target_tile):
 		return
-	_attack_timer = _attack_interval
+	_attack_timer = attack.get("interval", 0.5)
 	var target_global := Vector2(target_tile) * grid_mover.tile_size
-	if not _attack_effect.is_empty():
+	var effect_data: Dictionary = attack.get("effect", {})
+	if not effect_data.is_empty():
 		var effect: AttackEffect = ATTACK_EFFECT_SCENE.instantiate()
 		get_tree().current_scene.add_child(effect)
-		effect.global_position = AttackEffect.effect_position(global_position, target_global, _attack_effect)
-		effect.play(_attack_effect, target_global - global_position)
+		effect.global_position = AttackEffect.effect_position(global_position, target_global, effect_data)
+		effect.play(effect_data, target_global - global_position)
 	for enemy in get_tree().get_nodes_in_group("antagonist"):
 		if Vector2i(enemy.global_position / grid_mover.tile_size) == target_tile:
-			enemy.take_damage(_attack_amount, _attack_type)
+			enemy.take_damage(amount, attack.get("type", ""))
 
 func _physics_process(_delta: float) -> void:
 	if not is_multiplayer_authority():

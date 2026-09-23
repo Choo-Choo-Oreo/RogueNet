@@ -46,5 +46,10 @@ position = Vector2(8, 8)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TouchArea"]
 shape = SubResource("CircleShape2D_touch")
 
+[node name="TileHoverHighlight" type="AnimatedSprite2D" parent="."]
+visible = false
+z_as_relative = false
+z_index = 500
+
 [connection signal="body_entered" from="TouchArea" to="." method="_on_touch_area_body_entered"]
 [connection signal="body_exited" from="TouchArea" to="." method="_on_touch_area_body_exited"]
