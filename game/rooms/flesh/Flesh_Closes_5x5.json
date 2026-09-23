@@ -50,6 +50,14 @@
 	"id": "Flesh_Closes_5x5",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 2,
+				"y": 2
+			}
+		}
+	],
 	"tags": [
 		"test"
 	],

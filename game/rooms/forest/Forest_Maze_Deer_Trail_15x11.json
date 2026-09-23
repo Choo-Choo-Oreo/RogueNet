@@ -209,6 +209,20 @@
 	"id": "Forest_Maze_Deer_Trail_15x11",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 13,
+				"y": 8
+			}
+		},
+		{
+			"position": {
+				"x": 0,
+				"y": 2
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"forest"

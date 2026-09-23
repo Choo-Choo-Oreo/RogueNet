@@ -548,6 +548,50 @@
 	"id": "Cathedral_Maze_Switchback_29x17",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 26,
+				"y": 14
+			}
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 1
+			}
+		},
+		{
+			"position": {
+				"x": 9,
+				"y": 15
+			}
+		},
+		{
+			"position": {
+				"x": 19,
+				"y": 1
+			}
+		},
+		{
+			"position": {
+				"x": 10,
+				"y": 2
+			}
+		},
+		{
+			"position": {
+				"x": 2,
+				"y": 10
+			}
+		},
+		{
+			"position": {
+				"x": 26,
+				"y": 5
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"cathedral"

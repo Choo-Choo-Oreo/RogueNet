@@ -397,6 +397,38 @@
 		}
 	],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 15,
+				"y": 10
+			}
+		},
+		{
+			"position": {
+				"x": 2,
+				"y": 3
+			}
+		},
+		{
+			"position": {
+				"x": 5,
+				"y": 11
+			}
+		},
+		{
+			"position": {
+				"x": 11,
+				"y": 2
+			}
+		},
+		{
+			"position": {
+				"x": 15,
+				"y": 5
+			}
+		}
+	],
 	"tags": [
 		"peaceful",
 		"mine"

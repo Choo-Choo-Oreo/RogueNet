@@ -283,6 +283,26 @@
 	"id": "Cave_Maze_Rabbit_Holes_15x15",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 14,
+				"y": 10
+			}
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 1
+			}
+		},
+		{
+			"position": {
+				"x": 2,
+				"y": 13
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"cave"

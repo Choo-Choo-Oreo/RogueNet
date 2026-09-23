@@ -229,6 +229,14 @@
 	"id": "Cave_Maze_Mirror_Grotto_13x13",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 10,
+				"y": 3
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"cave"

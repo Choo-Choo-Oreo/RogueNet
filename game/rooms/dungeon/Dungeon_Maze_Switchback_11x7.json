@@ -112,6 +112,14 @@
 	"id": "Dungeon_Maze_Switchback_11x7",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 5,
+				"y": 3
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"dungeon"

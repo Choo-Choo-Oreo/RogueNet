@@ -307,6 +307,26 @@
 	"id": "Cave_Maze_Crawl_17x15",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 14,
+				"y": 13
+			}
+		},
+		{
+			"position": {
+				"x": 2,
+				"y": 0
+			}
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 13
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"cave"

@@ -307,6 +307,26 @@
 	"id": "Flesh_Maze_Peristalsis_17x15",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 14,
+				"y": 11
+			}
+		},
+		{
+			"position": {
+				"x": 2,
+				"y": 3
+			}
+		},
+		{
+			"position": {
+				"x": 14,
+				"y": 0
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"flesh"

@@ -313,6 +313,26 @@
 	"id": "Cave_Maze_Stalagmite_Ring_17x15",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 14,
+				"y": 8
+			}
+		},
+		{
+			"position": {
+				"x": 2,
+				"y": 2
+			}
+		},
+		{
+			"position": {
+				"x": 4,
+				"y": 13
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"cave"

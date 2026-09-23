@@ -275,6 +275,20 @@
 	"id": "Cave_Maze_Forked_Fissure_17x13",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 14,
+				"y": 7
+			}
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 2
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"cave"

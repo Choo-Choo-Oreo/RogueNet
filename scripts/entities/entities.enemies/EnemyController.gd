@@ -19,9 +19,25 @@ extends CharacterBody2D
 var _home_position: Vector2 = Vector2.ZERO
 var _wander_timer := 0.0
 var _target: Node2D = null
-var _was_alert := false
+var _last_state: EnemySenses.State = EnemySenses.State.PATROL
 var _size_px: float = 16.0
 var _base_move_time := 0.2
+var _light_map: LightMap = null
+
+## Half speed while Investigate is closing in on a lit-but-not-directly-seen
+## target -- full speed once Attack actually confirms it.
+const INVESTIGATE_SPEED_SCALE := 0.5
+
+## Pathfinding search radius is sized to the actual current distance to the
+## target (plus this margin for detours around walls), not a fixed number --
+## the 10s sticky alert window means the target can easily run further than
+## any fixed sight-range-based radius before the window expires, and a radius
+## too small to even see the target makes an enemy that's still "aggro'd"
+## just stand still, which looks identical to de-aggroing. Capped by
+## PATHFIND_RADIUS_MAX so a target that's run very far doesn't blow up the
+## per-frame search cost.
+const PATHFIND_RADIUS_MARGIN := 4
+const PATHFIND_RADIUS_MAX := 24
 
 var _attack_amount: int = 0
 var _attack_type: String = ""
@@ -36,6 +52,14 @@ const ALERTNESS_DATA := {
 	"texture": "res://resources/gfx/effects/Alertness.png",
 	"frame_count": 3,
 	"speed": 10.0,
+}
+const ALERTNESS_HOLD_SECONDS := 3.0
+## Alertness.png's 3 frames (left to right) are distinct static icons, not a
+## sequence -- which one shows depends on the state just entered.
+const ALERTNESS_FRAME := {
+	EnemySenses.State.PATROL: 0,
+	EnemySenses.State.INVESTIGATE: 1,
+	EnemySenses.State.ATTACK: 2,
 }
 
 const ENEMY_TYPES := {
@@ -58,7 +82,13 @@ func set_enemy_type(enemy_id: String) -> void:
 	$HealthPixelBar.position = Vector2(_size_px / 2.0, _size_px + 2.0)
 	$HealthPixelBar.setup(stats, 32 if _size_px > grid_mover.tile_size else 16)
 	senses.apply_overrides(data.get("senses", {}))
-	grid_mover.move_time = _base_move_time / float(data.get("speed_multiplier", 1.0))
+	animator.continuous_animation = data.get("continuous_animation", false)
+	# speed_tiles_per_second is a flat, absolute rate -- 1.0 always means
+	# exactly one tile per second, not "1.0x whatever the player's current
+	# move_time is." Missing the field falls back to this node's own
+	# pre-set move_time (e.g. a hand-placed prefab with no JSON override).
+	var speed: float = data.get("speed_tiles_per_second", 1.0 / _base_move_time)
+	grid_mover.move_time = 1.0 / speed
 	var attack_data: Dictionary = data.get("attack", {})
 	_attack_amount = attack_data.get("amount", 0)
 	_attack_type = attack_data.get("type", "")
@@ -68,39 +98,58 @@ func set_enemy_type(enemy_id: String) -> void:
 
 func take_damage(amount: int, type: String = "") -> void:
 	stats.take_damage(amount, type)
+	senses.note_hit()
 
 func _ready() -> void:
 	add_to_group("antagonist")
 	_base_move_time = grid_mover.move_time
+	_light_map = get_tree().current_scene.find_child("LightMap", true, false)
 	if default_enemy_type != "":
 		set_enemy_type(default_enemy_type)
 	_home_position = global_position
 	stats.died.connect(queue_free)
 
 func _process(delta: float) -> void:
-	var can_attack := (
-		senses.state == EnemySenses.State.ATTACK
-		and _target
-		and _in_attack_range(_target)
-	)
+	_target = _nearest_player()
+	var lit := _target != null and _light_map != null and _light_map.is_tile_lit(_to_tile(global_position))
+	var state := senses.update(global_position, _target, grid_mover.is_tile_blocked, lit, delta)
+	var is_engaging := state == EnemySenses.State.ATTACK
+	var is_tracking := is_engaging or state == EnemySenses.State.INVESTIGATE
+	if state != _last_state:
+		_show_alertness(state)
+	_last_state = state
+
+	var can_attack := is_engaging and _target and _in_attack_range(_target)
 	if grid_mover.is_moving:
 		animator.animate_moving(grid_mover.facing_direction)
-	elif senses.state == EnemySenses.State.ATTACK and _target:
+	elif can_attack:
 		animator.animate_facing(_target.global_position - global_position)
 	else:
 		animator.animate_idle()
 	if can_attack:
+		# Only counts down while actually in range -- pauses (doesn't reset)
+		# the moment can_attack drops out, so a single frame of range flicker
+		# at a tile boundary can't zero the cooldown and cause a rapid re-fire.
 		_attack_timer -= delta
 		if _attack_timer <= 0.0:
 			_attack_timer = _attack_interval
 			_perform_attack(_target)
-	else:
-		_attack_timer = 0.0
+
+	if grid_mover.is_moving:
+		return
+	# Chasing re-steps the instant the last move finishes -- as fast as this
+	# enemy's own move_time allows, same as a player holding a direction key.
+	# Investigate closes in the same way but at half speed (see _try_move),
+	# and never attacks even if it ends up adjacent. Only idle wandering
+	# stays throttled by wander_interval.
+	if is_tracking:
+		_try_pursue_step(_target, is_engaging)
+		return
 	_wander_timer += delta
-	if _wander_timer < wander_interval or grid_mover.is_moving:
+	if _wander_timer < wander_interval:
 		return
 	_wander_timer = 0.0
-	_try_step()
+	_try_wander_step()
 
 func _perform_attack(target: Node2D) -> void:
 	if _attack_effect.has("attacker") or _attack_effect.has("target"):
@@ -136,7 +185,7 @@ func _perform_ranged_attack(target: Node2D) -> void:
 	get_tree().current_scene.add_child(projectile)
 	projectile.global_position = global_position + Vector2(_size_px / 2.0, _size_px / 2.0)
 	projectile.launch(projectile_texture, target_global + Vector2(8, 8), grid_mover.tile_size, func():
-		_land_ranged_hit(target, target_global))
+		_land_ranged_hit(target, target_global), grid_mover.is_position_blocked)
 
 func _land_ranged_hit(target: Node2D, target_global: Vector2) -> void:
 	if not is_instance_valid(target):
@@ -150,56 +199,63 @@ func _land_ranged_hit(target: Node2D, target_global: Vector2) -> void:
 		hit.global_position = AttackEffect.effect_position(global_position, target_global, target_data)
 		hit.play(target_data, target_global - global_position)
 
-func _try_step() -> void:
-	_target = _nearest_player()
-	var state := senses.update(global_position, _target, grid_mover.is_tile_blocked, wander_interval)
-	var is_alert := state == EnemySenses.State.ATTACK
-	if is_alert and not _was_alert:
-		_show_alertness()
-	_was_alert = is_alert
-	if state == EnemySenses.State.ATTACK:
-		_try_pursue_step(_target)
-	else:
-		_try_wander_step()
-
-## One-shot popup above the enemy's head the moment it first notices a
-## player (Patrol -> Attack), reusing AttackEffect as a generic "play this
-## animation once at a position" -- direction is irrelevant here so it's
-## left at the default (no flip/rotation).
-func _show_alertness() -> void:
+## One-shot icon above the enemy's head on any alert-state change -- which of
+## Alertness.png's 3 frames shows depends on the state just entered (see
+## ALERTNESS_FRAME): returning to Patrol, Investigate, or Attack. Held
+## statically for ALERTNESS_HOLD_SECONDS rather than animated as a sequence.
+## Parented to the enemy itself (not current_scene, like the swing/hit
+## effects) so it tracks as the enemy keeps moving during the 3s hold instead
+## of staying pinned to wherever it spawned.
+func _show_alertness(state: EnemySenses.State) -> void:
 	var effect: AttackEffect = ATTACK_EFFECT_SCENE.instantiate()
-	get_tree().current_scene.add_child(effect)
-	effect.global_position = global_position + Vector2(_size_px / 2.0 - 8.0, -12.0)
-	effect.play(ALERTNESS_DATA)
+	add_child(effect)
+	effect.position = Vector2(_size_px / 2.0 - 8.0, -12.0)
+	effect.play_frame(ALERTNESS_DATA, ALERTNESS_FRAME[state], ALERTNESS_HOLD_SECONDS)
 
-## Greedy step toward the target -- not real pathfinding, so a straight wall
-## with no way around it still stops the enemy cold. This only covers the
-## simple case: if the preferred axis is blocked, try the other one instead
-## of just standing there (e.g. blocked going right, try down/up).
-func _try_pursue_step(target: Node2D) -> void:
+## Real pathfinding step toward the target (Pathfinding.next_step, shared by
+## both Investigate and Attack tracking -- this is the one place either of
+## them actually moves). Search radius is sized to the live distance to the
+## target (see PATHFIND_RADIUS_MARGIN/_MAX) so a target that's run off doesn't
+## just give up searching before it's actually out of reach.
+## full_speed is false while merely Investigating (half speed, see _try_move).
+func _try_pursue_step(target: Node2D, full_speed: bool) -> void:
 	if _in_attack_range(target):
 		return
-	var offset := target.global_position - global_position
-	var horizontal := Vector2.RIGHT if offset.x > 0 else Vector2.LEFT
-	var vertical := Vector2.DOWN if offset.y > 0 else Vector2.UP
-	var primary := vertical if abs(offset.y) > abs(offset.x) else horizontal
-	var secondary := horizontal if primary == vertical else vertical
-	if not _try_move(primary) and offset.x != 0 and offset.y != 0:
-		_try_move(secondary)
+	var origin_cell := _to_tile(global_position)
+	var target_cell := _to_tile(target.global_position)
+	var distance := maxi(absi(target_cell.x - origin_cell.x), absi(target_cell.y - origin_cell.y))
+	var radius := mini(distance + PATHFIND_RADIUS_MARGIN, PATHFIND_RADIUS_MAX)
+	var step := Pathfinding.next_step(origin_cell, target_cell, grid_mover.is_tile_blocked, radius)
+	if step != Vector2i.ZERO:
+		_try_move(Vector2(step), full_speed)
+
+## Vector2i(pos / tile_size) truncates toward zero, which rounds the wrong
+## way for a fractional position on the negative side of the origin (this
+## dungeon spans both) -- floori() matches what TileMapLayer.local_to_map
+## actually does, same fix DungeonMaker/LightMap already use.
+func _to_tile(pos: Vector2) -> Vector2i:
+	return Vector2i(floori(pos.x / grid_mover.tile_size), floori(pos.y / grid_mover.tile_size))
 
 ## Tile-grid (Chebyshev) distance check against _attack_range -- melee stays
 ## at the old adjacency-only behavior (range 1), ranged/magic attacks (from
-## JSON's attack.range_tiles) can engage and stop pursuing further out. Both
-## entities are always grid-aligned when idle, so this offset divides evenly.
+## JSON's attack.range_tiles) can engage and stop pursuing further out.
+## Also requires an unobstructed line to the target (same grid-walk SenseSight
+## uses for vision) -- a ranged enemy standing behind a wall is in range but
+## not in sight, so this returns false and _try_pursue_step keeps closing in
+## instead of shooting through the wall.
 func _in_attack_range(target: Node2D) -> bool:
-	var offset := Vector2i((target.global_position - global_position) / grid_mover.tile_size)
-	return absi(offset.x) <= _attack_range and absi(offset.y) <= _attack_range
+	var origin_cell := _to_tile(global_position)
+	var target_cell := _to_tile(target.global_position)
+	var offset := target_cell - origin_cell
+	if absi(offset.x) > _attack_range or absi(offset.y) > _attack_range:
+		return false
+	return LineOfSight.clear(origin_cell, target_cell, grid_mover.is_tile_blocked)
 
-func _try_move(direction: Vector2) -> bool:
-	var target_tile := Vector2i((global_position + direction * grid_mover.tile_size) / grid_mover.tile_size)
+func _try_move(direction: Vector2, full_speed: bool = true) -> bool:
+	var target_tile := _to_tile(global_position + direction * grid_mover.tile_size)
 	if grid_mover.is_tile_blocked(target_tile):
 		return false
-	grid_mover.move_one_tile(direction)
+	grid_mover.move_one_tile(direction, 1.0 if full_speed else INVESTIGATE_SPEED_SCALE)
 	return true
 
 func _nearest_player() -> Node2D:

@@ -141,6 +141,14 @@
 		}
 	],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 4,
+				"y": 4
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"mine"

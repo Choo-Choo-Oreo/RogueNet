@@ -6,7 +6,7 @@
 	"constitution": 1,
 	"cognitive": 0,
 	"resistances": {},
-	"speed_multiplier": 1.2,
+	"speed_tiles_per_second": 6.0,
 	"attack": {
 		"amount": 3,
 		"type": "Physical",

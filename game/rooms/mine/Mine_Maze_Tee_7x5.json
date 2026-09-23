@@ -72,6 +72,14 @@
 	"id": "Mine_Maze_Tee_7x5",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 5,
+				"y": 1
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"mine"

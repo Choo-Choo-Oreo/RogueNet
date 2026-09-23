@@ -229,6 +229,14 @@
 	"id": "Forest_Maze_Fairy_Ring_13x13",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 6,
+				"y": 6
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"forest"

@@ -57,6 +57,14 @@
 		}
 	],
 	"role": "corridor",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 3,
+				"y": 1
+			}
+		}
+	],
 	"tags": [
 		"stone"
 	],

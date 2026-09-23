@@ -249,6 +249,20 @@
 	"id": "Forest_Maze_Split_Oak_15x13",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 7,
+				"y": 5
+			}
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 11
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"forest"

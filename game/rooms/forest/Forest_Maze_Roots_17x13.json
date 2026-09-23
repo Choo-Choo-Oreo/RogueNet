@@ -293,6 +293,26 @@
 	"id": "Forest_Maze_Roots_17x13",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 15,
+				"y": 10
+			}
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 1
+			}
+		},
+		{
+			"position": {
+				"x": 4,
+				"y": 11
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"forest"

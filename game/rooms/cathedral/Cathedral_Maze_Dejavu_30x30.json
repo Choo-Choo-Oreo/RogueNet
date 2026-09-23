@@ -1002,6 +1002,56 @@
 		}
 	],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 15,
+				"y": 15
+			}
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 1
+			}
+		},
+		{
+			"position": {
+				"x": 28,
+				"y": 1
+			}
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 28
+			}
+		},
+		{
+			"position": {
+				"x": 28,
+				"y": 28
+			}
+		},
+		{
+			"position": {
+				"x": 14,
+				"y": 2
+			}
+		},
+		{
+			"position": {
+				"x": 2,
+				"y": 14
+			}
+		},
+		{
+			"position": {
+				"x": 26,
+				"y": 17
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"cathedral"

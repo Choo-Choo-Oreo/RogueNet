@@ -106,6 +106,16 @@ func _process(_delta: float) -> void:
 	_shading.set_shader_parameter("light_pos", _local.light_pos)
 	_update_others()
 
+## True if any of this tile's four half-tile (CELL) cells are part of the
+## local player's currently-flooded vision. Used by enemy spawning to decide
+## whether a spawn cell is still in view (skip it) or safe to roll into.
+func is_tile_lit(tile: Vector2i) -> bool:
+	for dy in 2:
+		for dx in 2:
+			if _local.reached.has(tile * 2 + Vector2i(dx, dy)):
+				return true
+	return false
+
 func _local_player() -> Node2D:
 	for child in player_root.get_children():
 		if child.is_multiplayer_authority():

@@ -7,7 +7,6 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/ChatBox.tscn" id="1_chatbox"]
 [ext_resource type="Script" path="res://scripts/dungeon/Dungeon.gd" id="1_dungeonroot"]
 [ext_resource type="Script" uid="uid://bc0lnb6o6cg5r" path="res://scripts/network/PlayerSpawner.gd" id="2_playerspawner"]
-[ext_resource type="PackedScene" uid="uid://b8k478hmlnajq" path="res://scenes/entities/EnemyController.tscn" id="2_testrat"]
 [ext_resource type="Texture2D" uid="uid://cukpeoxqsmyde" path="res://resources/gfx/placeholders/flat-color.png" id="3_564yl"]
 [ext_resource type="Script" uid="uid://bjum48nmmaive" path="res://scripts/dungeon/DungeonDebugView.gd" id="3_dungeondebug"]
 [ext_resource type="Script" uid="uid://ccetseq1iwch1" path="res://scripts/cells/tiles/LightMap.gd" id="99_lightmap"]
@@ -351,14 +350,6 @@ tile_initialize = NodePath("../TileInitialize")
 
 [node name="Player" type="Node2D" parent="." unique_id=2019608533]
 script = ExtResource("2_playerspawner")
-
-[node name="TestRat" parent="." instance=ExtResource("2_testrat")]
-position = Vector2(32, 16)
-default_enemy_type = "rat"
-
-[node name="TestRatBlind" parent="." instance=ExtResource("2_testrat")]
-position = Vector2(-32, 16)
-default_enemy_type = "rat_blind"
 
 [node name="DungeonDebugView" type="Node" parent="." unique_id=314287876]
 script = ExtResource("3_dungeondebug")

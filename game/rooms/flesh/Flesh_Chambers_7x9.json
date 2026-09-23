@@ -103,6 +103,14 @@
 	"id": "Flesh_Chambers_7x9",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 3,
+				"y": 5
+			}
+		}
+	],
 	"tags": [
 		"combat",
 		"flesh"

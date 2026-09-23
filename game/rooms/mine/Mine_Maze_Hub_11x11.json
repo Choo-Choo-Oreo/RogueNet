@@ -188,6 +188,14 @@
 	"id": "Mine_Maze_Hub_11x11",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 5,
+				"y": 7
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"mine"

@@ -142,6 +142,20 @@
 		}
 	],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 3,
+				"y": 1
+			}
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 1
+			}
+		}
+	],
 	"tags": [
 		"combat",
 		"brick"

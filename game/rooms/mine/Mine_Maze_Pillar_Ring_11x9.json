@@ -150,6 +150,14 @@
 	"id": "Mine_Maze_Pillar_Ring_11x9",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 9,
+				"y": 7
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"mine"

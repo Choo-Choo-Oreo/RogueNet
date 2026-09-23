@@ -295,6 +295,20 @@
 	"id": "Cave_Maze_Drip_Gallery_19x13",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 11,
+				"y": 5
+			}
+		},
+		{
+			"position": {
+				"x": 0,
+				"y": 7
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"cave"

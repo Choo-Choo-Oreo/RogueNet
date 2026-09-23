@@ -104,10 +104,19 @@ static func load_rooms(biome: String = "") -> Dictionary:
 	_fill_from_fallback(rooms)
 	return with_rotations(rooms)
 
+## Any key a biome's own defines.json doesn't set (room_count, monsters,
+## whatever) falls back to fallback/defines.json's value instead -- one
+## reference file to fill in gaps, rather than every biome having to define
+## everything itself.
 static func load_defines(biome: String) -> Dictionary:
 	if biome == "":
 		return {}
-	return JsonOnloading.load_dict(ROOMS_DIR + biome + "/defines.json")
+	var defines := JsonOnloading.load_dict(ROOMS_DIR + biome + "/defines.json")
+	var fallback := JsonOnloading.load_dict(ROOMS_DIR + FALLBACK_FOLDER + "/defines.json")
+	for key in fallback:
+		if not defines.has(key):
+			defines[key] = fallback[key]
+	return defines
 
 static func dominant_wall_tile(room: Dictionary) -> String:
 	return _dominant_tile(room["walls"], "wall_door")
@@ -142,18 +151,6 @@ static func _rotate_connectors(connectors: Array, height: int) -> Array:
 		rotated.append({"position": {"x": height - 1 - y, "y": x}})
 	return rotated
 
-## Same rotation as connectors, but keeps whatever else a spawn cell carries
-## (e.g. its enemy weight table) instead of dropping it.
-static func _rotate_spawn_cells(spawn_cells: Array, height: int) -> Array:
-	var rotated: Array = []
-	for cell in spawn_cells:
-		var x: int = int(cell["position"]["x"])
-		var y: int = int(cell["position"]["y"])
-		var rotated_cell: Dictionary = cell.duplicate(true)
-		rotated_cell["position"] = {"x": height - 1 - y, "y": x}
-		rotated.append(rotated_cell)
-	return rotated
-
 static func rotate_room(room: Dictionary, quarter_turns: int) -> Dictionary:
 	var turns := posmod(quarter_turns, 4)
 	var result: Dictionary = room.duplicate(true)
@@ -163,7 +160,7 @@ static func rotate_room(room: Dictionary, quarter_turns: int) -> Dictionary:
 		result["floor"] = _rotate_grid(result["floor"], w, h)
 		result["walls"] = _rotate_grid(result["walls"], w, h)
 		result["connectors"] = _rotate_connectors(result["connectors"], h)
-		result["spawn_cells"] = _rotate_spawn_cells(result.get("spawn_cells", []), h)
+		result["spawn_cells"] = _rotate_connectors(result.get("spawn_cells", []), h)
 		result["width"] = h
 		result["height"] = w
 	if turns != 0:
@@ -319,20 +316,18 @@ static func _satisfies_requirements(rooms: Dictionary, placements: Array[Placeme
 			has_treasure = true
 	return (not need_boss or has_boss) and (not need_treasure or has_treasure)
 
-## World-space spawn cells across every placed room -- {"position": Vector2i,
-## "enemies": Dictionary}. Kept here since it's placement geometry (same
-## local-to-world conversion as connectors/floor tiles), not spawn behavior
-## -- see EnemySpawning for what actually happens with these.
-static func collect_spawn_cells(rooms: Dictionary, placements: Array) -> Array:
-	var cells: Array = []
+## World-space spawn cell positions across every placed room. Which monsters
+## actually roll there is a biome-wide decision (defines.json's "monsters"
+## table), not a per-cell one -- see EnemySpawning. Kept here since this is
+## placement geometry (same local-to-world conversion as connectors/floor
+## tiles), not spawn behavior.
+static func collect_spawn_cells(rooms: Dictionary, placements: Array) -> Array[Vector2i]:
+	var cells: Array[Vector2i] = []
 	for p in placements:
 		var room: Dictionary = rooms[p.room_id]
 		for cell in room.get("spawn_cells", []):
 			var local := Vector2i(int(cell["position"]["x"]), int(cell["position"]["y"]))
-			cells.append({
-				"position": p.offset + local,
-				"enemies": cell.get("enemies", {}),
-			})
+			cells.append(p.offset + local)
 	return cells
 
 static func _try_place(rooms: Dictionary, candidate_ids: Array, entry: Dictionary, placements: Array[Placement], occupied: Array[Rect2i], open_connectors: Array, rng: RandomNumberGenerator, avoid_dead_ends: bool, tag_weights: Dictionary) -> bool:

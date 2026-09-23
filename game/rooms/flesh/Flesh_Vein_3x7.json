@@ -66,6 +66,14 @@
 		}
 	],
 	"role": "corridor",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 1,
+				"y": 5
+			}
+		}
+	],
 	"tags": [
 		"flesh"
 	],

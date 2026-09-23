@@ -51,6 +51,14 @@
 	"id": "Flesh_Closet_5x5",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 2,
+				"y": 2
+			}
+		}
+	],
 	"tags": [
 		"peaceful",
 		"flesh"

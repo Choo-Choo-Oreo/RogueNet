@@ -1,5 +1,6 @@
 {
 	"room_count": { "min": 20, "max": 30 },
 	"tag_weights": { "maze": 0.6, "corridor": 1.4 },
+	"monsters": { "rat": 2, "bat": 2, "rat_blind": 1 },
 	"music": "res://resources/sfx/music/Groovy.mp3"
 }

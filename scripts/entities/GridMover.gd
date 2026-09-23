@@ -49,6 +49,12 @@ func _floor_source_at(target_global: Vector2) -> int:
 func is_tile_blocked(tile: Vector2i) -> bool:
 	return _is_blocked(Vector2(tile) * tile_size)
 
+## Pixel-position version, for anything that moves through continuous space
+## rather than snapping tile to tile (e.g. a flying projectile) -- avoids
+## ever having to round a fractional position to a tile index itself.
+func is_position_blocked(global_pos: Vector2) -> bool:
+	return _is_blocked(global_pos)
+
 func _is_blocked(target_global: Vector2) -> bool:
 	if wall_data == null:
 		return false
@@ -58,7 +64,10 @@ func _is_blocked(target_global: Vector2) -> bool:
 		return true
 	return _floor_source_at(target_global) == _void_source_id
 
-func move_one_tile(direction: Vector2) -> void:
+## speed_scale lets a caller slow this one step down (e.g. an enemy that's
+## investigating a noise rather than actively chasing, at half speed) without
+## touching move_time itself, which stays the entity's normal baseline.
+func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> void:
 	var origin_global: Vector2 = _body.global_position
 	var target_global := origin_global + direction * tile_size
 	if _is_blocked(target_global):
@@ -72,8 +81,8 @@ func move_one_tile(direction: Vector2) -> void:
 	# tile's speed, and only the second half uses the new tile's.
 	var midpoint: Vector2 = origin_global.lerp(target_global, 0.5)
 	var ignore_terrain: bool = "stats" in _body and _body.stats != null and _body.stats.is_ghost
-	var origin_speed: float = 1.0 if ignore_terrain else _floor_speed.get(_floor_source_at(origin_global), 1.0)
-	var target_speed: float = 1.0 if ignore_terrain else _floor_speed.get(_floor_source_at(target_global), 1.0)
+	var origin_speed: float = (1.0 if ignore_terrain else _floor_speed.get(_floor_source_at(origin_global), 1.0)) * speed_scale
+	var target_speed: float = (1.0 if ignore_terrain else _floor_speed.get(_floor_source_at(target_global), 1.0)) * speed_scale
 	var half_time := move_time / 2.0
 
 	var tween := create_tween()

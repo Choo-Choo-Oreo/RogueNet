@@ -351,6 +351,26 @@
 	"id": "Cave_Maze_Wormcast_17x17",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 6,
+				"y": 12
+			}
+		},
+		{
+			"position": {
+				"x": 15,
+				"y": 4
+			}
+		},
+		{
+			"position": {
+				"x": 4,
+				"y": 0
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"cave"

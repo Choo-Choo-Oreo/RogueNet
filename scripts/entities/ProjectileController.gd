@@ -12,21 +12,38 @@ const TILES_PER_SECOND := 10.0
 
 var _target: Vector2
 var _speed: float
+var _is_blocked: Callable
 var _on_arrival: Callable
 
-func launch(texture_path: String, to: Vector2, tile_size: float, on_arrival: Callable) -> void:
+## is_blocked mirrors GridMover.is_position_blocked (pixel space, not a tile
+## index -- the projectile's position is fractional almost every frame) -- a
+## wall (or void) between launch and target stops the projectile there
+## instead of letting it fly through, and on_arrival is never called, so no
+## damage/hit-effect lands.
+func launch(texture_path: String, to: Vector2, tile_size: float, on_arrival: Callable, is_blocked: Callable) -> void:
 	_sprite.texture = load(texture_path)
 	_target = to
 	_speed = TILES_PER_SECOND * tile_size
+	_is_blocked = is_blocked
 	_on_arrival = on_arrival
 	rotation = (to - global_position).angle()
 
 func _process(delta: float) -> void:
-	var to_target := _target - global_position
-	var step := _speed * delta
-	if to_target.length() <= step:
-		global_position = _target
-		_on_arrival.call()
+	# _is_blocked is bound to the shooter's own GridMover -- if the shooter
+	# died mid-flight (e.g. a point-blank shot that also got it killed), that
+	# node is gone and the callable goes stale. Same for on_arrival's target
+	# lookup, so just vanish rather than trying to resolve either one.
+	if not _is_blocked.is_valid():
 		queue_free()
 		return
-	global_position += to_target.normalized() * step
+	var to_target := _target - global_position
+	var step := _speed * delta
+	var arrived := to_target.length() <= step
+	var next_position: Vector2 = _target if arrived else global_position + to_target.normalized() * step
+	if _is_blocked.call(next_position):
+		queue_free()
+		return
+	global_position = next_position
+	if arrived:
+		_on_arrival.call()
+		queue_free()

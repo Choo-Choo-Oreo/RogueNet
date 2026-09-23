@@ -157,6 +157,14 @@
 	"id": "Flesh_Maze_Kink_13x9",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 6,
+				"y": 6
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"flesh"

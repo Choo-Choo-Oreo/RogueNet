@@ -132,6 +132,14 @@
 	"id": "Dungeon_Maze_Pinwheel_9x9",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 4,
+				"y": 5
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"dungeon"

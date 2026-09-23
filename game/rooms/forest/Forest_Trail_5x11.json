@@ -99,6 +99,14 @@
 	"id": "Forest_Trail_5x11",
 	"objects": [],
 	"role": "corridor",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 3,
+				"y": 7
+			}
+		}
+	],
 	"tags": [
 		"forest"
 	],

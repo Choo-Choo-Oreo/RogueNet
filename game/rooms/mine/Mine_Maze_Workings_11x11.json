@@ -170,6 +170,14 @@
 	"id": "Mine_Maze_Workings_11x11",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 9,
+				"y": 9
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"mine"

@@ -1,126 +1,134 @@
 {
-  "connectors": [
-    {
-      "position": {
-        "x": 1,
-        "y": 0
-      }
-    },
-    {
-      "position": {
-        "x": 1,
-        "y": 8
-      }
-    }
-  ],
-  "floor": [
-    [
-      null,
-      null,
-      null
-    ],
-    [
-      null,
-      "floor_smooth_stone",
-      null
-    ],
-    [
-      null,
-      "floor_smooth_stone",
-      null
-    ],
-    [
-      null,
-      "floor_smooth_stone",
-      null
-    ],
-    [
-      null,
-      "floor_smooth_stone",
-      null
-    ],
-    [
-      null,
-      "floor_smooth_stone",
-      null
-    ],
-    [
-      null,
-      "floor_smooth_stone",
-      null
-    ],
-    [
-      null,
-      "floor_smooth_stone",
-      null
-    ],
-    [
-      null,
-      null,
-      null
-    ]
-  ],
-  "format": 1,
-  "height": 9,
-  "id": "Corridor_3x9",
-  "objects": [
-    {
-      "position": {
-        "x": 24.0,
-        "y": 72.0
-      },
-      "rotation": 0.0,
-      "type": "torch"
-    }
-  ],
-  "role": "corridor",
-  "tags": [],
-  "walls": [
-    [
-      "wall_cobble_brick",
-      "wall_door",
-      "wall_cobble_brick"
-    ],
-    [
-      "wall_cobble_brick",
-      null,
-      "wall_cobble_brick"
-    ],
-    [
-      "wall_cobble_brick",
-      null,
-      "wall_cobble_brick"
-    ],
-    [
-      "wall_cobble_brick",
-      null,
-      "wall_cobble_brick"
-    ],
-    [
-      "wall_cobble_brick",
-      null,
-      "wall_cobble_brick"
-    ],
-    [
-      "wall_cobble_brick",
-      null,
-      "wall_cobble_brick"
-    ],
-    [
-      "wall_cobble_brick",
-      null,
-      "wall_cobble_brick"
-    ],
-    [
-      "wall_cobble_brick",
-      null,
-      "wall_cobble_brick"
-    ],
-    [
-      "wall_cobble_brick",
-      "wall_door",
-      "wall_cobble_brick"
-    ]
-  ],
-  "width": 3
+	"connectors": [
+		{
+			"position": {
+				"x": 1,
+				"y": 0
+			}
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 8
+			}
+		}
+	],
+	"floor": [
+		[
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			null,
+			null
+		]
+	],
+	"format": 1,
+	"height": 9,
+	"id": "Corridor_3x9",
+	"objects": [
+		{
+			"position": {
+				"x": 24.0,
+				"y": 72.0
+			},
+			"rotation": 0.0,
+			"type": "torch"
+		}
+	],
+	"role": "corridor",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 1,
+				"y": 7
+			}
+		}
+	],
+	"tags": [],
+	"walls": [
+		[
+			"wall_cobble_brick",
+			"wall_door",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_door",
+			"wall_cobble_brick"
+		]
+	],
+	"width": 3
 }

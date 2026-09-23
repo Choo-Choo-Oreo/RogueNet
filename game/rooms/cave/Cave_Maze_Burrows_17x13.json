@@ -293,6 +293,26 @@
 	"id": "Cave_Maze_Burrows_17x13",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 7,
+				"y": 7
+			}
+		},
+		{
+			"position": {
+				"x": 15,
+				"y": 1
+			}
+		},
+		{
+			"position": {
+				"x": 15,
+				"y": 11
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"cave"

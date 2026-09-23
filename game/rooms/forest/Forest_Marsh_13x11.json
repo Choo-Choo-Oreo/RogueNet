@@ -193,6 +193,20 @@
 	"id": "Forest_Marsh_13x11",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 7,
+				"y": 5
+			}
+		},
+		{
+			"position": {
+				"x": 2,
+				"y": 3
+			}
+		}
+	],
 	"tags": [
 		"combat",
 		"forest"

@@ -944,6 +944,56 @@
 	"id": "Cathedral_Maze_Hub_29x29",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 20,
+				"y": 20
+			}
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 1
+			}
+		},
+		{
+			"position": {
+				"x": 27,
+				"y": 1
+			}
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 27
+			}
+		},
+		{
+			"position": {
+				"x": 14,
+				"y": 8
+			}
+		},
+		{
+			"position": {
+				"x": 3,
+				"y": 14
+			}
+		},
+		{
+			"position": {
+				"x": 26,
+				"y": 11
+			}
+		},
+		{
+			"position": {
+				"x": 11,
+				"y": 26
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"cathedral"

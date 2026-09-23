@@ -454,6 +454,50 @@
 		}
 	],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 7,
+				"y": 13
+			}
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 1
+			}
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 24
+			}
+		},
+		{
+			"position": {
+				"x": 9,
+				"y": 4
+			}
+		},
+		{
+			"position": {
+				"x": 9,
+				"y": 21
+			}
+		},
+		{
+			"position": {
+				"x": 4,
+				"y": 21
+			}
+		},
+		{
+			"position": {
+				"x": 4,
+				"y": 4
+			}
+		}
+	],
 	"tags": [
 		"combat",
 		"cathedral"

@@ -606,6 +606,56 @@
 		}
 	],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 8,
+				"y": 6
+			}
+		},
+		{
+			"position": {
+				"x": 22,
+				"y": 4
+			}
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 19
+			}
+		},
+		{
+			"position": {
+				"x": 5,
+				"y": 13
+			}
+		},
+		{
+			"position": {
+				"x": 15,
+				"y": 5
+			}
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 1
+			}
+		},
+		{
+			"position": {
+				"x": 5,
+				"y": 9
+			}
+		},
+		{
+			"position": {
+				"x": 4,
+				"y": 4
+			}
+		}
+	],
 	"tags": [
 		"combat",
 		"cathedral"

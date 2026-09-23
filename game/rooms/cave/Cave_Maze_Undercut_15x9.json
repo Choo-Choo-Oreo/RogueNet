@@ -175,6 +175,14 @@
 	"id": "Cave_Maze_Undercut_15x9",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 2,
+				"y": 2
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"cave"

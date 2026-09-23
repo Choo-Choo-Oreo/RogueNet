@@ -209,6 +209,20 @@
 	"id": "Forest_Maze_Creek_Bend_15x11",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 7,
+				"y": 5
+			}
+		},
+		{
+			"position": {
+				"x": 13,
+				"y": 9
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"forest"

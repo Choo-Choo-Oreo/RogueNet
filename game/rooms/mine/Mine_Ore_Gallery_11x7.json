@@ -129,6 +129,14 @@
 		}
 	],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 6,
+				"y": 3
+			}
+		}
+	],
 	"tags": [
 		"combat",
 		"mine"

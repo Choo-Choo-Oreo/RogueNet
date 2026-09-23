@@ -84,6 +84,14 @@
 	"id": "Mine_Maze_Dogleg_5x9",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 3,
+				"y": 7
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"mine"

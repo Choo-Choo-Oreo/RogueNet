@@ -298,6 +298,20 @@
 		}
 	],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 8,
+				"y": 7
+			}
+		},
+		{
+			"position": {
+				"x": 16,
+				"y": 6
+			}
+		}
+	],
 	"tags": [
 		"combat",
 		"cave"

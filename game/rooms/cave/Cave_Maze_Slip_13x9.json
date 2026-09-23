@@ -157,6 +157,14 @@
 	"id": "Cave_Maze_Slip_13x9",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 12,
+				"y": 7
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"cave"

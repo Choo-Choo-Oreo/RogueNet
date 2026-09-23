@@ -132,6 +132,14 @@
 	"id": "Mine_Maze_Crosscut_9x9",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 7,
+				"y": 2
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"mine"

@@ -170,6 +170,20 @@
 	"id": "Dungeon_Maze_Labyrinth_11x11",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 5,
+				"y": 9
+			}
+		},
+		{
+			"position": {
+				"x": 3,
+				"y": 9
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"dungeon"

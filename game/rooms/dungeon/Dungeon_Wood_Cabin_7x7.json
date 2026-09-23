@@ -101,6 +101,14 @@
 		}
 	],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 5,
+				"y": 3
+			}
+		}
+	],
 	"tags": [
 		"combat",
 		"wood"

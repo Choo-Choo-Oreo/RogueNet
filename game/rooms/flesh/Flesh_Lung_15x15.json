@@ -286,6 +286,20 @@
 		}
 	],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 10,
+				"y": 5
+			}
+		},
+		{
+			"position": {
+				"x": 7,
+				"y": 14
+			}
+		}
+	],
 	"tags": [
 		"peaceful",
 		"flesh"

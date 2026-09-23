@@ -65,6 +65,14 @@
 		}
 	],
 	"role": "corridor",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 3,
+				"y": 3
+			}
+		}
+	],
 	"tags": [
 		"cave"
 	],

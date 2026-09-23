@@ -382,6 +382,20 @@
 		}
 	],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 12,
+				"y": 5
+			}
+		},
+		{
+			"position": {
+				"x": 3,
+				"y": 13
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"flesh"

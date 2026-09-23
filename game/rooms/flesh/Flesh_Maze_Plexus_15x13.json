@@ -267,6 +267,20 @@
 	"id": "Flesh_Maze_Plexus_15x13",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 13,
+				"y": 4
+			}
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 11
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"flesh"

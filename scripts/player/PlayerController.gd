@@ -92,12 +92,19 @@ func _process(delta: float) -> void:
 	else:
 		animator.animate_from_position(delta, global_position)
 
+## Vector2i(pos / tile_size) truncates toward zero, which rounds the wrong
+## way for a fractional position on the negative side of the origin (this
+## dungeon spans both) -- floori() matches what TileMapLayer.local_to_map
+## actually does, same fix DungeonMaker/LightMap already use.
+func _to_tile(pos: Vector2) -> Vector2i:
+	return Vector2i(floori(pos.x / grid_mover.tile_size), floori(pos.y / grid_mover.tile_size))
+
 ## Always on (both melee and ranged), but hidden over a wall/void tile --
 ## nothing is ever a legal target there, same restriction _try_attack()
 ## itself enforces below.
 func _update_tile_hover() -> void:
 	var ranged: bool = _current_attack().get("target_mode", "melee") == "ranged"
-	var own_tile := Vector2i(global_position / grid_mover.tile_size)
+	var own_tile := _to_tile(global_position)
 	var tile := (
 		Vector2i((get_global_mouse_position() / grid_mover.tile_size).floor()) if ranged
 		else _melee_target_tile(own_tile)
@@ -119,7 +126,11 @@ const ADJACENT_OFFSETS: Array[Vector2i] = [
 ## from the player, so clicking anywhere off to the left hits the one tile
 ## to the left instead of missing because the click landed further out.
 func _melee_target_tile(own_tile: Vector2i) -> Vector2i:
-	var to_mouse := get_global_mouse_position() - global_position
+	# Measured from the player's center, not global_position (their tile's
+	# top-left corner) -- that 8px bias barely affects the angle at range,
+	# but up close, where to_mouse itself might only be ~16-24px long, it's
+	# enough to swing the angle into the wrong one of the 8 directions.
+	var to_mouse := get_global_mouse_position() - (global_position + Vector2(8, 8))
 	if to_mouse.length() < 0.001:
 		return own_tile + ADJACENT_OFFSETS[0]
 	var index := int(round(fposmod(to_mouse.angle(), TAU) / (PI / 4.0))) % 8
@@ -170,7 +181,7 @@ func _try_attack() -> void:
 	var amount: int = attack.get("amount", 0)
 	if _is_dead or grid_mover.is_moving or _attack_timer > 0.0 or amount <= 0:
 		return
-	var own_tile := Vector2i(global_position / grid_mover.tile_size)
+	var own_tile := _to_tile(global_position)
 	var ranged: bool = attack.get("target_mode", "melee") == "ranged"
 	var target_tile: Vector2i
 	if ranged:
@@ -186,7 +197,7 @@ func _try_attack() -> void:
 	var effect_data: Dictionary = attack.get("effect", {})
 	var deal_damage := func():
 		for enemy in get_tree().get_nodes_in_group("antagonist"):
-			if Vector2i(enemy.global_position / grid_mover.tile_size) == target_tile:
+			if _to_tile(enemy.global_position) == target_tile:
 				enemy.take_damage(amount, attack.get("type", ""))
 	if effect_data.has("attacker") or effect_data.has("target"):
 		_play_bow_effect(effect_data, target_global, deal_damage)
@@ -221,7 +232,7 @@ func _play_bow_effect(effect_data: Dictionary, target_global: Vector2, on_hit: C
 	var center := Vector2(8, 8)
 	projectile.global_position = global_position + center
 	projectile.launch(projectile_texture, target_global + center, grid_mover.tile_size, func():
-		_land_hit(effect_data, target_global, on_hit))
+		_land_hit(effect_data, target_global, on_hit), grid_mover.is_position_blocked)
 
 func _land_hit(effect_data: Dictionary, target_global: Vector2, on_hit: Callable) -> void:
 	var target_data: Dictionary = effect_data.get("target", {})

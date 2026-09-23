@@ -188,6 +188,20 @@
 	"id": "Dungeon_Maze_Hub_11x11",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 5,
+				"y": 6
+			}
+		},
+		{
+			"position": {
+				"x": 5,
+				"y": 4
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"dungeon"

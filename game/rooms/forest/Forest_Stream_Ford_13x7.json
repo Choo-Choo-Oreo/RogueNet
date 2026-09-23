@@ -127,6 +127,14 @@
 	"id": "Forest_Stream_Ford_13x7",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 9,
+				"y": 3
+			}
+		}
+	],
 	"tags": [
 		"combat",
 		"forest"

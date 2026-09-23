@@ -48,3 +48,18 @@ func play(data: Dictionary, direction: Vector2 = Vector2.RIGHT) -> void:
 		sprite.flip_h = false
 		sprite.rotation = -PI / 2.0 if direction.y < 0 else PI / 2.0
 	sprite.play("Play")
+
+## Same instancing/positioning use as play(), but for a strip where each
+## frame is a distinct static icon rather than a sequence (e.g. an alertness
+## indicator: one frame per AI state) -- holds frame_index still for
+## hold_seconds of wall-clock time instead of animating through frame_count
+## at data's speed, then frees itself the same as a normal effect finishing.
+func play_frame(data: Dictionary, frame_index: int, hold_seconds: float) -> void:
+	sprite.sprite_frames = SpriteFramesLoader.build({
+		"frame_size": [16, 16],
+		"animations": {"Play": data},
+	})
+	sprite.stop()
+	sprite.animation = "Play"
+	sprite.frame = frame_index
+	get_tree().create_timer(hold_seconds).timeout.connect(queue_free)

@@ -16,6 +16,20 @@ func _ready() -> void:
 	var placements := DungeonAssembler.generate_with_retry(rooms, NetworkSync.dungeon_seed, defines)
 	_paint(rooms, placements, floor_data, wall_data, registry)
 	MusicManager.play_for_biome(defines)
+	# LightMap is a later sibling in Dungeon.tscn -- its own _ready() (which
+	# builds _local) hasn't run yet at this point in the frame, so defer
+	# until every node's _ready() this frame is done.
+	_spawn_enemies.call_deferred(rooms, placements, defines)
+
+## Nothing is lit yet this early, so every spawn cell in the dungeon counts
+## as unseen and gets rolled -- exactly the "fill everything at generation
+## time" behavior EnemySpawning is meant to have at t=0.
+func _spawn_enemies(rooms: Dictionary, placements: Array, defines: Dictionary) -> void:
+	var light_map: LightMap = get_tree().current_scene.find_child("LightMap", true, false)
+	if light_map == null:
+		return
+	var spawn_cells := DungeonAssembler.collect_spawn_cells(rooms, placements)
+	EnemySpawning.spawn_in_unseen_cells(spawn_cells, defines.get("monsters", {}), light_map, get_tree().current_scene)
 
 func _paint(rooms: Dictionary, placements: Array, floor_data: TileMapLayer, wall_data: TileMapLayer, registry: TileTypeRegistry) -> void:
 	for p in placements:

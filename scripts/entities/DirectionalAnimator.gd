@@ -17,6 +17,11 @@ var _anim_idle_time := 0.0
 const IDLE_TIMEOUT := 0.15
 const IDLE_DISTANCE := 0.5
 
+## Flying enemies (bat, hamster_flying, hamster_demonic) hover rather than
+## stand, so their wings shouldn't ever freeze on a mid-flap frame the way a
+## grounded idle does -- set true by EnemyController from the enemy's JSON.
+var continuous_animation: bool = false
+
 # Some characters (eg. the dwarf) have real, separately-drawn left/right art; others (eg. the
 # knight) have one side image that gets mirrored. Play whichever the current sprite_frames provides.
 func _play_side(is_left: bool) -> void:
@@ -29,6 +34,8 @@ func _play_side(is_left: bool) -> void:
 		sprite.play("Side")
 
 func animate_idle() -> void:
+	if continuous_animation:
+		return
 	sprite.stop()
 
 func animate_moving(direction: Vector2) -> void:
@@ -39,10 +46,12 @@ func animate_moving(direction: Vector2) -> void:
 
 ## Same direction picking as animate_moving(), but held on one frame instead
 ## of looping the walk cycle -- for facing a target while stationary (e.g. an
-## enemy that's stopped adjacent to its target).
+## enemy that's stopped adjacent to its target). continuous_animation skips
+## the hold, same reasoning as animate_idle().
 func animate_facing(direction: Vector2) -> void:
 	animate_moving(direction)
-	sprite.stop()
+	if not continuous_animation:
+		sprite.stop()
 
 func animate_from_position(delta: float, current_position: Vector2) -> void:
 	var delta_pos := current_position - _last_anim_position

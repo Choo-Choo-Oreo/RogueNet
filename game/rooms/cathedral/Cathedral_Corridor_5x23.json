@@ -191,6 +191,14 @@
 		}
 	],
 	"role": "corridor",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 2,
+				"y": 20
+			}
+		}
+	],
 	"tags": [
 		"cathedral"
 	],

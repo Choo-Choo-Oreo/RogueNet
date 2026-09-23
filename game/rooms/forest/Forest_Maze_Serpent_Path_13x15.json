@@ -247,6 +247,20 @@
 	"id": "Forest_Maze_Serpent_Path_13x15",
 	"objects": [],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 6,
+				"y": 5
+			}
+		},
+		{
+			"position": {
+				"x": 11,
+				"y": 14
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"forest"

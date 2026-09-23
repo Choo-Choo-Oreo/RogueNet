@@ -77,6 +77,14 @@
 	"id": "Forest_Brook_Path_9x5",
 	"objects": [],
 	"role": "corridor",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 7,
+				"y": 2
+			}
+		}
+	],
 	"tags": [
 		"forest"
 	],

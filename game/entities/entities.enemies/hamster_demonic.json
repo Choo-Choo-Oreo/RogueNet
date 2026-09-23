@@ -6,7 +6,8 @@
 	"constitution": 1,
 	"cognitive": 3,
 	"resistances": {},
-	"speed_multiplier": 1.2,
+	"speed_tiles_per_second": 6.0,
+	"continuous_animation": true,
 	"attack": {
 		"amount": 2,
 		"type": "Entropia",

@@ -258,6 +258,20 @@
 		}
 	],
 	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 13,
+				"y": 9
+			}
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 1
+			}
+		}
+	],
 	"tags": [
 		"maze",
 		"forest"
