@@ -1,0 +1,18 @@
+{
+	"max_health": 20,
+	"strength": 1,
+	"dexterity": 1,
+	"constitution": 1,
+	"cognitive": 0,
+	"resistances": {},
+	"attack": {
+		"amount": 2,
+		"type": "Physical",
+		"interval": 0.5,
+		"effect": {
+			"texture": "res://resources/gfx/effects/effects.melee/physical.slashing.png",
+			"frame_count": 8,
+			"speed": 16.0
+		}
+	}
+}
