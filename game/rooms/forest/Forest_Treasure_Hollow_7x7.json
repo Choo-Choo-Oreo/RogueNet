@@ -101,9 +101,9 @@
 		[
 			"wall_forest",
 			"wall_forest",
-			"wall_door",
-			"wall_door",
-			"wall_door",
+			null,
+			null,
+			null,
 			"wall_forest",
 			"wall_forest"
 		],

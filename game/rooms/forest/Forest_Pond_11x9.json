@@ -204,7 +204,7 @@
 			"wall_forest",
 			"wall_forest",
 			"wall_forest",
-			"wall_door",
+			null,
 			"wall_forest",
 			"wall_forest",
 			"wall_forest",
@@ -238,7 +238,6 @@
 			"wall_forest"
 		],
 		[
-			"wall_door",
 			null,
 			null,
 			null,
@@ -248,10 +247,10 @@
 			null,
 			null,
 			null,
-			"wall_door"
+			null,
+			null
 		],
 		[
-			"wall_door",
 			null,
 			null,
 			null,
@@ -261,10 +260,10 @@
 			null,
 			null,
 			null,
-			"wall_door"
+			null,
+			null
 		],
 		[
-			"wall_door",
 			null,
 			null,
 			null,
@@ -274,7 +273,8 @@
 			null,
 			null,
 			null,
-			"wall_door"
+			null,
+			null
 		],
 		[
 			"wall_forest",

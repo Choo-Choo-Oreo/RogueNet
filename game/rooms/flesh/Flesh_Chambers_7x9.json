@@ -163,13 +163,13 @@
 			"wall_flesh"
 		],
 		[
-			"wall_door",
+			null,
 			null,
 			"wall_flesh",
 			null,
 			null,
 			null,
-			"wall_door"
+			null
 		],
 		[
 			"wall_flesh",
@@ -178,7 +178,7 @@
 			null,
 			"wall_flesh",
 			null,
-			"wall_door"
+			null
 		],
 		[
 			"wall_flesh",

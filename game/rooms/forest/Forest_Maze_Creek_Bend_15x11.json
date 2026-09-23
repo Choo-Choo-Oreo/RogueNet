@@ -242,7 +242,7 @@
 			"wall_forest",
 			"wall_forest",
 			"wall_forest",
-			"wall_door",
+			null,
 			"wall_forest",
 			"wall_forest",
 			"wall_forest",
@@ -251,8 +251,8 @@
 			"wall_forest",
 			"wall_forest",
 			"wall_forest",
-			"wall_door",
-			"wall_door",
+			null,
+			null,
 			"wall_forest"
 		],
 		[

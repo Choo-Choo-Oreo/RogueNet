@@ -123,8 +123,64 @@
 	"walls": [
 		[
 			"wall_forest",
-			"wall_door",
-			"wall_door",
+			null,
+			null,
+			"wall_forest",
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			null,
+			null,
+			"wall_forest",
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			"wall_forest",
+			null,
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			null,
+			null,
+			"wall_forest",
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			null,
+			"wall_forest",
+			"wall_forest",
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			null,
+			null,
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			"wall_forest",
+			null,
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			null,
+			null,
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			null,
+			"wall_forest",
 			"wall_forest",
 			"wall_forest"
 		],
@@ -139,62 +195,6 @@
 			"wall_forest",
 			"wall_forest",
 			null,
-			null,
-			"wall_forest"
-		],
-		[
-			"wall_forest",
-			null,
-			null,
-			"wall_forest",
-			"wall_forest"
-		],
-		[
-			"wall_forest",
-			null,
-			"wall_forest",
-			"wall_forest",
-			"wall_forest"
-		],
-		[
-			"wall_forest",
-			null,
-			null,
-			null,
-			"wall_forest"
-		],
-		[
-			"wall_forest",
-			"wall_forest",
-			null,
-			null,
-			"wall_forest"
-		],
-		[
-			"wall_forest",
-			null,
-			null,
-			null,
-			"wall_forest"
-		],
-		[
-			"wall_forest",
-			null,
-			"wall_forest",
-			"wall_forest",
-			"wall_forest"
-		],
-		[
-			"wall_forest",
-			null,
-			null,
-			"wall_forest",
-			"wall_forest"
-		],
-		[
-			"wall_forest",
-			"wall_forest",
-			"wall_door",
 			"wall_forest",
 			"wall_forest"
 		]

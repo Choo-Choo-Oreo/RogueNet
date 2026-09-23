@@ -2,12 +2,7 @@ extends Node
 
 @export var tile_initialize: TileInitialize
 
-const OPEN_CONNECTOR_TILE := "wall_door_open"
 const VOID_PADDING := 2
-
-## defines.json "doors": false (flesh, forest, cave...) leaves every joined 1-wide
-## opening as a plain gap instead of a door tile.
-var _doors_enabled := true
 
 func _ready() -> void:
 	var floor_data: TileMapLayer = tile_initialize.get_node("FloorData")
@@ -16,7 +11,6 @@ func _ready() -> void:
 
 	var biome := NetworkSync.dungeon_biome
 	var defines := DungeonAssembler.load_defines(biome)
-	_doors_enabled = defines.get("doors", true)
 	var rooms := DungeonAssembler.load_rooms(biome)
 	var placements := DungeonAssembler.generate_with_retry(rooms, NetworkSync.dungeon_seed, defines)
 	RoomGraph.build(rooms, placements)
@@ -54,7 +48,6 @@ func _warn_bad_spawn_cells(rooms: Dictionary, placements: Array) -> Dictionary:
 	var floor_data: TileMapLayer = tile_initialize.get_node("FloorData")
 	var wall_data: TileMapLayer = tile_initialize.get_node("WallData")
 	var registry: TileTypeRegistry = tile_initialize.tile_registry
-	var open_door_id := registry.get_id(OPEN_CONNECTOR_TILE)
 	var void_id := registry.get_id("floor_void")
 	for p in placements:
 		var room: Dictionary = rooms[p.room_id]
@@ -63,7 +56,7 @@ func _warn_bad_spawn_cells(rooms: Dictionary, placements: Array) -> Dictionary:
 			var world: Vector2i = p.offset + local
 			var problem := ""
 			var wall_id := wall_data.get_cell_source_id(world)
-			if wall_id != -1 and wall_id != open_door_id:
+			if wall_id != -1:
 				problem = "painted wall"
 			elif floor_data.get_cell_source_id(world) == void_id:
 				problem = "painted void"
@@ -114,7 +107,6 @@ func _paint(rooms: Dictionary, placements: Array, floor_data: TileMapLayer, wall
 					floor_data.set_cell(world, registry.get_id(floor_tile), Vector2i.ZERO)
 
 				var wall_name: Variant = room["walls"][y][x]
-				var alt := 0
 				if connector_of.has(local):
 					var run: Dictionary = connector_of[local]
 					var anchor := Connector.a(run)
@@ -129,26 +121,11 @@ func _paint(rooms: Dictionary, placements: Array, floor_data: TileMapLayer, wall
 						wall_name = null
 					elif locked.has(anchor):
 						wall_name = sealed_tile
-					elif Connector.width(run) > 1:
-						# A wide opening is a plain open gap, not a single door tile.
-						wall_name = null
-					elif _doors_enabled:
-						wall_name = OPEN_CONNECTOR_TILE
-						alt = DungeonAssembler.door_orientation_alt(DungeonAssembler._connector_dir(room, anchor))
 					else:
-						wall_name = null
-				elif wall_name == "wall_door":
-					if suppressed.has(local):
-						wall_name = null
-					elif locked.has(local):
-						wall_name = sealed_tile
-					elif _doors_enabled:
-						wall_name = OPEN_CONNECTOR_TILE
-						alt = DungeonAssembler.door_orientation_alt(DungeonAssembler._connector_dir(room, local))
-					else:
+						# An open joint is a plain gap; doors are a separate, later system.
 						wall_name = null
 				if wall_name != null:
-					wall_data.set_cell(world, registry.get_id(wall_name), Vector2i.ZERO, alt)
+					wall_data.set_cell(world, registry.get_id(wall_name), Vector2i.ZERO)
 
 		for c in room["connectors"]:
 			for local in Connector.cells(c):

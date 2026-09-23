@@ -1,5 +1,4 @@
 {
-	"doors": false,
 	"room_count": { "min": 20, "max": 30 },
 	"tag_weights": { "maze": 1.5, "corridor": 0.5 },
 	"monsters": { "wolf": 3, "bat": 1, "rat": 1, "leech": 0.1 },

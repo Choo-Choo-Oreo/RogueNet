@@ -148,32 +148,8 @@
 		[
 			"wall_wood_plank",
 			"wall_wood_plank",
-			"wall_door",
+			null,
 			"wall_wood_plank",
-			"wall_wood_plank",
-			"wall_wood_plank"
-		],
-		[
-			"wall_wood_plank",
-			null,
-			null,
-			null,
-			null,
-			"wall_wood_plank"
-		],
-		[
-			"wall_wood_plank",
-			null,
-			null,
-			null,
-			null,
-			"wall_wood_plank"
-		],
-		[
-			"wall_wood_plank",
-			"wall_wood_plank",
-			null,
-			null,
 			"wall_wood_plank",
 			"wall_wood_plank"
 		],
@@ -220,8 +196,32 @@
 		[
 			"wall_wood_plank",
 			"wall_wood_plank",
+			null,
+			null,
 			"wall_wood_plank",
-			"wall_door",
+			"wall_wood_plank"
+		],
+		[
+			"wall_wood_plank",
+			null,
+			null,
+			null,
+			null,
+			"wall_wood_plank"
+		],
+		[
+			"wall_wood_plank",
+			null,
+			null,
+			null,
+			null,
+			"wall_wood_plank"
+		],
+		[
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_wood_plank",
+			null,
 			"wall_wood_plank",
 			"wall_wood_plank"
 		]

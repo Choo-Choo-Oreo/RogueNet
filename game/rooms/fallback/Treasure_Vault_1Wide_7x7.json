@@ -132,7 +132,7 @@
 			"wall_smooth_stone",
 			"wall_smooth_stone",
 			"wall_smooth_stone",
-			"wall_door",
+			null,
 			"wall_smooth_stone",
 			"wall_smooth_stone",
 			"wall_smooth_stone"
@@ -156,13 +156,13 @@
 			"wall_smooth_stone"
 		],
 		[
-			"wall_door",
 			null,
 			null,
 			null,
 			null,
 			null,
-			"wall_door"
+			null,
+			null
 		],
 		[
 			"wall_smooth_stone",
@@ -186,7 +186,7 @@
 			"wall_smooth_stone",
 			"wall_smooth_stone",
 			"wall_smooth_stone",
-			"wall_door",
+			null,
 			"wall_smooth_stone",
 			"wall_smooth_stone",
 			"wall_smooth_stone"

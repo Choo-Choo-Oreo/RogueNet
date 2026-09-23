@@ -98,7 +98,7 @@ Example (`Dungeon_Brick_Arena_9x9.json`, trimmed):
 		{ "type": "torch", "position": { "x": 40.0, "y": 24.0 }, "rotation": 0.0 }
 	],
 	"floor": [ /* height rows x width cols, each cell a tile id string or null */ ],
-	"walls": [ /* same shape; a "wall_door" cell becomes a connector at that spot */ ]
+	"walls": [ /* same shape; leave connector cells null (no wall) */ ]
 }
 ```
 
@@ -109,10 +109,10 @@ Notes:
   run of cells from `a` to `b`, both included, `a` being the top/left end
   (`a` equal to `b` is a single-cell opening). Runs must sit on one edge and
   not include a corner. They only describe the opening -- doors are a separate
-  idea, still to come (see CONNECTORS_TRACKER.md). For now a `"wall_door"`
-  cell in `walls` at a connector is still what the painter turns into an
-  open/sealed door tile, and the assembler only joins single-cell
-  connectors; a wider run is loaded and validated but warned about.
+  idea, still to come (see CONNECTORS_TRACKER.md); there is no door tile now.
+  Two connectors join at equal widths, or at any width if either has
+  `"free": true`; cells of a wider run with no partner are sealed with wall.
+  Leave the connector cells' `walls` entries `null`; the painter places floor.
   Old files with `{ "position": ... }` connectors (format 1) still load: they
   are upgraded in memory.
 - `spawn_cells` are candidate enemy-spawn tiles for this room; skip cells

@@ -1,3 +1,4 @@
+class_name PlayerController
 extends CharacterBody2D
 
 @onready var grid_mover: GridMover = $GridMover
@@ -17,7 +18,6 @@ const DEFAULT_CHARACTER := "knight"
 const PLAYER_DATA_PATH := "res://game/entities/entities.players/player.json"
 const GHOST_DATA_PATH := "res://resources/gfx/players/player.protagonist/ghost/ghost.json"
 
-const ATTACK_EFFECT_SCENE := preload("res://scenes/entities/AttackEffect.tscn")
 const TILE_HOVER_DATA := {
 	"texture": "res://resources/gfx/effects/TileHover.png",
 	"frame_count": 2,
@@ -31,6 +31,11 @@ var _attacks: Array = []
 var active_slot: int = 0
 var _attack_timer := 0.0
 var _is_dead := false
+
+## True on this machine once its OWN player has died. A dead player's ghost
+## (and its light, see LightMap) is only shown to other ghosts, never to the
+## living. Static so LightMap can ask without holding a player reference.
+static var local_is_ghost := false
 
 func set_character(character_id: String) -> void:
 	var data := JsonOnloading.load_dict(CHARACTERS.get(character_id, CHARACTERS[DEFAULT_CHARACTER]))
@@ -55,6 +60,8 @@ func _on_died() -> void:
 		return
 	_is_dead = true
 	stats.is_ghost = true
+	if is_multiplayer_authority():
+		local_is_ghost = true
 	# Above every other entity (players/enemies sit at 1000), but below
 	# LightMap's own overlay sprites (2000/2001) so it doesn't fight lighting.
 	z_index = 1500
@@ -71,6 +78,8 @@ func _on_touch_area_body_exited(body: Node2D) -> void:
 
 func _ready() -> void:
 	set_multiplayer_authority(int(str(name)))
+	if is_multiplayer_authority():
+		local_is_ghost = false
 	add_to_group("protagonist")
 	_load_player_data()
 	stats.died.connect(_on_died)
@@ -90,6 +99,7 @@ func _process(delta: float) -> void:
 		_attack_timer = maxf(_attack_timer - delta, 0.0)
 		_update_tile_hover()
 	else:
+		visible = not stats.is_ghost or local_is_ghost
 		animator.animate_from_position(delta, global_position)
 
 ## Vector2i(pos / tile_size) truncates toward zero, which rounds the wrong
@@ -99,12 +109,18 @@ func _process(delta: float) -> void:
 func _to_tile(pos: Vector2) -> Vector2i:
 	return Vector2i(floori(pos.x / grid_mover.tile_size), floori(pos.y / grid_mover.tile_size))
 
+## The tile the player's centre is over. Attacks are allowed mid-step, and
+## global_position (the tile's top-left corner) would name the tile being left
+## for the whole step instead of the one the player is mostly on.
+func _own_tile() -> Vector2i:
+	return _to_tile(global_position + Vector2(grid_mover.tile_size, grid_mover.tile_size) / 2.0)
+
 ## Always on (both melee and ranged), but hidden over a wall/void tile --
 ## nothing is ever a legal target there, same restriction _try_attack()
 ## itself enforces below.
 func _update_tile_hover() -> void:
 	var ranged: bool = _current_attack().get("target_mode", "melee") == "ranged"
-	var own_tile := _to_tile(global_position)
+	var own_tile := _own_tile()
 	var tile := (
 		Vector2i((get_global_mouse_position() / grid_mover.tile_size).floor()) if ranged
 		else _melee_target_tile(own_tile)
@@ -182,9 +198,9 @@ func _try_attack() -> void:
 		_try_taunt(attack)
 		return
 	var amount: int = attack.get("amount", 0)
-	if _is_dead or grid_mover.is_moving or _attack_timer > 0.0 or amount <= 0:
+	if _is_dead or _attack_timer > 0.0 or amount <= 0:
 		return
-	var own_tile := _to_tile(global_position)
+	var own_tile := _own_tile()
 	var ranged: bool = attack.get("target_mode", "melee") == "ranged"
 	var target_tile: Vector2i
 	if ranged:
@@ -210,10 +226,9 @@ func _try_attack() -> void:
 		_play_bow_effect(effect_data, target_global, deal_damage)
 		return
 	if not effect_data.is_empty():
-		var effect: AttackEffect = ATTACK_EFFECT_SCENE.instantiate()
-		get_tree().current_scene.add_child(effect)
-		effect.global_position = AttackEffect.effect_position(global_position, target_global, effect_data)
-		effect.play(effect_data, target_global - global_position)
+		NetworkSync.play_effect(
+			AttackEffect.effect_position(global_position, target_global, effect_data),
+			effect_data, target_global - global_position)
 	deal_damage.call()
 
 ## Taunt slot ("kind": "taunt" in player.json): enemies within radius_tiles
@@ -233,10 +248,9 @@ func _try_taunt(attack: Dictionary) -> void:
 		attack.get("max_targets", 24))
 	var effect_data: Dictionary = attack.get("effect", {})
 	if not effect_data.is_empty():
-		var effect: AttackEffect = ATTACK_EFFECT_SCENE.instantiate()
-		get_tree().current_scene.add_child(effect)
-		effect.global_position = AttackEffect.effect_position(global_position, global_position, effect_data)
-		effect.play(effect_data, Vector2.RIGHT)
+		NetworkSync.play_effect(
+			AttackEffect.effect_position(global_position, global_position, effect_data),
+			effect_data, Vector2.RIGHT)
 
 const PROJECTILE_SCENE := preload("res://scenes/entities/ProjectileController.tscn")
 
@@ -248,10 +262,9 @@ func _play_bow_effect(effect_data: Dictionary, target_global: Vector2, on_hit: C
 	var direction := target_global - global_position
 	var attacker_data: Dictionary = effect_data.get("attacker", {})
 	if not attacker_data.is_empty():
-		var shot: AttackEffect = ATTACK_EFFECT_SCENE.instantiate()
-		get_tree().current_scene.add_child(shot)
-		shot.global_position = AttackEffect.effect_position(global_position, target_global, attacker_data)
-		shot.play(attacker_data, direction)
+		NetworkSync.play_effect(
+			AttackEffect.effect_position(global_position, target_global, attacker_data),
+			attacker_data, direction)
 	var projectile_texture: String = effect_data.get("projectile", "")
 	if projectile_texture == "":
 		_land_hit(effect_data, target_global, on_hit)
@@ -262,14 +275,14 @@ func _play_bow_effect(effect_data: Dictionary, target_global: Vector2, on_hit: C
 	projectile.global_position = global_position + center
 	projectile.launch(projectile_texture, target_global + center, grid_mover.tile_size, func():
 		_land_hit(effect_data, target_global, on_hit), grid_mover.is_position_blocked)
+	NetworkSync.share_projectile(projectile_texture, global_position + center, target_global + center)
 
 func _land_hit(effect_data: Dictionary, target_global: Vector2, on_hit: Callable) -> void:
 	var target_data: Dictionary = effect_data.get("target", {})
 	if not target_data.is_empty():
-		var hit: AttackEffect = ATTACK_EFFECT_SCENE.instantiate()
-		get_tree().current_scene.add_child(hit)
-		hit.global_position = AttackEffect.effect_position(global_position, target_global, target_data)
-		hit.play(target_data, target_global - global_position)
+		NetworkSync.play_effect(
+			AttackEffect.effect_position(global_position, target_global, target_data),
+			target_data, target_global - global_position)
 	on_hit.call()
 
 func _physics_process(_delta: float) -> void:

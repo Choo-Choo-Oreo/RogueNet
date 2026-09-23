@@ -316,10 +316,9 @@ func _perform_attack(target: Node2D) -> void:
 	NetworkSync.relay_player_hit(int(str(target.name)), _attack_amount, _attack_type)
 	if _attack_effect.is_empty():
 		return
-	var effect: AttackEffect = ATTACK_EFFECT_SCENE.instantiate()
-	get_tree().current_scene.add_child(effect)
-	effect.global_position = AttackEffect.effect_position(global_position, target.global_position, _attack_effect)
-	effect.play(_attack_effect, target.global_position - global_position)
+	NetworkSync.play_effect(
+		AttackEffect.effect_position(global_position, target.global_position, _attack_effect),
+		_attack_effect, target.global_position - global_position)
 
 ## Mirrors PlayerController's bow handling: an "attacker" shot effect plays
 ## here (cosmetic), a projectile travels to the target if the data has one,
@@ -330,10 +329,9 @@ func _perform_ranged_attack(target: Node2D) -> void:
 	var direction := target_global - global_position
 	var attacker_data: Dictionary = _attack_effect.get("attacker", {})
 	if not attacker_data.is_empty():
-		var shot: AttackEffect = ATTACK_EFFECT_SCENE.instantiate()
-		get_tree().current_scene.add_child(shot)
-		shot.global_position = AttackEffect.effect_position(global_position, target_global, attacker_data)
-		shot.play(attacker_data, direction)
+		NetworkSync.play_effect(
+			AttackEffect.effect_position(global_position, target_global, attacker_data),
+			attacker_data, direction)
 	var projectile_texture: String = _attack_effect.get("projectile", "")
 	if projectile_texture == "":
 		_land_ranged_hit(target, target_global)
@@ -343,6 +341,7 @@ func _perform_ranged_attack(target: Node2D) -> void:
 	projectile.global_position = global_position + Vector2(_size_px / 2.0, _size_px / 2.0)
 	projectile.launch(projectile_texture, target_global + Vector2(8, 8), grid_mover.tile_size, func():
 		_land_ranged_hit(target, target_global), grid_mover.is_position_blocked)
+	NetworkSync.share_projectile(projectile_texture, projectile.global_position, target_global + Vector2(8, 8))
 
 func _land_ranged_hit(target: Node2D, target_global: Vector2) -> void:
 	if not is_instance_valid(target):
@@ -350,10 +349,9 @@ func _land_ranged_hit(target: Node2D, target_global: Vector2) -> void:
 	NetworkSync.relay_player_hit(int(str(target.name)), _attack_amount, _attack_type)
 	var target_data: Dictionary = _attack_effect.get("target", {})
 	if not target_data.is_empty():
-		var hit: AttackEffect = ATTACK_EFFECT_SCENE.instantiate()
-		get_tree().current_scene.add_child(hit)
-		hit.global_position = AttackEffect.effect_position(global_position, target_global, target_data)
-		hit.play(target_data, target_global - global_position)
+		NetworkSync.play_effect(
+			AttackEffect.effect_position(global_position, target_global, target_data),
+			target_data, target_global - global_position)
 
 ## One-shot icon above the enemy's head on any alert-state change -- which of
 ## Alertness.png's 3 frames shows depends on the state just entered (see

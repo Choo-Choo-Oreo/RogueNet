@@ -114,14 +114,6 @@
 	"walls": [
 		[
 			"wall_smooth_stone",
-			"wall_door",
-			"wall_door",
-			"wall_door",
-			"wall_door",
-			"wall_smooth_stone"
-		],
-		[
-			"wall_smooth_stone",
 			null,
 			null,
 			null,
@@ -178,10 +170,18 @@
 		],
 		[
 			"wall_smooth_stone",
-			"wall_door",
-			"wall_door",
-			"wall_door",
-			"wall_door",
+			null,
+			null,
+			null,
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_smooth_stone",
+			null,
+			null,
+			null,
+			null,
 			"wall_smooth_stone"
 		]
 	],

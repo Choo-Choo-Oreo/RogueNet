@@ -106,12 +106,6 @@
 	"walls": [
 		[
 			"wall_cobble_brick",
-			"wall_door",
-			"wall_door",
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
 			null,
 			null,
 			"wall_cobble_brick"
@@ -154,8 +148,14 @@
 		],
 		[
 			"wall_cobble_brick",
-			"wall_door",
-			"wall_door",
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
 			"wall_cobble_brick"
 		]
 	],

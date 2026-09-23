@@ -237,19 +237,6 @@
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave",
-			"wall_door",
-			"wall_door",
-			"wall_rough_cave",
-			"wall_rough_cave",
-			"wall_rough_cave",
-			"wall_rough_cave"
-		],
-		[
-			"wall_rough_cave",
-			"wall_rough_cave",
-			"wall_rough_cave",
-			"wall_rough_cave",
-			null,
 			null,
 			null,
 			"wall_rough_cave",
@@ -260,6 +247,19 @@
 		[
 			"wall_rough_cave",
 			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
 			null,
 			null,
 			null,
@@ -271,7 +271,6 @@
 			"wall_rough_cave"
 		],
 		[
-			"wall_door",
 			null,
 			null,
 			null,
@@ -281,10 +280,11 @@
 			null,
 			null,
 			null,
-			"wall_door"
+			null,
+			null
 		],
 		[
-			"wall_door",
+			null,
 			null,
 			null,
 			"wall_wood_plank",
@@ -294,7 +294,7 @@
 			"wall_wood_plank",
 			null,
 			null,
-			"wall_door"
+			null
 		],
 		[
 			"wall_rough_cave",
@@ -310,7 +310,7 @@
 			"wall_rough_cave"
 		],
 		[
-			"wall_door",
+			null,
 			null,
 			null,
 			"wall_wood_plank",
@@ -320,10 +320,9 @@
 			"wall_wood_plank",
 			null,
 			null,
-			"wall_door"
+			null
 		],
 		[
-			"wall_door",
 			null,
 			null,
 			null,
@@ -333,7 +332,8 @@
 			null,
 			null,
 			null,
-			"wall_door"
+			null,
+			null
 		],
 		[
 			"wall_rough_cave",
@@ -367,8 +367,8 @@
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave",
-			"wall_door",
-			"wall_door",
+			null,
+			null,
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave",

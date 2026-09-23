@@ -328,8 +328,8 @@
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave",
-			"wall_door",
-			"wall_door",
+			null,
+			null,
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave",
@@ -508,7 +508,7 @@
 			"wall_rough_cave",
 			"wall_rough_cave",
 			null,
-			"wall_door"
+			null
 		],
 		[
 			"wall_rough_cave",
@@ -565,7 +565,7 @@
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave",
-			"wall_door",
+			null,
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave",

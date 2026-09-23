@@ -179,7 +179,6 @@
 			"wall_rough_cave"
 		],
 		[
-			"wall_door",
 			null,
 			null,
 			null,
@@ -189,10 +188,10 @@
 			null,
 			null,
 			null,
-			"wall_door"
+			null,
+			null
 		],
 		[
-			"wall_door",
 			null,
 			null,
 			null,
@@ -202,7 +201,8 @@
 			null,
 			null,
 			null,
-			"wall_door"
+			null,
+			null
 		],
 		[
 			"wall_rough_cave",

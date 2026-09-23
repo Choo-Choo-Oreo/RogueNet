@@ -122,18 +122,10 @@ static func load_defines(biome: String) -> Dictionary:
 	return defines
 
 static func dominant_wall_tile(room: Dictionary) -> String:
-	return _dominant_tile(room["walls"], "wall_door")
+	return _dominant_tile(room["walls"], "")
 
 static func dominant_floor_tile(room: Dictionary) -> String:
 	return _dominant_tile(room["floor"], "")
-
-static func door_orientation_alt(dir: int) -> int:
-	match dir:
-		Dir.SOUTH: return 0
-		Dir.WEST: return TileSetAtlasSource.TRANSFORM_TRANSPOSE | TileSetAtlasSource.TRANSFORM_FLIP_H
-		Dir.NORTH: return TileSetAtlasSource.TRANSFORM_FLIP_H | TileSetAtlasSource.TRANSFORM_FLIP_V
-		Dir.EAST: return TileSetAtlasSource.TRANSFORM_TRANSPOSE | TileSetAtlasSource.TRANSFORM_FLIP_V
-	return 0
 
 static func _rotate_grid(grid: Array, width: int, height: int) -> Array:
 	var rotated: Array = []

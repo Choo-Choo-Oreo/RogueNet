@@ -25,7 +25,6 @@ const ROOM_BROWSER_ACCENT_COLOR := Color(0.4, 0.75, 0.95)
 const ROOM_THUMB_VOID_COLOR := Color(0.1, 0.1, 0.12, 1.0)
 const ROOM_THUMB_FLOOR_COLOR := Color(0.55, 0.55, 0.62, 1.0)
 const ROOM_THUMB_WALL_COLOR := Color(0.22, 0.22, 0.25, 1.0)
-const ROOM_THUMB_DOOR_COLOR := Color(0.85, 0.65, 0.25, 1.0)
 ## Keyword -> color for thumbnail tinting, checked against a tile's name
 ## (e.g. "floor_dirt" matches "dirt") so different materials read as
 ## different colors instead of every floor/wall looking flat grey. Matched
@@ -975,7 +974,7 @@ func _build_room_thumbnail(data: Dictionary, thumb_size: int = ROOM_THUMB_SIZE) 
 			var color := ROOM_THUMB_VOID_COLOR
 			if wall_value != null and str(wall_value) != "":
 				var wall_name := str(wall_value)
-				color = ROOM_THUMB_DOOR_COLOR if wall_name.contains("door") else _thumbnail_material_color(wall_name, ROOM_THUMB_WALL_COLOR, true)
+				color = _thumbnail_material_color(wall_name, ROOM_THUMB_WALL_COLOR, true)
 			elif floor_value != null and str(floor_value) != "":
 				color = _thumbnail_material_color(str(floor_value), ROOM_THUMB_FLOOR_COLOR, false)
 			img.set_pixel(x, y, color)
@@ -1128,9 +1127,7 @@ func _restore_grids(new_floor: Array, new_walls: Array) -> void:
 				floor_data_layer.set_cell(Vector2i(x, y), palette[f]["source_id"], Vector2i.ZERO)
 			var w = walls_names[y][x]
 			if w != null and palette.has(w):
-				var cell := Vector2i(x, y)
-				var alt := _door_orientation_alt(cell) if DOOR_TILE_NAMES.has(w) else 0
-				wall_data_layer.set_cell(cell, palette[w]["source_id"], Vector2i.ZERO, alt)
+				wall_data_layer.set_cell(Vector2i(x, y), palette[w]["source_id"], Vector2i.ZERO)
 	tile_renderer.refresh_all()
 	_update_validation_display()
 
@@ -1508,8 +1505,6 @@ func _handle_select_input(event: InputEvent) -> void:
 				if not multi_selected_indices.has(hit):
 					_set_multi_selection([hit])
 				_begin_group_drag()
-			elif _toggle_door_at(_mouse_to_cell()):
-				pass
 			elif _try_open_spawner_settings(_mouse_to_cell()):
 				pass
 			else:
@@ -1531,20 +1526,6 @@ func _handle_select_input(event: InputEvent) -> void:
 			queue_redraw()
 		elif group_drag_active:
 			_update_group_drag()
-
-func _toggle_door_at(cell: Vector2i) -> bool:
-	if cell.x < 0 or cell.x >= width or cell.y < 0 or cell.y >= height:
-		return false
-	var current = walls_names[cell.y][cell.x]
-	if current != "wall_door" and current != "wall_door_open":
-		return false
-	var new_value: String = "wall_door_open" if current == "wall_door" else "wall_door"
-	_apply_tile("wall", cell, new_value)
-	_push_undo(
-		func(): _apply_tile("wall", cell, current),
-		func(): _apply_tile("wall", cell, new_value)
-	)
-	return true
 
 func _set_multi_selection(indices: Array) -> void:
 	multi_selected_indices.clear()
@@ -1739,22 +1720,6 @@ func _mouse_to_cell() -> Vector2i:
 	var pos := get_global_mouse_position() - WORLD_OFFSET
 	return Vector2i(floori(pos.x / TILE_SIZE), floori(pos.y / TILE_SIZE))
 
-const DOOR_TILE_NAMES := ["wall_door", "wall_door_open"]
-
-## Matches DungeonAssembler._connector_dir's boundary-facing rule, so a door
-## painted here looks identical to how DungeonPainter renders it at runtime.
-func _door_orientation_alt(cell: Vector2i) -> int:
-	var dir: int
-	if cell.y == 0:
-		dir = DungeonAssembler.Dir.NORTH
-	elif cell.y == height - 1:
-		dir = DungeonAssembler.Dir.SOUTH
-	elif cell.x == 0:
-		dir = DungeonAssembler.Dir.WEST
-	else:
-		dir = DungeonAssembler.Dir.EAST
-	return DungeonAssembler.door_orientation_alt(dir)
-
 func _apply_tile(layer: String, cell: Vector2i, value) -> void:
 	if layer == "floor":
 		if value == null:
@@ -1766,8 +1731,7 @@ func _apply_tile(layer: String, cell: Vector2i, value) -> void:
 		if value == null:
 			wall_data_layer.erase_cell(cell)
 		else:
-			var alt := _door_orientation_alt(cell) if DOOR_TILE_NAMES.has(value) else 0
-			wall_data_layer.set_cell(cell, palette[value]["source_id"], Vector2i.ZERO, alt)
+			wall_data_layer.set_cell(cell, palette[value]["source_id"], Vector2i.ZERO)
 		walls_names[cell.y][cell.x] = value
 	_queue_tile_refresh()
 

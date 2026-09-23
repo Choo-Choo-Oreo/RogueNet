@@ -13,7 +13,6 @@ extends Node
 @onready var wall_data: TileMapLayer = get_tree().current_scene.find_child("WallData", true, false)
 @onready var floor_data: TileMapLayer = get_tree().current_scene.find_child("FloorData", true, false)
 
-@onready var _open_door_source_id: int = TileTypeRegistry.new().get_id("wall_door_open")
 @onready var _void_source_id: int = TileTypeRegistry.new().get_id("floor_void")
 
 var is_moving := false
@@ -109,7 +108,7 @@ func _is_blocked(target_global: Vector2) -> bool:
 		return false
 	var cell: Vector2i = wall_data.local_to_map(wall_data.to_local(target_global))
 	var source_id := wall_data.get_cell_source_id(cell)
-	if source_id != -1 and source_id != _open_door_source_id:
+	if source_id != -1:
 		return true
 	return _floor_source_at(target_global) == _void_source_id
 

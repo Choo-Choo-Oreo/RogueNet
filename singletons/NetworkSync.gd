@@ -477,6 +477,89 @@ func receive_enemy_damage(enemy_id: int, amount: int, type: String) -> void:
 	if enemy and enemy.has_method("take_damage"):
 		enemy.take_damage(amount, type)
 
+# Cosmetic effects (sword swings, bites, arrows, magic) are only ever drawn by
+# whoever's attack it is, so every one goes through play_effect / play_projectile:
+# it plays locally, then tells everyone else to play the same thing. A client's
+# effect goes to the host first (clients only talk to the host), which plays it,
+# then forwards it to every other peer. The sender is never sent its own copy.
+const ATTACK_EFFECT_SCENE := preload("res://scenes/entities/AttackEffect.tscn")
+const PROJECTILE_SCENE := preload("res://scenes/entities/ProjectileController.tscn")
+
+func play_effect(pos: Vector2, data: Dictionary, direction: Vector2) -> void:
+	_spawn_effect(pos, data, direction)
+	if multiplayer.multiplayer_peer == null:
+		return
+	if multiplayer.is_server():
+		_forward_effect(pos, data, direction, 1)
+	else:
+		request_effect.rpc_id(1, pos, data, direction)
+
+func _spawn_effect(pos: Vector2, data: Dictionary, direction: Vector2) -> void:
+	var scene := get_tree().current_scene
+	if scene == null:
+		return
+	var effect: AttackEffect = ATTACK_EFFECT_SCENE.instantiate()
+	scene.add_child(effect)
+	effect.global_position = pos
+	effect.play(data, direction)
+
+func _forward_effect(pos: Vector2, data: Dictionary, direction: Vector2, skip_id: int) -> void:
+	for peer_id in multiplayer.get_peers():
+		if peer_id != skip_id:
+			receive_effect.rpc_id(peer_id, pos, data, direction)
+
+@rpc("any_peer", "unreliable")
+func request_effect(pos: Vector2, data: Dictionary, direction: Vector2) -> void:
+	if not multiplayer.is_server():
+		return
+	_spawn_effect(pos, data, direction)
+	_forward_effect(pos, data, direction, multiplayer.get_remote_sender_id())
+
+@rpc("authority", "unreliable")
+func receive_effect(pos: Vector2, data: Dictionary, direction: Vector2) -> void:
+	_spawn_effect(pos, data, direction)
+
+## Visual-only copy of a projectile on every other peer -- the shooter's own
+## projectile is the one whose arrival applies damage and plays the hit effect
+## (which is shared separately), so the copy just flies and vanishes.
+func share_projectile(texture_path: String, from: Vector2, to: Vector2) -> void:
+	if multiplayer.multiplayer_peer == null:
+		return
+	if multiplayer.is_server():
+		_forward_projectile(texture_path, from, to, 1)
+	else:
+		request_projectile.rpc_id(1, texture_path, from, to)
+
+func _forward_projectile(texture_path: String, from: Vector2, to: Vector2, skip_id: int) -> void:
+	for peer_id in multiplayer.get_peers():
+		if peer_id != skip_id:
+			receive_projectile.rpc_id(peer_id, texture_path, from, to)
+
+@rpc("any_peer", "unreliable")
+func request_projectile(texture_path: String, from: Vector2, to: Vector2) -> void:
+	if not multiplayer.is_server():
+		return
+	_spawn_projectile_copy(texture_path, from, to)
+	_forward_projectile(texture_path, from, to, multiplayer.get_remote_sender_id())
+
+@rpc("authority", "unreliable")
+func receive_projectile(texture_path: String, from: Vector2, to: Vector2) -> void:
+	_spawn_projectile_copy(texture_path, from, to)
+
+func _spawn_projectile_copy(texture_path: String, from: Vector2, to: Vector2) -> void:
+	var scene := get_tree().current_scene
+	if scene == null:
+		return
+	var projectile: ProjectileController = PROJECTILE_SCENE.instantiate()
+	scene.add_child(projectile)
+	projectile.global_position = from
+	# Stops at walls like the real one, using whichever local player's map check.
+	var blocked := func(_pos: Vector2) -> bool: return false
+	var local_player := scene.get_node_or_null("Player/" + str(multiplayer.get_unique_id()))
+	if local_player != null and local_player.get("grid_mover") != null:
+		blocked = local_player.grid_mover.is_position_blocked
+	projectile.launch(texture_path, to, 16.0, func(): pass, blocked)
+
 # Taunt ("Rawr", hotbar slot 4): enemy AI only runs on the host, so a client's
 # cast is just a request to the host, which forces the nearest enemies in
 # radius onto the caster. Clients need no reply -- they never run enemy AI.
