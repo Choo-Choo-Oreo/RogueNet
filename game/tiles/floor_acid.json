@@ -1,6 +1,8 @@
 {
 	"tile_name": "floor_acid",
-	"atlas_texture": "res://resources/gfx/tileset/floor_acid_lit.tres",
+	"atlas_texture": "res://resources/gfx/tileset/floor_acid.png",
+	"normal_texture": "res://resources/gfx/tileset/floor_acid_normal.png",
+	"specular_color": [0.75, 0.75, 0.75, 1],
 	"sort_order": 7,
 	"terrain": "difficult",
 	"overlay_texture": "res://resources/gfx/tileset/overlay_acid_bubbles.png",

@@ -1,6 +1,8 @@
 {
 	"tile_name": "wall_cobble_brick",
-	"atlas_texture": "res://resources/gfx/tileset/wall_cobble_brick_lit.tres",
+	"atlas_texture": "res://resources/gfx/tileset/wall_cobble_brick.png",
+	"normal_texture": "res://resources/gfx/tileset/wall_cobble_brick_normal.png",
+	"specular_color": [0.05, 0.05, 0.05, 1],
 	"sort_order": 100,
 	"category": "wall",
 	"marker_color": [0.545098, 0.266667, 0.266667, 1]

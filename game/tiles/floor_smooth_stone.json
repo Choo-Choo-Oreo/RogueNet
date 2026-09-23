@@ -1,6 +1,8 @@
 {
 	"tile_name": "floor_smooth_stone",
-	"atlas_texture": "res://resources/gfx/tileset/floor_smooth_stone_lit.tres",
+	"atlas_texture": "res://resources/gfx/tileset/floor_smooth_stone.png",
+	"normal_texture": "res://resources/gfx/tileset/floor_smooth_stone_normal.png",
+	"specular_color": [0.1, 0.1, 0.1, 1],
 	"sort_order": 1,
 	"marker_color": [0.690196, 0.690196, 0.690196, 1]
 }

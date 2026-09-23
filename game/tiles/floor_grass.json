@@ -1,6 +1,8 @@
 {
 	"tile_name": "floor_grass",
-	"atlas_texture": "res://resources/gfx/tileset/floor_grass_lit.tres",
+	"atlas_texture": "res://resources/gfx/tileset/floor_grass.png",
+	"normal_texture": "res://resources/gfx/tileset/floor_grass_normal.png",
+	"specular_color": [0.05, 0.05, 0.05, 1],
 	"sort_order": 3,
 	"marker_color": [0.356863, 0.54902, 0.227451, 1]
 }

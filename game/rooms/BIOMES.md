@@ -2,6 +2,10 @@
 
 Added 2026-09-21.
 
+Design briefs (what each biome should feel like to walk through) are in
+`README.md` here and in each biome folder's `README.md`. This file is the
+technical side.
+
 A biome is one self-contained room pool. One dive should draw all its
 rooms from one biome, so run A feels different from run B. Each biome is
 a subfolder here and holds a full set the assembler can build a dungeon

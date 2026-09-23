@@ -42,7 +42,7 @@ const TERRAIN_NAMES := {
 
 func load_from_data(data: Dictionary) -> void:
 	tile_name = data.get("tile_name", "")
-	atlas_texture = _load_texture(data.get("atlas_texture", ""))
+	atlas_texture = _load_atlas_texture(data)
 	overlay_texture = _load_texture(data.get("overlay_texture", ""))
 	sort_order = data.get("sort_order", 0)
 	category = CATEGORY_NAMES.get(data.get("category", ""), Category.FLOOR)
@@ -61,6 +61,22 @@ func load_from_file(path: String) -> void:
 
 func _load_texture(path: String) -> Texture2D:
 	return load(path) if path != "" else null
+
+# Lit tiles give a diffuse PNG and a normal-map PNG as two separate paths
+# instead of pointing at a pre-made CanvasTexture .tres -- built here instead
+# so the JSON stays plain data, not a reference to a hardcoded resource file.
+func _load_atlas_texture(data: Dictionary) -> Texture2D:
+	var diffuse_path: String = data.get("atlas_texture", "")
+	if diffuse_path == "":
+		return null
+	var normal_path: String = data.get("normal_texture", "")
+	if normal_path == "":
+		return _load_texture(diffuse_path)
+	var texture := CanvasTexture.new()
+	texture.diffuse_texture = _load_texture(diffuse_path)
+	texture.normal_texture = _load_texture(normal_path)
+	texture.specular_color = _color_from_array(data.get("specular_color", []), Color.WHITE)
+	return texture
 
 func _color_from_array(arr: Array, fallback: Color) -> Color:
 	return Color(arr[0], arr[1], arr[2], arr[3] if arr.size() > 3 else 1.0) if arr.size() >= 3 else fallback

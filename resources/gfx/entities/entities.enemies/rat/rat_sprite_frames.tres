@@ -29,7 +29,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_front1")
 }],
 "loop": 1,
-"name": &"front",
+"name": &"Front",
 "speed": 20.0
 }, {
 "frames": [{
@@ -40,6 +40,17 @@ animations = [{
 "texture": SubResource("AtlasTexture_side1")
 }],
 "loop": 1,
-"name": &"side",
+"name": &"Side",
+"speed": 20.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_front0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_front1")
+}],
+"loop": 1,
+"name": &"Back",
 "speed": 20.0
 }]

@@ -1,6 +1,8 @@
 {
 	"tile_name": "floor_dirt",
-	"atlas_texture": "res://resources/gfx/tileset/floor_dirt_lit.tres",
+	"atlas_texture": "res://resources/gfx/tileset/floor_dirt.png",
+	"normal_texture": "res://resources/gfx/tileset/floor_dirt_normal.png",
+	"specular_color": [0.02, 0.02, 0.02, 1],
 	"category": "floor",
 	"sort_order": 2,
 	"marker_color": [0.545098, 0.352941, 0.168627, 1]
