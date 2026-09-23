@@ -37,38 +37,6 @@ region = Rect2(32, 0, 16, 16)
 atlas = ExtResource("2_south")
 region = Rect2(48, 0, 16, 16)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_east0"]
-atlas = ExtResource("3_east")
-region = Rect2(0, 0, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_east1"]
-atlas = ExtResource("3_east")
-region = Rect2(16, 0, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_east2"]
-atlas = ExtResource("3_east")
-region = Rect2(32, 0, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_east3"]
-atlas = ExtResource("3_east")
-region = Rect2(48, 0, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_east4"]
-atlas = ExtResource("3_east")
-region = Rect2(64, 0, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_east5"]
-atlas = ExtResource("3_east")
-region = Rect2(80, 0, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_east6"]
-atlas = ExtResource("3_east")
-region = Rect2(96, 0, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_east7"]
-atlas = ExtResource("3_east")
-region = Rect2(112, 0, 16, 16)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_west0"]
 atlas = ExtResource("4_west")
 region = Rect2(0, 0, 16, 16)
@@ -99,6 +67,38 @@ region = Rect2(96, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_west7"]
 atlas = ExtResource("4_west")
+region = Rect2(112, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_east0"]
+atlas = ExtResource("3_east")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_east1"]
+atlas = ExtResource("3_east")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_east2"]
+atlas = ExtResource("3_east")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_east3"]
+atlas = ExtResource("3_east")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_east4"]
+atlas = ExtResource("3_east")
+region = Rect2(64, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_east5"]
+atlas = ExtResource("3_east")
+region = Rect2(80, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_east6"]
+atlas = ExtResource("3_east")
+region = Rect2(96, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_east7"]
+atlas = ExtResource("3_east")
 region = Rect2(112, 0, 16, 16)
 
 [resource]
@@ -139,35 +139,6 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_east0")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_east1")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_east2")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_east3")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_east4")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_east5")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_east6")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_east7")
-}],
-"loop": 1,
-"name": &"SideRight",
-"speed": 20.0
-}, {
-"frames": [{
-"duration": 1.0,
 "texture": SubResource("AtlasTexture_west0")
 }, {
 "duration": 1.0,
@@ -193,5 +164,34 @@ animations = [{
 }],
 "loop": 1,
 "name": &"SideLeft",
+"speed": 20.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_east0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_east1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_east2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_east3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_east4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_east5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_east6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_east7")
+}],
+"loop": 1,
+"name": &"SideRight",
 "speed": 20.0
 }]

@@ -148,17 +148,24 @@ def canopy_tile(seed):
                     tile[y][x] = FOR["shade"]
     return tile
 
-def trunk_strip(seed):
-    """16x8 face: a solid palisade of trunks with grain, knots and root flare. No daylight between them."""
+def trunk_strip(seed, halves=False):
+    """16x8 face: a solid palisade of trunks with grain, knots and root flare. No daylight between them.
+    halves=True puts a crease at x=0 and x=8, so 8-wide quarters from different variants can sit side by side."""
     rnd = random.Random(seed)
     strip = [[FOR["bark"]] * T for _ in range(Q)]
-    x = 0
     trunks = []
-    while x < T:
-        w = rnd.choice((3, 3, 4, 4))
-        if x + w > T:
-            w = T - x
-        trunks.append((x, w)); x += w
+    if halves:
+        for x0 in (0, 8):
+            x = x0
+            for w in rnd.choice(((4, 4), (3, 5), (5, 3))):
+                trunks.append((x, w)); x += w
+    else:
+        x = 0
+        while x < T:
+            w = rnd.choice((3, 3, 4, 4))
+            if x + w > T:
+                w = T - x
+            trunks.append((x, w)); x += w
     for x0, w in trunks:
         for y in range(Q):
             for i in range(w):
@@ -167,7 +174,7 @@ def trunk_strip(seed):
                     c = FOR["gap"]                              # crease between trunks
                 elif i == 1:
                     c = FOR["barklit"]                          # lit side
-                elif i == w - 1 and w == 4:
+                elif i == w - 1 and w >= 4:
                     c = FOR["bark"] if y % 3 else FOR["barkmid"]  # shadow side, faint grain
                 else:
                     c = FOR["barkmid"] if (y + i) % 4 == 0 else FOR["bark"]   # vertical grain dashes
@@ -192,9 +199,9 @@ def build_forest(variants=4):
     src = Image.open(ART + "wall_forest.png").convert("RGBA")
     px = src.load()
     out = Image.new("RGBA", (64, 64 * variants), (0, 0, 0, 0)); op = out.load()
-    trunks = trunk_strip(3)
     for v in range(variants):
         canopy = canopy_tile(11 + v)
+        trunks = trunk_strip(3) if v == 0 else trunk_strip(20 + v, halves=True)   # variant 0 kept as approved
         for cy in range(4):
             for cx in range(4):
                 mask = CELL_TO_MASK.get((cx, cy), 0)

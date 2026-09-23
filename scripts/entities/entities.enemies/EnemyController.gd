@@ -6,12 +6,28 @@ extends CharacterBody2D
 
 @onready var grid_mover: GridMover = $GridMover
 @onready var animator: DirectionalAnimator = $DirectionalAnimator
+@onready var stats: EntityStats = $EntityStats
 
 @export var wander_radius_tiles: int = 3
 @export var wander_interval := 1.4
 
 var _home_position: Vector2 = Vector2.ZERO
 var _wander_timer := 0.0
+
+const ENEMY_TYPES := {
+	"rat": {
+		"sprite_frames": "res://resources/gfx/entities/entities.enemies/rat/rat_sprite_frames.tres",
+		"stats": "res://game/entities/entities.enemies/rat.json",
+	},
+}
+
+func set_enemy_type(enemy_id: String) -> void:
+	var type_data: Dictionary = ENEMY_TYPES[enemy_id]
+	var data := JsonOnloading.load_dict(type_data["stats"])
+	stats.load_from_data(data)
+	$AnimatedSprite2D.sprite_frames = load(type_data["sprite_frames"])
+	var size_px: float = data.get("size_tiles", 1) * grid_mover.tile_size
+	($CollisionShape2D.shape as RectangleShape2D).size = Vector2(size_px, size_px)
 
 func _ready() -> void:
 	_home_position = global_position
