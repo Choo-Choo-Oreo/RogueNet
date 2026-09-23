@@ -82,18 +82,18 @@
 	],
 	"walls": [
 		[
-			"wall_forest_dark",
-			"wall_forest_dark",
-			"wall_forest_dark",
-			"wall_forest_dark",
-			"wall_forest_dark",
-			"wall_forest_dark",
-			"wall_forest_dark",
-			"wall_forest_dark",
-			"wall_forest_dark"
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest"
 		],
 		[
-			"wall_forest_dark",
+			"wall_forest",
 			null,
 			null,
 			null,
@@ -101,7 +101,7 @@
 			null,
 			null,
 			null,
-			"wall_forest_dark"
+			"wall_forest"
 		],
 		[
 			"wall_door",
@@ -115,7 +115,7 @@
 			"wall_door"
 		],
 		[
-			"wall_forest_dark",
+			"wall_forest",
 			null,
 			null,
 			null,
@@ -123,18 +123,18 @@
 			null,
 			null,
 			null,
-			"wall_forest_dark"
+			"wall_forest"
 		],
 		[
-			"wall_forest_dark",
-			"wall_forest_dark",
-			"wall_forest_dark",
-			"wall_forest_dark",
-			"wall_forest_dark",
-			"wall_forest_dark",
-			"wall_forest_dark",
-			"wall_forest_dark",
-			"wall_forest_dark"
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest"
 		]
 	],
 	"width": 9
