@@ -3,12 +3,12 @@ extends Node2D
 class_name TileInitialize
 
 const SHADING_MATERIAL := preload("res://resources/shaders/normal_lit_material.tres")
-const TILE_TYPES_DIR := "res://resources/tiles/"
+const TILE_TYPES_DIR := "res://game/tiles/"
 const FRAME_TIME := 0.1
 const OVERLAY_SHADER := preload("res://resources/shaders/overlay_anim.gdshader")
 
 @export var tile_types: Array[TileType] = []
-@export var tile_registry: TileTypeRegistry
+var tile_registry := TileTypeRegistry.new()
 
 var glow_sources := {}
 
@@ -32,10 +32,10 @@ func _discover_tile_types() -> Array[TileType]:
 	dir.list_dir_begin()
 	var file_name := dir.get_next()
 	while file_name != "":
-		if file_name.ends_with(".tres"):
-			var resource := load(TILE_TYPES_DIR + file_name)
-			if resource is TileType:
-				discovered.append(resource)
+		if file_name.ends_with(".json"):
+			var tile_type := TileType.new()
+			tile_type.load_from_file(TILE_TYPES_DIR + file_name)
+			discovered.append(tile_type)
 		file_name = dir.get_next()
 	dir.list_dir_end()
 	return discovered

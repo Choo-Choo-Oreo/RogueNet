@@ -8,7 +8,6 @@
 [ext_resource type="Script" uid="uid://cmo0pwrdjr2df" path="res://scripts/cells/tiles/DualGridRender.gd" id="4_4podp"]
 [ext_resource type="Script" uid="uid://rvs3q27d6u0p" path="res://scripts/cells/tiles/TileInitialize.gd" id="4_tileinit"]
 [ext_resource type="Texture2D" path="res://resources/gfx/tileset/floor_dirt_lit.tres" id="5_l7141"]
-[ext_resource type="Resource" uid="uid://dyam0g3j5dqar" path="res://resources/tiles/tile_type_registry.tres" id="5_tileregistry"]
 [ext_resource type="Texture2D" path="res://resources/gfx/tileset/floor_flesh_lit.tres" id="6_8fvan"]
 [ext_resource type="Script" uid="uid://cyxbvo2hgsk2t" path="res://scripts/dungeon/DungeonPainter.gd" id="6_dungeonpainter"]
 [ext_resource type="Texture2D" path="res://resources/gfx/tileset/floor_grass_lit.tres" id="7_h8pbr"]
@@ -930,7 +929,6 @@ sources/0 = SubResource("TileSetAtlasSource_1bbvx")
 
 [node name="TileInitialize" type="Node2D" parent="." unique_id=2006553040]
 script = ExtResource("4_tileinit")
-tile_registry = ExtResource("5_tileregistry")
 
 [node name="FloorData" type="TileMapLayer" parent="TileInitialize" unique_id=2071969112]
 tile_set = SubResource("TileSet_57mhk")

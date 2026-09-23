@@ -1,0 +1,10 @@
+{
+	"tile_name": "wall_door",
+	"atlas_texture": "res://resources/gfx/objects/Door.png",
+	"sort_order": 100,
+	"category": "wall",
+	"shape": "static",
+	"atlas_coords": [0, 0],
+	"marker_color": [0.454902, 0.360784, 0.239216, 1],
+	"orientable": true
+}

@@ -1,0 +1,7 @@
+{
+	"tile_name": "wall_cobble_brick",
+	"atlas_texture": "res://resources/gfx/tileset/wall_cobble_brick_lit.tres",
+	"sort_order": 100,
+	"category": "wall",
+	"marker_color": [0.545098, 0.266667, 0.266667, 1]
+}

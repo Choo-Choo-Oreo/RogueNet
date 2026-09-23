@@ -1,0 +1,9 @@
+{
+	"tile_name": "floor_acid",
+	"atlas_texture": "res://resources/gfx/tileset/floor_acid_lit.tres",
+	"sort_order": 7,
+	"terrain": "difficult",
+	"overlay_texture": "res://resources/gfx/tileset/overlay_acid_bubbles.png",
+	"overlay_density": 0.2,
+	"marker_color": [0.309804, 0.478431, 0.0705882, 1]
+}

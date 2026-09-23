@@ -13,8 +13,8 @@ extends Node
 @onready var wall_data: TileMapLayer = get_tree().current_scene.find_child("WallData", true, false)
 @onready var floor_data: TileMapLayer = get_tree().current_scene.find_child("FloorData", true, false)
 
-@onready var _open_door_source_id: int = load("res://resources/tiles/tile_type_registry.tres").get_id("wall_door_open")
-@onready var _void_source_id: int = load("res://resources/tiles/tile_type_registry.tres").get_id("floor_void")
+@onready var _open_door_source_id: int = TileTypeRegistry.new().get_id("wall_door_open")
+@onready var _void_source_id: int = TileTypeRegistry.new().get_id("floor_void")
 
 var is_moving := false
 var facing_direction := Vector2.DOWN
@@ -25,15 +25,16 @@ func _ready() -> void:
 	_build_floor_speeds()
 
 func _build_floor_speeds() -> void:
-	var registry: TileTypeRegistry = load("res://resources/tiles/tile_type_registry.tres")
-	var dir := DirAccess.open("res://resources/tiles/")
+	var registry := TileTypeRegistry.new()
+	var dir := DirAccess.open("res://game/tiles/")
 	if dir == null:
 		return
 	for file_name in dir.get_files():
-		if not file_name.ends_with(".tres"):
+		if not file_name.ends_with(".json"):
 			continue
-		var tile := load("res://resources/tiles/" + file_name) as TileType
-		if tile != null and tile.category == TileType.Category.FLOOR:
+		var tile := TileType.new()
+		tile.load_from_file("res://game/tiles/" + file_name)
+		if tile.category == TileType.Category.FLOOR:
 			_floor_speed[registry.get_id(tile.tile_name)] = tile.move_speed()
 
 func _floor_source_at(target_global: Vector2) -> int:

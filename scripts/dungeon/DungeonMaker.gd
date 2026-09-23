@@ -409,7 +409,7 @@ func _style_mode_button(button: Button, color: Color) -> void:
 	button.add_theme_color_override("font_hover_pressed_color", Color(1, 1, 1))
 
 ## Built from the TileRenderer's children rather than tile_palette.json.
-## TileInitialize makes one child per TileType .tres in resources/tiles/ (it
+## TileInitialize makes one child per TileType .json in game/tiles/ (it
 ## runs before this script's _ready), so a new tile shows up here by itself.
 func _load_palette() -> Dictionary:
 	var result := {}

@@ -1,0 +1,7 @@
+{
+	"tile_name": "wall_flesh",
+	"atlas_texture": "res://resources/gfx/tileset/wall_flesh_lit.tres",
+	"sort_order": 100,
+	"category": "wall",
+	"marker_color": [0.47, 0.08, 0.08, 1]
+}

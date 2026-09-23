@@ -1,0 +1,7 @@
+{
+	"tile_name": "floor_flesh",
+	"atlas_texture": "res://resources/gfx/tileset/floor_flesh_lit.tres",
+	"sort_order": 4,
+	"terrain": "rough",
+	"marker_color": [0.74902, 0.184314, 0.184314, 1]
+}

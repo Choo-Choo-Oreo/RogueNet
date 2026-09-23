@@ -1,0 +1,6 @@
+{
+	"tile_name": "floor_wood_planks",
+	"atlas_texture": "res://resources/gfx/tileset/floor_wood_planks_lit.tres",
+	"sort_order": 1,
+	"marker_color": [0.662745, 0.454902, 0.286275, 1]
+}

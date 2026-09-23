@@ -1,0 +1,7 @@
+{
+	"tile_name": "wall_wood_plank",
+	"atlas_texture": "res://resources/gfx/tileset/wall_wood_plank_lit.tres",
+	"sort_order": 100,
+	"category": "wall",
+	"marker_color": [0.55, 0.35, 0.22, 1]
+}

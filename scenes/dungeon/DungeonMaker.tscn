@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://b0fhl288f3d2s" path="res://scripts/dungeon/DungeonMaker.gd" id="1_u5pr7"]
 [ext_resource type="Script" uid="uid://rvs3q27d6u0p" path="res://scripts/cells/tiles/TileInitialize.gd" id="2_tinit"]
-[ext_resource type="Resource" uid="uid://dyam0g3j5dqar" path="res://resources/tiles/tile_type_registry.tres" id="3_reg01"]
 [ext_resource type="Texture2D" uid="uid://cukpeoxqsmyde" path="res://resources/gfx/placeholders/flat-color.png" id="4_p0k0o"]
 [ext_resource type="Script" uid="uid://cmo0pwrdjr2df" path="res://scripts/cells/tiles/DualGridRender.gd" id="5_kgqa5"]
 [ext_resource type="Texture2D" uid="uid://c4g37l6wvgs0p" path="res://resources/gfx/tileset/floor_dirt.png" id="6_yifbx"]
@@ -281,7 +280,6 @@ script = ExtResource("1_u5pr7")
 [node name="TileRenderer" type="Node2D" parent="." unique_id=1259110351]
 position = Vector2(16, 550)
 script = ExtResource("2_tinit")
-tile_registry = ExtResource("3_reg01")
 
 [node name="FloorData" type="TileMapLayer" parent="TileRenderer" unique_id=141529315]
 visible = false

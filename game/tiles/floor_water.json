@@ -1,0 +1,7 @@
+{
+	"tile_name": "floor_water",
+	"atlas_texture": "res://resources/gfx/tileset/floor_water_lit.tres",
+	"sort_order": 5,
+	"terrain": "difficult",
+	"marker_color": [0.356863, 0.431373, 0.882353, 1]
+}

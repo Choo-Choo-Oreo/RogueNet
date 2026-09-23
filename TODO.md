@@ -3,7 +3,7 @@
 Legend: ✓ done, ✗ not done. Statuses were checked against the files (not by
 running the game), so anything about how it looks or plays is unconfirmed.
 
-Last verified: 2026-09-21 (after commit `3f9aaa4`, plus uncommitted lighting, normal-map and flesh variant work; only the look of the light and flesh was seen in game by Orea).
+Last verified: 2026-09-22 (after commit `df9152d`, plus uncommitted tile-registry/TileType JSON conversion, rat/EnemyController groundwork, and player/enemy movement-component split; tile conversion confirmed working in game by Orea, the rest untested).
 
 ## Small cleanups
 - [✓] Unused `_pieces()` in `DualGridRender.gd` removed

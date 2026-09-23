@@ -1,0 +1,7 @@
+{
+	"tile_name": "wall_forest",
+	"atlas_texture": "res://resources/gfx/tileset/wall_forest_lit.tres",
+	"sort_order": 100,
+	"category": "wall",
+	"marker_color": [0.14, 0.3, 0.18, 1]
+}

@@ -1,0 +1,7 @@
+{
+	"tile_name": "barrier_forest_dense",
+	"atlas_texture": "res://resources/gfx/tileset/barrier_forest_dense_lit.tres",
+	"sort_order": 100,
+	"category": "wall",
+	"marker_color": [0.08, 0.2, 0.12, 1]
+}

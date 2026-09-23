@@ -1,0 +1,7 @@
+{
+	"tile_name": "wall_rough_cave",
+	"atlas_texture": "res://resources/gfx/tileset/wall_rough_cave_lit.tres",
+	"sort_order": 100,
+	"category": "wall",
+	"marker_color": [0.36, 0.31, 0.27, 1]
+}

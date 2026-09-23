@@ -1,0 +1,7 @@
+{
+	"tile_name": "floor_dirt",
+	"atlas_texture": "res://resources/gfx/tileset/floor_dirt_lit.tres",
+	"category": "floor",
+	"sort_order": 2,
+	"marker_color": [0.545098, 0.352941, 0.168627, 1]
+}

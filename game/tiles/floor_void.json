@@ -1,0 +1,6 @@
+{
+	"tile_name": "floor_void",
+	"atlas_texture": "res://resources/gfx/tileset/floor_void.png",
+	"sort_order": -1,
+	"marker_color": [0.101961, 0.101961, 0.101961, 1]
+}

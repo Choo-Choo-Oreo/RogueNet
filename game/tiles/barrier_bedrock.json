@@ -1,0 +1,7 @@
+{
+	"tile_name": "barrier_bedrock",
+	"atlas_texture": "res://resources/gfx/tileset/barrier_bedrock_lit.tres",
+	"sort_order": 100,
+	"category": "wall",
+	"marker_color": [0.22, 0.2, 0.25, 1]
+}
