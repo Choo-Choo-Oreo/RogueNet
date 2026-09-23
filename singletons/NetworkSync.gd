@@ -402,6 +402,98 @@ func receive_return_to_town() -> void:
 	dive_members.clear()
 	get_tree().change_scene_to_file("res://scenes/ui/town/MainTown.tscn")
 
+# --- Enemies: host decides identity/position and tells everyone else,
+# same "one decider, everyone else is told" split as the dungeon seed above.
+
+func broadcast_enemy_spawns(spawns: Array) -> void:
+	if spawns.is_empty():
+		return
+	for peer_id in multiplayer.get_peers():
+		receive_spawn_enemies.rpc_id(peer_id, spawns)
+
+@rpc("authority", "reliable")
+func receive_spawn_enemies(spawns: Array) -> void:
+	var scene := get_tree().current_scene
+	if scene == null:
+		return
+	var enemies_root := scene.get_node_or_null("Enemies")
+	if enemies_root == null:
+		return
+	for spawn in spawns:
+		if enemies_root.has_node(str(spawn["id"])):
+			continue
+		EnemySpawning.spawn_one(spawn["id"], spawn["type"], spawn["tile"], enemies_root)
+
+# Host relays every frame it moves an owned enemy (unreliable, same as player
+# position) -- clients never run enemy AI at all, they only ever render
+# whatever the host last told them.
+func relay_enemy_state(enemy_id: int, pos: Vector2, state: int) -> void:
+	for peer_id in multiplayer.get_peers():
+		receive_enemy_state.rpc_id(peer_id, enemy_id, pos, state)
+
+@rpc("authority", "unreliable_ordered")
+func receive_enemy_state(enemy_id: int, pos: Vector2, state: int) -> void:
+	var scene := get_tree().current_scene
+	if scene == null:
+		return
+	var enemy := scene.get_node_or_null("Enemies/" + str(enemy_id))
+	if enemy and enemy.has_method("receive_network_state"):
+		enemy.receive_network_state(pos, state)
+
+# A client's attack reports the hit to the host (only the host may ever
+# actually apply it); the host itself applies straight away. Either path
+# lands on _resolve_enemy_hit, which applies once and relays the same
+# amount/type to every peer so each one's own EntityStats independently
+# reaches the same health and fires its own died signal -- no separate
+# despawn message needed, every peer just queue_frees itself once its own
+# copy hits 0.
+func report_enemy_hit(enemy_id: int, amount: int, type: String) -> void:
+	if multiplayer.multiplayer_peer == null or multiplayer.is_server():
+		_resolve_enemy_hit(enemy_id, amount, type)
+	else:
+		request_enemy_hit.rpc_id(1, enemy_id, amount, type)
+
+@rpc("any_peer", "reliable")
+func request_enemy_hit(enemy_id: int, amount: int, type: String) -> void:
+	if not multiplayer.is_server():
+		return
+	_resolve_enemy_hit(enemy_id, amount, type)
+
+func _resolve_enemy_hit(enemy_id: int, amount: int, type: String) -> void:
+	var scene := get_tree().current_scene
+	if scene:
+		var enemy := scene.get_node_or_null("Enemies/" + str(enemy_id))
+		if enemy and enemy.has_method("take_damage"):
+			enemy.take_damage(amount, type)
+	for peer_id in multiplayer.get_peers():
+		receive_enemy_damage.rpc_id(peer_id, enemy_id, amount, type)
+
+@rpc("authority", "reliable")
+func receive_enemy_damage(enemy_id: int, amount: int, type: String) -> void:
+	var scene := get_tree().current_scene
+	if scene == null:
+		return
+	var enemy := scene.get_node_or_null("Enemies/" + str(enemy_id))
+	if enemy and enemy.has_method("take_damage"):
+		enemy.take_damage(amount, type)
+
+# Enemy-on-player damage only ever originates on the host (only the host ever
+# runs enemy AI/attacks), so this is a straight broadcast, no any_peer report
+# step needed the way enemy hits have one.
+func relay_player_hit(player_id: int, amount: int, type: String) -> void:
+	receive_player_damage(player_id, amount, type)
+	for peer_id in multiplayer.get_peers():
+		receive_player_damage.rpc_id(peer_id, player_id, amount, type)
+
+@rpc("authority", "reliable")
+func receive_player_damage(player_id: int, amount: int, type: String) -> void:
+	var scene := get_tree().current_scene
+	if scene == null:
+		return
+	var player := scene.get_node_or_null("Player/" + str(player_id))
+	if player and player.has_method("take_damage"):
+		player.take_damage(amount, type)
+
 func _broadcast_members(mission_id: int) -> void:
 	var mission: Dictionary = missions[mission_id]
 	var members: Array = mission["members"]

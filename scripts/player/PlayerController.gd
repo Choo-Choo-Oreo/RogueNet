@@ -198,7 +198,11 @@ func _try_attack() -> void:
 	var deal_damage := func():
 		for enemy in get_tree().get_nodes_in_group("antagonist"):
 			if _to_tile(enemy.global_position) == target_tile:
-				enemy.take_damage(amount, attack.get("type", ""))
+				# Enemies are host-owned (EnemySpawning.spawn_one) -- route
+				# through NetworkSync so the host actually applies it and
+				# tells every peer, instead of mutating this client's own
+				# possibly-non-authoritative copy directly.
+				NetworkSync.report_enemy_hit(int(str(enemy.name)), amount, attack.get("type", ""))
 	if effect_data.has("attacker") or effect_data.has("target"):
 		_play_bow_effect(effect_data, target_global, deal_damage)
 		return

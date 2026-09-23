@@ -39,12 +39,21 @@ func note_hit() -> void:
 
 ## Per-enemy-type toggle, e.g. rat_blind's "senses": {"sight": false} JSON
 ## key -- keys match this node's own property names (touch/sight/hearing/
-## smell/taste), so this stays generic as more senses come online.
+## smell/taste). A plain bool is shorthand for "enabled"; a dictionary (e.g.
+## rat_toothless's "senses": {"sight": {"range_tiles": 20.0}}) instead sets
+## whichever @export properties of that sense it names, so this stays
+## generic as more senses -- and more per-sense tuning -- come online.
 func apply_overrides(overrides: Dictionary) -> void:
 	for key: String in overrides:
 		var sense: Node = get(key)
-		if sense:
-			sense.enabled = overrides[key]
+		if sense == null:
+			continue
+		var value = overrides[key]
+		if value is Dictionary:
+			for prop: String in value:
+				sense.set(prop, value[prop])
+		else:
+			sense.enabled = value
 
 ## origin/is_blocked describe the owning entity's position and tile-blocked
 ## check (e.g. EnemyController's GridMover) -- kept as parameters rather

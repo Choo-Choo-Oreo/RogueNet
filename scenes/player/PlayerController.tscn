@@ -28,28 +28,28 @@ enabled = false
 zoom = Vector2(5, 5)
 script = ExtResource("6_mousecam")
 
-[node name="GridMover" type="Node" parent="."]
+[node name="GridMover" type="Node" parent="." unique_id=83685804]
 script = ExtResource("3_gridmv")
 
-[node name="DirectionalAnimator" type="Node" parent="."]
+[node name="DirectionalAnimator" type="Node" parent="." unique_id=1552640299]
 script = ExtResource("4_diranim")
 
-[node name="NetworkPositionRelay" type="Node" parent="."]
+[node name="NetworkPositionRelay" type="Node" parent="." unique_id=1798290834]
 script = ExtResource("5_netrelay")
 
-[node name="EntityStats" type="Node" parent="."]
+[node name="EntityStats" type="Node" parent="." unique_id=1236672822]
 script = ExtResource("7_stats")
 
-[node name="TouchArea" type="Area2D" parent="."]
+[node name="TouchArea" type="Area2D" parent="." unique_id=269712287]
 position = Vector2(8, 8)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TouchArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TouchArea" unique_id=311213141]
 shape = SubResource("CircleShape2D_touch")
 
-[node name="TileHoverHighlight" type="AnimatedSprite2D" parent="."]
+[node name="TileHoverHighlight" type="AnimatedSprite2D" parent="." unique_id=130645482]
 visible = false
-z_as_relative = false
 z_index = 500
+z_as_relative = false
 
 [connection signal="body_entered" from="TouchArea" to="." method="_on_touch_area_body_entered"]
 [connection signal="body_exited" from="TouchArea" to="." method="_on_touch_area_body_exited"]

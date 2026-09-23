@@ -26,10 +26,11 @@ func _ready() -> void:
 ## time" behavior EnemySpawning is meant to have at t=0.
 func _spawn_enemies(rooms: Dictionary, placements: Array, defines: Dictionary) -> void:
 	var light_map: LightMap = get_tree().current_scene.find_child("LightMap", true, false)
-	if light_map == null:
+	var enemies_root := get_tree().current_scene.get_node_or_null("Enemies")
+	if light_map == null or enemies_root == null:
 		return
 	var spawn_cells := DungeonAssembler.collect_spawn_cells(rooms, placements)
-	EnemySpawning.spawn_in_unseen_cells(spawn_cells, defines.get("monsters", {}), light_map, get_tree().current_scene)
+	EnemySpawning.spawn_in_unseen_cells(spawn_cells, defines.get("monsters", {}), light_map, enemies_root)
 
 func _paint(rooms: Dictionary, placements: Array, floor_data: TileMapLayer, wall_data: TileMapLayer, registry: TileTypeRegistry) -> void:
 	for p in placements:

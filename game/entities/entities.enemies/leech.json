@@ -1,0 +1,30 @@
+{
+	"size_tiles": 1,
+	"max_health": 5,
+	"strength": 1,
+	"dexterity": 0,
+	"constitution": 2,
+	"cognitive": 0,
+	"resistances": {},
+	"speed_tiles_per_second": 2.5,
+	"attack": {
+		"amount": 1,
+		"type": "Physical",
+		"interval": 0.7,
+		"effect": { "texture": "res://resources/gfx/effects/effects.melee/physical.biting.png", "frame_count": 10, "speed": 20.0 }
+	},
+	"senses": {
+		"_comment": "TODO senses: meant to hunt by Taste and Touch only. SenseTaste is a stub that never detects yet, so with sight off this enemy is currently Touch-only (ambush on contact). Flags here only toggle 'enabled' on the sense nodes.",
+		"sight": false,
+		"taste": true
+	},
+	"sprite_frames": {
+		"frame_size": [16, 16],
+		"animations": {
+			"Front": { "texture": "res://resources/gfx/entities/entities.enemies/leech/leech/Leech-Down.png", "frame_count": 3, "speed": 20.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.enemies/leech/leech/Leech-Up.png", "frame_count": 3, "speed": 20.0 },
+			"SideLeft": { "texture": "res://resources/gfx/entities/entities.enemies/leech/leech/Leech-Left.png", "frame_count": 3, "speed": 20.0 },
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.enemies/leech/leech/Leech-Right.png", "frame_count": 3, "speed": 20.0 }
+		}
+	}
+}

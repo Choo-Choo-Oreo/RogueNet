@@ -55,6 +55,45 @@ func is_tile_blocked(tile: Vector2i) -> bool:
 func is_position_blocked(global_pos: Vector2) -> bool:
 	return _is_blocked(global_pos)
 
+## Shared per-frame index backing is_tile_occupied() -- rescanning every
+## protagonist/antagonist on every single query was O(n) per call, and with
+## hundreds of enemies now calling this unthrottled every frame (see
+## EnemyController._try_direct_step, added once pathfinding itself got
+## throttled), that added up to O(n^2) per frame and became the new
+## bottleneck. Building the tile -> occupants map once per frame instead
+## (Godot 4 script statics, shared by every GridMover instance regardless of
+## which one triggers the rebuild) turns it back into O(n) total. Assumes
+## every mover uses the same tile_size, true everywhere in this project
+## today.
+static var _occupancy_frame: int = -1
+static var _occupancy_index: Dictionary = {}  # Vector2i -> Array[Node2D]
+
+func _tile_occupants(tile: Vector2i) -> Array:
+	var frame := Engine.get_process_frames()
+	if frame != _occupancy_frame:
+		_occupancy_frame = frame
+		_occupancy_index.clear()
+		for group in ["protagonist", "antagonist"]:
+			for body: Node2D in get_tree().get_nodes_in_group(group):
+				if "stats" in body and body.stats != null and body.stats.is_ghost:
+					continue
+				var body_tile := Vector2i(floori(body.global_position.x / tile_size), floori(body.global_position.y / tile_size))
+				if not _occupancy_index.has(body_tile):
+					_occupancy_index[body_tile] = []
+				_occupancy_index[body_tile].append(body)
+	return _occupancy_index.get(tile, [])
+
+## True if some other creature (any protagonist or antagonist besides this
+## mover's own body) is currently standing on `tile` -- lets a mover refuse
+## to step onto an already-occupied tile instead of stacking on it. Ghost
+## players (PlayerController.die()) are intangible and don't count, same as
+## they already don't count as attack targets or collide with enemies.
+func is_tile_occupied(tile: Vector2i) -> bool:
+	for body in _tile_occupants(tile):
+		if body != _body:
+			return true
+	return false
+
 func _is_blocked(target_global: Vector2) -> bool:
 	if wall_data == null:
 		return false

@@ -54,6 +54,11 @@ Claude build the game for them. Most of the team is new to programming.
   code"), point to the official docs:
   https://docs.godotengine.org/en/stable/getting_started/step_by_step/index.html
 
+## Adding game content
+See [README.md](../README.md) for the data-driven content formats
+(enemies, rooms, biome config, tiles) — most new content goes in
+`game/`/`resources/` as JSON + art, not code.
+
 ## Tech stack
 - Godot Engine, .NET-enabled build (supports C#, but the team mostly
   works in GDScript in practice — see note above). The technical lead

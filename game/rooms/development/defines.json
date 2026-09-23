@@ -1,0 +1,5 @@
+{
+	"room_count": { "min": 2, "max": 3 },
+	"monsters": { "rat_toothless": 1 },
+	"music": "res://resources/sfx/music/Groovy.mp3"
+}
