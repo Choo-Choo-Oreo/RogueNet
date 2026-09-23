@@ -5,6 +5,8 @@
 [resource]
 script = ExtResource("1_reg01")
 ids = {
+"barrier_bedrock": 17,
+"barrier_forest_dense": 18,
 "floor_acid": 15,
 "floor_dirt": 0,
 "floor_flesh": 1,
@@ -23,4 +25,4 @@ ids = {
 "wall_smooth_stone": 7,
 "wall_wood_plank": 12
 }
-next_id = 17
+next_id = 19

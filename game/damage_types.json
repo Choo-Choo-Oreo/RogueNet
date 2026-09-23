@@ -1,0 +1,21 @@
+[
+	"Physical",
+	"Physical.Bludgeoning",
+	"Physical.Piercing",
+	"Physical.Slashing",
+	"Physical.Strangling",
+	"Arcana",
+	"Arcana.Ordo",
+	"Arcana.Ordo.Frigid",
+	"Arcana.Ordo.Solum",
+	"Arcana.Ordo.Plenum",
+	"Arcana.Entropia",
+	"Arcana.Entropia.Zeal",
+	"Arcana.Entropia.Fluentia",
+	"Arcana.Entropia.Inanis",
+	"Necrotic",
+	"Necrotic.Perditio",
+	"Necrotic.Perditio.Torpor",
+	"Necrotic.Perditio.Virulentia",
+	"Necrotic.Perditio.Ruina"
+]
