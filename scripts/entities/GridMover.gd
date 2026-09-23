@@ -43,6 +43,12 @@ func _floor_source_at(target_global: Vector2) -> int:
 	var cell: Vector2i = floor_data.local_to_map(floor_data.to_local(target_global))
 	return floor_data.get_cell_source_id(cell)
 
+## Tile-coordinate version of the same wall/void/door check, for grid
+## algorithms (LineOfSight, LightFlood) that work in cell units rather than
+## world positions.
+func is_tile_blocked(tile: Vector2i) -> bool:
+	return _is_blocked(Vector2(tile) * tile_size)
+
 func _is_blocked(target_global: Vector2) -> bool:
 	if wall_data == null:
 		return false
@@ -65,8 +71,9 @@ func move_one_tile(direction: Vector2) -> void:
 	# first half of the step (still mostly on the old tile) uses the old
 	# tile's speed, and only the second half uses the new tile's.
 	var midpoint: Vector2 = origin_global.lerp(target_global, 0.5)
-	var origin_speed: float = _floor_speed.get(_floor_source_at(origin_global), 1.0)
-	var target_speed: float = _floor_speed.get(_floor_source_at(target_global), 1.0)
+	var ignore_terrain: bool = "stats" in _body and _body.stats != null and _body.stats.is_ghost
+	var origin_speed: float = 1.0 if ignore_terrain else _floor_speed.get(_floor_source_at(origin_global), 1.0)
+	var target_speed: float = 1.0 if ignore_terrain else _floor_speed.get(_floor_source_at(target_global), 1.0)
 	var half_time := move_time / 2.0
 
 	var tween := create_tween()

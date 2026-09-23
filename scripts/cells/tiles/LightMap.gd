@@ -3,13 +3,10 @@ class_name LightMap
 
 const CELL := 8
 const TILE := 16
-const DIRS := [
-	Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT,
-	Vector2i(1, -1), Vector2i(1, 1), Vector2i(-1, 1), Vector2i(-1, -1),
-]
-const STRAIGHT := 10
-const DIAGONAL := 14
-const PATH_SLACK := 1.1
+const DIRS := LightFlood.DIRS
+const STRAIGHT := LightFlood.STRAIGHT
+const DIAGONAL := LightFlood.DIAGONAL
+const PATH_SLACK := LightFlood.PATH_SLACK
 
 @export var tile_initialize: TileInitialize
 @export var player_root: Node
@@ -213,45 +210,15 @@ func _paint_glow() -> void:
 
 func _flood(light: Light, origin: Vector2i, is_local: bool) -> void:
 	_blocked_cache.clear()
-	var reached := light.reached
-	reached.clear()
 	var half := int(_side / 2.0)
 	light.top_left = origin - Vector2i(half, half)
 	if is_local:
 		_sprite.position = Vector2(light.top_left * CELL)
 		_sprite.material.set_shader_parameter("window_origin", _sprite.position)
 	var radius_cells := light_radius / CELL
-	var max_cost := int(radius_cells * STRAIGHT * PATH_SLACK)
-	var cost := {origin: 0}
-	var buckets: Array = []
-	buckets.resize(max_cost + DIAGONAL + 1)
-	buckets[0] = [origin]
-	for level in range(max_cost + 1):
-		if buckets[level] == null:
-			continue
-		for cell: Vector2i in buckets[level]:
-			if cost[cell] != level:
-				continue
-			if Vector2(cell - origin).length() > radius_cells + 1.0:
-				continue
-			reached.append(cell)
-			if cell != origin and _is_blocked(cell):
-				continue
-			for dir in DIRS:
-				var step := DIAGONAL if dir.x != 0 and dir.y != 0 else STRAIGHT
-				if step == DIAGONAL and (_is_blocked(cell + Vector2i(dir.x, 0)) or _is_blocked(cell + Vector2i(0, dir.y))):
-					continue
-				var next: Vector2i = cell + dir
-				var next_cost: int = level + step
-				if next_cost > max_cost:
-					continue
-				if cost.has(next) and cost[next] <= next_cost:
-					continue
-				cost[next] = next_cost
-				if buckets[next_cost] == null:
-					buckets[next_cost] = []
-				buckets[next_cost].append(next)
-	light.cost = cost
+	var flood := LightFlood.flood(origin, radius_cells, _is_blocked)
+	light.cost = flood["cost"]
+	light.reached = flood["reached"]
 
 func _flood_glow() -> void:
 	_glow_cost.clear()

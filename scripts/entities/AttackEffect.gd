@@ -1,0 +1,40 @@
+class_name AttackEffect
+extends Node2D
+
+## One-shot animated effect (sword swing, rat bite, etc.) -- spawned at a
+## position, plays its animation once, then frees itself. data matches the
+## "effect" key inside an entity's "attack" JSON block: {"texture",
+## "frame_count", "speed"}, reusing SpriteFramesLoader's animation format.
+
+@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
+
+## "midpoint" (default) centers the effect between attacker and target -- a
+## melee swing or bite happens between the two. "attacker" anchors it on the
+## attacker's own tile instead: a ranged shot fires FROM the attacker, it
+## isn't drawn hovering out at the target.
+static func effect_position(attacker_global: Vector2, target_global: Vector2, data: Dictionary) -> Vector2:
+	if data.get("anchor", "midpoint") == "attacker":
+		return attacker_global
+	return (attacker_global + target_global) / 2.0
+
+## direction points from attacker to target. The art is drawn attacking
+## left-to-right (attacker on the left, swinging right), so that's the
+## rotation/flip baseline: right needs neither, left is the same swing
+## mirrored, and up/down are that same rightward swing rotated 90 degrees
+## instead of separate art. Bucketed to the nearest of the 4 cardinal cases,
+## same as DirectionalAnimator's own facing logic.
+func play(data: Dictionary, direction: Vector2 = Vector2.RIGHT) -> void:
+	var one_shot: Dictionary = data.duplicate()
+	one_shot["loop"] = false
+	sprite.sprite_frames = SpriteFramesLoader.build({
+		"frame_size": [16, 16],
+		"animations": {"Play": one_shot},
+	})
+	sprite.animation_finished.connect(queue_free)
+	if abs(direction.x) >= abs(direction.y):
+		sprite.flip_h = direction.x < 0
+		sprite.rotation = 0.0
+	else:
+		sprite.flip_h = false
+		sprite.rotation = -PI / 2.0 if direction.y < 0 else PI / 2.0
+	sprite.play("Play")

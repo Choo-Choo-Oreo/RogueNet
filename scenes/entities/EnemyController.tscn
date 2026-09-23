@@ -1,3 +1,56 @@
 [gd_scene format=3 uid="uid://b8k478hmlnajq"]
 
-[node name="EnemyController" type="Node2D" unique_id=1776296842]
+[ext_resource type="Script" uid="uid://cqbpl4sebpma" path="res://scripts/entities/entities.enemies/EnemyController.gd" id="1_enemyctrl"]
+[ext_resource type="Script" uid="uid://tmoiodv062hv" path="res://scripts/entities/GridMover.gd" id="3_gridmv"]
+[ext_resource type="Script" uid="uid://cd6pygvdtxtny" path="res://scripts/entities/DirectionalAnimator.gd" id="4_diranim"]
+[ext_resource type="Script" uid="uid://038opyx3dij2" path="res://scripts/entities/EntityStats.gd" id="5_stats"]
+[ext_resource type="Script" uid="uid://t7rmg4m258p7" path="res://scripts/entities/entities.senses/EnemySenses.gd" id="6_senses"]
+[ext_resource type="Script" uid="uid://b6x7fjs2c7qer" path="res://scripts/entities/entities.senses/SenseTouch.gd" id="7_touch"]
+[ext_resource type="Script" uid="uid://d4hvfepnowucx" path="res://scripts/entities/entities.senses/SenseSight.gd" id="8_sight"]
+[ext_resource type="Script" uid="uid://btcg8yu3uig0n" path="res://scripts/entities/entities.senses/SenseHearing.gd" id="9_hearing"]
+[ext_resource type="Script" uid="uid://b4gvybf1q4tl5" path="res://scripts/entities/entities.senses/SenseSmell.gd" id="10_smell"]
+[ext_resource type="Script" uid="uid://b0nxssijq13xs" path="res://scripts/entities/entities.senses/SenseTaste.gd" id="11_taste"]
+[ext_resource type="Script" path="res://scripts/entities/HealthPixelBar.gd" id="12_healthbar"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_enemyctrl"]
+
+[node name="EnemyController" type="CharacterBody2D" unique_id=1776296842]
+z_index = 1000
+script = ExtResource("1_enemyctrl")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(8, 8)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(8, 8)
+shape = SubResource("RectangleShape2D_enemyctrl")
+
+[node name="GridMover" type="Node" parent="."]
+script = ExtResource("3_gridmv")
+
+[node name="DirectionalAnimator" type="Node" parent="."]
+script = ExtResource("4_diranim")
+
+[node name="EntityStats" type="Node" parent="."]
+script = ExtResource("5_stats")
+
+[node name="EnemySenses" type="Node" parent="."]
+script = ExtResource("6_senses")
+
+[node name="SenseTouch" type="Node" parent="EnemySenses"]
+script = ExtResource("7_touch")
+
+[node name="SenseSight" type="Node" parent="EnemySenses"]
+script = ExtResource("8_sight")
+
+[node name="SenseHearing" type="Node" parent="EnemySenses"]
+script = ExtResource("9_hearing")
+
+[node name="SenseSmell" type="Node" parent="EnemySenses"]
+script = ExtResource("10_smell")
+
+[node name="SenseTaste" type="Node" parent="EnemySenses"]
+script = ExtResource("11_taste")
+
+[node name="HealthPixelBar" type="Node2D" parent="."]
+script = ExtResource("12_healthbar")

@@ -1,9 +1,0 @@
-[gd_resource type="CanvasTexture" format=3]
-
-[ext_resource type="Texture2D" path="res://resources/gfx/tileset/barrier_forest_dense.png" id="1_diff"]
-[ext_resource type="Texture2D" path="res://resources/gfx/tileset/barrier_forest_dense_normal.png" id="2_norm"]
-
-[resource]
-diffuse_texture = ExtResource("1_diff")
-normal_texture = ExtResource("2_norm")
-specular_color = Color(0.05, 0.05, 0.05, 1)

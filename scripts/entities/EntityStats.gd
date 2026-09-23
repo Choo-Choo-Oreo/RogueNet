@@ -27,6 +27,11 @@ var cognitive: int = FALLBACK_ATTRIBUTE
 ## Flat reduction per damage type, e.g. resistances["fire"] = 5
 var resistances: Dictionary = {}
 
+## Blanket immunity flag -- enemies don't target/track a ghost, slows and
+## (later) other status effects skip it too. One flag checked wherever it's
+## relevant, instead of a group/tag per system.
+var is_ghost: bool = false
+
 func load_from_data(data: Dictionary) -> void:
 	max_health = data.get("max_health", FALLBACK_HEALTH)
 	strength = data.get("strength", FALLBACK_ATTRIBUTE)

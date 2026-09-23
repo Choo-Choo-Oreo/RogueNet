@@ -37,6 +37,13 @@ func animate_moving(direction: Vector2) -> void:
 	else:
 		sprite.play("Back" if direction.y < 0 else "Front")
 
+## Same direction picking as animate_moving(), but held on one frame instead
+## of looping the walk cycle -- for facing a target while stationary (e.g. an
+## enemy that's stopped adjacent to its target).
+func animate_facing(direction: Vector2) -> void:
+	animate_moving(direction)
+	sprite.stop()
+
 func animate_from_position(delta: float, current_position: Vector2) -> void:
 	var delta_pos := current_position - _last_anim_position
 	_last_anim_position = current_position

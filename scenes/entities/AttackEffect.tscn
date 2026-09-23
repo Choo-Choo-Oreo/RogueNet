@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/entities/AttackEffect.gd" id="1_effect"]
+
+[node name="AttackEffect" type="Node2D"]
+z_index = 1000
+script = ExtResource("1_effect")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(8, 8)

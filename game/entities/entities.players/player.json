@@ -6,7 +6,7 @@
 	"cognitive": 0,
 	"resistances": {},
 	"attack": {
-		"amount": 2,
+		"amount": 3,
 		"type": "Physical",
 		"interval": 0.5,
 		"effect": {

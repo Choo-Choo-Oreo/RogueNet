@@ -1,9 +1,0 @@
-[gd_resource type="CanvasTexture" format=3]
-
-[ext_resource type="Texture2D" uid="uid://bx185y82ohydi" path="res://resources/gfx/tileset/floor_smooth_stone.png" id="1_diff"]
-[ext_resource type="Texture2D" uid="uid://7g0oamm4m7y7" path="res://resources/gfx/tileset/floor_smooth_stone_normal.png" id="2_norm"]
-
-[resource]
-diffuse_texture = ExtResource("1_diff")
-normal_texture = ExtResource("2_norm")
-specular_color = Color(0.1, 0.1, 0.1, 1)

@@ -62,7 +62,7 @@ func _run_queued_refresh() -> void:
 	refresh()
 	
 func refresh():
-	if not is_instance_valid(display_layer):
+	if not is_instance_valid(display_layer) or display_layer.tile_set == null:
 		return
 	var source := display_layer.tile_set.get_source(0) as TileSetAtlasSource
 	if source and source.texture:

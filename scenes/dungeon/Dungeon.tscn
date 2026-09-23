@@ -1,27 +1,22 @@
 [gd_scene format=3 uid="uid://c7oo6hc4nq1pn"]
 
 [ext_resource type="PackedScene" path="res://scenes/ui/PauseMenu.tscn" id="1_pausemenu"]
+[ext_resource type="PackedScene" path="res://scenes/ui/Hotbar.tscn" id="1_hotbar"]
+[ext_resource type="PackedScene" path="res://scenes/ui/HealthBar.tscn" id="1_healthbar"]
+[ext_resource type="PackedScene" path="res://scenes/ui/DeathCountdown.tscn" id="1_deathcountdown"]
+[ext_resource type="PackedScene" path="res://scenes/ui/ChatBox.tscn" id="1_chatbox"]
+[ext_resource type="Script" path="res://scripts/dungeon/Dungeon.gd" id="1_dungeonroot"]
 [ext_resource type="Script" uid="uid://bc0lnb6o6cg5r" path="res://scripts/network/PlayerSpawner.gd" id="2_playerspawner"]
+[ext_resource type="PackedScene" uid="uid://b8k478hmlnajq" path="res://scenes/entities/EnemyController.tscn" id="2_testrat"]
 [ext_resource type="Texture2D" uid="uid://cukpeoxqsmyde" path="res://resources/gfx/placeholders/flat-color.png" id="3_564yl"]
 [ext_resource type="Script" uid="uid://bjum48nmmaive" path="res://scripts/dungeon/DungeonDebugView.gd" id="3_dungeondebug"]
 [ext_resource type="Script" uid="uid://ccetseq1iwch1" path="res://scripts/cells/tiles/LightMap.gd" id="99_lightmap"]
 [ext_resource type="Script" uid="uid://cmo0pwrdjr2df" path="res://scripts/cells/tiles/DualGridRender.gd" id="4_4podp"]
 [ext_resource type="Script" uid="uid://rvs3q27d6u0p" path="res://scripts/cells/tiles/TileInitialize.gd" id="4_tileinit"]
-[ext_resource type="Texture2D" path="res://resources/gfx/tileset/floor_dirt_lit.tres" id="5_l7141"]
-[ext_resource type="Texture2D" path="res://resources/gfx/tileset/floor_flesh_lit.tres" id="6_8fvan"]
 [ext_resource type="Script" uid="uid://cyxbvo2hgsk2t" path="res://scripts/dungeon/DungeonPainter.gd" id="6_dungeonpainter"]
-[ext_resource type="Texture2D" path="res://resources/gfx/tileset/floor_grass_lit.tres" id="7_h8pbr"]
-[ext_resource type="Texture2D" path="res://resources/gfx/tileset/floor_smooth_stone_lit.tres" id="8_n7wp0"]
 [ext_resource type="Texture2D" uid="uid://30t8sgmrsu53" path="res://resources/gfx/tileset/floor_void.png" id="9_h8pbr"]
-[ext_resource type="Texture2D" path="res://resources/gfx/tileset/floor_wood_planks_lit.tres" id="10_yqrxc"]
-[ext_resource type="Texture2D" path="res://resources/gfx/tileset/wall_cobble_brick_lit.tres" id="11_e62lh"]
 [ext_resource type="Script" uid="uid://kwiwirkys8xp" path="res://scripts/cells/tiles/StaticTileRender.gd" id="12_e62lh"]
 [ext_resource type="Texture2D" uid="uid://c807vxen01fgd" path="res://resources/gfx/objects/Door.png" id="13_a577u"]
-[ext_resource type="Texture2D" path="res://resources/gfx/tileset/wall_smooth_stone_lit.tres" id="14_a577u"]
-[ext_resource type="Texture2D" path="res://resources/gfx/tileset/wall_flesh_lit.tres" id="15_55ukb"]
-[ext_resource type="Texture2D" path="res://resources/gfx/tileset/wall_rough_cave_lit.tres" id="16_nbnrc"]
-[ext_resource type="Texture2D" path="res://resources/gfx/tileset/wall_wood_plank_lit.tres" id="17_4nqa0"]
-
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_nbnrc"]
 resource_name = "floor_dirt_lit.tres"
 texture = ExtResource("3_564yl")
@@ -119,294 +114,6 @@ sources/10 = SubResource("TileSetAtlasSource_57mhk")
 sources/11 = SubResource("TileSetAtlasSource_37u26")
 sources/12 = SubResource("TileSetAtlasSource_p38gd")
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_l7141"]
-texture = ExtResource("5_l7141")
-texture_region_size = Vector2i(8, 8)
-0:0/0 = 0
-1:0/0 = 0
-2:0/0 = 0
-3:0/0 = 0
-4:0/0 = 0
-5:0/0 = 0
-6:0/0 = 0
-7:0/0 = 0
-0:1/0 = 0
-1:1/0 = 0
-2:1/0 = 0
-3:1/0 = 0
-4:1/0 = 0
-5:1/0 = 0
-6:1/0 = 0
-7:1/0 = 0
-0:2/0 = 0
-1:2/0 = 0
-2:2/0 = 0
-3:2/0 = 0
-4:2/0 = 0
-5:2/0 = 0
-6:2/0 = 0
-7:2/0 = 0
-0:3/0 = 0
-1:3/0 = 0
-2:3/0 = 0
-3:3/0 = 0
-4:3/0 = 0
-5:3/0 = 0
-6:3/0 = 0
-7:3/0 = 0
-0:4/0 = 0
-1:4/0 = 0
-2:4/0 = 0
-3:4/0 = 0
-4:4/0 = 0
-5:4/0 = 0
-6:4/0 = 0
-7:4/0 = 0
-0:5/0 = 0
-1:5/0 = 0
-2:5/0 = 0
-3:5/0 = 0
-4:5/0 = 0
-5:5/0 = 0
-6:5/0 = 0
-7:5/0 = 0
-0:6/0 = 0
-1:6/0 = 0
-2:6/0 = 0
-3:6/0 = 0
-4:6/0 = 0
-5:6/0 = 0
-6:6/0 = 0
-7:6/0 = 0
-0:7/0 = 0
-1:7/0 = 0
-2:7/0 = 0
-3:7/0 = 0
-4:7/0 = 0
-5:7/0 = 0
-6:7/0 = 0
-7:7/0 = 0
-
-[sub_resource type="TileSet" id="TileSet_8fvan"]
-tile_size = Vector2i(8, 8)
-sources/0 = SubResource("TileSetAtlasSource_l7141")
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_h8pbr"]
-texture = ExtResource("6_8fvan")
-texture_region_size = Vector2i(8, 8)
-0:0/0 = 0
-1:0/0 = 0
-2:0/0 = 0
-3:0/0 = 0
-4:0/0 = 0
-5:0/0 = 0
-6:0/0 = 0
-7:0/0 = 0
-0:1/0 = 0
-1:1/0 = 0
-2:1/0 = 0
-3:1/0 = 0
-4:1/0 = 0
-5:1/0 = 0
-6:1/0 = 0
-7:1/0 = 0
-0:2/0 = 0
-1:2/0 = 0
-2:2/0 = 0
-3:2/0 = 0
-4:2/0 = 0
-5:2/0 = 0
-6:2/0 = 0
-7:2/0 = 0
-0:3/0 = 0
-1:3/0 = 0
-2:3/0 = 0
-3:3/0 = 0
-4:3/0 = 0
-5:3/0 = 0
-6:3/0 = 0
-7:3/0 = 0
-0:4/0 = 0
-1:4/0 = 0
-2:4/0 = 0
-3:4/0 = 0
-4:4/0 = 0
-5:4/0 = 0
-6:4/0 = 0
-7:4/0 = 0
-0:5/0 = 0
-1:5/0 = 0
-2:5/0 = 0
-3:5/0 = 0
-4:5/0 = 0
-5:5/0 = 0
-6:5/0 = 0
-7:5/0 = 0
-0:6/0 = 0
-1:6/0 = 0
-2:6/0 = 0
-3:6/0 = 0
-4:6/0 = 0
-5:6/0 = 0
-6:6/0 = 0
-7:6/0 = 0
-0:7/0 = 0
-1:7/0 = 0
-2:7/0 = 0
-3:7/0 = 0
-4:7/0 = 0
-5:7/0 = 0
-6:7/0 = 0
-7:7/0 = 0
-
-[sub_resource type="TileSet" id="TileSet_n7wp0"]
-tile_size = Vector2i(8, 8)
-sources/0 = SubResource("TileSetAtlasSource_h8pbr")
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yqrxc"]
-texture = ExtResource("7_h8pbr")
-texture_region_size = Vector2i(8, 8)
-0:0/0 = 0
-1:0/0 = 0
-2:0/0 = 0
-3:0/0 = 0
-4:0/0 = 0
-5:0/0 = 0
-6:0/0 = 0
-7:0/0 = 0
-0:1/0 = 0
-1:1/0 = 0
-2:1/0 = 0
-3:1/0 = 0
-4:1/0 = 0
-5:1/0 = 0
-6:1/0 = 0
-7:1/0 = 0
-0:2/0 = 0
-1:2/0 = 0
-2:2/0 = 0
-3:2/0 = 0
-4:2/0 = 0
-5:2/0 = 0
-6:2/0 = 0
-7:2/0 = 0
-0:3/0 = 0
-1:3/0 = 0
-2:3/0 = 0
-3:3/0 = 0
-4:3/0 = 0
-5:3/0 = 0
-6:3/0 = 0
-7:3/0 = 0
-0:4/0 = 0
-1:4/0 = 0
-2:4/0 = 0
-3:4/0 = 0
-4:4/0 = 0
-5:4/0 = 0
-6:4/0 = 0
-7:4/0 = 0
-0:5/0 = 0
-1:5/0 = 0
-2:5/0 = 0
-3:5/0 = 0
-4:5/0 = 0
-5:5/0 = 0
-6:5/0 = 0
-7:5/0 = 0
-0:6/0 = 0
-1:6/0 = 0
-2:6/0 = 0
-3:6/0 = 0
-4:6/0 = 0
-5:6/0 = 0
-6:6/0 = 0
-7:6/0 = 0
-0:7/0 = 0
-1:7/0 = 0
-2:7/0 = 0
-3:7/0 = 0
-4:7/0 = 0
-5:7/0 = 0
-6:7/0 = 0
-7:7/0 = 0
-
-[sub_resource type="TileSet" id="TileSet_e62lh"]
-tile_size = Vector2i(8, 8)
-sources/0 = SubResource("TileSetAtlasSource_yqrxc")
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_a577u"]
-texture = ExtResource("8_n7wp0")
-texture_region_size = Vector2i(8, 8)
-0:0/0 = 0
-1:0/0 = 0
-2:0/0 = 0
-3:0/0 = 0
-4:0/0 = 0
-5:0/0 = 0
-6:0/0 = 0
-7:0/0 = 0
-0:1/0 = 0
-1:1/0 = 0
-2:1/0 = 0
-3:1/0 = 0
-4:1/0 = 0
-5:1/0 = 0
-6:1/0 = 0
-7:1/0 = 0
-0:2/0 = 0
-1:2/0 = 0
-2:2/0 = 0
-3:2/0 = 0
-4:2/0 = 0
-5:2/0 = 0
-6:2/0 = 0
-7:2/0 = 0
-0:3/0 = 0
-1:3/0 = 0
-2:3/0 = 0
-3:3/0 = 0
-4:3/0 = 0
-5:3/0 = 0
-6:3/0 = 0
-7:3/0 = 0
-0:4/0 = 0
-1:4/0 = 0
-2:4/0 = 0
-3:4/0 = 0
-4:4/0 = 0
-5:4/0 = 0
-6:4/0 = 0
-7:4/0 = 0
-0:5/0 = 0
-1:5/0 = 0
-2:5/0 = 0
-3:5/0 = 0
-4:5/0 = 0
-5:5/0 = 0
-6:5/0 = 0
-7:5/0 = 0
-0:6/0 = 0
-1:6/0 = 0
-2:6/0 = 0
-3:6/0 = 0
-4:6/0 = 0
-5:6/0 = 0
-6:6/0 = 0
-7:6/0 = 0
-0:7/0 = 0
-1:7/0 = 0
-2:7/0 = 0
-3:7/0 = 0
-4:7/0 = 0
-5:7/0 = 0
-6:7/0 = 0
-7:7/0 = 0
-
-[sub_resource type="TileSet" id="TileSet_55ukb"]
-tile_size = Vector2i(8, 8)
-sources/0 = SubResource("TileSetAtlasSource_a577u")
-
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vr7ml"]
 texture = ExtResource("9_h8pbr")
 texture_region_size = Vector2i(8, 8)
@@ -479,150 +186,6 @@ texture_region_size = Vector2i(8, 8)
 tile_size = Vector2i(8, 8)
 sources/0 = SubResource("TileSetAtlasSource_vr7ml")
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8pkhd"]
-texture = ExtResource("10_yqrxc")
-texture_region_size = Vector2i(8, 8)
-0:0/0 = 0
-1:0/0 = 0
-2:0/0 = 0
-3:0/0 = 0
-4:0/0 = 0
-5:0/0 = 0
-6:0/0 = 0
-7:0/0 = 0
-0:1/0 = 0
-1:1/0 = 0
-2:1/0 = 0
-3:1/0 = 0
-4:1/0 = 0
-5:1/0 = 0
-6:1/0 = 0
-7:1/0 = 0
-0:2/0 = 0
-1:2/0 = 0
-2:2/0 = 0
-3:2/0 = 0
-4:2/0 = 0
-5:2/0 = 0
-6:2/0 = 0
-7:2/0 = 0
-0:3/0 = 0
-1:3/0 = 0
-2:3/0 = 0
-3:3/0 = 0
-4:3/0 = 0
-5:3/0 = 0
-6:3/0 = 0
-7:3/0 = 0
-0:4/0 = 0
-1:4/0 = 0
-2:4/0 = 0
-3:4/0 = 0
-4:4/0 = 0
-5:4/0 = 0
-6:4/0 = 0
-7:4/0 = 0
-0:5/0 = 0
-1:5/0 = 0
-2:5/0 = 0
-3:5/0 = 0
-4:5/0 = 0
-5:5/0 = 0
-6:5/0 = 0
-7:5/0 = 0
-0:6/0 = 0
-1:6/0 = 0
-2:6/0 = 0
-3:6/0 = 0
-4:6/0 = 0
-5:6/0 = 0
-6:6/0 = 0
-7:6/0 = 0
-0:7/0 = 0
-1:7/0 = 0
-2:7/0 = 0
-3:7/0 = 0
-4:7/0 = 0
-5:7/0 = 0
-6:7/0 = 0
-7:7/0 = 0
-
-[sub_resource type="TileSet" id="TileSet_lwpqt"]
-tile_size = Vector2i(8, 8)
-sources/0 = SubResource("TileSetAtlasSource_8pkhd")
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_s3j8c"]
-texture = ExtResource("11_e62lh")
-texture_region_size = Vector2i(8, 8)
-0:0/0 = 0
-1:0/0 = 0
-2:0/0 = 0
-3:0/0 = 0
-4:0/0 = 0
-5:0/0 = 0
-6:0/0 = 0
-7:0/0 = 0
-0:1/0 = 0
-1:1/0 = 0
-2:1/0 = 0
-3:1/0 = 0
-4:1/0 = 0
-5:1/0 = 0
-6:1/0 = 0
-7:1/0 = 0
-0:2/0 = 0
-1:2/0 = 0
-2:2/0 = 0
-3:2/0 = 0
-4:2/0 = 0
-5:2/0 = 0
-6:2/0 = 0
-7:2/0 = 0
-0:3/0 = 0
-1:3/0 = 0
-2:3/0 = 0
-3:3/0 = 0
-4:3/0 = 0
-5:3/0 = 0
-6:3/0 = 0
-7:3/0 = 0
-0:4/0 = 0
-1:4/0 = 0
-2:4/0 = 0
-3:4/0 = 0
-4:4/0 = 0
-5:4/0 = 0
-6:4/0 = 0
-7:4/0 = 0
-0:5/0 = 0
-1:5/0 = 0
-2:5/0 = 0
-3:5/0 = 0
-4:5/0 = 0
-5:5/0 = 0
-6:5/0 = 0
-7:5/0 = 0
-0:6/0 = 0
-1:6/0 = 0
-2:6/0 = 0
-3:6/0 = 0
-4:6/0 = 0
-5:6/0 = 0
-6:6/0 = 0
-7:6/0 = 0
-0:7/0 = 0
-1:7/0 = 0
-2:7/0 = 0
-3:7/0 = 0
-4:7/0 = 0
-5:7/0 = 0
-6:7/0 = 0
-7:7/0 = 0
-
-[sub_resource type="TileSet" id="TileSet_a1s0x"]
-tile_size = Vector2i(8, 8)
-sources/0 = SubResource("TileSetAtlasSource_s3j8c")
-
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7prql"]
 texture = ExtResource("13_a577u")
 0:0/0 = 0
@@ -637,295 +200,8 @@ texture = ExtResource("13_a577u")
 [sub_resource type="TileSet" id="TileSet_io24f"]
 sources/0 = SubResource("TileSetAtlasSource_5pn2a")
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_uu5lt"]
-texture = ExtResource("14_a577u")
-texture_region_size = Vector2i(8, 8)
-0:0/0 = 0
-1:0/0 = 0
-2:0/0 = 0
-3:0/0 = 0
-4:0/0 = 0
-5:0/0 = 0
-6:0/0 = 0
-7:0/0 = 0
-0:1/0 = 0
-1:1/0 = 0
-2:1/0 = 0
-3:1/0 = 0
-4:1/0 = 0
-5:1/0 = 0
-6:1/0 = 0
-7:1/0 = 0
-0:2/0 = 0
-1:2/0 = 0
-2:2/0 = 0
-3:2/0 = 0
-4:2/0 = 0
-5:2/0 = 0
-6:2/0 = 0
-7:2/0 = 0
-0:3/0 = 0
-1:3/0 = 0
-2:3/0 = 0
-3:3/0 = 0
-4:3/0 = 0
-5:3/0 = 0
-6:3/0 = 0
-7:3/0 = 0
-0:4/0 = 0
-1:4/0 = 0
-2:4/0 = 0
-3:4/0 = 0
-4:4/0 = 0
-5:4/0 = 0
-6:4/0 = 0
-7:4/0 = 0
-0:5/0 = 0
-1:5/0 = 0
-2:5/0 = 0
-3:5/0 = 0
-4:5/0 = 0
-5:5/0 = 0
-6:5/0 = 0
-7:5/0 = 0
-0:6/0 = 0
-1:6/0 = 0
-2:6/0 = 0
-3:6/0 = 0
-4:6/0 = 0
-5:6/0 = 0
-6:6/0 = 0
-7:6/0 = 0
-0:7/0 = 0
-1:7/0 = 0
-2:7/0 = 0
-3:7/0 = 0
-4:7/0 = 0
-5:7/0 = 0
-6:7/0 = 0
-7:7/0 = 0
-
-[sub_resource type="TileSet" id="TileSet_gu00k"]
-tile_size = Vector2i(8, 8)
-sources/0 = SubResource("TileSetAtlasSource_uu5lt")
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_x7ke7"]
-texture = ExtResource("15_55ukb")
-texture_region_size = Vector2i(8, 8)
-0:0/0 = 0
-1:0/0 = 0
-2:0/0 = 0
-3:0/0 = 0
-4:0/0 = 0
-5:0/0 = 0
-6:0/0 = 0
-7:0/0 = 0
-0:1/0 = 0
-1:1/0 = 0
-2:1/0 = 0
-3:1/0 = 0
-4:1/0 = 0
-5:1/0 = 0
-6:1/0 = 0
-7:1/0 = 0
-0:2/0 = 0
-1:2/0 = 0
-2:2/0 = 0
-3:2/0 = 0
-4:2/0 = 0
-5:2/0 = 0
-6:2/0 = 0
-7:2/0 = 0
-0:3/0 = 0
-1:3/0 = 0
-2:3/0 = 0
-3:3/0 = 0
-4:3/0 = 0
-5:3/0 = 0
-6:3/0 = 0
-7:3/0 = 0
-0:4/0 = 0
-1:4/0 = 0
-2:4/0 = 0
-3:4/0 = 0
-4:4/0 = 0
-5:4/0 = 0
-6:4/0 = 0
-7:4/0 = 0
-0:5/0 = 0
-1:5/0 = 0
-2:5/0 = 0
-3:5/0 = 0
-4:5/0 = 0
-5:5/0 = 0
-6:5/0 = 0
-7:5/0 = 0
-0:6/0 = 0
-1:6/0 = 0
-2:6/0 = 0
-3:6/0 = 0
-4:6/0 = 0
-5:6/0 = 0
-6:6/0 = 0
-7:6/0 = 0
-0:7/0 = 0
-1:7/0 = 0
-2:7/0 = 0
-3:7/0 = 0
-4:7/0 = 0
-5:7/0 = 0
-6:7/0 = 0
-7:7/0 = 0
-
-[sub_resource type="TileSet" id="TileSet_7icas"]
-tile_size = Vector2i(8, 8)
-sources/0 = SubResource("TileSetAtlasSource_x7ke7")
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1avjb"]
-texture = ExtResource("16_nbnrc")
-texture_region_size = Vector2i(8, 8)
-0:0/0 = 0
-1:0/0 = 0
-2:0/0 = 0
-3:0/0 = 0
-4:0/0 = 0
-5:0/0 = 0
-6:0/0 = 0
-7:0/0 = 0
-0:1/0 = 0
-1:1/0 = 0
-2:1/0 = 0
-3:1/0 = 0
-4:1/0 = 0
-5:1/0 = 0
-6:1/0 = 0
-7:1/0 = 0
-0:2/0 = 0
-1:2/0 = 0
-2:2/0 = 0
-3:2/0 = 0
-4:2/0 = 0
-5:2/0 = 0
-6:2/0 = 0
-7:2/0 = 0
-0:3/0 = 0
-1:3/0 = 0
-2:3/0 = 0
-3:3/0 = 0
-4:3/0 = 0
-5:3/0 = 0
-6:3/0 = 0
-7:3/0 = 0
-0:4/0 = 0
-1:4/0 = 0
-2:4/0 = 0
-3:4/0 = 0
-4:4/0 = 0
-5:4/0 = 0
-6:4/0 = 0
-7:4/0 = 0
-0:5/0 = 0
-1:5/0 = 0
-2:5/0 = 0
-3:5/0 = 0
-4:5/0 = 0
-5:5/0 = 0
-6:5/0 = 0
-7:5/0 = 0
-0:6/0 = 0
-1:6/0 = 0
-2:6/0 = 0
-3:6/0 = 0
-4:6/0 = 0
-5:6/0 = 0
-6:6/0 = 0
-7:6/0 = 0
-0:7/0 = 0
-1:7/0 = 0
-2:7/0 = 0
-3:7/0 = 0
-4:7/0 = 0
-5:7/0 = 0
-6:7/0 = 0
-7:7/0 = 0
-
-[sub_resource type="TileSet" id="TileSet_45vik"]
-tile_size = Vector2i(8, 8)
-sources/0 = SubResource("TileSetAtlasSource_1avjb")
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1bbvx"]
-texture = ExtResource("17_4nqa0")
-texture_region_size = Vector2i(8, 8)
-0:0/0 = 0
-1:0/0 = 0
-2:0/0 = 0
-3:0/0 = 0
-4:0/0 = 0
-5:0/0 = 0
-6:0/0 = 0
-7:0/0 = 0
-0:1/0 = 0
-1:1/0 = 0
-2:1/0 = 0
-3:1/0 = 0
-4:1/0 = 0
-5:1/0 = 0
-6:1/0 = 0
-7:1/0 = 0
-0:2/0 = 0
-1:2/0 = 0
-2:2/0 = 0
-3:2/0 = 0
-4:2/0 = 0
-5:2/0 = 0
-6:2/0 = 0
-7:2/0 = 0
-0:3/0 = 0
-1:3/0 = 0
-2:3/0 = 0
-3:3/0 = 0
-4:3/0 = 0
-5:3/0 = 0
-6:3/0 = 0
-7:3/0 = 0
-0:4/0 = 0
-1:4/0 = 0
-2:4/0 = 0
-3:4/0 = 0
-4:4/0 = 0
-5:4/0 = 0
-6:4/0 = 0
-7:4/0 = 0
-0:5/0 = 0
-1:5/0 = 0
-2:5/0 = 0
-3:5/0 = 0
-4:5/0 = 0
-5:5/0 = 0
-6:5/0 = 0
-7:5/0 = 0
-0:6/0 = 0
-1:6/0 = 0
-2:6/0 = 0
-3:6/0 = 0
-4:6/0 = 0
-5:6/0 = 0
-6:6/0 = 0
-7:6/0 = 0
-0:7/0 = 0
-1:7/0 = 0
-2:7/0 = 0
-3:7/0 = 0
-4:7/0 = 0
-5:7/0 = 0
-6:7/0 = 0
-7:7/0 = 0
-
-[sub_resource type="TileSet" id="TileSet_trv1a"]
-tile_size = Vector2i(8, 8)
-sources/0 = SubResource("TileSetAtlasSource_1bbvx")
-
 [node name="Dungeon" type="Node2D" unique_id=2115702958]
+script = ExtResource("1_dungeonroot")
 
 [node name="TileInitialize" type="Node2D" parent="." unique_id=2006553040]
 script = ExtResource("4_tileinit")
@@ -944,7 +220,6 @@ display_layer = NodePath("DisplayLayer")
 
 [node name="DisplayLayer" type="TileMapLayer" parent="TileInitialize/floor_dirt" unique_id=1915049741]
 position = Vector2(8, 8)
-tile_set = SubResource("TileSet_8fvan")
 
 [node name="floor_flesh" type="Node2D" parent="TileInitialize" unique_id=1850665353 node_paths=PackedStringArray("data_layer", "display_layer")]
 z_index = 4
@@ -955,7 +230,6 @@ source_id = 1
 
 [node name="DisplayLayer" type="TileMapLayer" parent="TileInitialize/floor_flesh" unique_id=1961278990]
 position = Vector2(8, 8)
-tile_set = SubResource("TileSet_n7wp0")
 
 [node name="floor_grass" type="Node2D" parent="TileInitialize" unique_id=2062492049 node_paths=PackedStringArray("data_layer", "display_layer")]
 z_index = 3
@@ -966,7 +240,6 @@ source_id = 2
 
 [node name="DisplayLayer" type="TileMapLayer" parent="TileInitialize/floor_grass" unique_id=1476381999]
 position = Vector2(8, 8)
-tile_set = SubResource("TileSet_e62lh")
 
 [node name="floor_smooth_stone" type="Node2D" parent="TileInitialize" unique_id=2060689499 node_paths=PackedStringArray("data_layer", "display_layer")]
 z_index = 1
@@ -977,7 +250,6 @@ source_id = 3
 
 [node name="DisplayLayer" type="TileMapLayer" parent="TileInitialize/floor_smooth_stone" unique_id=148171229]
 position = Vector2(8, 8)
-tile_set = SubResource("TileSet_55ukb")
 
 [node name="floor_void" type="Node2D" parent="TileInitialize" unique_id=638973645 node_paths=PackedStringArray("data_layer", "display_layer")]
 z_index = 10
@@ -999,7 +271,6 @@ source_id = 5
 
 [node name="DisplayLayer" type="TileMapLayer" parent="TileInitialize/floor_wood_planks" unique_id=2080665299]
 position = Vector2(8, 8)
-tile_set = SubResource("TileSet_lwpqt")
 
 [node name="wall_cobble_brick" type="Node2D" parent="TileInitialize" unique_id=724328026 node_paths=PackedStringArray("data_layer", "display_layer")]
 z_index = 100
@@ -1010,7 +281,6 @@ source_id = 6
 
 [node name="DisplayLayer" type="TileMapLayer" parent="TileInitialize/wall_cobble_brick" unique_id=2054653166]
 position = Vector2(8, 8)
-tile_set = SubResource("TileSet_a1s0x")
 
 [node name="wall_door" type="Node2D" parent="TileInitialize" unique_id=1156964601 node_paths=PackedStringArray("data_layer", "display_layer")]
 z_index = 100
@@ -1044,7 +314,6 @@ source_id = 7
 
 [node name="DisplayLayer" type="TileMapLayer" parent="TileInitialize/wall_smooth_stone" unique_id=25542271]
 position = Vector2(8, 8)
-tile_set = SubResource("TileSet_gu00k")
 
 [node name="wall_flesh" type="Node2D" parent="TileInitialize" unique_id=846358799 node_paths=PackedStringArray("data_layer", "display_layer")]
 z_index = 100
@@ -1055,7 +324,6 @@ source_id = 10
 
 [node name="DisplayLayer" type="TileMapLayer" parent="TileInitialize/wall_flesh" unique_id=1092920442]
 position = Vector2(8, 8)
-tile_set = SubResource("TileSet_7icas")
 
 [node name="wall_rough_cave" type="Node2D" parent="TileInitialize" unique_id=1513402542 node_paths=PackedStringArray("data_layer", "display_layer")]
 z_index = 100
@@ -1066,7 +334,6 @@ source_id = 11
 
 [node name="DisplayLayer" type="TileMapLayer" parent="TileInitialize/wall_rough_cave" unique_id=670382225]
 position = Vector2(8, 8)
-tile_set = SubResource("TileSet_45vik")
 
 [node name="wall_wood_plank" type="Node2D" parent="TileInitialize" unique_id=716350853 node_paths=PackedStringArray("data_layer", "display_layer")]
 z_index = 100
@@ -1077,7 +344,6 @@ source_id = 12
 
 [node name="DisplayLayer" type="TileMapLayer" parent="TileInitialize/wall_wood_plank" unique_id=1864806698]
 position = Vector2(8, 8)
-tile_set = SubResource("TileSet_trv1a")
 
 [node name="DungeonPainter" type="Node" parent="." unique_id=341103054 node_paths=PackedStringArray("tile_initialize")]
 script = ExtResource("6_dungeonpainter")
@@ -1085,6 +351,14 @@ tile_initialize = NodePath("../TileInitialize")
 
 [node name="Player" type="Node2D" parent="." unique_id=2019608533]
 script = ExtResource("2_playerspawner")
+
+[node name="TestRat" parent="." instance=ExtResource("2_testrat")]
+position = Vector2(32, 16)
+default_enemy_type = "rat"
+
+[node name="TestRatBlind" parent="." instance=ExtResource("2_testrat")]
+position = Vector2(-32, 16)
+default_enemy_type = "rat_blind"
 
 [node name="DungeonDebugView" type="Node" parent="." unique_id=314287876]
 script = ExtResource("3_dungeondebug")
@@ -1098,3 +372,11 @@ player_root = NodePath("../Player")
 
 [node name="PauseMenu" parent="UILayer" unique_id=1304714435 instance=ExtResource("1_pausemenu")]
 visible = false
+
+[node name="Hotbar" parent="UILayer" instance=ExtResource("1_hotbar")]
+
+[node name="HealthBar" parent="UILayer" instance=ExtResource("1_healthbar")]
+
+[node name="DeathCountdown" parent="UILayer" instance=ExtResource("1_deathcountdown")]
+
+[node name="ChatBox" parent="UILayer" instance=ExtResource("1_chatbox")]
