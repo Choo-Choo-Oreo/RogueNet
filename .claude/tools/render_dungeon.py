@@ -44,6 +44,8 @@ def rot(r):
 def load(biome):
     base = {}
     for f in sorted(glob.glob(os.path.join(ROOMS, biome, '*.json'))):
+        if os.path.basename(f) == 'defines.json':
+            continue
         r = json.load(open(f)); r['base'] = r['id']; base[r['id']] = r
     out = dict(base)
     for i, r in base.items():
