@@ -58,7 +58,7 @@ to deliver the PNG.
 
 ### Doors
 
-One door sprite exists (`objects/Door.png`, 3 frames of 16x16: closed, half, open) and a
+One door sprite exists (`doors/Door.png`, 3 frames of 16x16: closed, half, open) and a
 friend of Orea's is already reworking it. It is drawn for a door in the bottom wall of a
 room and the game rotates it for the other three sides.
 

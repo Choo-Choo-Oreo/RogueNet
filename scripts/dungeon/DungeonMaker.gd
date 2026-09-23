@@ -51,7 +51,7 @@ const OBJECT_MARKER_TEXTURES := {
 	"torch": "res://resources/gfx/objects/Tortch.png",
 	"chest": "res://resources/gfx/objects/Chest_Wood.png",
 }
-const CONNECTOR_TEXTURE_PATH := "res://resources/gfx/objects/Door.png"
+const CONNECTOR_TEXTURE_PATH := "res://resources/gfx/doors/Door.png"
 const PLAYER_SPAWNER_TEXTURE_PATH := "res://resources/gfx/players/player.protagonist/knight/Knight-Down.png"
 const PLAYER_CONTROLLER_SCENE_PATH := "res://scenes/player/PlayerController.tscn"
 const ENEMY_TYPE_NAMES := ["mouse"]

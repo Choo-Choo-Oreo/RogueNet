@@ -1,6 +1,6 @@
 {
 	"tile_name": "wall_door",
-	"atlas_texture": "res://resources/gfx/objects/Door.png",
+	"atlas_texture": "res://resources/gfx/doors/Door.png",
 	"sort_order": 100,
 	"category": "wall",
 	"shape": "static",

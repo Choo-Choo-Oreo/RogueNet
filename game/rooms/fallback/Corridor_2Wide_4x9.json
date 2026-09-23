@@ -1,5 +1,4 @@
 {
-	"biome": "dungeon",
 	"connectors": [
 		{
 			"a": {
@@ -7,9 +6,10 @@
 				"y": 0
 			},
 			"b": {
-				"x": 1,
+				"x": 2,
 				"y": 0
-			}
+			},
+			"free": true
 		},
 		{
 			"a": {
@@ -17,53 +17,63 @@
 				"y": 8
 			},
 			"b": {
-				"x": 1,
+				"x": 2,
 				"y": 8
-			}
+			},
+			"free": true
 		}
 	],
 	"floor": [
 		[
 			null,
 			null,
+			null,
 			null
 		],
 		[
 			null,
+			"floor_smooth_stone",
 			"floor_smooth_stone",
 			null
 		],
 		[
 			null,
 			"floor_smooth_stone",
-			null
-		],
-		[
-			null,
 			"floor_smooth_stone",
 			null
 		],
 		[
 			null,
 			"floor_smooth_stone",
-			null
-		],
-		[
-			null,
 			"floor_smooth_stone",
 			null
 		],
 		[
 			null,
 			"floor_smooth_stone",
+			"floor_smooth_stone",
 			null
 		],
 		[
 			null,
 			"floor_smooth_stone",
+			"floor_smooth_stone",
 			null
 		],
 		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
 			null,
 			null,
 			null
@@ -71,75 +81,73 @@
 	],
 	"format": 2,
 	"height": 9,
-	"id": "Dungeon_Corridor_3x9",
-	"objects": [
-		{
-			"position": {
-				"x": 24.0,
-				"y": 72.0
-			},
-			"rotation": 0.0,
-			"type": "torch"
-		}
-	],
+	"id": "Corridor_2Wide_4x9",
+	"objects": [],
 	"role": "corridor",
 	"spawn_cells": [
 		{
 			"position": {
-				"x": 1,
+				"x": 2,
 				"y": 4
 			}
 		}
 	],
-	"tags": [
-		"brick"
-	],
+	"tags": [],
 	"walls": [
 		[
-			"wall_cobble_brick",
+			"wall_smooth_stone",
 			"wall_door",
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
 			"wall_door",
-			"wall_cobble_brick"
+			"wall_smooth_stone"
+		],
+		[
+			"wall_smooth_stone",
+			null,
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_smooth_stone",
+			null,
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_smooth_stone",
+			null,
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_smooth_stone",
+			null,
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_smooth_stone",
+			null,
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_smooth_stone",
+			null,
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_smooth_stone",
+			null,
+			null,
+			"wall_smooth_stone"
+		],
+		[
+			"wall_smooth_stone",
+			"wall_door",
+			"wall_door",
+			"wall_smooth_stone"
 		]
 	],
-	"width": 3
+	"width": 4
 }
