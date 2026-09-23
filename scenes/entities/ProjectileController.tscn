@@ -1,3 +1,9 @@
 [gd_scene format=3 uid="uid://b2qqm5vvlfik8"]
 
+[ext_resource type="Script" path="res://scripts/entities/ProjectileController.gd" id="1_proj"]
+
 [node name="ProjectileController" type="Node2D" unique_id=727223909]
+z_index = 1000
+script = ExtResource("1_proj")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
