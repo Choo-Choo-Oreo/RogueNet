@@ -103,10 +103,9 @@ func _refresh_cell(pos: Vector2i) -> void:
 		var q := Vector2i(k & 1, k >> 1)
 		var cell := pos * 2 + q
 		var atlas := c * 2 + q
-		if mask == 15:
-			atlas.y += 8 * _pick_variant(cell)
-			if overlay_layer:
-				overlay_layer.set_cell(cell, 0, Vector2i.ZERO)
+		atlas.y += 8 * _pick_variant(cell)
+		if mask == 15 and overlay_layer:
+			overlay_layer.set_cell(cell, 0, Vector2i.ZERO)
 		display_layer.set_cell(cell, 0, atlas)
 
 func _pick_variant(cell: Vector2i) -> int:
