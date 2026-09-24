@@ -1,10 +1,11 @@
 # RogueNet Art To-Do
 
-Legend: ✓ done, ✗ not done. Statuses were checked against the files (not by
+Legend: ✓ done, ~ partly done or in progress, ✗ not done. Statuses were checked against the files (not by
 running the game), so anything about how it looks or plays is unconfirmed.
 
 Written 2026-09-21 from what is actually in `resources/gfx/` and `game/rooms/`.
-It is a draft. **Silvery Foxy has the final say on style**, and anything marked
+Re-checked against the files 2026-09-24 (ten biomes, the 5 door types, the boss door
+layers and emblems, 14 enemy files); the sections below say what changed. It is a draft. **Silvery Foxy has the final say on style**, and anything marked
 **(decide first)** needs a design answer from Orea before anyone draws it.
 
 How to use it: put your name next to a line before you start (`- [✗] Barrel — Foxy`),
@@ -15,12 +16,32 @@ tick it when the PNG is in the repo. Small finished things beat big unfinished t
 Two artists, two tracks that don't collide:
 
 - **Track A, objects.** Every room in the game is bare: the only objects that exist are
-  one torch and one chest. Section 2, "Everywhere" then "Dungeon". This is the biggest
+  one torch, one chest and the graves. Section 2, "Everywhere" then "Dungeon". This is the biggest
   visible win for the least work, and each object is one small 16x16 sprite.
-- **Track B, tiles.** The eleven existing tiles are done, so start on what's missing:
+- **Track B, tiles.** The 24 existing tiles (15 floors, 7 walls, 2 barriers) are done, so start on what's missing:
   doors per biome, then new floors. Section 1 lists the palettes to stay consistent with.
 
-Enemies (section 4) come next, but the enemy roster isn't designed yet, so check with Orea first.
+Enemies (section 4) come next: 14 enemy files exist already, but bosses, attack and death frames don't, so check with Orea first.
+
+## Who does what
+
+Grouped by owner. The section numbers below still hold everything; this is only the split.
+Put a name on a line before you start.
+
+- **Silvery Foxy (art director):** has the final say on style. Owns monsters (enemies and
+  bosses, section 4), player and class art (section 3), the interface (section 5), effects
+  (section 6) and the Steam art (section 8). Reviews everything else.
+- **Orea (dungeon art):** tiles, doors, boss door parts and emblems (section 1), and the
+  dungeon-side objects (section 2). Orea does not draw monsters or generic art.
+- **HamsterMan4949crypto (generalist):** fills gaps: the generic objects (section 2,
+  "Everywhere"), interface pieces, the app icon, and sound (section 9). Can also help the
+  teammate on the human equipment-slot map and the eight-direction walk set.
+
+Open work per owner, from the audit:
+
+- Foxy: player idle, attack, hurt, death; enemy attack and death frames; boss sprites; UI; town art.
+- Orea: new floors and walls, treasure door, cave and flesh doors, boss frame for smooth cave.
+- Hamster: objects, sound, app icon.
 
 ## House style, as the art stands today
 
@@ -58,32 +79,45 @@ to deliver the PNG.
 
 ### Doors
 
-One door sprite exists (`doors/Door.png`, 3 frames of 16x16: closed, half, open) and a
-friend of Orea's is already reworking it. It is drawn for a door in the bottom wall of a
-room and the game rotates it for the other three sides.
+Updated 2026-09-24: `doors/Door.png` is gone, replaced by the door families in
+`resources/gfx/doors/`, described by `game/doors/*.json`. There are 5 door types: `wood`
+(`Wood_W1`-`W3`), `wood_fold` (`Wood_Fold_W3`-`W5`), `iron` (`Iron_W1-5`), `iron_sink`
+(`IronSink_W1-5`) and `dungeon` (`Dungeon_W4`/`W5`, the boss door template). A door is drawn
+for the bottom wall of a room and the game rotates it for the other three sides.
 
-- [✗] Dungeon door (in progress elsewhere, check before starting)
-- [✗] Cave door: a rough opening or hanging roots, not carpentry
-- [✗] Mine door: timber frame, maybe a plank gate
+- [✓] Dungeon door: `Dungeon_W4`/`Dungeon_W5` plus overlays (base boss door template, approved; keep it)
+- [~] Cave door: a rough opening or hanging roots, not carpentry (the cave and volcano biomes have no doors today, so low priority)
+- [~] Mine door: timber frame, maybe a plank gate (the wood door types cover it for now; a dedicated mine look is not drawn)
 - [✗] Flesh door: a sphincter or a membrane. Frames: closed, half, open
-- [✗] Locked or sealed look for a door that doesn't open **(decide first)**
+- [✗] Locked or sealed look for a door that doesn't open **(decide first)** (`doors/doors.treasure` is an empty folder: the treasure door is not drawn)
+- [✓] Boss door layers in `doors/doors.boss/`: frame, leaves and overlay, split per wall (CobbleBrick, Flesh, Forest, Marble, RoughCave, SmoothStone, WoodPlank frames, W4 and W5)
+- [✓] Boss door leaf tiers: Wood, Iron, Bronze, Silver, Gold, each W4 and W5
+- [✓] Boss door emblems in `doors/doors.emblems/`: 15 damage types (Arcana, Entropia, Fluentia, Frigid, Inanis, Necrotic, Ordo, Perditio, Physical, Plenum, Ruina, Solum, Torpor, Virulentia, Zeal), listed in `emblems.json`
+- [✗] Boss door frame for smooth cave (`wall_smooth_cave` has no `SmoothCave_W4/W5_Frame` yet)
+- [✗] Treasure door (the locked-door item above, once items and keys exist)
 
 ### New floors
 
-Each biome has two floors today. A third gives room builders something to make paths,
-rugs and hazards with.
+Ten biomes exist as room pools (see below). Existing floors: acid, carpet (crimson, gold,
+indigo, verdigris, violet), dirt, flesh, grass, lava, smooth cave, smooth stone, void, water,
+wood planks, plus the overlays `overlay_acid_bubbles` and `overlay_lava_embers`. A new floor
+gives room builders something to make paths, rugs and hazards with.
 
-- [✗] Carpet or rug (dungeon, cathedral). Red runner with a trim edge.
+- [✓] Carpet or rug (dungeon, cathedral). Five colours exist, `floor_carpet_*`; a red runner with a trim edge is not separate
 - [✗] Cobblestone floor (dungeon). Rougher than smooth stone.
 - [✗] Cracked or mossy smooth stone (dungeon, cave)
 - [✗] Rail track on dirt (mine). Rooms already have plank "tracks" waiting for this.
 - [✗] Gravel or rubble (mine, cave)
-- [✗] Shallow water (cave). Could later slow movement the way flesh does.
-- [✗] Mushroom or moss ground (cave), a stranger cousin of grass
+- [✓] Shallow water (cave): `floor_water` exists. Could later slow movement the way flesh does.
+- [~] Mushroom or moss ground (cave), a stranger cousin of grass (the cave uses `floor_grass` as moss; no dedicated tile)
 - [✗] Bone or tooth floor (flesh). Pale, to break up all the red.
 - [✗] Pulsing or wet flesh variant (flesh)
 
 ### New walls
+
+Existing walls: cobble brick, flesh, forest, rough cave, smooth cave, smooth stone, wood plank.
+Barriers: bedrock, dense forest. The catacomb, manor and sewer stand in for missing walls
+with these, so each item below removes a workaround.
 
 - [✗] Mossy or damp stone wall (cave meets dungeon)
 - [✗] Ore vein wall (mine): rough cave rock with a metal or crystal streak
@@ -94,25 +128,29 @@ rugs and hazards with.
 
 ### A whole new biome (later)
 
-The four biomes are dungeon (grey), cave (brown and green), mine (brown) and flesh (red).
-The next one should be a color none of them has. **(decide first)**, pick one:
+The ten biomes are catacomb, cathedral, cave, dungeon, fallback (the safety net, never picked),
+flesh, forest, mine, sewer and volcano (`game/rooms/`; a manor folder was added too, so check
+`BIOMES.md`). All of them reuse the shared tile set, so none has its own palette yet. The
+last new one should be a color none of them has. **(decide first)**, pick one:
 
-- [✗] Sewer or flooded ruin: teal water, slimy brick
+- [~] Sewer or flooded ruin: teal water, slimy brick (the sewer rooms exist, drawn with cobble brick and `floor_water`; no teal or slime art)
 - [✗] Ice cavern: pale blue, white
-- [✗] Lava forge: black rock, orange glow
-- [✗] Crypt: bone white, purple
+- [~] Lava forge: black rock, orange glow (the volcano rooms exist, using rough cave, smooth cave and `floor_lava`; no forge art)
+- [~] Crypt: bone white, purple (the catacomb rooms exist, using smooth stone and violet carpet; no bone or purple wall)
 
 A biome is at least: 1 wall, 2 floors, 1 door, about 6 objects.
 
 ## 2. Objects
 
 16x16, transparent background, placed freely in a room (not locked to the grid). Only
-`torch` and `chest` exist. Objects aren't spawned in a live dive yet (that's a code job),
+`Torch.png`, `Chest_Wood.png` and the grave set exist. Objects aren't spawned in a live dive yet (that's a code job),
 but they show up in the Dungeon Maker as soon as Orea registers them, so art can run ahead.
 
 If something should animate, put the frames side by side in one PNG like `Torch.png` does.
 
 ### Everywhere
+
+- [✓] Graves (`objects/objects.graves/`): wooden crosses in 8 woods (Ash, Birch, Cedar, Chestnut, Oak, Redwood, Teak, Walnut) and `Grave_Pile_<Floor>` mounds for 14 floors
 
 - [✗] Torch: more flame frames (it has 2)
 - [✗] Chest: open frame
@@ -193,30 +231,37 @@ Frames are 16x16, in strips. What exists:
 |---|---|---|---|---|---|---|---|---|
 | Knight | 4 frames | 4 | 8 | 8 | none | none | none | none |
 | Dwarf | 4 frames | 4 | 7 | 7 (placeholder, see below) | none | none | none | none |
+| Ghost | 4 frames | 4 | 4 | 4 | none | none | none | none |
+| Minotaur (antagonist, `player.antagonist`) | 4 frames | 4 | 4 | 4 | none | none | none | none |
 
 - [✓] Knight: walking west, 2026-09-22 (`Knight-Left.png`) — real art, confirmed by pixel diff to be an exact mirror of `Knight-Right.png`. Wired into `Knight.tres` as a proper `SideLeft` animation (was briefly using the flip trick instead, which Orea flagged as not actually hooked up correctly — fixed)
 - [✗] Dwarf: even out the frame count (east/west have 7, the knight has 8)
 - [✗] Dwarf: `Dwarf-Left.png` is still a placeholder — it was byte-for-byte identical to `Dwarf-Right.png` (confirmed by pixel diff) until Orea started manually flipping it frame by frame on 2026-09-22; not done as of this note
 - [✓] Make file names match between the two, 2026-09-22: both are now `Knight-Up/Down/Left/Right.png` / `Dwarf-Up/Down/Left/Right.png`
-- [✗] Idle, all four directions, both characters
+- [✗] Idle, all four directions, both characters (still none for knight, dwarf, ghost or minotaur)
 - [✗] Attack, all four directions. Combat is real-time, so this is the one players see most.
 - [✗] Hurt flash or flinch
 - [✗] Death
 - [~] The current knight and dwarf are TEMPORARY (2026-09-24, Orea). A teammate is building a new `human` character with EIGHT-direction movement (walking north, north+east, east, south+east, south, and so on) in `resources/gfx/players/player.protagonist/human/`; the flipped directions come from the right-facing art. It comes with an equipment slot map (head, neck, chest, back, gloves, legs, feet, main hand, off hand) that says, per direction, which worn pieces draw over or behind the body and where a held item's grip pixel sits. Do not draw more frames for the old knight and dwarf until that lands
-- [✗] Human: `walking_south+east.png` was misnamed `Waling_South+East.png` and is now fixed (2026-09-24); `walking_south+east.aseprite` sits beside it. The set is still incomplete and its names do not match the `Knight-Up/Down/Left/Right` pattern; eight directions need a new naming and animation scheme, and the game only handles four directions today (`DirectionalAnimator`)
+- [✗] Human: `walking_south+east.png` was misnamed `Waling_South+East.png` and is now fixed (2026-09-24); `walking_south+east.aseprite` sits beside it. The set is still incomplete (5 of 8 directions exist on disk: east, north, north+east, south+east and south; `walking_South.png` still has a capital S while its `.aseprite` is lowercase) and its names do not match the `Knight-Up/Down/Left/Right` pattern; eight directions need a new naming and animation scheme, and the game only handles four directions today (`DirectionalAnimator`)
+- [~] Gear layer: only `gear/helmets/heavy_iron/` (down and down-right) exists. It waits on the equipment-slot map above
 - [✗] More classes **(decide first)**. Don't draw new classes until Orea confirms what they are.
 
 ## 4. Enemies
 
-Only a rat exists: front and side views, 2 frames each, 4 colors. No back view.
-The roster isn't designed, so everything past the rat is **(decide first)**. These are
-the obvious candidates per biome, to talk through with Orea:
+Updated 2026-09-24: 14 enemy files in `game/entities/entities.enemies/` across 7 species, all
+with four directions (Down, Up, Left, Right) and a walk cycle only: rat (plus blind and toothless), bat (plus echo),
+hamster (plus demonic and flying), leech (plus flesh), wolf (plus hellhound), skeleton archer and wraith.
+The rest of the roster isn't designed, so anything not listed is **(decide first)**. Orea does not draw
+monsters, so this section is Silvery Foxy's or a teammate's. These are the obvious candidates per biome:
 
-- [✗] Rat: back view, attack, death
-- [✗] Dungeon: skeleton, slime, bat
-- [✗] Cave: spider, bat, mushroom creature
+- [~] Rat: back view now exists (`Rat-Up`). Still missing: attack, death
+- [✓] Species with a walk cycle in four directions: bat, hamster, leech, wolf, skeleton archer, wraith (variants: echo bat, demonic and flying hamster, flesh leech, hellhound)
+- [~] Dungeon: skeleton, slime, bat (skeleton archer and bat exist; slime and a melee skeleton do not)
+- [~] Cave: spider, bat, mushroom creature (bat exists; spider and mushroom do not)
 - [✗] Mine: kobold or undead miner, rock golem
-- [✗] Flesh: blob, eye stalk, tooth worm
+- [~] Flesh: blob, eye stalk, tooth worm (a flesh leech exists; the three listed do not)
+- [✗] Attack and death frames for every enemy above
 - [✗] One boss per biome, bigger than a tile (32x32 or 48x48). The boss rooms exist and are empty.
 
 Each enemy needs what the rat has, plus an attack and a death.
@@ -241,10 +286,16 @@ screen, main menu, pause menu, settings.
 
 ## 6. Effects
 
-Small strips of frames, 16x16 unless noted.
+Small strips of frames, 16x16 unless noted. Updated 2026-09-24: per-damage-type hit strips
+exist in `effects/` (`effects.melee`: physical biting, bludgeoning, piercing, slashing,
+strangling; `effects.range` attacker and target; `effects.arcana`: arcana, ordo, entropia and
+their sub-types; `effects.necrotic`: perditio, ruina, torpor, virulentia), plus `Alertness` and
+`TileHover`. An arrow projectile is in `entities.projectiles/arrow`.
 
-- [✗] Hit spark
-- [✗] Weapon slash arc
+- [✓] Alertness marker, tile hover, arrow projectile
+
+- [✓] Hit spark (per damage type, see above)
+- [~] Weapon slash arc (`physical.slashing` exists; check it reads as an arc on a swing)
 - [✗] Footstep dust
 - [✗] Flesh squish or splat
 - [✗] Chest opening sparkle
@@ -268,3 +319,13 @@ and nothing about its look is decided, so all of this is **(decide first)**.
 - [✗] Steam store art: capsule, header, library images
 - [✗] Trailer stills
 - [✗] App icon (the project still has Godot's default `icon.svg`)
+
+## 9. Sound
+
+Not art, but nobody owns it yet. `resources/sfx/effects` and `resources/sfx/ambiance` are empty;
+only three music tracks exist (Groovy, Menu-Music, The-Lone-Forest). Direction from Silvery Foxy.
+
+- [✗] Sound effects: hits, doors, footsteps, UI
+- [✗] Ambiance per biome
+- [✗] More music (dungeon, boss, town)
+

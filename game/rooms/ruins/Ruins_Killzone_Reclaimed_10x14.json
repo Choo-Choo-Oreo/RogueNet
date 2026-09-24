@@ -1,0 +1,467 @@
+{
+	"biome": "ruins",
+	"connectors": [
+		{
+			"a": {
+				"x": 4,
+				"y": 0
+			},
+			"b": {
+				"x": 5,
+				"y": 0
+			},
+			"door": "none",
+			"free": true
+		},
+		{
+			"a": {
+				"x": 4,
+				"y": 13
+			},
+			"b": {
+				"x": 5,
+				"y": 13
+			},
+			"door": "none",
+			"free": true
+		}
+	],
+	"favored_enemy": {
+		"tag": "beast",
+		"weight": 2
+	},
+	"base_floor": "floor_grass",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_grass",
+			"floor_grass",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null,
+			"floor_grass",
+			null,
+			null,
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_dirt",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			null,
+			null,
+			"floor_grass",
+			"floor_grass",
+			null,
+			"floor_grass",
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			"floor_dirt",
+			"floor_smooth_stone",
+			"floor_dirt",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_smooth_stone",
+			"floor_dirt",
+			"floor_grass",
+			"floor_grass",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 2,
+	"height": 14,
+	"id": "Ruins_Killzone_Reclaimed_10x14",
+	"objects": [],
+	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 6,
+				"y": 2
+			},
+			"enemy": "wolf"
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 3
+			},
+			"enemy": "bat"
+		},
+		{
+			"position": {
+				"x": 8,
+				"y": 3
+			},
+			"enemy": "wolf"
+		},
+		{
+			"position": {
+				"x": 7,
+				"y": 5
+			},
+			"enemy": "wolf"
+		},
+		{
+			"position": {
+				"x": 3,
+				"y": 6
+			},
+			"enemy": "wolf"
+		},
+		{
+			"position": {
+				"x": 8,
+				"y": 6
+			},
+			"enemy": "wolf"
+		},
+		{
+			"position": {
+				"x": 2,
+				"y": 7
+			},
+			"enemy": "wolf"
+		},
+		{
+			"position": {
+				"x": 4,
+				"y": 7
+			},
+			"enemy": "wolf"
+		},
+		{
+			"position": {
+				"x": 3,
+				"y": 8
+			},
+			"enemy": "wolf"
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 10
+			}
+		},
+		{
+			"position": {
+				"x": 4,
+				"y": 10
+			}
+		},
+		{
+			"position": {
+				"x": 7,
+				"y": 10
+			},
+			"enemy": "bat"
+		}
+	],
+	"tags": [
+		"killzone"
+	],
+	"walls": [
+		[
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			null,
+			null,
+			"wall_forest",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_forest",
+			"wall_forest",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick",
+			"wall_forest",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_forest",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			null,
+			null,
+			null,
+			"wall_forest",
+			null,
+			"wall_forest",
+			"wall_forest",
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			"wall_forest",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			"wall_forest",
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_forest",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			null,
+			"wall_forest",
+			"wall_forest",
+			null,
+			null,
+			"wall_cobble_brick",
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_forest",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_forest",
+			"wall_forest",
+			null,
+			null,
+			null,
+			null,
+			"wall_forest",
+			"wall_forest",
+			"wall_forest"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_forest",
+			null,
+			null,
+			null,
+			null,
+			"wall_forest",
+			"wall_forest",
+			"wall_forest"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_forest",
+			null,
+			null,
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest"
+		]
+	],
+	"width": 10
+}

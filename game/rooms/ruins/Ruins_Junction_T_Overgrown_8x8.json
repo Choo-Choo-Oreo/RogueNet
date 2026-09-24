@@ -1,0 +1,215 @@
+{
+	"biome": "ruins",
+	"connectors": [
+		{
+			"a": {
+				"x": 3,
+				"y": 7
+			},
+			"b": {
+				"x": 4,
+				"y": 7
+			},
+			"door": "none",
+			"free": true
+		},
+		{
+			"a": {
+				"x": 0,
+				"y": 3
+			},
+			"b": {
+				"x": 0,
+				"y": 4
+			},
+			"door": "none",
+			"free": true
+		},
+		{
+			"a": {
+				"x": 7,
+				"y": 3
+			},
+			"b": {
+				"x": 7,
+				"y": 4
+			},
+			"door": "none",
+			"free": true
+		}
+	],
+	"base_floor": "floor_smooth_stone",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_dirt",
+			null,
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_grass",
+			"floor_grass",
+			null,
+			"floor_dirt",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_grass",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_smooth_stone",
+			"floor_smooth_stone"
+		],
+		[
+			"floor_dirt",
+			"floor_dirt",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_dirt",
+			"floor_smooth_stone",
+			"floor_smooth_stone"
+		],
+		[
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_dirt",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_grass",
+			"floor_grass",
+			null,
+			null,
+			null
+		]
+	],
+	"format": 2,
+	"height": 8,
+	"id": "Ruins_Junction_T_Overgrown_8x8",
+	"objects": [],
+	"role": "corridor",
+	"tags": [
+		"corridor"
+	],
+	"walls": [
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			"wall_forest",
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		]
+	],
+	"width": 8
+}

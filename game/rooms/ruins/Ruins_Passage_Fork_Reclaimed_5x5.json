@@ -1,0 +1,125 @@
+{
+	"biome": "ruins",
+	"connectors": [
+		{
+			"a": {
+				"x": 2,
+				"y": 4
+			},
+			"b": {
+				"x": 2,
+				"y": 4
+			},
+			"door": "none",
+			"free": true
+		},
+		{
+			"a": {
+				"x": 0,
+				"y": 2
+			},
+			"b": {
+				"x": 0,
+				"y": 2
+			},
+			"door": "none",
+			"free": true
+		},
+		{
+			"a": {
+				"x": 4,
+				"y": 2
+			},
+			"b": {
+				"x": 4,
+				"y": 2
+			},
+			"door": "none",
+			"free": true
+		}
+	],
+	"base_floor": "floor_grass",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null
+		],
+		[
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass"
+		],
+		[
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			null,
+			"floor_grass",
+			null,
+			null
+		]
+	],
+	"format": 2,
+	"height": 5,
+	"id": "Ruins_Passage_Fork_Reclaimed_5x5",
+	"objects": [],
+	"role": "corridor",
+	"tags": [
+		"corridor"
+	],
+	"walls": [
+		[
+			"wall_cobble_brick",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			"wall_forest",
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		]
+	],
+	"width": 5
+}

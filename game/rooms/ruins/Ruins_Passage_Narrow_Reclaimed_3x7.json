@@ -1,0 +1,113 @@
+{
+	"biome": "ruins",
+	"connectors": [
+		{
+			"a": {
+				"x": 1,
+				"y": 0
+			},
+			"b": {
+				"x": 1,
+				"y": 0
+			},
+			"door": "none",
+			"free": true
+		},
+		{
+			"a": {
+				"x": 1,
+				"y": 6
+			},
+			"b": {
+				"x": 1,
+				"y": 6
+			},
+			"door": "none",
+			"free": true
+		}
+	],
+	"base_floor": "floor_grass",
+	"floor": [
+		[
+			null,
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			null
+		]
+	],
+	"format": 2,
+	"height": 7,
+	"id": "Ruins_Passage_Narrow_Reclaimed_3x7",
+	"objects": [],
+	"role": "corridor",
+	"tags": [
+		"corridor"
+	],
+	"walls": [
+		[
+			"wall_cobble_brick",
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			"wall_forest"
+		]
+	],
+	"width": 3
+}

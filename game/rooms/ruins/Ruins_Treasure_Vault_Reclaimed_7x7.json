@@ -1,0 +1,193 @@
+{
+	"biome": "ruins",
+	"connectors": [
+		{
+			"a": {
+				"x": 3,
+				"y": 6
+			},
+			"b": {
+				"x": 3,
+				"y": 6
+			},
+			"door": "none",
+			"free": true
+		}
+	],
+	"favored_enemy": {
+		"tag": "beast",
+		"weight": 2
+	},
+	"base_floor": "floor_grass",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			null,
+			"floor_grass",
+			null,
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_grass",
+			null,
+			null,
+			null
+		]
+	],
+	"format": 2,
+	"height": 7,
+	"id": "Ruins_Treasure_Vault_Reclaimed_7x7",
+	"objects": [
+		{
+			"position": {
+				"x": 56.0,
+				"y": 56.0
+			},
+			"rotation": 0.0,
+			"type": "chest"
+		}
+	],
+	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 4,
+				"y": 1
+			},
+			"enemy": "wolf"
+		},
+		{
+			"position": {
+				"x": 4,
+				"y": 3
+			},
+			"enemy": "wolf"
+		},
+		{
+			"position": {
+				"x": 5,
+				"y": 5
+			},
+			"enemy": "wolf"
+		}
+	],
+	"tags": [
+		"treasure"
+	],
+	"walls": [
+		[
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_forest",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			"wall_forest",
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			"wall_forest",
+			"wall_forest",
+			"wall_cobble_brick"
+		]
+	],
+	"width": 7
+}
