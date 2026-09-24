@@ -1,0 +1,169 @@
+{
+	"biome": "manor",
+	"connectors": [
+		{
+			"a": {
+				"x": 2,
+				"y": 0
+			},
+			"b": {
+				"x": 2,
+				"y": 0
+			},
+			"door": "any",
+			"free": true
+		},
+		{
+			"a": {
+				"x": 2,
+				"y": 8
+			},
+			"b": {
+				"x": 2,
+				"y": 8
+			},
+			"door": "any",
+			"free": true
+		}
+	],
+	"base_floor": "floor_wood_planks",
+	"floor": [
+		[
+			null,
+			null,
+			"floor_wood_planks",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_wood_planks",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_wood_planks",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_wood_planks",
+			null,
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			null,
+			"floor_wood_planks",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_wood_planks",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_wood_planks",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_wood_planks",
+			null,
+			null
+		]
+	],
+	"format": 2,
+	"height": 9,
+	"id": "Manor_Servants_Passage_Short_5x9",
+	"objects": [],
+	"role": "corridor",
+	"tags": [
+		"corridor"
+	],
+	"walls": [
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		]
+	],
+	"width": 5
+}

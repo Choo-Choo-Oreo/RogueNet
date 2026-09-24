@@ -1,0 +1,243 @@
+{
+	"biome": "manor",
+	"connectors": [
+		{
+			"a": {
+				"x": 4,
+				"y": 8
+			},
+			"b": {
+				"x": 4,
+				"y": 8
+			},
+			"door": "wood",
+			"free": true
+		}
+	],
+	"base_floor": "floor_wood_planks",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			"floor_wood_planks",
+			null,
+			null,
+			null,
+			"floor_wood_planks",
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			"floor_carpet_gold",
+			"floor_carpet_gold",
+			"floor_carpet_gold",
+			"floor_carpet_gold",
+			"floor_carpet_gold",
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			"floor_carpet_gold",
+			"floor_carpet_gold",
+			"floor_carpet_gold",
+			"floor_carpet_gold",
+			"floor_carpet_gold",
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			null,
+			"floor_carpet_gold",
+			"floor_carpet_gold",
+			"floor_carpet_gold",
+			"floor_carpet_gold",
+			"floor_carpet_gold",
+			null,
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			"floor_carpet_gold",
+			"floor_carpet_gold",
+			"floor_carpet_gold",
+			"floor_carpet_gold",
+			"floor_carpet_gold",
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			"floor_carpet_gold",
+			"floor_carpet_gold",
+			"floor_carpet_gold",
+			"floor_carpet_gold",
+			"floor_carpet_gold",
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_wood_planks",
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 2,
+	"height": 9,
+	"id": "Manor_Nursery_9x9",
+	"objects": [],
+	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 7,
+				"y": 1
+			}
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 3
+			}
+		}
+	],
+	"tags": [
+		"combat"
+	],
+	"walls": [
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_wood_plank",
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_wood_plank",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_wood_plank",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		]
+	],
+	"width": 9
+}

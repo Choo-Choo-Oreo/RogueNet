@@ -26,7 +26,8 @@ one per landmark plus an Overgrown variant, and `cave/` as 76 rooms, one per
 formation plus a Deep variant. `sewer/` was added the same day as 111 rooms,
 one per feature plus a Flooded and a Collapsed variant, and `catacomb/` as
 80 rooms, one per feature plus a Desecrated variant, and `volcano/` as
-64 rooms, one per feature plus an Erupting variant. Each folder's own `README.md`
+64 rooms, one per feature plus an Erupting variant, and `manor/` as
+63 rooms, one per named room plus a Haunted variant. Each folder's own `README.md`
 lists every piece.
 
 | Folder | Walls | Floors | Idea |
@@ -39,6 +40,7 @@ lists every piece.
 | `sewer/` | `wall_cobble_brick` brick, `wall_smooth_stone` pillars and tank walls, `wall_rough_cave` rubble | smooth stone walkways, water, acid, dirt (silt), wood planks | Built sewers by feature: one room per feature (cistern, sluice gates, pump room, rat nest), plus a Flooded and a Collapsed variant of each. Symmetric brickwork, 5-wide mains with a water channel between two ledges, 1-wide crawls. Iron doors on side rooms, cisterns and treasure. Enemies come in rat swarms, with leeches in the water. |
 | `catacomb/` | `wall_cobble_brick` brick, `wall_smooth_stone` sarcophagi, bone stacks and altars, `wall_rough_cave` rubble | smooth stone, dirt, violet carpet (tombs only) | Burial galleries by feature: one room per feature (ossuary, columbarium, charnel pit, family tomb), plus a Desecrated variant of each. Burial niches cut every other tile into thick walls. 3-wide processionals and 1-wide galleries. Iron doors on tombs, treasure and boss crypts. Undead garrisons: skeleton archers pinned in lines, wraiths and the rest in the niches. |
 | `volcano/` | `wall_rough_cave` basalt, `wall_smooth_cave` obsidian | dirt (ash), smooth cave (cooled crust), lava | Volcanic features: one room per feature (lava river, caldera, cinder cone, fumarole vents, magma chamber), plus an Erupting variant with more lava. Every lava room has a crust path between its openings: the fast way through. No doors. Demon packs: hellhounds in tight packs on the ground, demonic hamster swarms over the lava. |
+| `manor/` | `wall_cobble_brick` outer walls, `wall_wood_plank` partitions and furniture, `wall_smooth_stone` hearths, busts and stairs, `wall_forest` potted trees | wood planks, smooth stone, all five carpets (one colour per room), dirt, grass, water | A great house by named room: dining hall, ballroom, study, kitchen, grand library. One carpet colour per room, furniture as wall stand-ins, plus a Haunted variant (furniture overturned, carpet torn, walls broken through). 3-wide hallways and 1-wide servants' passages. Wood doors on rooms (bi-fold on 3-wide), iron on the strongroom and bosses. A haunting: rolled cells (mostly wraiths), rat nests in the service rooms, bat roosts in the attic and gallery. |
 
 ## `cathedral/` is a stress test, not a designed biome
 
