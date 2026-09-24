@@ -10,40 +10,18 @@
 				"x": 7,
 				"y": 0
 			},
-			"door": "wood_fold"
+			"door": "any"
 		},
 		{
 			"a": {
 				"x": 5,
-				"y": 12
+				"y": 16
 			},
 			"b": {
 				"x": 7,
-				"y": 12
+				"y": 16
 			},
-			"door": "wood_fold"
-		},
-		{
-			"a": {
-				"x": 0,
-				"y": 5
-			},
-			"b": {
-				"x": 0,
-				"y": 7
-			},
-			"door": "wood_fold"
-		},
-		{
-			"a": {
-				"x": 12,
-				"y": 5
-			},
-			"b": {
-				"x": 12,
-				"y": 7
-			},
-			"door": "wood_fold"
+			"door": "any"
 		}
 	],
 	"floor": [
@@ -80,10 +58,10 @@
 		[
 			null,
 			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
 			"floor_wood_planks",
 			"floor_dirt",
 			"floor_dirt",
@@ -95,11 +73,11 @@
 		[
 			null,
 			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
 			"floor_wood_planks",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
@@ -110,12 +88,27 @@
 		[
 			null,
 			"floor_dirt",
-			"floor_dirt",
+			"floor_wood_planks",
 			"floor_dirt",
 			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_dirt",
 			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
 			null,
 			"floor_dirt",
 			"floor_dirt",
@@ -125,57 +118,12 @@
 		[
 			null,
 			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
 			"floor_wood_planks",
 			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			null
-		],
-		[
-			null,
-			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
-			null
-		],
-		[
-			null,
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
 			"floor_wood_planks",
 			"floor_wood_planks",
 			"floor_wood_planks",
 			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			null
-		],
-		[
-			null,
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			null,
-			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
 			null,
 			"floor_dirt",
 			"floor_dirt",
@@ -191,6 +139,36 @@
 			"floor_dirt",
 			"floor_wood_planks",
 			"floor_dirt",
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
@@ -202,13 +180,73 @@
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
+			null,
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
 			"floor_wood_planks",
 			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
 			"floor_dirt",
 			null
 		],
@@ -244,11 +282,27 @@
 		]
 	],
 	"format": 2,
-	"height": 13,
-	"id": "Mine_Entrance_Lift_13x13",
+	"height": 17,
+	"id": "Mine_Maze_Winze_13x17",
 	"objects": [],
-	"role": "entrance",
-	"tags": [],
+	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 11,
+				"y": 5
+			}
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 11
+			}
+		}
+	],
+	"tags": [
+		"maze"
+	],
 	"walls": [
 		[
 			"wall_rough_cave",
@@ -311,21 +365,22 @@
 			"wall_rough_cave"
 		],
 		[
-			"wall_wood_plank",
+			"wall_rough_cave",
 			null,
 			null,
 			null,
-			"wall_wood_plank",
-			null,
-			null,
-			null,
-			"wall_wood_plank",
-			null,
-			null,
-			null,
-			"wall_wood_plank"
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
 		],
 		[
+			"wall_rough_cave",
 			null,
 			null,
 			null,
@@ -333,14 +388,14 @@
 			null,
 			null,
 			null,
+			"wall_rough_cave",
 			null,
 			null,
 			null,
-			null,
-			null,
-			null
+			"wall_rough_cave"
 		],
 		[
+			"wall_rough_cave",
 			null,
 			null,
 			null,
@@ -348,14 +403,14 @@
 			null,
 			null,
 			null,
+			"wall_rough_cave",
 			null,
 			null,
 			null,
-			null,
-			null,
-			null
+			"wall_rough_cave"
 		],
 		[
+			"wall_rough_cave",
 			null,
 			null,
 			null,
@@ -363,27 +418,86 @@
 			null,
 			null,
 			null,
+			"wall_rough_cave",
 			null,
 			null,
 			null,
-			null,
-			null,
-			null
+			"wall_rough_cave"
 		],
 		[
-			"wall_wood_plank",
+			"wall_rough_cave",
 			null,
 			null,
 			null,
-			"wall_wood_plank",
+			"wall_rough_cave",
 			null,
 			null,
 			null,
-			"wall_wood_plank",
+			"wall_rough_cave",
 			null,
 			null,
 			null,
-			"wall_wood_plank"
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			"wall_rough_cave"
 		],
 		[
 			"wall_rough_cave",

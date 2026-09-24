@@ -19,7 +19,7 @@ Knowing this makes most of the rules below make sense.
   Branches never loop back, so every connector that doesn't get a neighbour
   becomes a wall.
 - **Rooms are rotated for you.** Draw each room once. The generator tries all
-  four turns, except for the entrance and boss, which are never rotated.
+  four turns, except for the entrance, which is never rotated. Bosses rotate too.
 - **Each room reserves its whole rectangle**, including its outer wall ring,
   even the parts that are solid wall. A big room with lots of dead wall
   wastes space the generator could have used.

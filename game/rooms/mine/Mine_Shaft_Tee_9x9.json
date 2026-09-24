@@ -4,17 +4,6 @@
 		{
 			"a": {
 				"x": 3,
-				"y": 0
-			},
-			"b": {
-				"x": 5,
-				"y": 0
-			},
-			"door": "any"
-		},
-		{
-			"a": {
-				"x": 3,
 				"y": 8
 			},
 			"b": {
@@ -63,7 +52,7 @@
 			null,
 			"floor_dirt",
 			"floor_dirt",
-			"floor_wood_planks",
+			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
 			null,
@@ -74,7 +63,7 @@
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
-			"floor_wood_planks",
+			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
@@ -85,7 +74,7 @@
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
-			"floor_wood_planks",
+			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
@@ -149,7 +138,7 @@
 	],
 	"format": 2,
 	"height": 9,
-	"id": "Mine_Cart_Junction_9x9",
+	"id": "Mine_Shaft_Tee_9x9",
 	"objects": [],
 	"role": "corridor",
 	"tags": [
@@ -159,11 +148,11 @@
 		[
 			"wall_rough_cave",
 			"wall_rough_cave",
-			"wall_wood_plank",
-			null,
-			null,
-			null,
-			"wall_wood_plank",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave"
 		],

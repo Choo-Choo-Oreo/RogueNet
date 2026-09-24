@@ -3,45 +3,23 @@
 	"connectors": [
 		{
 			"a": {
-				"x": 3,
-				"y": 0
+				"x": 2,
+				"y": 6
 			},
 			"b": {
-				"x": 5,
-				"y": 0
+				"x": 4,
+				"y": 6
 			},
 			"door": "any"
 		},
 		{
 			"a": {
-				"x": 3,
-				"y": 8
+				"x": 6,
+				"y": 2
 			},
 			"b": {
-				"x": 5,
-				"y": 8
-			},
-			"door": "any"
-		},
-		{
-			"a": {
-				"x": 0,
-				"y": 3
-			},
-			"b": {
-				"x": 0,
-				"y": 5
-			},
-			"door": "any"
-		},
-		{
-			"a": {
-				"x": 8,
-				"y": 3
-			},
-			"b": {
-				"x": 8,
-				"y": 5
+				"x": 6,
+				"y": 4
 			},
 			"door": "any"
 		}
@@ -54,27 +32,12 @@
 			null,
 			null,
 			null,
-			null,
-			null,
-			null
-		],
-		[
-			null,
-			null,
-			"floor_dirt",
-			"floor_dirt",
-			"floor_wood_planks",
-			"floor_dirt",
-			"floor_dirt",
-			null,
 			null
 		],
 		[
 			null,
 			"floor_dirt",
 			"floor_dirt",
-			"floor_dirt",
-			"floor_wood_planks",
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
@@ -85,30 +48,6 @@
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
-			"floor_wood_planks",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			null
-		],
-		[
-			null,
-			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
-			null
-		],
-		[
-			null,
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_wood_planks",
-			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
 			null
@@ -117,27 +56,30 @@
 			null,
 			"floor_dirt",
 			"floor_dirt",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
 			"floor_dirt",
 			"floor_wood_planks",
-			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
 			null
 		],
 		[
 			null,
-			null,
 			"floor_dirt",
 			"floor_dirt",
 			"floor_wood_planks",
 			"floor_dirt",
 			"floor_dirt",
-			null,
 			null
 		],
 		[
-			null,
-			null,
 			null,
 			null,
 			null,
@@ -148,8 +90,8 @@
 		]
 	],
 	"format": 2,
-	"height": 9,
-	"id": "Mine_Cart_Junction_9x9",
+	"height": 7,
+	"id": "Mine_Shaft_Bend_7x7",
 	"objects": [],
 	"role": "corridor",
 	"tags": [
@@ -159,73 +101,14 @@
 		[
 			"wall_rough_cave",
 			"wall_rough_cave",
-			"wall_wood_plank",
-			null,
-			null,
-			null,
-			"wall_wood_plank",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave"
 		],
 		[
 			"wall_rough_cave",
-			"wall_rough_cave",
-			null,
-			null,
-			null,
-			null,
-			null,
-			"wall_rough_cave",
-			"wall_rough_cave"
-		],
-		[
-			"wall_wood_plank",
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			"wall_wood_plank"
-		],
-		[
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null
-		],
-		[
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null
-		],
-		[
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null
-		],
-		[
-			"wall_wood_plank",
-			null,
-			null,
 			null,
 			null,
 			null,
@@ -235,26 +118,49 @@
 		],
 		[
 			"wall_rough_cave",
-			"wall_rough_cave",
 			null,
 			null,
 			null,
 			null,
 			null,
-			"wall_rough_cave",
-			"wall_rough_cave"
+			null
 		],
 		[
 			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_wood_plank"
+		],
+		[
 			"wall_rough_cave",
 			"wall_wood_plank",
 			null,
 			null,
 			null,
 			"wall_wood_plank",
-			"wall_rough_cave",
 			"wall_rough_cave"
 		]
 	],
-	"width": 9
+	"width": 7
 }

@@ -18,18 +18,21 @@ from on its own:
 - 5 `normal` rooms
 - 10 maze pieces (`<Biome>_Maze_*`, role `normal`, tagged `"maze"`), see below
 
+That was the starting set. `dungeon/` and `mine/` were redesigned on
+2026-09-24 and now have much larger sets: two entrances, two bosses, several
+treasure rooms and 8 or 24 mazes. Their own `README.md` lists every piece.
+
 | Folder | Walls | Floors | Idea |
 |---|---|---|---|
-| `dungeon/` | `wall_cobble_brick`, `wall_smooth_stone`, `wall_wood_plank` | smooth stone, wood planks, a little dirt | Built masonry. Wood rooms are barracks and cabins inside it. |
+| `dungeon/` | `wall_cobble_brick` | smooth stone | Built masonry. 2-wide corridors and open rooms, with small side rooms off 1-wide doors. |
 | `cave/` | `wall_rough_cave` | dirt, grass patches | Thick irregular walls, few straight edges. |
-| `mine/` | `wall_rough_cave` rock with `wall_wood_plank` timber supports | dirt, wood plank walkways | A mine shaft. Plank tracks run door to door. Timber frames doorways and props up long tunnels. Includes `Mine_Cabin_Cavern_19x15`, a big cavern with a cabin in the middle. |
+| `mine/` | `wall_rough_cave` rock with `wall_wood_plank` timber supports | dirt, wood plank walkways | A mine shaft. Plank tracks run door to door. Timber frames doorways and props up long tunnels. Includes `Mine_Cabin_Cavern_17x13`, a big cavern with a cabin in the middle. |
 | `flesh/` | `wall_flesh` | flesh, smooth stone | Flesh floor slows movement, so stone strips act as fast lanes. |
-| `liquid/` | `wall_smooth_stone` | smooth stone, `floor_water`, `floor_lava`, `floor_acid` | Test biome for the liquid floors (added 2026-09-21): normal rooms (pools, lava bridge, moat, acid vats, a 29x29 lava checkerboard maze) plus a 52x52 lava-lake boss room (a 40x40 lava pit, a stress test for the glow flood), so the entrance, treasure and corridors come from `fallback/`. Water and acid are `DIFFICULT` terrain, lava `SEVERE`. |
 
 ## `cathedral/` is a stress test, not a designed biome
 
 Added 2026-09-21 to see how generation and rendering hold up at size. It is
-the 20 `dungeon/` rooms with their interiors scaled 3x or 4x (outer wall
+the original 20 `dungeon/` rooms (before the 2026-09-24 redesign) with their interiors scaled 3x or 4x (outer wall
 still 1 thick, doors still 1 wide), plus `Cathedral_Boss_Nave_100x100`, which
 is the Dungeon Maker's maximum size. A dive here is about 25,000 room tiles
 inside a roughly 240 x 256 tile box. Because it is a folder in `game/rooms/`,
@@ -40,7 +43,8 @@ inside a roughly 240 x 256 tile box. Because it is a folder in `game/rooms/`,
 
 The assembler grows a dungeon as a tree: it never joins two branches back
 together. So the maze feel has to come from the pieces themselves. Each
-biome has the same ten kinds, drawn differently per biome:
+biome started with the same ten kinds, drawn differently per biome
+(`dungeon/` and `mine/` have since replaced theirs, see their READMEs):
 
 | Piece | Doors | What it does to the player |
 |---|---|---|

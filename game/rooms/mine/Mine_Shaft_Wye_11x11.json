@@ -3,45 +3,34 @@
 	"connectors": [
 		{
 			"a": {
-				"x": 3,
+				"x": 1,
 				"y": 0
 			},
 			"b": {
-				"x": 5,
+				"x": 3,
 				"y": 0
 			},
 			"door": "any"
 		},
 		{
 			"a": {
-				"x": 3,
-				"y": 8
+				"x": 7,
+				"y": 0
 			},
 			"b": {
-				"x": 5,
-				"y": 8
+				"x": 9,
+				"y": 0
 			},
 			"door": "any"
 		},
 		{
 			"a": {
-				"x": 0,
-				"y": 3
+				"x": 4,
+				"y": 10
 			},
 			"b": {
-				"x": 0,
-				"y": 5
-			},
-			"door": "any"
-		},
-		{
-			"a": {
-				"x": 8,
-				"y": 3
-			},
-			"b": {
-				"x": 8,
-				"y": 5
+				"x": 6,
+				"y": 10
 			},
 			"door": "any"
 		}
@@ -56,27 +45,85 @@
 			null,
 			null,
 			null,
-			null
-		],
-		[
 			null,
-			null,
-			"floor_dirt",
-			"floor_dirt",
-			"floor_wood_planks",
-			"floor_dirt",
-			"floor_dirt",
 			null,
 			null
 		],
 		[
 			null,
 			"floor_dirt",
+			"floor_wood_planks",
 			"floor_dirt",
+			null,
+			null,
+			null,
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_dirt",
+			null,
+			null,
+			null,
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_dirt",
+			null,
+			null,
+			null,
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_dirt",
+			null,
+			null,
+			null,
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
 			"floor_dirt",
 			"floor_wood_planks",
 			"floor_dirt",
 			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
 			"floor_dirt",
 			null
 		],
@@ -85,40 +132,9 @@
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
-			"floor_wood_planks",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			null
-		],
-		[
-			null,
-			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
-			null
-		],
-		[
-			null,
-			"floor_dirt",
-			"floor_dirt",
 			"floor_dirt",
 			"floor_wood_planks",
 			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			null
-		],
-		[
-			null,
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_wood_planks",
 			"floor_dirt",
 			"floor_dirt",
 			"floor_dirt",
@@ -127,15 +143,32 @@
 		[
 			null,
 			null,
-			"floor_dirt",
+			null,
+			null,
 			"floor_dirt",
 			"floor_wood_planks",
 			"floor_dirt",
-			"floor_dirt",
+			null,
+			null,
 			null,
 			null
 		],
 		[
+			null,
+			null,
+			null,
+			null,
+			"floor_dirt",
+			"floor_wood_planks",
+			"floor_dirt",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
 			null,
 			null,
 			null,
@@ -148,8 +181,8 @@
 		]
 	],
 	"format": 2,
-	"height": 9,
-	"id": "Mine_Cart_Junction_9x9",
+	"height": 11,
+	"id": "Mine_Shaft_Wye_11x11",
 	"objects": [],
 	"role": "corridor",
 	"tags": [
@@ -157,77 +190,13 @@
 	],
 	"walls": [
 		[
-			"wall_rough_cave",
-			"wall_rough_cave",
 			"wall_wood_plank",
 			null,
 			null,
 			null,
 			"wall_wood_plank",
 			"wall_rough_cave",
-			"wall_rough_cave"
-		],
-		[
-			"wall_rough_cave",
-			"wall_rough_cave",
-			null,
-			null,
-			null,
-			null,
-			null,
-			"wall_rough_cave",
-			"wall_rough_cave"
-		],
-		[
 			"wall_wood_plank",
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			"wall_wood_plank"
-		],
-		[
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null
-		],
-		[
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null
-		],
-		[
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null
-		],
-		[
-			"wall_wood_plank",
-			null,
-			null,
-			null,
-			null,
 			null,
 			null,
 			null,
@@ -235,26 +204,134 @@
 		],
 		[
 			"wall_rough_cave",
+			null,
+			null,
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
 			"wall_rough_cave",
 			null,
 			null,
 			null,
 			null,
 			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave"
 		],
 		[
 			"wall_rough_cave",
 			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
 			"wall_wood_plank",
 			null,
 			null,
 			null,
 			"wall_wood_plank",
+			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave"
 		]
 	],
-	"width": 9
+	"width": 11
 }

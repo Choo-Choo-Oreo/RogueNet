@@ -31,15 +31,35 @@ just to add a field here.
 ### Role and tags
 
 - `role` *(optional, default `"normal"`)*: one of
-  - `entrance`: where the dive starts. A biome needs at least one; with several, one is picked at random per dungeon (same seed, same pick). Never rotated.
-  - `boss`: placed on the deepest dead end after the layout is built. Several are allowed: one is picked at random per dungeon, and if it does not fit anywhere the others are tried. Never rotated.
+  - `entrance`: where the dive starts. A biome needs at least one; with several, one is picked at random per dungeon (same seed, same pick). The only role that is never rotated.
+  - `boss`: placed on the deepest dead end after the layout is built. Several are allowed: one is picked at random per dungeon, and if it does not fit anywhere the others are tried. Rotated like a normal room, so draw it once.
   - `corridor`: a connecting passage. Also used as filler when the boss needs a longer path.
   - `normal`: everything else.
 - `tags`: free-text labels, all lower case. What they do:
   - The biome's `tag_weights` (in `defines.json`) can make a tag's rooms more or less likely to be picked (`maze` and `corridor` are down-weighted).
-  - `treasure` takes a room out of the random pool. It is placed on a leftover dead end at the end. Give treasure rooms no `spawn_cells`.
+  - `treasure` takes a room out of the random pool. It is placed on a leftover dead end at the end. Treasure rooms can have `spawn_cells` if the loot should be guarded.
   - Other tags (`combat`, `peaceful`, `stone`, `brick`, `wood`, ...) describe the room and are not read by code yet.
   - Room tags are not enemy tags. Enemy tags live in `game/TAGS.md`.
+
+### Weights: rooms first, corridors second
+
+A dive should feel like rooms joined by passages, not passages with the odd
+room. So when setting a biome's `tag_weights`, keep real rooms (combat,
+barracks, peaceful, working rooms) as the main share of picks.
+
+- **Keep `corridor` below 1.0.** Corridor pieces have `corridor` as both role
+  and tag, so the weight counts twice: 0.7 gives 0.49 per piece.
+- **Check the share, not just the number.** Add up weight × piece count for
+  each kind. Corridors should be roughly a quarter of the total. Adding more
+  corridor pieces raises their share even when the weight stays the same.
+- **For corridor variety, add different shapes rather than raising the weight.**
+  Some examples are S-curves, loops around a pillar, U-turns and forks (see the
+  mine's shafts).
+- The generator also adds corridors on its own to stretch the path to the
+  boss, so a real dive will show a few more than the weights suggest.
+
+Example: in the mine, `corridor` at 1.2 (1.44 per piece) made about 40% of
+picks a shaft. Runs felt like all corridor. At 0.7 it's about 25%.
 
 ### Tiles: `floor`, `walls`, `base_floor`
 
@@ -95,7 +115,7 @@ Each one is a straight run of cells on the outer ring:
 
 ### Rotation
 
-For roles other than `entrance` and `boss`, the loader adds 90, 180 and 270
+For every role except `entrance`, the loader adds 90, 180 and 270
 degree copies, so each room is drawn once and works facing any way. Connectors
 follow the rotation. Do not rely on a fixed neighbour or a fixed orientation.
 

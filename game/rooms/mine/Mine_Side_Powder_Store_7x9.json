@@ -4,11 +4,11 @@
 		{
 			"a": {
 				"x": 3,
-				"y": 6
+				"y": 8
 			},
 			"b": {
 				"x": 3,
-				"y": 6
+				"y": 8
 			},
 			"door": "any"
 		}
@@ -26,15 +26,6 @@
 		[
 			null,
 			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
-			"floor_wood_planks",
-			null
-		],
-		[
-			null,
-			"floor_wood_planks",
 			null,
 			"floor_wood_planks",
 			null,
@@ -53,9 +44,36 @@
 		[
 			null,
 			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			null
+		],
+		[
 			null,
 			"floor_wood_planks",
 			null,
+			"floor_dirt",
+			null,
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
 			"floor_wood_planks",
 			null
 		],
@@ -79,21 +97,20 @@
 		]
 	],
 	"format": 2,
-	"height": 7,
-	"id": "Mine_Treasure_Stash_7x7",
-	"objects": [
+	"height": 9,
+	"id": "Mine_Side_Powder_Store_7x9",
+	"objects": [],
+	"role": "normal",
+	"spawn_cells": [
 		{
 			"position": {
-				"x": 56.0,
-				"y": 56.0
-			},
-			"rotation": 0.0,
-			"type": "chest"
+				"x": 3,
+				"y": 4
+			}
 		}
 	],
-	"role": "normal",
 	"tags": [
-		"treasure"
+		"combat"
 	],
 	"walls": [
 		[
@@ -108,6 +125,24 @@
 		[
 			"wall_wood_plank",
 			null,
+			"wall_wood_plank",
+			null,
+			"wall_wood_plank",
+			null,
+			"wall_wood_plank"
+		],
+		[
+			"wall_wood_plank",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_wood_plank"
+		],
+		[
+			"wall_wood_plank",
+			null,
 			null,
 			null,
 			null,
@@ -135,9 +170,9 @@
 		[
 			"wall_wood_plank",
 			null,
-			"wall_wood_plank",
 			null,
-			"wall_wood_plank",
+			null,
+			null,
 			null,
 			"wall_wood_plank"
 		],
