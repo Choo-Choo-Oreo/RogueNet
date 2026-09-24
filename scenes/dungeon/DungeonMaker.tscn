@@ -11,8 +11,6 @@
 [ext_resource type="Texture2D" uid="uid://30t8sgmrsu53" path="res://resources/gfx/tileset/floor_void.png" id="10_beptr"]
 [ext_resource type="Texture2D" uid="uid://bdh3k1pjwhi31" path="res://resources/gfx/tileset/floor_wood_planks.png" id="11_o85wv"]
 [ext_resource type="Texture2D" uid="uid://dqhpq8s0o1kqr" path="res://resources/gfx/tileset/wall_cobble_brick.png" id="12_mse36"]
-[ext_resource type="Script" uid="uid://kwiwirkys8xp" path="res://scripts/cells/tiles/StaticTileRender.gd" id="13_b6gtq"]
-[ext_resource type="Texture2D" path="res://resources/gfx/doors/Wood_W1.png" id="14_hvud5"]
 [ext_resource type="Texture2D" uid="uid://cgplkwatxa2fv" path="res://resources/gfx/tileset/wall_smooth_stone.png" id="15_jjsgu"]
 [ext_resource type="Script" path="res://scripts/dungeon/DungeonMakerOverlay.gd" id="16_ovrly"]
 [ext_resource type="Script" path="res://scripts/dungeon/RoomBrowserSourceList.gd" id="17_rbsrc"]
@@ -239,13 +237,6 @@ texture = ExtResource("12_mse36")
 [sub_resource type="TileSet" id="TileSet_j4qsa"]
 sources/0 = SubResource("TileSetAtlasSource_pb0uc")
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6srwk"]
-texture = ExtResource("14_hvud5")
-0:0/0 = 0
-
-[sub_resource type="TileSet" id="TileSet_8lwbh"]
-sources/0 = SubResource("TileSetAtlasSource_6srwk")
-
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_hbm6m"]
 texture = ExtResource("15_jjsgu")
 0:0/0 = 0
@@ -363,17 +354,6 @@ source_id = 6
 [node name="DisplayLayer" type="TileMapLayer" parent="TileRenderer/wall_cobble_brick" unique_id=720804391]
 position = Vector2(8, 8)
 tile_set = SubResource("TileSet_j4qsa")
-
-[node name="wall_door" type="Node2D" parent="TileRenderer" unique_id=570259027 node_paths=PackedStringArray("data_layer", "display_layer")]
-z_index = 100
-script = ExtResource("13_b6gtq")
-data_layer = NodePath("../WallData")
-display_layer = NodePath("DisplayLayer")
-source_id = 8
-
-[node name="DisplayLayer" type="TileMapLayer" parent="TileRenderer/wall_door" unique_id=1455816809]
-position = Vector2(8, 8)
-tile_set = SubResource("TileSet_8lwbh")
 
 [node name="wall_smooth_stone" type="Node2D" parent="TileRenderer" unique_id=1043341413 node_paths=PackedStringArray("data_layer", "display_layer")]
 z_index = 100
