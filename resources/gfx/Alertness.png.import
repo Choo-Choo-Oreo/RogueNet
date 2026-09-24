@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://drkbbgtkdtsru"
-path="res://.godot/imported/alertness.png-4c50fde862706ef21ffa9318c7dab2d9.ctex"
+path="res://.godot/imported/Alertness.png-403cc9b89a4ab675f8d64d3c2cc0f3c1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/effects/alertness.png"
-dest_files=["res://.godot/imported/alertness.png-4c50fde862706ef21ffa9318c7dab2d9.ctex"]
+source_file="res://resources/gfx/Alertness.png"
+dest_files=["res://.godot/imported/Alertness.png-403cc9b89a4ab675f8d64d3c2cc0f3c1.ctex"]
 
 [params]
 
