@@ -92,3 +92,6 @@ func _on_knight_button_pressed() -> void:
 
 func _on_dwarf_button_pressed() -> void:
 	_choose_character("dwarf")
+
+func _on_human_button_pressed() -> void:
+	_choose_character("human")

@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dwirrp0q8cr1q"
-path="res://.godot/imported/Human-Right.png-bee844114f16b2014b13502d4a0a96e4.ctex"
+path="res://.godot/imported/Human-Right.png-74f1e742ec27c04c24e444b45b2547bc.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://resources/gfx/players/player.protagonist/human/Human-Right.png"
-dest_files=["res://.godot/imported/Human-Right.png-bee844114f16b2014b13502d4a0a96e4.ctex"]
+dest_files=["res://.godot/imported/Human-Right.png-74f1e742ec27c04c24e444b45b2547bc.ctex"]
 
 [params]
 

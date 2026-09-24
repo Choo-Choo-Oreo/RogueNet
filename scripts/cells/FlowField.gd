@@ -1,7 +1,7 @@
 class_name FlowField
 extends RefCounted
 
-## Shared per-target step field: one BFS flood from the target's tile
+## Shared per-target step field: one flood from the target's tile
 ## outward, reused by every enemy chasing that same target this frame,
 ## instead of each one solving its own from-scratch A* search (see
 ## Pathfinding.gd, and EnemyController's MAX_PATHFINDS_PER_FRAME budget /
@@ -18,12 +18,69 @@ extends RefCounted
 
 const RADIUS := 20
 
-# target instance id -> {"target_cell": Vector2i, "directions": Dictionary}
-# directions maps a reachable cell to the Vector2i step that moves 1 tile
-# closer to target_cell along the flood's shortest path.
+# target instance id -> {"target_cell": Vector2i, "grid": StepCache, plus each
+# map once something has asked for it (_field_for): "directions" (flyers),
+# "terrain_directions" (walkers) and "distances" (get_distances). A directions
+# map sends a reachable cell to the Vector2i step that moves 1 tile closer to
+# target_cell along the flood's shortest path.
 static var _fields := {}
 
-const NEIGHBOR_STEPS: Array[Vector2i] = [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]
+const NEIGHBOR_STEPS: Array[Vector2i] = [
+	Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT,
+	Vector2i(1, 1), Vector2i(1, -1), Vector2i(-1, 1), Vector2i(-1, -1),
+]
+
+## How long a diagonal step takes compared to a straight one (it covers
+## sqrt(2) ~= 1.41 tiles; GridMover scales its tween time the same way).
+const DIAGONAL_LENGTH := 1.4142135623730951
+
+const _BLOCKED := 1
+const _DOOR := 2
+
+## One field's memory of the grid. A flood asks about each tile many times (as
+## a neighbour of up to 8 cells, and as the corner a diagonal squeezes past),
+## and is_blocked is a real tile-map lookup, so each tile is looked up once and
+## each cell's open steps are worked out once -- all of a field's floods share one.
+class StepCache:
+	var is_blocked: Callable
+	var _tiles := {}  # tile -> _BLOCKED | _DOOR bits
+	var _steps := {}  # cell -> the NEIGHBOR_STEPS open out of it
+
+	func _init(blocked_check: Callable) -> void:
+		is_blocked = blocked_check
+
+	## The steps a mover can take between `cell` and a neighbour (either way).
+	## The same rule GridMover.can_step_diagonally applies to a real step: a
+	## diagonal needs both straight tiles beside it open (no cutting wall
+	## corners) and no door on any of the four tiles it passes (no slipping
+	## through a doorway's edge).
+	func open_steps(cell: Vector2i) -> Array:
+		var steps = _steps.get(cell)
+		if steps != null:
+			return steps
+		# The 3x3 block around `cell`, at index (x + 1) + (y + 1) * 3; 4 is `cell`.
+		var around: Array[int] = []
+		for y in range(-1, 2):
+			for x in range(-1, 2):
+				var tile := cell + Vector2i(x, y)
+				var bits = _tiles.get(tile)
+				if bits == null:
+					bits = (_BLOCKED if is_blocked.call(tile) else 0) | (_DOOR if DoorRegistry.is_door_cell(tile) else 0)
+					_tiles[tile] = bits
+				around.append(bits)
+		steps = []
+		for step in NEIGHBOR_STEPS:
+			var onto := around[(step.x + 1) + (step.y + 1) * 3]
+			if onto & _BLOCKED:
+				continue
+			if step.x != 0 and step.y != 0:
+				var side_x := around[(step.x + 1) + 3]
+				var side_y := around[1 + (step.y + 1) * 3]
+				if (side_x | side_y) & _BLOCKED or (around[4] | onto | side_x | side_y) & _DOOR:
+					continue
+			steps.append(step)
+		_steps[cell] = steps
+		return steps
 
 ## Called once per fresh dungeon load (DungeonPainter._ready(), alongside
 ## RoomGraph.build()) -- _fields is static and keyed by target instance id,
@@ -45,35 +102,50 @@ static func clear() -> void:
 ## `terrain_cost` (optional, tile -> float, 1.0 = normal ground) makes the
 ## flood cost-weighted, so the step leads around slow ground (lava, water)
 ## when a detour is cheaper. Leave it unset for a mover that ignores terrain
-## (flyers); those share the plain field. Walkers share one weighted field
-## per target, so every mover passing a terrain_cost must use the same costs.
+## (flyers); those share the plain map. Walkers share one weighted map per
+## target, so every mover passing a terrain_cost must use the same costs.
 static func get_step(target_id: Variant, target_cell: Vector2i, from_cell: Vector2i, is_blocked: Callable, terrain_cost: Callable = Callable()) -> Vector2i:
-	var key: Variant = target_id if not terrain_cost.is_valid() else [target_id, "terrain"]
-	var field: Dictionary = _fields.get(key, {})
-	if field.get("target_cell") != target_cell:
-		field = _build(target_cell, is_blocked) if not terrain_cost.is_valid() else _build_weighted(target_cell, is_blocked, terrain_cost)
-		_fields[key] = field
-	var directions: Dictionary = field["directions"]
+	var field := _field_for(target_id, target_cell, is_blocked)
+	var map_name := "terrain_directions" if terrain_cost.is_valid() else "directions"
+	if not field.has(map_name):
+		field[map_name] = _build_directions(target_cell, terrain_cost, field["grid"])
+	var directions: Dictionary = field[map_name]
 	return directions.get(from_cell, Vector2i.ZERO)
 
-## Walking distance (in tiles, walls only) from each reachable cell to
-## `target_cell`, from the same shared flood get_step uses -- lets a caller
-## tell "closer / same layer / farther" apart instead of only getting the one
-## recommended step. Cells outside RADIUS are absent.
+## Walking distance (in steps, walls only; a diagonal step counts as one) from
+## each reachable cell to `target_cell`, from the same shared field get_step
+## uses -- lets a caller tell "closer / same layer / farther" apart instead of
+## only getting the one recommended step. Cells outside RADIUS are absent.
 static func get_distances(target_id: Variant, target_cell: Vector2i, is_blocked: Callable) -> Dictionary:
-	var field: Dictionary = _fields.get(target_id, {})
-	if field.get("target_cell") != target_cell:
-		field = _build(target_cell, is_blocked)
-		_fields[target_id] = field
+	var field := _field_for(target_id, target_cell, is_blocked)
+	if not field.has("distances"):
+		field["distances"] = _step_counts(target_cell, field["grid"])
 	return field["distances"]
 
-## Same shape as _build, but each step costs the average of the two tiles'
-## terrain costs (a step spends half its time on each, see GridMover), so the
-## flood is a shortest-cost search instead of a plain BFS. A cell can be
-## reached again by a cheaper route, so it is re-queued when improved. Only
-## "directions" is filled: `distances` stays the plain step count from _build,
-## which the surround logic relies on (one tile closer = exactly one less).
-static func _build_weighted(target_cell: Vector2i, is_blocked: Callable, terrain_cost: Callable) -> Dictionary:
+## The shared field for `target_id`, started over when its target has moved.
+## Each of its maps is built the first time something asks for it (see
+## _fields) -- plenty of chases only ever need one or two. They all share the
+## field's StepCache, which takes the newest caller's is_blocked (the caller
+## that started the field may have died since).
+static func _field_for(target_id: Variant, target_cell: Vector2i, is_blocked: Callable) -> Dictionary:
+	var field: Dictionary = _fields.get(target_id, {})
+	if field.get("target_cell") != target_cell:
+		field = {"target_cell": target_cell, "grid": StepCache.new(is_blocked)}
+		_fields[target_id] = field
+	else:
+		var grid: StepCache = field["grid"]
+		grid.is_blocked = is_blocked
+	return field
+
+## Shortest-TIME flood: each step costs its length (1, or ~1.41 for a
+## diagonal) times the average of the two tiles' terrain costs (a step spends
+## half its time on each, see GridMover), so routes take diagonals where they
+## save time and detour around slow ground when that is cheaper. Leave
+## terrain_cost unset for plain ground everywhere. A cell can be reached again
+## by a cheaper route, so it is re-queued when improved. Returns cell -> the
+## step to take from it.
+static func _build_directions(target_cell: Vector2i, terrain_cost: Callable, grid: StepCache) -> Dictionary:
+	var weighted := terrain_cost.is_valid()
 	var directions := {target_cell: Vector2i.ZERO}
 	var best := {target_cell: 0.0}
 	var costs := {}
@@ -86,28 +158,29 @@ static func _build_weighted(target_cell: Vector2i, is_blocked: Callable, terrain
 		queued.erase(cell)
 		if maxi(absi(cell.x - target_cell.x), absi(cell.y - target_cell.y)) >= RADIUS:
 			continue
-		if not costs.has(cell):
+		if weighted and not costs.has(cell):
 			costs[cell] = terrain_cost.call(cell)
-		for step in NEIGHBOR_STEPS:
+		for step: Vector2i in grid.open_steps(cell):
 			var neighbor := cell + step
-			if is_blocked.call(neighbor):
-				continue
-			if not costs.has(neighbor):
-				costs[neighbor] = terrain_cost.call(neighbor)
-			var total: float = best[cell] + (costs[cell] + costs[neighbor]) * 0.5
+			var step_cost := DIAGONAL_LENGTH if step.x != 0 and step.y != 0 else 1.0
+			if weighted:
+				if not costs.has(neighbor):
+					costs[neighbor] = terrain_cost.call(neighbor)
+				step_cost *= (costs[cell] + costs[neighbor]) * 0.5
+			var total: float = best[cell] + step_cost
 			if total < best.get(neighbor, INF):
 				best[neighbor] = total
 				directions[neighbor] = -step
 				if not queued.has(neighbor):
 					queued[neighbor] = true
 					queue.append(neighbor)
-	return {"target_cell": target_cell, "directions": directions, "distances": {}}
+	return directions
 
-static func _build(target_cell: Vector2i, is_blocked: Callable) -> Dictionary:
-	# BFS outward from the target -- the direction stored for each newly
-	# reached cell is simply "back the way the flood came from," which is,
-	# by construction, one step closer to target_cell than that cell was.
-	var directions := {target_cell: Vector2i.ZERO}
+## BFS outward from the target: how many steps (diagonal or straight, each
+## counting one) every reachable cell is from it. Neighbouring cells differ by
+## at most one, so the cells at the same count form a square-ish ring around
+## the target -- the surround logic's "layers".
+static func _step_counts(target_cell: Vector2i, grid: StepCache) -> Dictionary:
 	var distances := {target_cell: 0}
 	var queue: Array[Vector2i] = [target_cell]
 	var head := 0
@@ -116,11 +189,10 @@ static func _build(target_cell: Vector2i, is_blocked: Callable) -> Dictionary:
 		head += 1
 		if maxi(absi(cell.x - target_cell.x), absi(cell.y - target_cell.y)) >= RADIUS:
 			continue
-		for step in NEIGHBOR_STEPS:
+		for step: Vector2i in grid.open_steps(cell):
 			var neighbor := cell + step
-			if directions.has(neighbor) or is_blocked.call(neighbor):
+			if distances.has(neighbor):
 				continue
-			directions[neighbor] = -step
 			distances[neighbor] = distances[cell] + 1
 			queue.append(neighbor)
-	return {"target_cell": target_cell, "directions": directions, "distances": distances}
+	return distances

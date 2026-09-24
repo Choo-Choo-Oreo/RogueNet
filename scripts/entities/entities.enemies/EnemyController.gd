@@ -31,7 +31,7 @@ static var bosses: Array[EnemyController] = []
 var _base_move_time := 0.2
 var _light_map: LightMap = null
 
-## True once a failed move confirms every orthogonal neighbor is blocked or
+## True once a failed move confirms every neighbor (all 8) is blocked or
 ## occupied -- see _is_boxed_in() and its use in _process().
 var _stuck := false
 
@@ -483,7 +483,7 @@ func _try_pursue_step(target: Node2D, full_speed: bool) -> void:
 
 ## Melee enemies near their target fan out around it instead of queueing
 ## single file. FlowField.get_distances gives each tile's walking distance to
-## the target -- tiles at the same distance form a "layer" (a diamond shell)
+## the target -- tiles at the same distance form a "layer" (a square ring)
 ## around it, and there's no fixed cap on how many layers there are. Each
 ## step: prefer a free neighbor one layer closer, choosing whichever leads into
 ## the least crowded of 16 pie slices around the target (SurroundSectors); if
@@ -520,6 +520,8 @@ func _try_surround_step(target: Node2D, origin_cell: Vector2i, target_cell: Vect
 		var next_cell := origin_cell + step
 		if not distances.has(next_cell) or distances[next_cell] >= here:
 			continue
+		if not _step_open(origin_cell, step):
+			continue
 		if grid_mover.tile_cost(next_cell) > HAZARD_COST and grid_mover.tile_cost(origin_cell) <= HAZARD_COST:
 			avoided_hazard = true  # do not fan out into lava or water
 			continue
@@ -531,19 +533,20 @@ func _try_surround_step(target: Node2D, origin_cell: Vector2i, target_cell: Vect
 		if score < best_score:
 			best_score = score
 			best_step = step
-	# Every way forward is taken: sidestep to a free tile that has a free way
-	# forward of its own, toward the emptier slice. (Neighbors on this grid are
-	# always exactly one tile farther or closer, never the same distance, so the
-	# sidestep itself is one tile farther -- the tile it lands beside is what
-	# puts it back on the same layer, one column over.)
+	# Every way forward is taken: sidestep at right angles to a blocked way
+	# forward, onto a free tile that has a free way forward of its own, toward
+	# the emptier slice. The sidestep usually stays on the same layer (a tile
+	# beside this one is often the same number of steps from the target).
 	if best_step == Vector2i.ZERO:
 		for forward in blocked_forward:
-			for side_dir in [Vector2i(forward.y, forward.x), Vector2i(-forward.y, -forward.x)]:
+			for side_dir in [Vector2i(-forward.y, forward.x), Vector2i(forward.y, -forward.x)]:
 				var side_cell: Vector2i = origin_cell + side_dir
 				if side_cell == _prev_cell or not distances.has(side_cell) or grid_mover.is_tile_occupied(side_cell):
 					continue
+				if not _step_open(origin_cell, side_dir):
+					continue
 				var ahead: Vector2i = side_cell + forward
-				if not distances.has(ahead) or grid_mover.is_tile_occupied(ahead):
+				if not distances.has(ahead) or grid_mover.is_tile_occupied(ahead) or not _step_open(side_cell, forward):
 					continue
 				var score: int = sector_count.call(side_cell) * 2 + ((get_instance_id() + side_dir.x + side_dir.y * 2) & 1)
 				if score < best_score:
@@ -576,7 +579,7 @@ func _try_detour_step(target: Node2D, origin_cell: Vector2i, target_cell: Vector
 		var next_cell := origin_cell + step
 		if next_cell == _detour_prev or not distances.has(next_cell) or distances[next_cell] > here + 1:
 			continue
-		if grid_mover.is_tile_blocked(next_cell) or grid_mover.is_tile_occupied(next_cell):
+		if not _step_open(origin_cell, step) or grid_mover.is_tile_occupied(next_cell):
 			continue
 		if grid_mover.tile_cost(next_cell) > HAZARD_COST and grid_mover.tile_cost(origin_cell) <= HAZARD_COST:
 			continue
@@ -626,7 +629,7 @@ func _yield_to_boss() -> bool:
 		var best_score := -1.0e9
 		for direction in MOVE_DIRECTIONS:
 			var next_cell := my_tile + Vector2i(direction)
-			if grid_mover.is_tile_blocked(next_cell) or grid_mover.is_tile_occupied(next_cell):
+			if not _step_open(my_tile, Vector2i(direction)) or grid_mover.is_tile_occupied(next_cell):
 				continue
 			var score := Vector2(next_cell).distance_to(centre) + (100.0 if not zone.has_point(next_cell) else 0.0)
 			if score > best_score:
@@ -665,7 +668,7 @@ func _try_slide_step(target: Node2D) -> void:
 		var side := origin_cell + Vector2i(direction)
 		if _cheb(side - target_cell) != 1:
 			continue
-		if grid_mover.is_tile_blocked(side) or grid_mover.is_tile_occupied(side):
+		if not _step_open(origin_cell, Vector2i(direction)) or grid_mover.is_tile_occupied(side):
 			continue
 		if _try_move(direction, true):
 			# Just-moved rats go to the back of the line: without this cooldown,
@@ -678,11 +681,22 @@ func _try_slide_step(target: Node2D) -> void:
 func _cheb(offset: Vector2i) -> int:
 	return maxi(absi(offset.x), absi(offset.y))
 
+## Wall-wise, can this enemy step from `origin_cell` to the neighbour `step`
+## away? A straight step only needs that tile open; a diagonal also must not
+## cut a wall corner or pass through a doorway (GridMover.can_step_diagonally).
+## Occupancy is separate (grid_mover.is_tile_occupied).
+func _step_open(origin_cell: Vector2i, step: Vector2i) -> bool:
+	if grid_mover.is_tile_blocked(origin_cell + step):
+		return false
+	return step.x == 0 or step.y == 0 or grid_mover.can_step_diagonally(origin_cell, step)
+
 ## Fast path for the common case (open rooms, short corridors): with a clear
-## line to the target, just step straight toward it -- axis with the bigger
-## offset first, the other as a fallback -- instead of paying for a full grid
-## search. Falls back to _try_pathfind_step only if a wall (not just a
-## crowded tile) actually blocks both preferred directions, since that's the
+## line to the target, just step straight toward it -- diagonally when the
+## target is off both axes, then the axis with the bigger offset, then the
+## other, as fallbacks -- instead of paying for a full grid search. (Any order
+## is equally short, as long as it takes one diagonal per tile the smaller
+## offset has.) Falls back to _try_pathfind_step only if a wall (not just a
+## crowded tile) actually blocks every preferred direction, since that's the
 ## one case a real search can do something about. If both directions are
 ## merely occupied by another creature, that's deliberately left alone:
 ## Pathfinding.full_path doesn't know about occupancy either, so it would
@@ -691,15 +705,26 @@ func _cheb(offset: Vector2i) -> int:
 ## move first.
 func _try_direct_step(origin_cell: Vector2i, target_cell: Vector2i, full_speed: bool, target: Node2D = null) -> void:
 	var offset := target_cell - origin_cell
-	var primary := Vector2(signf(offset.x), 0.0) if absi(offset.x) >= absi(offset.y) else Vector2(0.0, signf(offset.y))
-	var secondary := Vector2(0.0, signf(offset.y)) if primary.x != 0.0 else Vector2(signf(offset.x), 0.0)
+	var x_step := Vector2(signf(offset.x), 0.0)
+	var y_step := Vector2(0.0, signf(offset.y))
+	var candidates: Array[Vector2] = []
+	if x_step != Vector2.ZERO and y_step != Vector2.ZERO:
+		candidates.append(x_step + y_step)
+	if absi(offset.x) >= absi(offset.y):
+		candidates.append_array([x_step, y_step])
+	else:
+		candidates.append_array([y_step, x_step])
 	var saw_wall := false
-	for direction in [primary, secondary]:
+	for direction in candidates:
 		if direction == Vector2.ZERO:
 			continue
 		var step_tile := origin_cell + Vector2i(direction)
 		if grid_mover.is_tile_blocked(step_tile):
 			saw_wall = true
+			continue
+		# A wall corner or doorway the diagonal can't squeeze past: the straight
+		# steps come next (a corner's wall is found, and counted, there).
+		if direction.x != 0.0 and direction.y != 0.0 and not grid_mover.can_step_diagonally(origin_cell, Vector2i(direction)):
 			continue
 		if grid_mover.tile_cost(step_tile) > HAZARD_COST and grid_mover.tile_cost(origin_cell) <= HAZARD_COST:
 			# Difficult or severe ground ahead (water, lava): let the weighted
@@ -736,8 +761,17 @@ func _try_pathfind_step(origin_cell: Vector2i, target_cell: Vector2i, full_speed
 	var step := _next_cached_step(origin_cell, target_cell)
 	if step == Vector2i.ZERO:
 		step = _solve_and_cache_path(origin_cell, target_cell)
-	if step != Vector2i.ZERO:
-		_try_move(Vector2(step), full_speed)
+	if step == Vector2i.ZERO:
+		return
+	if step.x != 0 and step.y != 0 and not grid_mover.can_step_diagonally(origin_cell, step):
+		# AStarGrid2D already avoids wall corners but knows nothing about doors,
+		# so it can plan a diagonal through a wide doorway that GridMover then
+		# refuses: take it as two straight steps instead (the cached route
+		# still accepts the diagonal's tile as the next one, one step away).
+		if not _try_move(Vector2(step.x, 0), full_speed):
+			_try_move(Vector2(0, step.y), full_speed)
+		return
+	_try_move(Vector2(step), full_speed)
 
 ## Per-enemy path cache (technique 4/5 from the Factorio pathfinding
 ## research: reuse + negative caching), distinct from FlowField's shared
@@ -785,7 +819,7 @@ func _next_cached_step(origin_cell: Vector2i, target_cell: Vector2i) -> Vector2i
 		_cached_path.clear()  # a door closed or similar -- force a fresh solve
 		return Vector2i.ZERO
 	var step := next_cell - origin_cell
-	if absi(step.x) + absi(step.y) != 1:
+	if _cheb(step) != 1:
 		# _try_pursue_step can hop this enemy over to _try_direct_step on a
 		# frame where line of sight happens to open up, moving it somewhere
 		# the cached route never accounted for -- a stale route handed
@@ -843,7 +877,7 @@ func _in_attack_range(target: Node2D) -> bool:
 		return false
 	return LineOfSight.clear(origin_cell, target_cell, grid_mover.blocks_shot)
 
-## True when all 4 orthogonal neighbor tiles are blocked or occupied -- a
+## True when all 8 neighbor tiles are blocked or occupied -- a
 ## stronger check than "the two directions _try_direct_step happened to
 ## prefer were full," since a third direction could still be open even when
 ## those two aren't. Cheap on purpose (grid_mover's own O(1)-per-tile checks,
@@ -854,7 +888,7 @@ func _is_boxed_in() -> bool:
 	var origin_cell := _to_tile(global_position)
 	for direction in MOVE_DIRECTIONS:
 		var tile := origin_cell + Vector2i(direction)
-		if not grid_mover.is_tile_blocked(tile) and not grid_mover.is_tile_occupied(tile):
+		if _step_open(origin_cell, Vector2i(direction)) and not grid_mover.is_tile_occupied(tile):
 			return false
 	return true
 
@@ -920,15 +954,15 @@ func _note_blocked_by_player(now: int) -> void:
 		return
 	var origin := _to_tile(global_position)
 	var lock_tile := _to_tile(_lock.global_position)
-	var origin_dist := absi(origin.x - lock_tile.x) + absi(origin.y - lock_tile.y)
+	var origin_dist := _cheb(origin - lock_tile)
 	var found = null
 	for player in get_tree().get_nodes_in_group("protagonist"):
 		if player == _lock or player.stats.is_ghost:
 			continue
 		var tile := _to_tile(player.global_position)
-		if absi(tile.x - origin.x) + absi(tile.y - origin.y) != 1:
+		if _cheb(tile - origin) != 1:
 			continue
-		if absi(tile.x - lock_tile.x) + absi(tile.y - lock_tile.y) >= origin_dist:
+		if _cheb(tile - lock_tile) >= origin_dist:
 			continue
 		found = player
 		break
@@ -954,7 +988,12 @@ func _nearest_player() -> Node2D:
 			nearest_dist = dist
 	return nearest
 
-const MOVE_DIRECTIONS: Array[Vector2] = [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]
+## The 8 neighbouring tiles, straight ones first. Diagonal steps obey
+## GridMover.can_step_diagonally (no cutting wall corners or doorways).
+const MOVE_DIRECTIONS: Array[Vector2] = [
+	Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT,
+	Vector2(1, 1), Vector2(1, -1), Vector2(-1, 1), Vector2(-1, -1),
+]
 
 func _try_wander_step() -> void:
 	var direction: Vector2 = MOVE_DIRECTIONS.pick_random()

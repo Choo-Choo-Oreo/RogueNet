@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://loynu0jbck8u"
-path="res://.godot/imported/Human-Up.png-11f3c5342034e7a5607be012c4dfb916.ctex"
+path="res://.godot/imported/Human-Up.png-7ba5e923d9b50746980722e0f55f79e9.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://resources/gfx/players/player.protagonist/human/Human-Up.png"
-dest_files=["res://.godot/imported/Human-Up.png-11f3c5342034e7a5607be012c4dfb916.ctex"]
+dest_files=["res://.godot/imported/Human-Up.png-7ba5e923d9b50746980722e0f55f79e9.ctex"]
 
 [params]
 

@@ -11,6 +11,7 @@ extends CharacterBody2D
 const CHARACTERS := {
 	"knight": "res://resources/gfx/players/player.protagonist/knight/knight.json",
 	"dwarf": "res://resources/gfx/players/player.protagonist/dwarf/dwarf.json",
+	"human": "res://resources/gfx/players/player.protagonist/human/human.json",
 }
 const DEFAULT_CHARACTER := "knight"
 
@@ -176,8 +177,21 @@ const MOVE_ACTIONS := {
 # the attack as its cooldown allows.
 var _attack_held := false
 
-# The movement keys currently held, oldest first, so the newest press decides the direction.
+# The movement keys currently held, oldest first. One horizontal and one vertical
+# key together walk diagonally; two keys on the same axis (left + right) go
+# whichever way was pressed last.
 var _held: Array = []
+
+## The step the held keys ask for: one of the 8 directions, or zero.
+func _held_direction() -> Vector2:
+	var direction := Vector2.ZERO
+	for action in _held:
+		var step: Vector2 = MOVE_ACTIONS[action]
+		if step.x != 0.0:
+			direction.x = step.x
+		else:
+			direction.y = step.y
+	return direction
 
 const SLOT_KEYS := {
 	KEY_1: 0,
@@ -338,7 +352,17 @@ func _physics_process(_delta: float) -> void:
 	if DebugState.free_cam:
 		_held.clear()
 		return
-	if grid_mover.is_moving:
+	if grid_mover.is_moving or _held.is_empty():
 		return
-	if not _held.is_empty():
-		grid_mover.move_one_tile(MOVE_ACTIONS[_held.back()])
+	var direction := _held_direction()
+	if direction.x == 0.0 or direction.y == 0.0:
+		grid_mover.move_one_tile(direction)
+		return
+	# Diagonal. If it is refused (a wall corner, a doorway, someone standing
+	# there), slide along the key pressed last, then the other one, so holding
+	# two keys against a wall still walks along it.
+	if grid_mover.move_one_tile(direction):
+		return
+	var newest: Vector2 = MOVE_ACTIONS[_held.back()]
+	if not grid_mover.move_one_tile(newest):
+		grid_mover.move_one_tile(direction - newest)

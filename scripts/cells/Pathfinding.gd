@@ -1,7 +1,8 @@
 class_name Pathfinding
 extends RefCounted
 
-## Shortest 4-directional path from `from` to `to`, built on Godot's own
+## Shortest 8-directional path from `from` to `to` (a diagonal costs ~1.41 and
+## never cuts past a blocked corner, matching GridMover), built on Godot's own
 ## AStarGrid2D rather than a hand-rolled search. Bounded to a max_radius-tile
 ## region around `from` (not the whole dungeon) and rebuilt fresh each call
 ## -- walls don't move, but callers do, and a bounded region is cheap enough
@@ -23,7 +24,9 @@ static func full_path(from: Vector2i, to: Vector2i, is_blocked: Callable, max_ra
 		return []
 	var grid := AStarGrid2D.new()
 	grid.region = region
-	grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
+	grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
+	grid.default_compute_heuristic = AStarGrid2D.HEURISTIC_OCTILE
+	grid.default_estimate_heuristic = AStarGrid2D.HEURISTIC_OCTILE
 	grid.update()
 	for y in range(region.position.y, region.end.y):
 		for x in range(region.position.x, region.end.x):

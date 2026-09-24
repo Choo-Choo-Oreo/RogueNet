@@ -1,8 +1,9 @@
 class_name DirectionalAnimator
 extends Node
 
-## Picks the North/South/SideLeft/SideRight animation from a movement
-## direction. Shared by anything with directional sprite animations --
+## Picks the Front/Back/Side animation (plus the diagonal FrontRight/BackRight
+## ones, when a sprite has them) from a movement direction, snapped to the
+## nearest of 8 directions. Shared by anything with directional sprite animations --
 ## players, antagonist, enemies. Two ways to drive it: animate_moving()/
 ## animate_idle() when the caller already knows its own movement intent
 ## (the locally-controlled body), or animate_from_position() to infer
@@ -33,16 +34,50 @@ func _play_side(is_left: bool) -> void:
 		sprite.flip_h = is_left
 		sprite.play("Side")
 
+func _play_straight(anim: String) -> void:
+	# Front/Back art is drawn facing one way; don't let a flip left over from
+	# walking left mirror it (it would swap which hand holds what).
+	sprite.flip_h = false
+	sprite.play(anim)
+
+# Diagonals: `vertical` is "Front" (moving down) or "Back" (moving up). Uses
+# FrontLeft/FrontRight (or BackLeft/BackRight) when drawn, mirrors the other
+# one when only one side is drawn (the human only has the right-facing art),
+# and falls back to the plain side animation for sprites with no diagonal art
+# at all (most creatures).
+func _play_diagonal(vertical: String, is_left: bool) -> void:
+	var frames: SpriteFrames = sprite.sprite_frames
+	var own := vertical + ("Left" if is_left else "Right")
+	var mirrored := vertical + ("Right" if is_left else "Left")
+	if frames.has_animation(own):
+		sprite.flip_h = false
+		sprite.play(own)
+	elif frames.has_animation(mirrored):
+		sprite.flip_h = true
+		sprite.play(mirrored)
+	else:
+		_play_side(is_left)
+
 func animate_idle() -> void:
 	if continuous_animation:
 		return
 	sprite.stop()
 
 func animate_moving(direction: Vector2) -> void:
-	if abs(direction.x) > abs(direction.y):
-		_play_side(direction.x < 0)
-	else:
-		sprite.play("Back" if direction.y < 0 else "Front")
+	if direction.is_zero_approx():
+		return
+	# Nearest of 8 directions, counting clockwise from right: 0 right, 1 down-right,
+	# 2 down, 3 down-left, 4 left, 5 up-left, 6 up, 7 up-right (y points down).
+	var octant := int(round(fposmod(direction.angle(), TAU) / (PI / 4.0))) % 8
+	match octant:
+		0: _play_side(false)
+		1: _play_diagonal("Front", false)
+		2: _play_straight("Front")
+		3: _play_diagonal("Front", true)
+		4: _play_side(true)
+		5: _play_diagonal("Back", true)
+		6: _play_straight("Back")
+		7: _play_diagonal("Back", false)
 
 ## Same direction picking as animate_moving(), but held on one frame instead
 ## of looping the walk cycle -- for facing a target while stationary (e.g. an

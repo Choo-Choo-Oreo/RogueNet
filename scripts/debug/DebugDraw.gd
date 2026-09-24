@@ -183,24 +183,26 @@ func _draw_vision() -> void:
 
 ## The shared walking-distance field enemies follow toward the local player:
 ## the number is tiles to the player, the line points along the step they take.
+## FlowField only builds each map once something asks for it, so either can be
+## missing: the lines come from the walkers' (terrain-weighted) field when there
+## is one, else the flyers' plain one.
 func _draw_flow_field() -> void:
 	var player := PlayerLookup.find_local(get_tree())
 	if player == null:
 		return
 	var field: Dictionary = FlowField._fields.get(player.get_instance_id(), {})
-	if field.is_empty():
-		return
-	var distances: Dictionary = field["distances"]
-	var directions: Dictionary = field["directions"]
+	var distances: Dictionary = field.get("distances", {})
+	var directions: Dictionary = field.get("terrain_directions", field.get("directions", {}))
 	var tiles := _visible_tiles()
-	for tile in distances:
+	for tile in (distances if not distances.is_empty() else directions):
 		if not tiles.has_point(tile):
 			continue
 		var centre := Vector2(tile) * TILE + Vector2(TILE, TILE) / 2.0
 		var step: Vector2i = directions.get(tile, Vector2i.ZERO)
 		if step != Vector2i.ZERO:
 			draw_line(centre, centre + Vector2(step) * 5.0, Color(1.0, 0.9, 0.3, 0.8), 1.0)
-		_label(Vector2(tile) * TILE + Vector2(1, 7), str(distances[tile]), Color(1, 1, 1, 0.7))
+		if distances.has(tile):
+			_label(Vector2(tile) * TILE + Vector2(1, 7), str(distances[tile]), Color(1, 1, 1, 0.7))
 
 ## What stops the local player: red = blocked for them (walls, void, doors they
 ## can't open), orange = a closed door that stops shots but they can open.

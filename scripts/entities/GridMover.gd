@@ -226,11 +226,31 @@ func _is_blocked(target_global: Vector2) -> bool:
 		return true
 	return _floor_source_at(target_global) == _void_source_id
 
+## A diagonal step squeezes past the corner its two straight steps share, so
+## both of those straight steps' tiles must be open -- no cutting past a wall
+## corner (the same corner rule LineOfSight and LightFlood use). It also never
+## slips through a doorway: a door is a thin line between tiles, and a diagonal
+## would cross it at its very end. Movers that ignore doors skip that part.
+## `step` is the diagonal itself, e.g. Vector2i(1, -1) for up-right.
+func can_step_diagonally(origin_tile: Vector2i, step: Vector2i) -> bool:
+	if is_tile_blocked(origin_tile + Vector2i(step.x, 0)) or is_tile_blocked(origin_tile + Vector2i(0, step.y)):
+		return false
+	if _ignores_doors():
+		return true
+	for covered in _footprint_tiles(origin_tile):
+		for tile in [covered, covered + step, covered + Vector2i(step.x, 0), covered + Vector2i(0, step.y)]:
+			if DoorRegistry.is_door_cell(tile):
+				return false
+	return true
+
 ## speed_scale lets a caller slow this one step down (e.g. an enemy that's
 ## investigating a noise rather than actively chasing, at half speed) without
 ## touching move_time itself, which stays the entity's normal baseline.
-## Returns false if the step was refused (wall, or another living creature on or
-## already stepping onto the destination -- ghosts are exempt both ways).
+## `direction` is one of the 8 neighbouring tiles; a diagonal takes longer (it
+## covers ~1.41 tiles of distance). Returns false if the step was refused
+## (wall, a corner or doorway a diagonal can't squeeze past, or another living
+## creature on or already stepping onto the destination -- ghosts are exempt
+## both ways).
 func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> bool:
 	var origin_global: Vector2 = _body.global_position
 	var target_global := origin_global + direction * tile_size
@@ -241,6 +261,10 @@ func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> bool:
 				return false
 	elif _is_blocked(target_global):
 		return false
+	if direction.x != 0.0 and direction.y != 0.0:
+		var from_tile := Vector2i(floori(origin_global.x / tile_size), floori(origin_global.y / tile_size))
+		if not can_step_diagonally(from_tile, Vector2i(direction.round())):
+			return false
 	var is_ghost := _is_ghost()
 	# A door is a thin line, not a tile. Trying to cross that line while the door
 	# is closed (or still swinging) opens it (if this mover may) but doesn't step
@@ -290,7 +314,7 @@ func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> bool:
 	var ignore_terrain := _ignores_terrain()
 	var origin_speed: float = (1.0 if ignore_terrain else _floor_speed.get(_floor_source_at(origin_global), 1.0)) * speed_scale
 	var target_speed: float = (1.0 if ignore_terrain else _floor_speed.get(_floor_source_at(target_global), 1.0)) * speed_scale
-	var half_time := move_time / 2.0
+	var half_time := move_time * direction.length() / 2.0
 
 	var tween := create_tween()
 	_tween = tween
