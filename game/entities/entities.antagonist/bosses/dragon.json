@@ -1,0 +1,22 @@
+{
+	"tags": ["beast"],
+	"size_tiles": 7,
+	"max_health": 250,
+	"strength": 12,
+	"dexterity": 2,
+	"constitution": 10,
+	"cognitive": 4,
+	"resistances": {},
+	"speed_tiles_per_second": 1.5,
+	"actions": [{ "action": "bite", "amount": 12, "interval": 1.5, "type": "Physical.Piercing" }, { "action": "bludgeon", "amount": 10 }],
+	"sprite_frames": {
+		"frame_size": [112, 112],
+		"animations": {
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/dragon/Dragon-Down.png", "frame_count": 8, "speed": 10.0 },
+			"FrontRight": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/dragon/Dragon-DownRight.png", "frame_count": 8, "speed": 10.0 },
+			"Side": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/dragon/Dragon-Right.png", "frame_count": 8, "speed": 10.0 },
+			"BackRight": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/dragon/Dragon-UpRight.png", "frame_count": 8, "speed": 10.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/dragon/Dragon-Up.png", "frame_count": 8, "speed": 10.0 }
+		}
+	}
+}
