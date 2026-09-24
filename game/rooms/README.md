@@ -118,6 +118,7 @@ Each one is a straight run of cells on the outer ring:
 - The painter removes any wall on the door's cells and lays floor there, so the room can leave them as they are. Use a 1-thick wall for `"h"` and a 2-thick one for `"v"`.
 - They rotate with the room. They are added after every connector door, so those door ids do not change.
 - The Dungeon Maker places them: the connector section's tool picker, "free-standing door".
+- Status (2026-09-24): written but not yet tested in play, and no shipped room uses one yet. To try it, place one in the Dungeon Maker in a room (a sewer room is a good test), save, and dive; then check that enemies path through it like any other door and that it rotates with the room.
 
 ### Objects
 

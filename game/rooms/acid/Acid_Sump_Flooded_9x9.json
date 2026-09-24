@@ -1,0 +1,243 @@
+{
+	"biome": "acid",
+	"connectors": [
+		{
+			"a": {
+				"x": 4,
+				"y": 0
+			},
+			"b": {
+				"x": 4,
+				"y": 0
+			},
+			"door": "none",
+			"free": true
+		}
+	],
+	"base_floor": "floor_dirt",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_grass",
+			"floor_dirt",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null,
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_dirt",
+			"floor_smooth_cave",
+			"floor_dirt",
+			"floor_grass",
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			"floor_dirt",
+			"floor_smooth_cave",
+			"floor_acid",
+			"floor_smooth_cave",
+			"floor_dirt",
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			"floor_smooth_cave",
+			"floor_acid",
+			"floor_acid",
+			"floor_acid",
+			"floor_smooth_cave",
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			null,
+			"floor_dirt",
+			"floor_smooth_cave",
+			"floor_acid",
+			"floor_smooth_cave",
+			"floor_dirt",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_smooth_cave",
+			"floor_dirt",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 2,
+	"height": 9,
+	"id": "Acid_Sump_Flooded_9x9",
+	"objects": [],
+	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 1,
+				"y": 3
+			}
+		},
+		{
+			"position": {
+				"x": 7,
+				"y": 5
+			}
+		}
+	],
+	"tags": [
+		"combat"
+	],
+	"walls": [
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		]
+	],
+	"width": 9
+}

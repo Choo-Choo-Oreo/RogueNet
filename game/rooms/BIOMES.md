@@ -28,7 +28,8 @@ one per feature plus a Flooded and a Collapsed variant, and `catacomb/` as
 80 rooms, one per feature plus a Desecrated variant, and `volcano/` as
 64 rooms, one per feature plus an Erupting variant, and `manor/` as
 63 rooms, one per named room plus a Haunted variant, and `ruins/` as
-86 rooms, every dungeon room overgrown by the forest in two stages. Each folder's own `README.md`
+86 rooms, every dungeon room overgrown by the forest in two stages, and `acid/` as
+67 rooms, one per feature plus a Flooded variant. Each folder's own `README.md`
 lists every piece.
 
 | Folder | Walls | Floors | Idea |
@@ -43,6 +44,7 @@ lists every piece.
 | `volcano/` | `wall_rough_cave` basalt, `wall_smooth_cave` obsidian | dirt (ash), smooth cave (cooled crust), lava | Volcanic features: one room per feature (lava river, caldera, cinder cone, fumarole vents, magma chamber), plus an Erupting variant with more lava. Every lava room has a crust path between its openings: the fast way through. No doors. Demon packs: hellhounds in tight packs on the ground, demonic hamster swarms over the lava. |
 | `manor/` | `wall_cobble_brick` outer walls, `wall_wood_plank` partitions and furniture, `wall_smooth_stone` hearths, busts and stairs, `wall_forest` potted trees | wood planks, smooth stone, all five carpets (one colour per room), dirt, grass, water | A great house by named room: dining hall, ballroom, study, kitchen, grand library. One carpet colour per room, furniture as wall stand-ins, plus a Haunted variant (furniture overturned, carpet torn, walls broken through). 3-wide hallways and 1-wide servants' passages. Wood doors on rooms (bi-fold on 3-wide), iron on the strongroom and bosses. A haunting: rolled cells (mostly wraiths), rat nests in the service rooms, bat roosts in the attic and gallery. |
 | `ruins/` | `wall_cobble_brick` brick, `wall_forest` trees growing through it | smooth stone, grass, dirt, water | The dungeon reclaimed by the forest: every dungeon room, made by script, in two stages. Overgrown (grass breaking through, some trees in the walls, a few walls fallen in) and Reclaimed (mostly grass, walls half trees, more fallen in, pools). Same shapes and openings as the dungeon. No doors. Dungeon and forest enemies mixed: Overgrown rooms lean undead (skeleton archers, wraiths), Reclaimed rooms lean beasts (wolf packs, rats, bats), bats in the corners, a rare hellhound. |
+| `acid/` | `wall_rough_cave` rock, `wall_smooth_cave` etched stone and crystal | dirt, grass (moss), smooth cave (dry stone), acid | Caves eaten by acid: one room per feature (acid lake, dripping gallery, stepping stones, corroded chasm, moss garden), plus a Flooded variant where the acid rises and scorches the moss. Every acid room has a dry stone path between its openings: the fast way through. No doors. Leeches pinned in the acid, blind rat packs on the dry floor, bats rolled. |
 
 ## `cathedral/` is a stress test, not a designed biome
 

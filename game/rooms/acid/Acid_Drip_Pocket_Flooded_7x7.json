@@ -1,0 +1,171 @@
+{
+	"biome": "acid",
+	"connectors": [
+		{
+			"a": {
+				"x": 3,
+				"y": 6
+			},
+			"b": {
+				"x": 3,
+				"y": 6
+			},
+			"door": "none",
+			"free": true
+		}
+	],
+	"base_floor": "floor_dirt",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_acid",
+			"floor_dirt",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_acid",
+			"floor_acid",
+			"floor_acid",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null,
+			null,
+			null
+		]
+	],
+	"format": 2,
+	"height": 7,
+	"id": "Acid_Drip_Pocket_Flooded_7x7",
+	"objects": [],
+	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 5,
+				"y": 2
+			}
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 3
+			}
+		}
+	],
+	"tags": [
+		"combat"
+	],
+	"walls": [
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		]
+	],
+	"width": 7
+}

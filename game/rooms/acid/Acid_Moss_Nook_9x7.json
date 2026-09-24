@@ -1,0 +1,199 @@
+{
+	"biome": "acid",
+	"connectors": [
+		{
+			"a": {
+				"x": 4,
+				"y": 6
+			},
+			"b": {
+				"x": 4,
+				"y": 6
+			},
+			"door": "none",
+			"free": true
+		}
+	],
+	"base_floor": "floor_dirt",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_smooth_cave",
+			"floor_smooth_cave",
+			"floor_smooth_cave",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_smooth_cave",
+			"floor_smooth_cave",
+			"floor_smooth_cave",
+			"floor_smooth_cave",
+			"floor_smooth_cave",
+			"floor_smooth_cave",
+			null
+		],
+		[
+			null,
+			"floor_smooth_cave",
+			"floor_smooth_cave",
+			"floor_smooth_cave",
+			"floor_smooth_cave",
+			"floor_smooth_cave",
+			"floor_smooth_cave",
+			"floor_smooth_cave",
+			null
+		],
+		[
+			null,
+			null,
+			"floor_smooth_cave",
+			"floor_smooth_cave",
+			"floor_smooth_cave",
+			"floor_smooth_cave",
+			"floor_smooth_cave",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_smooth_cave",
+			"floor_smooth_cave",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_smooth_cave",
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 2,
+	"height": 7,
+	"id": "Acid_Moss_Nook_9x7",
+	"objects": [],
+	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 7,
+				"y": 2
+			}
+		},
+		{
+			"position": {
+				"x": 1,
+				"y": 3
+			}
+		}
+	],
+	"tags": [
+		"combat"
+	],
+	"walls": [
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		]
+	],
+	"width": 9
+}

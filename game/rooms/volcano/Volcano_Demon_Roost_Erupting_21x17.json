@@ -429,30 +429,23 @@
 		{
 			"position": {
 				"x": 6,
-				"y": 1
-			},
-			"enemy": "wolf_hellhound"
-		},
-		{
-			"position": {
-				"x": 5,
 				"y": 3
 			},
-			"enemy": "wolf_hellhound"
+			"enemy": "hamster_demonic"
 		},
 		{
 			"position": {
-				"x": 3,
-				"y": 4
+				"x": 4,
+				"y": 5
 			},
-			"enemy": "wolf_hellhound"
+			"enemy": "hamster_demonic"
 		},
 		{
 			"position": {
-				"x": 7,
-				"y": 4
+				"x": 8,
+				"y": 5
 			},
-			"enemy": "wolf_hellhound"
+			"enemy": "hamster_demonic"
 		},
 		{
 			"position": {
@@ -477,6 +470,20 @@
 		},
 		{
 			"position": {
+				"x": 4,
+				"y": 9
+			},
+			"enemy": "hamster_demonic"
+		},
+		{
+			"position": {
+				"x": 8,
+				"y": 9
+			},
+			"enemy": "hamster_demonic"
+		},
+		{
+			"position": {
 				"x": 15,
 				"y": 9
 			},
@@ -484,29 +491,43 @@
 		},
 		{
 			"position": {
-				"x": 3,
+				"x": 9,
+				"y": 11
+			},
+			"enemy": "hamster_demonic"
+		},
+		{
+			"position": {
+				"x": 11,
+				"y": 11
+			},
+			"enemy": "hamster_demonic"
+		},
+		{
+			"position": {
+				"x": 8,
+				"y": 12
+			},
+			"enemy": "hamster_demonic"
+		},
+		{
+			"position": {
+				"x": 14,
 				"y": 12
 			},
 			"enemy": "wolf_hellhound"
 		},
 		{
 			"position": {
-				"x": 4,
-				"y": 12
-			},
-			"enemy": "wolf_hellhound"
-		},
-		{
-			"position": {
-				"x": 4,
+				"x": 14,
 				"y": 13
 			},
 			"enemy": "wolf_hellhound"
 		},
 		{
 			"position": {
-				"x": 5,
-				"y": 13
+				"x": 14,
+				"y": 15
 			},
 			"enemy": "wolf_hellhound"
 		}
