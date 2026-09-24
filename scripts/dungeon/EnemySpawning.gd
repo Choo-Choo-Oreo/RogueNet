@@ -49,8 +49,9 @@ static func spawn_in_unseen_cells(spawn_cells: Array[Vector2i], monster_weights:
 			continue
 		var id := _next_id
 		_next_id += 1
-		spawn_one(id, enemy_id, tile, enemies_root)
-		spawned.append({"id": id, "type": enemy_id, "tile": tile})
+		var placed := fit_tile(enemy_id, tile, enemies_root)
+		spawn_one(id, enemy_id, placed, enemies_root)
+		spawned.append({"id": id, "type": enemy_id, "tile": placed})
 	NetworkSync.broadcast_enemy_spawns(spawned)
 
 ## The antagonist spawns of the boss rooms: each entry is {"tile", "enemy"}. Always
@@ -70,8 +71,9 @@ static func spawn_antagonists(entries: Array, enemies_root: Node) -> void:
 			continue
 		var id := _next_id
 		_next_id += 1
-		spawn_one(id, enemy_id, entry["tile"], enemies_root)
-		spawned.append({"id": id, "type": enemy_id, "tile": entry["tile"]})
+		var placed := fit_tile(enemy_id, entry["tile"], enemies_root)
+		spawn_one(id, enemy_id, placed, enemies_root)
+		spawned.append({"id": id, "type": enemy_id, "tile": placed})
 	if not spawned.is_empty():
 		NetworkSync.broadcast_enemy_spawns(spawned)
 
@@ -100,8 +102,49 @@ static func spawn_debug(enemy_id: String, tile: Vector2i, enemies_root: Node) ->
 		return
 	var id := _next_id
 	_next_id += 1
-	spawn_one(id, enemy_id, tile, enemies_root)
-	NetworkSync.broadcast_enemy_spawns([{"id": id, "type": enemy_id, "tile": tile}])
+	var placed := fit_tile(enemy_id, tile, enemies_root)
+	spawn_one(id, enemy_id, placed, enemies_root)
+	NetworkSync.broadcast_enemy_spawns([{"id": id, "type": enemy_id, "tile": placed}])
+
+## The tile to spawn `enemy_id` on so its WHOLE body fits: a big enemy (size_tiles 2+)
+## stands on a square of tiles starting at its top-left one, and a spawn cell only
+## promises that one tile is open. Returns `tile` itself when the body fits there, else
+## the nearest tile (searching up to FIT_SEARCH_RADIUS out) where every tile of the
+## square is open floor, else `tile` again with a warning. Host only, before broadcasting.
+const FIT_SEARCH_RADIUS := 6
+
+static func fit_tile(enemy_id: String, tile: Vector2i, enemies_root: Node) -> Vector2i:
+	var size := int(JsonOnloading.load_dict(EnemyController.ENEMY_TYPES_DIR + enemy_id + ".json").get("size_tiles", 1))
+	if size <= 1:
+		return tile
+	var scene := enemies_root.get_tree().current_scene
+	var wall_data := scene.find_child("WallData", true, false) as TileMapLayer
+	var floor_data := scene.find_child("FloorData", true, false) as TileMapLayer
+	if wall_data == null or floor_data == null:
+		return tile
+	var void_id := TileTypeRegistry.new().get_id("floor_void")
+	var best := tile
+	var best_distance := INF
+	for dy in range(-FIT_SEARCH_RADIUS, FIT_SEARCH_RADIUS + 1):
+		for dx in range(-FIT_SEARCH_RADIUS, FIT_SEARCH_RADIUS + 1):
+			var candidate := tile + Vector2i(dx, dy)
+			var distance := float(dx * dx + dy * dy)
+			if distance >= best_distance or not _body_fits(candidate, size, wall_data, floor_data, void_id):
+				continue
+			best = candidate
+			best_distance = distance
+	if best_distance == INF:
+		push_warning("No room for a %dx%d '%s' within %d tiles of %s, spawning it there anyway" % [size, size, enemy_id, FIT_SEARCH_RADIUS, tile])
+	return best
+
+static func _body_fits(top_left: Vector2i, size: int, wall_data: TileMapLayer, floor_data: TileMapLayer, void_id: int) -> bool:
+	for y in size:
+		for x in size:
+			var cell := top_left + Vector2i(x, y)
+			var floor_id := floor_data.get_cell_source_id(cell)
+			if wall_data.get_cell_source_id(cell) != -1 or floor_id == -1 or floor_id == void_id:
+				return false
+	return true
 
 ## Shared by the host's own roll above and NetworkSync.receive_spawn_enemies
 ## (each client building its local copy of what the host already rolled).

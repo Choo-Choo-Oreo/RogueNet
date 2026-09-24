@@ -111,12 +111,20 @@ static func _consume_pathfind_budget() -> bool:
 	_pathfind_budget_used += 1
 	return true
 
-var _attack_amount: int = 0
-var _attack_type: String = ""
+## The default attack: the first entry of json "attacks" (or the old single "attack").
+## It drives movement -- the enemy walks until THIS one is in range -- so all the
+## approach / surround / detour logic keys off _attack_range. Keys: amount, type,
+## range_tiles, interval, effect.
+var _primary_attack: Dictionary = {}
 var _attack_interval: float = 1.0
 var _attack_range: int = 1
-var _attack_effect: Dictionary = {}
 var _attack_timer := 0.0
+## The other entries of "attacks". Each has its own range and cooldown and is used
+## while the enemy is engaging whenever it is ready and in range; none of them
+## changes how the enemy walks. Entries: {"attack", "range", "interval", "timer", "sight"}.
+var _specials: Array[Dictionary] = []
+## Names an attack entry may give as "ability" (see _perform_special).
+const ABILITIES := ["destroy_tiles"]
 
 const ATTACK_EFFECT_SCENE := preload("res://scenes/entities/AttackEffect.tscn")
 const PROJECTILE_SCENE := preload("res://scenes/entities/ProjectileController.tscn")
@@ -173,12 +181,30 @@ func set_enemy_type(enemy_id: String) -> void:
 	# pre-set move_time (e.g. a hand-placed prefab with no JSON override).
 	var speed: float = data.get("speed_tiles_per_second", 1.0 / _base_move_time)
 	grid_mover.move_time = 1.0 / speed
-	var attack_data: Dictionary = data.get("attack", {})
-	_attack_amount = attack_data.get("amount", 0)
-	_attack_type = attack_data.get("type", "")
-	_attack_interval = attack_data.get("interval", 1.0)
-	_attack_range = attack_data.get("range_tiles", 1)
-	_attack_effect = attack_data.get("effect", {})
+	# "attacks" is a list: the first is the default attack, the rest are specials.
+	# The older single "attack" object still works (a list of one).
+	var attacks: Array = data.get("attacks", [])
+	if attacks.is_empty() and data.has("attack"):
+		attacks = [data["attack"]]
+	_primary_attack = attacks[0] if not attacks.is_empty() else {}
+	_attack_interval = _primary_attack.get("interval", 1.0)
+	_attack_range = _primary_attack.get("range_tiles", 1)
+	_specials.clear()
+	for i in range(1, attacks.size()):
+		var extra: Dictionary = attacks[i]
+		var ability: String = extra.get("ability", "")
+		if ability != "" and not ABILITIES.has(ability):
+			push_warning("Enemy '%s' attack %d: unknown ability '%s', skipped" % [enemy_id, i, ability])
+			continue
+		var interval: float = extra.get("interval", 1.0)
+		_specials.append({
+			"attack": extra,
+			"range": int(extra.get("range_tiles", 1)),
+			"interval": interval,
+			"timer": interval,
+			"sight": bool(extra.get("needs_sight", true)),
+			"through_walls": bool(extra.get("only_through_walls", false)),
+		})
 	# "doors": "none" (default) can't open doors, "open" can (see-through doors any
 	# time, solid ones only while investigating or pursuing), "phase" passes through
 	# closed doors without opening them.
@@ -305,7 +331,8 @@ func _process_inner(delta: float) -> void:
 		animator.animate_facing(_target.global_position - global_position)
 	else:
 		animator.animate_idle()
-	if can_attack:
+	var used_special := is_engaging and not _specials.is_empty() and is_instance_valid(_target) and _try_specials(_target, delta)
+	if can_attack and not used_special:
 		# Only counts down while actually in range -- pauses (doesn't reset)
 		# the moment can_attack drops out, so a single frame of range flicker
 		# at a tile boundary can't zero the cooldown and cause a rapid re-fire.
@@ -349,35 +376,89 @@ func _process_inner(delta: float) -> void:
 	if not grid_mover.is_moving and _is_boxed_in():
 		_stuck = true
 
-func _perform_attack(target: Node2D) -> void:
-	if _attack_effect.has("attacker") or _attack_effect.has("target"):
-		_perform_ranged_attack(target)
+## Ticks every special's cooldown (they run down even while out of range) and fires
+## the first one that is ready and in range, at most one per tick. Returns true if one
+## fired, so the default attack holds off that tick.
+func _try_specials(target: Node2D, delta: float) -> bool:
+	var fired := false
+	for special in _specials:
+		special["timer"] = maxf(special["timer"] - delta, 0.0)
+		if fired or special["timer"] > 0.0:
+			continue
+		if not _in_range(target, special["range"], special["sight"]):
+			continue
+		# "only_through_walls": fire only when a wall is between us and the target, so a
+		# wall-breaker does not chew the scenery while the way to the target is open.
+		if special["through_walls"] and LineOfSight.clear(_to_tile(global_position), _to_tile(target.global_position), grid_mover.blocks_shot):
+			continue
+		if _perform_special(target, special["attack"]):
+			special["timer"] = special["interval"]
+			fired = true
+	return fired
+
+## Runs one special. No "ability" = a plain hit with this entry's own damage, type,
+## effect (so a second weapon is just another entry). Returns false when it had no
+## effect (nothing to break, ...), which leaves the cooldown unspent.
+func _perform_special(target: Node2D, attack: Dictionary) -> bool:
+	match str(attack.get("ability", "")):
+		"":
+			_perform_attack(target, attack)
+			return true
+		"destroy_tiles":
+			return _ability_destroy_tiles(target, attack)
+	return false
+
+## "destroy_tiles": breaks the walls inside the attack's "shape" (see AbilityShapes),
+## aimed at the target. Host-authoritative through NetworkSync.destroy_tiles; only
+## counts as used if something actually broke. An optional "effect" plays like a hit's.
+func _ability_destroy_tiles(target: Node2D, attack: Dictionary) -> bool:
+	var cells := AbilityShapes.cells(attack.get("shape", {}), _to_tile(global_position), size_tiles, _to_tile(target.global_position))
+	if NetworkSync.destroy_tiles(cells) == 0:
+		return false
+	animator.animate_facing(target.global_position - global_position)
+	var effect: Dictionary = attack.get("effect", {})
+	if not effect.is_empty():
+		NetworkSync.play_effect(
+			AttackEffect.effect_position(global_position, target.global_position, effect),
+			effect, target.global_position - global_position)
+	return true
+
+## `attack` is one attack entry (amount, type, effect); empty = the default attack.
+func _perform_attack(target: Node2D, attack: Dictionary = {}) -> void:
+	if attack.is_empty():
+		attack = _primary_attack
+	var effect: Dictionary = attack.get("effect", {})
+	if effect.has("attacker") or effect.has("target"):
+		_perform_ranged_attack(target, attack)
 		return
 	# Enemy AI only ever runs on the host, so the host is always the source of
 	# this hit -- relay it rather than calling target.take_damage() directly,
 	# which would only ever update the host's own local copy of that player.
-	NetworkSync.relay_player_hit(int(str(target.name)), _attack_amount, _attack_type)
-	if _attack_effect.is_empty():
+	NetworkSync.relay_player_hit(int(str(target.name)), attack.get("amount", 0), attack.get("type", ""))
+	if effect.is_empty():
 		return
 	NetworkSync.play_effect(
-		AttackEffect.effect_position(global_position, target.global_position, _attack_effect),
-		_attack_effect, target.global_position - global_position)
+		AttackEffect.effect_position(global_position, target.global_position, effect),
+		effect, target.global_position - global_position)
 
 ## Mirrors PlayerController's bow handling: an "attacker" shot effect plays
 ## here (cosmetic), a projectile travels to the target if the data has one,
 ## and only on arrival does the "target" hit effect play and damage land.
 ## A magic attack (no "projectile") skips the travel and lands immediately.
-func _perform_ranged_attack(target: Node2D) -> void:
+func _perform_ranged_attack(target: Node2D, attack: Dictionary) -> void:
+	var effect: Dictionary = attack.get("effect", {})
+	var amount: int = attack.get("amount", 0)
+	var type: String = attack.get("type", "")
 	var target_global: Vector2 = target.global_position
 	var direction := target_global - global_position
-	var attacker_data: Dictionary = _attack_effect.get("attacker", {})
+	var attacker_data: Dictionary = effect.get("attacker", {})
 	if not attacker_data.is_empty():
 		NetworkSync.play_effect(
 			AttackEffect.effect_position(global_position, target_global, attacker_data),
 			attacker_data, direction)
-	var projectile_texture: String = _attack_effect.get("projectile", "")
+	var projectile_texture: String = effect.get("projectile", "")
 	if projectile_texture == "":
-		_land_ranged_hit(target, target_global)
+		_land_ranged_hit(target, target_global, attack)
 		return
 	var projectile: ProjectileController = PROJECTILE_SCENE.instantiate()
 	get_tree().current_scene.add_child(projectile)
@@ -390,23 +471,23 @@ func _perform_ranged_attack(target: Node2D) -> void:
 		for player: PlayerController in get_tree().get_nodes_in_group("protagonist"):
 			if player.stats.is_ghost or _to_tile(player.global_position + Vector2(8, 8)) != tile:
 				continue
-			NetworkSync.relay_player_hit(int(str(player.name)), _attack_amount, _attack_type)
-			_play_ranged_target_effect(Vector2(tile) * grid_mover.tile_size)
+			NetworkSync.relay_player_hit(int(str(player.name)), amount, type)
+			_play_ranged_target_effect(Vector2(tile) * grid_mover.tile_size, attack)
 			return true
 		return false
 	projectile.launch(projectile_texture, target_global + Vector2(8, 8), grid_mover.tile_size, func():
-		_play_ranged_target_effect(target_global), grid_mover.is_position_blocked, hit_on_the_way)
+		_play_ranged_target_effect(target_global, attack), grid_mover.is_position_blocked, hit_on_the_way)
 	NetworkSync.share_projectile(projectile_texture, projectile.global_position, target_global + Vector2(8, 8))
 
-func _land_ranged_hit(target: Node2D, target_global: Vector2) -> void:
+func _land_ranged_hit(target: Node2D, target_global: Vector2, attack: Dictionary) -> void:
 	if not is_instance_valid(target):
 		return
-	NetworkSync.relay_player_hit(int(str(target.name)), _attack_amount, _attack_type)
-	_play_ranged_target_effect(target_global)
+	NetworkSync.relay_player_hit(int(str(target.name)), attack.get("amount", 0), attack.get("type", ""))
+	_play_ranged_target_effect(target_global, attack)
 
 ## The "target" impact animation on a tile (cosmetic only).
-func _play_ranged_target_effect(target_global: Vector2) -> void:
-	var target_data: Dictionary = _attack_effect.get("target", {})
+func _play_ranged_target_effect(target_global: Vector2, attack: Dictionary) -> void:
+	var target_data: Dictionary = attack.get("effect", {}).get("target", {})
 	if not target_data.is_empty():
 		NetworkSync.play_effect(
 			AttackEffect.effect_position(global_position, target_global, target_data),
@@ -834,14 +915,19 @@ func _to_tile(pos: Vector2) -> Vector2i:
 ## not in sight, so this returns false and _try_pursue_step keeps closing in
 ## instead of shooting through the wall.
 func _in_attack_range(target: Node2D) -> bool:
+	return _in_range(target, _attack_range, true)
+
+## The same check for any reach (a special attack's own range_tiles). `needs_sight`
+## false skips the line-of-sight test, for attacks that work through walls.
+func _in_range(target: Node2D, reach: int, needs_sight: bool = true) -> bool:
 	var origin_cell := _to_tile(global_position)
 	var target_cell := _to_tile(target.global_position)
 	var offset := target_cell - origin_cell
 	# A big body reaches from any tile of its footprint, not only its top-left one.
-	var reach_far := _attack_range + size_tiles - 1
-	if offset.x < -_attack_range or offset.x > reach_far or offset.y < -_attack_range or offset.y > reach_far:
+	var reach_far := reach + size_tiles - 1
+	if offset.x < -reach or offset.x > reach_far or offset.y < -reach or offset.y > reach_far:
 		return false
-	return LineOfSight.clear(origin_cell, target_cell, grid_mover.blocks_shot)
+	return not needs_sight or LineOfSight.clear(origin_cell, target_cell, grid_mover.blocks_shot)
 
 ## True when all 4 orthogonal neighbor tiles are blocked or occupied -- a
 ## stronger check than "the two directions _try_direct_step happened to

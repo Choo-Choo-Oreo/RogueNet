@@ -10,16 +10,27 @@
 	"cognitive": 1,
 	"resistances": {},
 	"speed_tiles_per_second": 3.0,
-	"attack": {
-		"amount": 6,
-		"type": "Physical.Bludgeoning",
-		"interval": 1.5,
-		"effect": {
-			"texture": "res://resources/gfx/effects/effects.melee/physical.bludgeoning.png",
-			"frame_count": 8,
-			"speed": 20.0
+	"attacks": [
+		{
+			"amount": 6,
+			"type": "Physical.Bludgeoning",
+			"interval": 1.5,
+			"effect": {
+				"texture": "res://resources/gfx/effects/effects.melee/physical.bludgeoning.png",
+				"frame_count": 8,
+				"speed": 20.0
+			}
+		},
+		{
+			"name": "wall_smash",
+			"ability": "destroy_tiles",
+			"range_tiles": 6,
+			"needs_sight": false,
+			"only_through_walls": true,
+			"interval": 6.0,
+			"shape": { "type": "line", "length": 3, "width": 2 }
 		}
-	},
+	],
 	"sprite_frames": {
 		"frame_size": [32, 32],
 		"animations": {

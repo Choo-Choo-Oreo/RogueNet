@@ -56,6 +56,18 @@ Notes:
   `effect.projectile` (a texture path) plus `effect.attacker`/`effect.target`
   wind-up/impact animations, each with an `anchor` of `"attacker"` or
   `"target"`. See `skeleton_archer.json` for a full example.
+- `attacks` (optional) replaces `attack` with a list, for enemies with more than one:
+  `"attacks": [ {default attack}, {special}, ... ]`. The first entry is the default
+  and works exactly like `attack` (its `range_tiles` is how close the enemy walks).
+  Each later entry has its own `range_tiles`, `interval` (its own cooldown) and is used
+  while the enemy is chasing whenever it is ready and in range; it never changes how
+  the enemy walks. A special is either a plain hit (its own `amount`, `type`, `effect`)
+  or an `"ability"`. The one ability today is `"destroy_tiles"`: it breaks the walls in
+  its `"shape"` toward the target (`{"type": "line", "length": 3, "width": 2}` or
+  `{"type": "circle", "radius": 2}`), leaves the floor, and covers any void it exposes
+  with a neighbouring wall. Never breaks `barrier_*` tiles. `"needs_sight": false` lets
+  it fire through walls (default true); it only counts as used if something broke. `"only_through_walls": true` fires it
+  only while a wall is between the enemy and its target. See `minotaur.json`.
 - `senses` (optional) overrides which detection senses are enabled, e.g.
   `"senses": { "hearing": false }`. Only `sight` and `touch` are actually
   implemented right now — `hearing`/`smell`/`taste` exist but always report

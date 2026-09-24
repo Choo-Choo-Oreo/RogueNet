@@ -716,6 +716,29 @@ func receive_player_damage(player_id: int, amount: int, type: String) -> void:
 	if player and player.has_method("take_damage"):
 		player.take_damage(amount, type)
 
+## Host only (an ability the host's AI fires, see EnemyController._ability_destroy_tiles).
+## Breaks the walls among `cells`: the host decides which fall and what shows under and
+## around them (TileDestruction.plan), then every peer applies that same list -- no peer
+## rolls its own dice, so the maps cannot drift apart. Returns how many cells changed
+## (0 = nothing there was breakable, nothing was sent). A peer that joins later does not
+## get earlier changes, the same as doors.
+func destroy_tiles(cells: Array[Vector2i]) -> int:
+	if multiplayer.multiplayer_peer != null and not multiplayer.is_server():
+		return 0
+	var changes := TileDestruction.plan(cells, get_tree().current_scene)
+	if changes.is_empty():
+		return 0
+	receive_tile_changes(changes)
+	for peer_id in multiplayer.get_peers():
+		receive_tile_changes.rpc_id(peer_id, changes)
+	return changes.size()
+
+@rpc("authority", "reliable")
+func receive_tile_changes(changes: Array) -> void:
+	var scene := get_tree().current_scene
+	if scene != null:
+		TileDestruction.apply(changes, scene)
+
 func _broadcast_members(mission_id: int) -> void:
 	var mission: Dictionary = missions[mission_id]
 	var members: Array = mission["members"]
