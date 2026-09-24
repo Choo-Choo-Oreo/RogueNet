@@ -23,7 +23,7 @@ var _last_state: EnemySenses.State = EnemySenses.State.PATROL
 var _size_px: float = 16.0
 ## Tiles per side (json "size_tiles"): 1 normally, 2 for a boss like the minotaur.
 var size_tiles := 1
-## json "boss": true. Bosses get privileges over their allies: they walk through
+## True for an enemy whose json sits in a bosses/ folder (EnemyIndex.is_boss). Bosses get privileges over their allies: they walk through
 ## them (GridMover) and the allies step out of the way (_yield_to_boss).
 var is_boss := false
 ## Every living boss, so an ally can ask "am I in a boss's way" without scanning the group.
@@ -142,19 +142,17 @@ const ALERTNESS_FRAME := {
 	EnemySenses.State.ATTACK: 2,
 }
 
-const ENEMY_TYPES_DIR := "res://game/entities/entities.enemies/"
-
-## enemy_id is always exactly its JSON's filename (see ENEMY_TYPES_DIR) -- no
-## separate registry to keep in sync, so a new enemy is really just a new
-## JSON file dropped in that folder, nothing here needs to change.
+## enemy_id is always exactly its JSON's filename; EnemyIndex finds the file in the enemy
+## folder or any subfolder, so a new enemy is really just a new JSON file dropped
+## there, nothing here needs to change.
 var _can_open_doors := false
 
 func set_enemy_type(enemy_id: String) -> void:
-	var data := JsonOnloading.load_dict(ENEMY_TYPES_DIR + enemy_id + ".json")
+	var data := EnemyIndex.load_data(enemy_id)
 	stats.load_from_data(data)
 	$AnimatedSprite2D.sprite_frames = SpriteFramesLoader.build(data["sprite_frames"])
 	size_tiles = int(data.get("size_tiles", 1))
-	is_boss = bool(data.get("boss", false))
+	is_boss = EnemyIndex.is_boss(enemy_id)
 	_size_px = size_tiles * grid_mover.tile_size
 	grid_mover.footprint = size_tiles
 	set_meta("is_boss", is_boss)
@@ -222,6 +220,7 @@ func take_damage(amount: int, type: String = "") -> void:
 ## anything itself.
 func receive_network_state(pos: Vector2, state: int) -> void:
 	global_position = pos
+	grid_mover.note_move("network")
 	var enemy_state := state as EnemySenses.State
 	if enemy_state != _last_state:
 		_show_alertness(enemy_state)

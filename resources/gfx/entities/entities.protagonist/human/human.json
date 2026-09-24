@@ -1,0 +1,12 @@
+{
+	"sprite_frames": {
+		"frame_size": [16, 16],
+		"animations": {
+			"Front": { "texture": "res://resources/gfx/entities/entities.protagonist/human/Human-Down.png", "frame_count": 4, "speed": 20.0 },
+			"FrontRight": { "texture": "res://resources/gfx/entities/entities.protagonist/human/Human-DownRight.png", "frame_count": 4, "speed": 20.0 },
+			"Side": { "texture": "res://resources/gfx/entities/entities.protagonist/human/Human-Right.png", "frame_count": 4, "speed": 20.0 },
+			"BackRight": { "texture": "res://resources/gfx/entities/entities.protagonist/human/Human-UpRight.png", "frame_count": 4, "speed": 20.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.protagonist/human/Human-Up.png", "frame_count": 4, "speed": 20.0 }
+		}
+	}
+}

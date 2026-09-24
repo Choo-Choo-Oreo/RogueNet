@@ -11,7 +11,7 @@ Most game content is data-driven JSON under `game/` (paired with art/audio
 under `resources/`), loaded at runtime — no script changes needed to add a
 new enemy, room, or tile. This section documents those formats.
 
-### Enemies — `game/entities/entities.enemies/<id>.json`
+### Enemies — `game/entities/entities.antagonist/minions/<id>.json` (or `bosses/`)
 
 The filename (minus `.json`) is the enemy's id, used everywhere else
 (biome `monsters` weights, etc). Example (`rat.json`):
@@ -39,10 +39,10 @@ The filename (minus `.json`) is the enemy's id, used everywhere else
 	"sprite_frames": {
 		"frame_size": [16, 16],
 		"animations": {
-			"Front": { "texture": "res://resources/gfx/entities/entities.enemies/rat/rat/Rat-Down.png", "frame_count": 2, "speed": 20.0 },
-			"Back": { "texture": "res://resources/gfx/entities/entities.enemies/rat/rat/Rat-Up.png", "frame_count": 2, "speed": 20.0 },
-			"SideLeft": { "texture": "res://resources/gfx/entities/entities.enemies/rat/rat/Rat-Left.png", "frame_count": 2, "speed": 20.0 },
-			"SideRight": { "texture": "res://resources/gfx/entities/entities.enemies/rat/rat/Rat-Right.png", "frame_count": 2, "speed": 20.0 }
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/rat/rat/Rat-Down.png", "frame_count": 2, "speed": 20.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/rat/rat/Rat-Up.png", "frame_count": 2, "speed": 20.0 },
+			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/rat/rat/Rat-Left.png", "frame_count": 2, "speed": 20.0 },
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/rat/rat/Rat-Right.png", "frame_count": 2, "speed": 20.0 }
 		}
 	}
 }
@@ -81,7 +81,7 @@ Notes:
   Rooms can favor a tag for spawns. The list of tags and what each means is
   in `game/TAGS.md`; reuse one before inventing another.
 - Sprite PNGs and their animation JSON (if any, e.g. Aseprite exports) live
-  together under `resources/gfx/entities/entities.enemies/<id>/`, not under
+  together under `resources/gfx/entities/entities.antagonist/minions/<id>/`, not under
   `game/`.
 
 ### Rooms — `game/rooms/<biome>/<id>.json`
@@ -124,7 +124,7 @@ Every key (size, `role`, `tags`, `floor`/`walls`, `connectors` and their
 `game/rooms/README.md` under "Room JSON reference". Tile size is 16px.
 
 A spawn cell may also name an exact enemy, `{ "position": {...}, "enemy": "rat" }`
-(any id from `game/entities/entities.enemies/`): that cell always spawns it
+(any id from `game/entities/entities.antagonist/`): that cell always spawns it
 instead of rolling the biome table. The Dungeon Maker's enemy spawner sets this.
 
 ### Biome config — `game/rooms/<biome>/defines.json`

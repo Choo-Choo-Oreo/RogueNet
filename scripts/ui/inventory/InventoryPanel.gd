@@ -11,7 +11,7 @@ extends PanelContainer
 signal close_requested
 
 const UI_DIR := "res://resources/gfx/ui/inventory/"
-const BODY_SHEET := "res://resources/gfx/players/player.protagonist/human/Human-%s.png"
+const BODY_SHEET := "res://resources/gfx/entities/entities.protagonist/human/Human-%s.png"
 const DOLL_SCALE := 8
 const BAG_COLUMNS := 7
 

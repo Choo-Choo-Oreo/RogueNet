@@ -1,0 +1,30 @@
+{
+	"tags": ["beast.canine"],
+	"size_tiles": 1,
+	"max_health": 10,
+	"strength": 2,
+	"dexterity": 1,
+	"constitution": 1,
+	"cognitive": 0,
+	"resistances": {},
+	"speed_tiles_per_second": 6.0,
+	"attack": {
+		"amount": 3,
+		"type": "Physical",
+		"interval": 1.0,
+		"effect": {
+			"texture": "res://resources/gfx/effects/effects.melee/physical.biting.png",
+			"frame_count": 10,
+			"speed": 20.0
+		}
+	},
+	"sprite_frames": {
+		"frame_size": [16, 16],
+		"animations": {
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf/Wolf-Down.png", "frame_count": 3, "speed": 20.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf/Wolf-Up.png", "frame_count": 3, "speed": 20.0 },
+			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf/Wolf-Left.png", "frame_count": 3, "speed": 20.0 },
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf/Wolf-Right.png", "frame_count": 3, "speed": 20.0 }
+		}
+	}
+}

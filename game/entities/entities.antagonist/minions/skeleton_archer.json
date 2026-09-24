@@ -1,0 +1,42 @@
+{
+	"tags": ["undead.skeleton"],
+	"doors": "open",
+	"size_tiles": 1,
+	"max_health": 7,
+	"strength": 1,
+	"dexterity": 1,
+	"constitution": 2,
+	"cognitive": 1,
+	"resistances": {},
+	"speed_tiles_per_second": 4.0,
+	"attack": {
+		"amount": 2,
+		"type": "Physical",
+		"interval": 1.3,
+		"range_tiles": 4,
+		"effect": {
+			"projectile": "res://resources/gfx/entities/entities.projectiles/arrow/Arrow.png",
+			"attacker": {
+				"texture": "res://resources/gfx/effects/effects.range/attacker-physical.piercing.png",
+				"frame_count": 8,
+				"speed": 16.0,
+				"anchor": "attacker"
+			},
+			"target": {
+				"texture": "res://resources/gfx/effects/effects.range/target-physical.piercing.png",
+				"frame_count": 8,
+				"speed": 16.0,
+				"anchor": "target"
+			}
+		}
+	},
+	"sprite_frames": {
+		"frame_size": [16, 16],
+		"animations": {
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/skeleton/skeleton.archer/SkeletonArcher-Down.png", "frame_count": 4, "speed": 20.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/skeleton/skeleton.archer/SkeletonArcher-Up.png", "frame_count": 4, "speed": 20.0 },
+			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/skeleton/skeleton.archer/SkeletonArcher-Left.png", "frame_count": 4, "speed": 20.0 },
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/skeleton/skeleton.archer/SkeletonArcher-Right.png", "frame_count": 4, "speed": 20.0 }
+		}
+	}
+}

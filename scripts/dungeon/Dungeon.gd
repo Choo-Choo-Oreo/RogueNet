@@ -7,6 +7,7 @@ extends Node2D
 
 func _ready() -> void:
 	add_child(DebugDraw.new())
+	add_child(BodySweep.new())
 	add_child(DebugMenu.new())
 
 func add_chat_line(line: String) -> void:

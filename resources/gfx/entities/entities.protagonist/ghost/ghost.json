@@ -1,0 +1,11 @@
+{
+	"sprite_frames": {
+		"frame_size": [16, 16],
+		"animations": {
+			"Front": { "texture": "res://resources/gfx/entities/entities.protagonist/ghost/Ghost-Down.png", "frame_count": 4, "speed": 6.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.protagonist/ghost/Ghost-Up.png", "frame_count": 4, "speed": 6.0 },
+			"SideLeft": { "texture": "res://resources/gfx/entities/entities.protagonist/ghost/Ghost-Left.png", "frame_count": 4, "speed": 6.0 },
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.protagonist/ghost/Ghost-Right.png", "frame_count": 4, "speed": 6.0 }
+		}
+	}
+}

@@ -40,7 +40,7 @@ static func spawn_in_unseen_cells(spawn_cells: Array[Vector2i], monster_weights:
 			continue
 		# A cell that names its enemy always gets it (as long as that enemy exists).
 		var enemy_id: String = fixed_enemies.get(tile, "")
-		if enemy_id != "" and not FileAccess.file_exists(EnemyController.ENEMY_TYPES_DIR + enemy_id + ".json"):
+		if enemy_id != "" and not EnemyIndex.has(enemy_id):
 			push_warning("Spawn cell %s names unknown enemy '%s', rolling instead" % [tile, enemy_id])
 			enemy_id = ""
 		if enemy_id == "":
@@ -66,7 +66,7 @@ static func spawn_antagonists(entries: Array, enemies_root: Node) -> void:
 		var enemy_id: String = entry["enemy"]
 		if enemy_id == "":
 			enemy_id = _pick_boss(entry["favor"])
-		if enemy_id == "" or not FileAccess.file_exists(EnemyController.ENEMY_TYPES_DIR + enemy_id + ".json"):
+		if enemy_id == "" or not EnemyIndex.has(enemy_id):
 			push_warning("Antagonist spawn at %s found no boss (enemy '%s'), skipped" % [entry["tile"], enemy_id])
 			continue
 		var id := _next_id
@@ -77,19 +77,14 @@ static func spawn_antagonists(entries: Array, enemies_root: Node) -> void:
 	if not spawned.is_empty():
 		NetworkSync.broadcast_enemy_spawns(spawned)
 
-## A random boss: every enemy json with "boss": true starts at weight 1, then the
+## A random boss: every boss (see EnemyIndex.is_boss) starts at weight 1, then the
 ## room's favored_antagonist boosts the matching ones, the very same weighting a
 ## favored_enemy gives the biome table (_favored_weights). No favor = all equal.
 static func _pick_boss(favor: Array) -> String:
 	var weights := {}
-	for file_name in DirAccess.get_files_at(EnemyController.ENEMY_TYPES_DIR):
-		if not file_name.ends_with(".json"):
-			continue
-		var enemy_id := file_name.get_basename()
-		var data := JsonOnloading.load_dict(EnemyController.ENEMY_TYPES_DIR + file_name)
-		if not data.get("boss", false):
-			continue
-		weights[enemy_id] = 1.0
+	for enemy_id: String in EnemyIndex.ids():
+		if EnemyIndex.is_boss(enemy_id):
+			weights[enemy_id] = 1.0
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
 	return _roll_enemy(_favored_weights(weights, favor), rng)
@@ -98,7 +93,7 @@ static func _pick_boss(favor: Array) -> String:
 static func spawn_debug(enemy_id: String, tile: Vector2i, enemies_root: Node) -> void:
 	if enemy_id.contains("/") or enemy_id.contains("\\") or enemy_id.contains(".."):
 		return
-	if not FileAccess.file_exists(EnemyController.ENEMY_TYPES_DIR + enemy_id + ".json"):
+	if not EnemyIndex.has(enemy_id):
 		return
 	var id := _next_id
 	_next_id += 1
@@ -114,7 +109,7 @@ static func spawn_debug(enemy_id: String, tile: Vector2i, enemies_root: Node) ->
 const FIT_SEARCH_RADIUS := 6
 
 static func fit_tile(enemy_id: String, tile: Vector2i, enemies_root: Node) -> Vector2i:
-	var size := int(JsonOnloading.load_dict(EnemyController.ENEMY_TYPES_DIR + enemy_id + ".json").get("size_tiles", 1))
+	var size := int(EnemyIndex.load_data(enemy_id).get("size_tiles", 1))
 	if size <= 1:
 		return tile
 	var scene := enemies_root.get_tree().current_scene
@@ -190,7 +185,7 @@ static var _tag_cache := {}
 
 static func _tags_of(enemy_id: String) -> Array:
 	if not _tag_cache.has(enemy_id):
-		var data := JsonOnloading.load_dict(EnemyController.ENEMY_TYPES_DIR + enemy_id + ".json")
+		var data := EnemyIndex.load_data(enemy_id)
 		var tags: Array = (data.get("tags", []) as Array).duplicate()
 		tags.append(enemy_id)
 		_tag_cache[enemy_id] = tags

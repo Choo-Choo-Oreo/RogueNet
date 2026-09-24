@@ -51,9 +51,9 @@ const OBJECT_MARKER_TEXTURES := {
 	"chest": "res://resources/gfx/objects/Chest_Wood.png",
 }
 const CONNECTOR_TEXTURE_PATH := "res://resources/gfx/doors/Wood_W1.png"
-const PLAYER_SPAWNER_TEXTURE_PATH := "res://resources/gfx/players/player.protagonist/knight/Knight-Down.png"
-const PLAYER_CONTROLLER_SCENE_PATH := "res://scenes/player/PlayerController.tscn"
-## "" = any enemy from the biome table; otherwise an id from game/entities/entities.enemies/.
+const PLAYER_SPAWNER_TEXTURE_PATH := "res://resources/gfx/entities/entities.protagonist/knight/Knight-Down.png"
+const PLAYER_CONTROLLER_SCENE_PATH := "res://scenes/entities/PlayerController.tscn"
+## "" = any enemy from the biome table; otherwise an id from game/entities/entities.antagonist/.
 const ENEMY_ANY_LABEL := "Any (biome table)"
 const ENEMY_SPAWNER_ICON_COLOR := Color(0.85, 0.25, 0.25)
 const CAMERA_ZOOM_MIN := 0.25
@@ -2667,14 +2667,9 @@ func _on_delete_spawner_pressed() -> void:
 	if enemy_index != -1:
 		_remove_enemy_spawner_with_undo(enemy_index)
 
-## Every enemy id (its json filename) in the game's enemy folder, sorted.
+## Every enemy id (its json filename) in the game's enemy folder and its subfolders, sorted.
 func _enemy_type_ids() -> Array:
-	var ids: Array = []
-	for file_name in DirAccess.get_files_at(EnemyController.ENEMY_TYPES_DIR):
-		if file_name.ends_with(".json"):
-			ids.append(file_name.get_basename())
-	ids.sort()
-	return ids
+	return EnemyIndex.ids()
 
 func _open_spawner_settings(enemy_index: int) -> void:
 	editing_spawner_index = enemy_index

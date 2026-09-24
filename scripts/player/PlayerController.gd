@@ -13,13 +13,13 @@ var gear := GearLayers.new()
 ## PLAYER_DATA_PATH. Only the Human is left: gear (GearLayers) is drawn to fit
 ## its body, and the old knight and dwarf were temporary.
 const CHARACTERS := {
-	"human": "res://resources/gfx/players/player.protagonist/human/human.json",
+	"human": "res://resources/gfx/entities/entities.protagonist/human/human.json",
 }
 const DEFAULT_CHARACTER := "human"
 
 ## Stats/attack shared by every character skin.
-const PLAYER_DATA_PATH := "res://game/entities/entities.players/player.json"
-const GHOST_DATA_PATH := "res://resources/gfx/players/player.protagonist/ghost/ghost.json"
+const PLAYER_DATA_PATH := "res://game/entities/entities.protagonist/player.json"
+const GHOST_DATA_PATH := "res://resources/gfx/entities/entities.protagonist/ghost/ghost.json"
 
 const TILE_HOVER_DATA := {
 	"texture": "res://resources/gfx/effects/TileHover.png",

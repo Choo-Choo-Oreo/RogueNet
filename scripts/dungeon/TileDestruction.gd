@@ -29,6 +29,8 @@ const NEIGHBOURS_8: Array[Vector2i] = [
 static var _registry: TileTypeRegistry
 static var _names := {}       # tile id -> tile name
 static var _plain_floor := {} # floor tile id -> true when it is ordinary ground
+## When apply() last changed the map (msec), for the debug body sweep (BodySweep).
+static var last_applied_msec := 0
 
 static func _setup() -> void:
 	if _registry != null:
@@ -139,6 +141,7 @@ static func apply(changes: Array, scene: Node) -> void:
 			wall_data.erase_cell(cell)
 		else:
 			wall_data.set_cell(cell, _registry.get_id(change["wall"]), Vector2i.ZERO)
+	last_applied_msec = Time.get_ticks_msec()
 	# Shared flow fields were flooded around the old walls; the light re-floods when the
 	# door version moves (LightMap polls it), the same way it does for a door opening.
 	FlowField.clear()

@@ -126,6 +126,7 @@ func receive_position(player_id: int, pos: Vector2) -> void:
 	var player := scene.get_node_or_null("Player/" + str(player_id))
 	if player:
 		player.global_position = pos
+		player.grid_mover.note_move("network")
 
 var missions: Dictionary = {}
 

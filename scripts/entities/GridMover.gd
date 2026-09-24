@@ -97,8 +97,29 @@ func _no_clip() -> bool:
 
 var _tween: Tween
 
+## How this body last got where it is, for the debug body sweep (BodySweep): kind is
+## "step", "teleport" or "network" (a position a peer sent), dir the step, msec when.
+var last_move := {"kind": "", "dir": Vector2.ZERO, "msec": 0}
+
+func note_move(kind: String, dir: Vector2 = Vector2.ZERO) -> void:
+	last_move = {"kind": kind, "dir": dir, "msec": Time.get_ticks_msec()}
+
+## Debug (BodySweep): why a body should not be standing on `tile` -- "wall", "void" or
+## "no floor" -- or "" if it is fine. Reads the layers directly, so it also catches a
+## cell with no floor at all, which _is_blocked lets through.
+func bad_tile_reason(tile: Vector2i) -> String:
+	if wall_data != null and wall_data.get_cell_source_id(tile) != -1:
+		return "wall"
+	if floor_data == null:
+		return ""
+	var floor_id := floor_data.get_cell_source_id(tile)
+	if floor_id == -1:
+		return "no floor"
+	return "void" if floor_id == _void_source_id else ""
+
 ## Debug: put the body on a spot right now, cancelling any step in progress.
 func teleport(pos: Vector2) -> void:
+	note_move("teleport")
 	if _tween != null and _tween.is_valid():
 		_tween.kill()
 	is_moving = false
@@ -301,6 +322,7 @@ func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> bool:
 		return false
 	facing_direction = direction
 	is_moving = true
+	note_move("step", direction)
 	var reserved_tiles: Array[Vector2i] = _footprint_tiles(target_tile)
 	if not is_ghost:
 		for covered in reserved_tiles:

@@ -2,7 +2,7 @@ class_name SpriteFramesLoader
 extends RefCounted
 
 ## Builds a SpriteFrames resource at runtime from JSON data (see any entity's
-## "sprite_frames" key, e.g. game/entities/entities.enemies/rat.json) instead
+## "sprite_frames" key, e.g. game/entities/entities.antagonist/rat.json) instead
 ## of a hand-built .tres -- same reasoning as TileType's atlas_texture
 ## loading. Each animation is one PNG strip, frames cut left to right.
 

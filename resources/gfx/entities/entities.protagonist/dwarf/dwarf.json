@@ -1,0 +1,11 @@
+{
+	"sprite_frames": {
+		"frame_size": [16, 16],
+		"animations": {
+			"Front": { "texture": "res://resources/gfx/entities/entities.protagonist/dwarf/Dwarf-Down.png", "frame_count": 4, "speed": 20.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.protagonist/dwarf/Dwarf-Up.png", "frame_count": 4, "speed": 20.0 },
+			"SideLeft": { "texture": "res://resources/gfx/entities/entities.protagonist/dwarf/Dwarf-Left.png", "frame_count": 7, "speed": 20.0 },
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.protagonist/dwarf/Dwarf-Right.png", "frame_count": 7, "speed": 20.0 }
+		}
+	}
+}

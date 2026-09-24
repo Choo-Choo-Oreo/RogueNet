@@ -9,7 +9,7 @@ or an arctic wolf is an enemy id (a file), not a tag.
 
 Every tag has a **main** category and, optionally, a **secondary** one after a
 dot: `undead.skeleton`, `beast.rodent`. Put the most specific one you have in
-the enemy's JSON (`game/entities/entities.enemies/<id>.json`):
+the enemy's JSON (`game/entities/entities.antagonist/<id>.json`):
 
 ```json
 "tags": ["beast.canine", "demon"]

@@ -94,10 +94,10 @@ Each one is a straight run of cells on the outer ring:
 ### Spawns
 
 - `spawn_cells` *(optional)*: `[{ "position": {"x": 3, "y": 4} }, ...]`, tile coordinates inside the room, on floor. Each is a place an enemy may spawn. What spawns comes from the biome's `monsters` table in `defines.json`, not from the room.
-  - A cell can pin its enemy with `"enemy"`: `{ "position": {"x": 3, "y": 4}, "enemy": "skeleton_archer" }` always spawns that enemy id (from `game/entities/entities.enemies/`), skipping the table and `favored_enemy`. The catacomb uses it to stand archers in lines.
+  - A cell can pin its enemy with `"enemy"`: `{ "position": {"x": 3, "y": 4}, "enemy": "skeleton_archer" }` always spawns that enemy id (from `game/entities/entities.antagonist/`), skipping the table and `favored_enemy`. The catacomb uses it to stand archers in lines.
   - Leave them out of `entrance`, `boss` and `treasure` rooms.
   - Spread a handful around cover and corners instead of clustering them in the open.
-  - A spawn cell may name its enemy: `{ "position": {...}, "enemy": "rat" }` (any id from `game/entities/entities.enemies/`). That cell then always spawns it instead of rolling the table. The Dungeon Maker's enemy spawner sets this.
+  - A spawn cell may name its enemy: `{ "position": {...}, "enemy": "rat" }` (any id from `game/entities/entities.antagonist/`). That cell then always spawns it instead of rolling the table. The Dungeon Maker's enemy spawner sets this.
 - `antagonist_spawns` *(optional, boss rooms)*: where the room's boss appears, one entry per boss: `{ "position": {"x","y"} }`. Always spawns (not hidden by the fog). Which boss comes is the room's `favored_antagonist`, written exactly like `favored_enemy` (`{ "tag": "beast", "weight": 3 }`, weight optional): every enemy with `"boss": true` in its json is a candidate, and the ones matching the tag are boosted, so it is the same rule and the same code as `favored_enemy`. Today every boss room says `beast` except the Void's, which say `undead` (no undead boss exists yet, so it is still the Minotaur everywhere); a new boss kind only needs a `"boss": true` enemy with its own tag. An entry with `"enemy": "minotaur"` forces that one. The Dungeon Maker keeps both fields but has no tool for them, and its flip does not move the spawn.
 - `favored_enemy` *(optional)*: nudges what spawns in this room's cells.
   - Written as `{ "tag": "beast.rodent", "weight": 3 }`, or a list of those. `weight` is optional (default 3).

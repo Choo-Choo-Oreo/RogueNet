@@ -13,7 +13,6 @@ extends CanvasLayer
 ## and "open" jumps to that folder. Nothing here is sent to chat.
 
 const TILE := 16
-const ENEMY_DIR := "res://game/entities/entities.enemies/"
 const REFRESH_SECONDS := 0.25
 const SAMPLE_SECONDS := 1.0
 
@@ -39,6 +38,7 @@ const OPTIONS := [
 	["show-vision", "Your lit cells (green near, red far)"],
 	["show-flow-field", "Flow field to you: tiles away + step direction"],
 	["show-system-time", "Time per system (enemy AI, light)"],
+	["log-bodies-in-walls", "Log a creature on a wall / void / no-floor tile"],
 ]
 
 # Fixed sizes so the panel never resizes when the tab or the hint text changes.
@@ -144,9 +144,8 @@ func _build_panel() -> void:
 	_check(tools_box, "unseen (enemies cannot see you)", DebugState.unseen, func(on): DebugState.unseen = on)
 	_free_cam_check = _check(tools_box, "free-cam (camera detaches, you stand still)", DebugState.free_cam, func(on): DebugState.free_cam = on)
 	var types := OptionButton.new()
-	for file_name in DirAccess.get_files_at(ENEMY_DIR):
-		if file_name.ends_with(".json"):
-			types.add_item(file_name.get_basename())
+	for enemy_id: String in EnemyIndex.ids():
+		types.add_item(enemy_id)
 	if types.item_count > 0:
 		if DebugState.spawn_type == "":
 			DebugState.spawn_type = types.get_item_text(0)

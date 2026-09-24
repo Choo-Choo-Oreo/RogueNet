@@ -1,0 +1,33 @@
+{
+	"tags": ["beast.rodent", "demon"],
+	"size_tiles": 1,
+	"max_health": 8,
+	"strength": 0,
+	"dexterity": 1,
+	"constitution": 1,
+	"cognitive": 3,
+	"resistances": {},
+	"speed_tiles_per_second": 6.0,
+	"flying": true,
+	"attack": {
+		"amount": 2,
+		"type": "Entropia",
+		"interval": 1.6,
+		"range_tiles": 4,
+		"effect": {
+			"texture": "res://resources/gfx/effects/effects.arcana/arcana.entropia.png",
+			"frame_count": 8,
+			"speed": 16.0,
+			"anchor": "target"
+		}
+	},
+	"sprite_frames": {
+		"frame_size": [16, 16],
+		"animations": {
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/hamster/hamster.demonic/Hamster-Down.png", "frame_count": 3, "speed": 20.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/hamster/hamster.demonic/Hamster-Up.png", "frame_count": 3, "speed": 20.0 },
+			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/hamster/hamster.demonic/Hamster-Left.png", "frame_count": 3, "speed": 20.0 },
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/hamster/hamster.demonic/Hamster-Right.png", "frame_count": 3, "speed": 20.0 }
+		}
+	}
+}
