@@ -243,8 +243,8 @@ Frames are 16x16, in strips. What exists:
 - [✗] Hurt flash or flinch
 - [✗] Death
 - [~] The current knight and dwarf are TEMPORARY (2026-09-24, Orea). A teammate is building a new `human` character with EIGHT-direction movement (walking north, north+east, east, south+east, south, and so on) in `resources/gfx/players/player.protagonist/human/`; the flipped directions come from the right-facing art. It comes with an equipment slot map (head, neck, chest, back, gloves, legs, feet, main hand, off hand) that says, per direction, which worn pieces draw over or behind the body and where a held item's grip pixel sits. Do not draw more frames for the old knight and dwarf until that lands
-- [✗] Human: `walking_south+east.png` was misnamed `Waling_South+East.png` and is now fixed (2026-09-24); `walking_south+east.aseprite` sits beside it. The set is still incomplete (5 of 8 directions exist on disk: east, north, north+east, south+east and south; `walking_South.png` still has a capital S while its `.aseprite` is lowercase) and its names do not match the `Knight-Up/Down/Left/Right` pattern; eight directions need a new naming and animation scheme, and the game only handles four directions today (`DirectionalAnimator`)
-- [~] Gear layer: only `gear/helmets/heavy_iron/` (down and down-right) exists. It waits on the equipment-slot map above
+- [~] Human: walk cycles renamed to the `Name-Direction` pattern, 2026-09-24: `human/Human-Down/DownRight/Right/UpRight/Up` (`.png` + `.aseprite`). Left, Down-Left and Up-Left come from flipping the right-facing art. The game only handles four directions today (`DirectionalAnimator`), so the diagonals don't show in-game yet
+- [~] Gear layer: `gear/helmets/heavy_iron/HeavyIronHelm-Down/DownRight/Right/UpRight/Up` is done for all 5 directions (checked against the Human walk cycle, 2026-09-24). Gear sheets use the same `Name-Direction` pattern as the body so code can pair them up. Nothing draws gear in-game yet
 - [✗] More classes **(decide first)**. Don't draw new classes until Orea confirms what they are.
 
 ## 4. Enemies
