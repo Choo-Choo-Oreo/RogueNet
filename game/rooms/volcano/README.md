@@ -77,8 +77,8 @@ Every spawn cell spawns one enemy. There are three kinds of cell:
 | Side pocket | none | | none | | 2 |
 | Entrance, tunnel, vent, peaceful | none | | none | | none |
 
-No room sets `favored_enemy`. The 64 rooms have 308 spawn cells between
-them: 157 hellhounds, 113 demonic hamsters and 38 rolled.
+No room sets `favored_enemy`. The 64 rooms have 311 spawn cells between
+them: 156 hellhounds, 117 demonic hamsters and 38 rolled.
 
 ## Roles and tags
 

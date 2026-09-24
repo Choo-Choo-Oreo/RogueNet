@@ -13,14 +13,22 @@ func _ready():
 	multiplayer.connection_failed.connect(_on_connection_failed)
 	_build_toast()
 
-## Errors show as a pop-up in the empty area on the right of the lobby (and still
-## print to the output). Built in code so no scene wiring is needed.
+## Errors show as a toast (a small pop-up that dismisses itself) on the right of the
+## lobby, not in the output panel. Built in code so no scene wiring is needed.
 func _build_toast() -> void:
 	_toast = PanelContainer.new()
 	_toast.visible = false
-	_toast.set_anchors_preset(Control.PRESET_CENTER_RIGHT)
-	_toast.custom_minimum_size = Vector2(420, 0)
-	_toast.position = Vector2(size.x - 460, size.y / 2.0 - 40)
+	_toast.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Pinned to the right edge, vertically centred, whatever the window size.
+	_toast.anchor_left = 1.0
+	_toast.anchor_right = 1.0
+	_toast.anchor_top = 0.5
+	_toast.anchor_bottom = 0.5
+	_toast.offset_left = -460.0
+	_toast.offset_right = -40.0
+	_toast.offset_top = -40.0
+	_toast.offset_bottom = 40.0
+	_toast.grow_vertical = Control.GROW_DIRECTION_BOTH
 	_toast_label = Label.new()
 	_toast_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_toast_label.add_theme_color_override("font_color", Color(1.0, 0.45, 0.4))
@@ -29,7 +37,6 @@ func _build_toast() -> void:
 	add_child(_toast)
 
 func _show_error(text: String) -> void:
-	print(text)
 	_toast_label.text = text
 	_toast.visible = true
 	_toast_id += 1

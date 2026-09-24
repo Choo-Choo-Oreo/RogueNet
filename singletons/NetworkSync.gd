@@ -22,8 +22,11 @@ func _ready() -> void:
 	multiplayer.peer_disconnected.connect(func(id):
 		if not multiplayer.is_server():
 			return
+		var left_name: String = peer_names.get(id, "")
 		peer_steam_ids.erase(id)
 		peer_names.erase(id)
+		if left_name != "":
+			_announce("%s left the game." % left_name)
 		for peer_id in multiplayer.get_peers():
 			receive_steam_ids.rpc_id(peer_id, peer_steam_ids)
 			receive_player_names.rpc_id(peer_id, peer_names)
@@ -170,7 +173,10 @@ func report_player_name(player_name: String) -> void:
 	if not multiplayer.is_server():
 		return
 	var sender_id := multiplayer.get_remote_sender_id()
+	var is_new := not peer_names.has(sender_id)
 	peer_names[sender_id] = player_name
+	if is_new:
+		_announce("%s joined the game." % player_name)
 	for peer_id in multiplayer.get_peers():
 		receive_player_names.rpc_id(peer_id, peer_names)
 	receive_player_names(peer_names)
