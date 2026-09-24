@@ -53,6 +53,45 @@ static func spawn_in_unseen_cells(spawn_cells: Array[Vector2i], monster_weights:
 		spawned.append({"id": id, "type": enemy_id, "tile": tile})
 	NetworkSync.broadcast_enemy_spawns(spawned)
 
+## The antagonist spawns of the boss rooms: each entry is {"tile", "enemy"}. Always
+## placed (no roll, not gated by the fog), host only, and told to every peer the same
+## way as the normal spawns.
+static func spawn_antagonists(entries: Array, enemies_root: Node) -> void:
+	var mp := enemies_root.get_multiplayer()
+	if mp.multiplayer_peer != null and not mp.is_server():
+		return
+	var spawned: Array = []
+	for entry in entries:
+		var enemy_id: String = entry["enemy"]
+		if enemy_id == "":
+			enemy_id = _pick_boss(entry["favor"])
+		if enemy_id == "" or not FileAccess.file_exists(EnemyController.ENEMY_TYPES_DIR + enemy_id + ".json"):
+			push_warning("Antagonist spawn at %s found no boss (enemy '%s'), skipped" % [entry["tile"], enemy_id])
+			continue
+		var id := _next_id
+		_next_id += 1
+		spawn_one(id, enemy_id, entry["tile"], enemies_root)
+		spawned.append({"id": id, "type": enemy_id, "tile": entry["tile"]})
+	if not spawned.is_empty():
+		NetworkSync.broadcast_enemy_spawns(spawned)
+
+## A random boss: every enemy json with "boss": true starts at weight 1, then the
+## room's favored_antagonist boosts the matching ones, the very same weighting a
+## favored_enemy gives the biome table (_favored_weights). No favor = all equal.
+static func _pick_boss(favor: Array) -> String:
+	var weights := {}
+	for file_name in DirAccess.get_files_at(EnemyController.ENEMY_TYPES_DIR):
+		if not file_name.ends_with(".json"):
+			continue
+		var enemy_id := file_name.get_basename()
+		var data := JsonOnloading.load_dict(EnemyController.ENEMY_TYPES_DIR + file_name)
+		if not data.get("boss", false):
+			continue
+		weights[enemy_id] = 1.0
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	return _roll_enemy(_favored_weights(weights, favor), rng)
+
 ## Debug menu: one enemy of a chosen type on a chosen tile, host only.
 static func spawn_debug(enemy_id: String, tile: Vector2i, enemies_root: Node) -> void:
 	if enemy_id.contains("/") or enemy_id.contains("\\") or enemy_id.contains(".."):

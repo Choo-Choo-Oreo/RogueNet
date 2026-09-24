@@ -1,4 +1,12 @@
 {
+	"antagonist_spawns": [
+		{
+			"position": {
+				"x": 7,
+				"y": 7
+			}
+		}
+	],
 	"biome": "mine",
 	"connectors": [
 		{
@@ -13,6 +21,9 @@
 			"door": "any"
 		}
 	],
+	"favored_antagonist": {
+		"tag": "beast"
+	},
 	"floor": [
 		[
 			null,

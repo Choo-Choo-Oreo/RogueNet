@@ -1,4 +1,12 @@
 {
+	"antagonist_spawns": [
+		{
+			"position": {
+				"x": 12,
+				"y": 12
+			}
+		}
+	],
 	"biome": "catacomb",
 	"connectors": [
 		{
@@ -50,6 +58,9 @@
 			"free": true
 		}
 	],
+	"favored_antagonist": {
+		"tag": "beast"
+	},
 	"favored_enemy": {
 		"tag": "undead.skeleton",
 		"weight": 3

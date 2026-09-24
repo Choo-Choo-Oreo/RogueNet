@@ -185,6 +185,8 @@ static func rotate_room(room: Dictionary, quarter_turns: int) -> Dictionary:
 		result["walls"] = _rotate_grid(result["walls"], w, h)
 		result["connectors"] = _rotate_connectors(result["connectors"], h)
 		result["spawn_cells"] = _rotate_points(result.get("spawn_cells", []), h)
+		if result.has("antagonist_spawns"):
+			result["antagonist_spawns"] = _rotate_points(result["antagonist_spawns"], h)
 		if result.has("doors"):
 			result["doors"] = _rotate_doors(result["doors"], h)
 		result["width"] = h
@@ -213,7 +215,7 @@ static func with_rotations(rooms: Dictionary) -> Dictionary:
 	return expanded
 
 static func _signature(room: Dictionary) -> String:
-	return JSON.stringify([room["floor"], room["walls"], room["connectors"], room.get("doors", []), room.get("spawn_cells", [])])
+	return JSON.stringify([room["floor"], room["walls"], room["connectors"], room.get("doors", []), room.get("spawn_cells", []), room.get("antagonist_spawns", [])])
 
 static func _dominant_tile(grid: Array, exclude: String) -> String:
 	var counts := {}
@@ -388,6 +390,21 @@ static func collect_spawn_cells(rooms: Dictionary, placements: Array) -> Array[V
 			cells.append(p.offset + local)
 	return cells
 
+## Antagonist spawns (boss rooms): world tile plus what to place there, one entry per
+## "antagonist_spawns" item. Which boss comes is the room's "favored_antagonist",
+## written and matched exactly like "favored_enemy" (see EnemySpawning). An item can
+## instead force one with "enemy". Unlike spawn_cells these always spawn (no fog
+## check) and never go through the biome table.
+static func collect_antagonist_spawns(rooms: Dictionary, placements: Array) -> Array:
+	var result: Array = []
+	for p in placements:
+		var room: Dictionary = rooms[p.room_id]
+		var favor := favored_enemies(room, "favored_antagonist")
+		for entry in room.get("antagonist_spawns", []):
+			var local := Vector2i(int(entry["position"]["x"]), int(entry["position"]["y"]))
+			result.append({"tile": p.offset + local, "enemy": str(entry.get("enemy", "")), "favor": favor})
+	return result
+
 ## World spawn cell -> the exact enemy id a room's spawn cell asks for ("enemy"
 ## on the cell), only for cells that name one. Other cells roll the biome table.
 static func collect_spawn_enemies(rooms: Dictionary, placements: Array) -> Dictionary:
@@ -417,10 +434,10 @@ static func collect_spawn_favors(rooms: Dictionary, placements: Array) -> Dictio
 			favors[p.offset + local] = favor
 	return favors
 
-## A room's "favored_enemy" as a list, whether it was written as one
-## {"tag", "weight"} entry or an array of them. Weight defaults to 3.
-static func favored_enemies(room: Dictionary) -> Array:
-	var raw = room.get("favored_enemy", [])
+## A room's "favored_enemy" (or, with `key`, "favored_antagonist") as a list, whether
+## it was written as one {"tag", "weight"} entry or an array of them. Weight defaults to 3.
+static func favored_enemies(room: Dictionary, key: String = "favored_enemy") -> Array:
+	var raw = room.get(key, [])
 	var list: Array = raw if raw is Array else [raw]
 	var result: Array = []
 	for entry in list:

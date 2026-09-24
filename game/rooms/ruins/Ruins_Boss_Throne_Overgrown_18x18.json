@@ -1,4 +1,12 @@
 {
+	"antagonist_spawns": [
+		{
+			"position": {
+				"x": 9,
+				"y": 7
+			}
+		}
+	],
 	"biome": "ruins",
 	"connectors": [
 		{
@@ -14,6 +22,9 @@
 			"free": true
 		}
 	],
+	"favored_antagonist": {
+		"tag": "beast"
+	},
 	"favored_enemy": {
 		"tag": "undead",
 		"weight": 2

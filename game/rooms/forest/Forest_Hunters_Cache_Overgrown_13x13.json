@@ -14,6 +14,26 @@
 			"free": true
 		}
 	],
+	"doors": [
+		{
+			"cell": {
+				"x": 6,
+				"y": 6
+			},
+			"orient": "h",
+			"width": 1,
+			"type": "wood"
+		},
+		{
+			"cell": {
+				"x": 6,
+				"y": 9
+			},
+			"orient": "h",
+			"width": 2,
+			"type": "wood"
+		}
+	],
 	"base_floor": "floor_dirt",
 	"floor": [
 		[

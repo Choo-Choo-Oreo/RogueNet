@@ -1,4 +1,12 @@
 {
+	"antagonist_spawns": [
+		{
+			"position": {
+				"x": 49,
+				"y": 50
+			}
+		}
+	],
 	"biome": "cathedral",
 	"connectors": [
 		{
@@ -42,6 +50,9 @@
 			}
 		}
 	],
+	"favored_antagonist": {
+		"tag": "beast"
+	},
 	"floor": [
 		[
 			null,

@@ -222,7 +222,7 @@ var door_orient_option: OptionButton
 var door_width_spin: SpinBox
 var door_type_option: OptionButton
 var free_doors_list: ItemList
-const ROOM_EXTRA_KEYS := ["base_floor", "favored_enemy"]
+const ROOM_EXTRA_KEYS := ["base_floor", "favored_enemy", "favored_antagonist", "antagonist_spawns"]
 ## Controls for the selected connector, built in code under ConnectorSection.
 var connector_free_check: CheckBox
 var connector_door_option: OptionButton

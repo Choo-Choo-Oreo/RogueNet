@@ -51,7 +51,10 @@ too.
 
 1. **Sizes and openings are the dungeon's** (so sizes can be even here).
 2. **No doors.** Every connector is `"door": "none"`, and `default_door` is
-   `"none"`: the doors rotted away.
+   `"none"`: the doors rotted away. The one exception is iron, which doesn't
+   rot: the Treasure Armory (both stages) and the Overgrown Treasure Hoard
+   keep the dungeon vault's free-standing `iron` door (a `doors` entry). The
+   Reclaimed Hoard has none: the wall it hung in has fallen.
 3. **Every connector is `"free": true`,** so any widths can join.
 4. **Nothing unreachable.** Every floor tile connects to the openings.
 

@@ -13,6 +13,17 @@
 			"door": "any"
 		}
 	],
+	"doors": [
+		{
+			"cell": {
+				"x": 4,
+				"y": 4
+			},
+			"orient": "h",
+			"width": 1,
+			"type": "iron"
+		}
+	],
 	"floor": [
 		[
 			null,

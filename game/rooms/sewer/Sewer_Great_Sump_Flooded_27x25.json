@@ -1,4 +1,12 @@
 {
+	"antagonist_spawns": [
+		{
+			"position": {
+				"x": 13,
+				"y": 2
+			}
+		}
+	],
 	"biome": "sewer",
 	"connectors": [
 		{
@@ -26,6 +34,9 @@
 			"free": true
 		}
 	],
+	"favored_antagonist": {
+		"tag": "beast"
+	},
 	"favored_enemy": {
 		"tag": "leech",
 		"weight": 5

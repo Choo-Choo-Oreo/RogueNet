@@ -1,4 +1,12 @@
 {
+  "antagonist_spawns": [
+    {
+      "position": {
+        "x": 5,
+        "y": 5
+      }
+    }
+  ],
   "connectors": [
     {
       "a": {
@@ -45,6 +53,9 @@
       "free": true
     }
   ],
+  "favored_antagonist": {
+    "tag": "beast"
+  },
   "floor": [
     [
       null,

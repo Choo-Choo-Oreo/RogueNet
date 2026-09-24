@@ -98,6 +98,7 @@ Each one is a straight run of cells on the outer ring:
   - Leave them out of `entrance`, `boss` and `treasure` rooms.
   - Spread a handful around cover and corners instead of clustering them in the open.
   - A spawn cell may name its enemy: `{ "position": {...}, "enemy": "rat" }` (any id from `game/entities/entities.enemies/`). That cell then always spawns it instead of rolling the table. The Dungeon Maker's enemy spawner sets this.
+- `antagonist_spawns` *(optional, boss rooms)*: where the room's boss appears, one entry per boss: `{ "position": {"x","y"} }`. Always spawns (not hidden by the fog). Which boss comes is the room's `favored_antagonist`, written exactly like `favored_enemy` (`{ "tag": "beast", "weight": 3 }`, weight optional): every enemy with `"boss": true` in its json is a candidate, and the ones matching the tag are boosted, so it is the same rule and the same code as `favored_enemy`. Today every boss room says `beast`, so it is the Minotaur; a new boss kind only needs a `"boss": true` enemy with its own tag. An entry with `"enemy": "minotaur"` forces that one. The Dungeon Maker keeps both fields but has no tool for them, and its flip does not move the spawn.
 - `favored_enemy` *(optional)*: nudges what spawns in this room's cells.
   - Written as `{ "tag": "beast.rodent", "weight": 3 }`, or a list of those. `weight` is optional (default 3).
   - Every enemy in the biome's `monsters` table that carries the tag (or has that id) gets its weight multiplied by `weight`.
@@ -118,7 +119,12 @@ Each one is a straight run of cells on the outer ring:
 - The painter removes any wall on the door's cells and lays floor there, so the room can leave them as they are. Use a 1-thick wall for `"h"` and a 2-thick one for `"v"`.
 - They rotate with the room. They are added after every connector door, so those door ids do not change.
 - The Dungeon Maker places them: the connector section's tool picker, "free-standing door".
-- Status (2026-09-24): written but not yet tested in play, and no shipped room uses one yet. To try it, place one in the Dungeon Maker in a room (a sewer room is a good test), save, and dive; then check that enemies path through it like any other door and that it rotates with the room.
+- Status (2026-09-24): confirmed working in play by Orea (placement, drawing, opening and rotation). These rooms use them:
+  - Vault doors (`iron`), sealing the chest end: `Dungeon_Treasure_Armory`, `Dungeon_Treasure_Hoard`, `Mine_Treasure_Strongbox`, `Mine_Treasure_Ore_Cache`, and their ruins versions where the vault wall still stands (`Ruins_Treasure_Armory_Overgrown`, `Ruins_Treasure_Armory_Reclaimed`, `Ruins_Treasure_Hoard_Overgrown`: iron doesn't rot).
+  - The hut door (`wood`) in `Forest_Hunters_Cache`, plus a 2-wide fence gate in its Overgrown version.
+  - Air doors (`wood`, 3 wide) across the tunnels of `Mine_Maze_Hub` and `Mine_Maze_Narrow_Honeycomb`.
+  - Sluice gates (`iron_sink`, 5 wide) across the whole main in `Sewer_Main_Line` and `Sewer_Main_Short` and their variants.
+  - Only enemies with `"doors": "open"` or `"phase"` (skeleton archer, minotaur, wraith) get through, so these doors hold rats, wolves and the rest back.
 
 ### Objects
 

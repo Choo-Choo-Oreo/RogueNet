@@ -1,4 +1,12 @@
 {
+	"antagonist_spawns": [
+		{
+			"position": {
+				"x": 11,
+				"y": 10
+			}
+		}
+	],
 	"biome": "manor",
 	"connectors": [
 		{
@@ -15,6 +23,9 @@
 		}
 	],
 	"base_floor": "floor_wood_planks",
+	"favored_antagonist": {
+		"tag": "beast"
+	},
 	"floor": [
 		[
 			null,

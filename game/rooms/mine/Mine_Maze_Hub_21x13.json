@@ -46,6 +46,26 @@
 			"door": "any"
 		}
 	],
+	"doors": [
+		{
+			"cell": {
+				"x": 5,
+				"y": 4
+			},
+			"orient": "h",
+			"width": 3,
+			"type": "wood"
+		},
+		{
+			"cell": {
+				"x": 13,
+				"y": 8
+			},
+			"orient": "h",
+			"width": 3,
+			"type": "wood"
+		}
+	],
 	"floor": [
 		[
 			null,

@@ -26,6 +26,17 @@
 			"free": true
 		}
 	],
+	"doors": [
+		{
+			"cell": {
+				"x": 2,
+				"y": 10
+			},
+			"orient": "h",
+			"width": 5,
+			"type": "iron_sink"
+		}
+	],
 	"base_floor": "floor_smooth_stone",
 	"floor": [
 		[

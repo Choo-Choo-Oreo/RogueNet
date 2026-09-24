@@ -14,6 +14,17 @@
 			"free": true
 		}
 	],
+	"doors": [
+		{
+			"cell": {
+				"x": 3,
+				"y": 4
+			},
+			"orient": "h",
+			"width": 2,
+			"type": "iron"
+		}
+	],
 	"favored_enemy": {
 		"tag": "undead",
 		"weight": 2

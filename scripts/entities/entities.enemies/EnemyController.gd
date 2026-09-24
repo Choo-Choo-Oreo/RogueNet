@@ -139,7 +139,12 @@ func set_enemy_type(enemy_id: String) -> void:
 	stats.load_from_data(data)
 	$AnimatedSprite2D.sprite_frames = SpriteFramesLoader.build(data["sprite_frames"])
 	_size_px = data.get("size_tiles", 1) * grid_mover.tile_size
-	($CollisionShape2D.shape as RectangleShape2D).size = Vector2(_size_px, _size_px)
+	# The scene's shape resource is shared by every enemy, so each one needs its own
+	# copy or the last enemy spawned resizes them all (a boss would shrink to 1 tile).
+	var shape := RectangleShape2D.new()
+	shape.size = Vector2(_size_px, _size_px)
+	$CollisionShape2D.shape = shape
+	$CollisionShape2D.position = Vector2(_size_px, _size_px) / 2.0
 	$HealthPixelBar.position = Vector2(_size_px / 2.0, _size_px + 2.0)
 	$HealthPixelBar.setup(stats, 32 if _size_px > grid_mover.tile_size else 16)
 	senses.apply_overrides(data.get("senses", {}))

@@ -1,4 +1,12 @@
 {
+	"antagonist_spawns": [
+		{
+			"position": {
+				"x": 17,
+				"y": 5
+			}
+		}
+	],
 	"biome": "flesh",
 	"connectors": [
 		{
@@ -15,6 +23,9 @@
 		}
 	],
 	"base_floor": "floor_flesh",
+	"favored_antagonist": {
+		"tag": "beast"
+	},
 	"floor": [
 		[
 			null,

@@ -1,4 +1,12 @@
 {
+	"antagonist_spawns": [
+		{
+			"position": {
+				"x": 13,
+				"y": 22
+			}
+		}
+	],
 	"biome": "sewer",
 	"connectors": [
 		{
@@ -27,6 +35,9 @@
 		}
 	],
 	"base_floor": "floor_smooth_stone",
+	"favored_antagonist": {
+		"tag": "beast"
+	},
 	"floor": [
 		[
 			null,
