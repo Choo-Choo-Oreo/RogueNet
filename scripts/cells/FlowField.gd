@@ -41,11 +41,18 @@ static func clear() -> void:
 ## Pathfinding.full_path returning an empty path for "no route found."
 ## `target_id` is really any dictionary key -- EnemyController's surround
 ## slots pass [target id, slot offset] so each slot gets its own field.
-static func get_step(target_id: Variant, target_cell: Vector2i, from_cell: Vector2i, is_blocked: Callable) -> Vector2i:
-	var field: Dictionary = _fields.get(target_id, {})
+##
+## `terrain_cost` (optional, tile -> float, 1.0 = normal ground) makes the
+## flood cost-weighted, so the step leads around slow ground (lava, water)
+## when a detour is cheaper. Leave it unset for a mover that ignores terrain
+## (flyers); those share the plain field. Walkers share one weighted field
+## per target, so every mover passing a terrain_cost must use the same costs.
+static func get_step(target_id: Variant, target_cell: Vector2i, from_cell: Vector2i, is_blocked: Callable, terrain_cost: Callable = Callable()) -> Vector2i:
+	var key: Variant = target_id if not terrain_cost.is_valid() else [target_id, "terrain"]
+	var field: Dictionary = _fields.get(key, {})
 	if field.get("target_cell") != target_cell:
-		field = _build(target_cell, is_blocked)
-		_fields[target_id] = field
+		field = _build(target_cell, is_blocked) if not terrain_cost.is_valid() else _build_weighted(target_cell, is_blocked, terrain_cost)
+		_fields[key] = field
 	var directions: Dictionary = field["directions"]
 	return directions.get(from_cell, Vector2i.ZERO)
 
@@ -59,6 +66,42 @@ static func get_distances(target_id: Variant, target_cell: Vector2i, is_blocked:
 		field = _build(target_cell, is_blocked)
 		_fields[target_id] = field
 	return field["distances"]
+
+## Same shape as _build, but each step costs the average of the two tiles'
+## terrain costs (a step spends half its time on each, see GridMover), so the
+## flood is a shortest-cost search instead of a plain BFS. A cell can be
+## reached again by a cheaper route, so it is re-queued when improved. Only
+## "directions" is filled: `distances` stays the plain step count from _build,
+## which the surround logic relies on (one tile closer = exactly one less).
+static func _build_weighted(target_cell: Vector2i, is_blocked: Callable, terrain_cost: Callable) -> Dictionary:
+	var directions := {target_cell: Vector2i.ZERO}
+	var best := {target_cell: 0.0}
+	var costs := {}
+	var queued := {target_cell: true}
+	var queue: Array[Vector2i] = [target_cell]
+	var head := 0
+	while head < queue.size():
+		var cell: Vector2i = queue[head]
+		head += 1
+		queued.erase(cell)
+		if maxi(absi(cell.x - target_cell.x), absi(cell.y - target_cell.y)) >= RADIUS:
+			continue
+		if not costs.has(cell):
+			costs[cell] = terrain_cost.call(cell)
+		for step in NEIGHBOR_STEPS:
+			var neighbor := cell + step
+			if is_blocked.call(neighbor):
+				continue
+			if not costs.has(neighbor):
+				costs[neighbor] = terrain_cost.call(neighbor)
+			var total: float = best[cell] + (costs[cell] + costs[neighbor]) * 0.5
+			if total < best.get(neighbor, INF):
+				best[neighbor] = total
+				directions[neighbor] = -step
+				if not queued.has(neighbor):
+					queued[neighbor] = true
+					queue.append(neighbor)
+	return {"target_cell": target_cell, "directions": directions, "distances": {}}
 
 static func _build(target_cell: Vector2i, is_blocked: Callable) -> Dictionary:
 	# BFS outward from the target -- the direction stored for each newly

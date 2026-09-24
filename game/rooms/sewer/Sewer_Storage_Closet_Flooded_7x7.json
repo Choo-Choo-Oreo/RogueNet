@@ -1,0 +1,175 @@
+{
+	"biome": "sewer",
+	"connectors": [
+		{
+			"a": {
+				"x": 3,
+				"y": 6
+			},
+			"b": {
+				"x": 3,
+				"y": 6
+			},
+			"door": "iron",
+			"free": true
+		}
+	],
+	"favored_enemy": {
+		"tag": "leech",
+		"weight": 5
+	},
+	"base_floor": "floor_smooth_stone",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_water",
+			"floor_water",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			null,
+			"floor_wood_planks",
+			"floor_water",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_wood_planks",
+			null,
+			null,
+			null
+		]
+	],
+	"format": 2,
+	"height": 7,
+	"id": "Sewer_Storage_Closet_Flooded_7x7",
+	"objects": [],
+	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 5,
+				"y": 2
+			}
+		},
+		{
+			"position": {
+				"x": 5,
+				"y": 4
+			}
+		}
+	],
+	"tags": [
+		"combat"
+	],
+	"walls": [
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_smooth_stone",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_smooth_stone",
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_smooth_stone",
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		]
+	],
+	"width": 7
+}

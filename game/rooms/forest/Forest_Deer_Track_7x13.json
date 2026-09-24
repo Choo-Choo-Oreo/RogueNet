@@ -1,0 +1,277 @@
+{
+	"biome": "forest",
+	"connectors": [
+		{
+			"a": {
+				"x": 3,
+				"y": 0
+			},
+			"b": {
+				"x": 3,
+				"y": 0
+			},
+			"door": "none",
+			"free": true
+		},
+		{
+			"a": {
+				"x": 3,
+				"y": 12
+			},
+			"b": {
+				"x": 3,
+				"y": 12
+			},
+			"door": "none",
+			"free": true
+		}
+	],
+	"base_floor": "floor_dirt",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 2,
+	"height": 13,
+	"id": "Forest_Deer_Track_7x13",
+	"objects": [],
+	"role": "corridor",
+	"tags": [
+		"corridor"
+	],
+	"walls": [
+		[
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			null,
+			"wall_forest",
+			"wall_forest",
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			null,
+			null,
+			null,
+			"wall_forest",
+			"wall_forest",
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			null,
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			null,
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			null,
+			null,
+			null,
+			"wall_forest",
+			"wall_forest",
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			null,
+			null,
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			null,
+			null,
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			null,
+			"wall_forest",
+			"wall_forest",
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			null,
+			"wall_forest",
+			"wall_forest",
+			"wall_forest"
+		]
+	],
+	"width": 7
+}

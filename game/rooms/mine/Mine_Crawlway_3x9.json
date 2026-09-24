@@ -1,0 +1,130 @@
+{
+	"biome": "mine",
+	"connectors": [
+		{
+			"a": {
+				"x": 1,
+				"y": 0
+			},
+			"b": {
+				"x": 1,
+				"y": 0
+			},
+			"door": "any"
+		},
+		{
+			"a": {
+				"x": 1,
+				"y": 8
+			},
+			"b": {
+				"x": 1,
+				"y": 8
+			},
+			"door": "any"
+		}
+	],
+	"floor": [
+		[
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			null
+		]
+	],
+	"format": 2,
+	"height": 9,
+	"id": "Mine_Crawlway_3x9",
+	"objects": [],
+	"role": "corridor",
+	"tags": [
+		"corridor"
+	],
+	"walls": [
+		[
+			"wall_wood_plank",
+			null,
+			"wall_wood_plank"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_wood_plank",
+			null,
+			"wall_wood_plank"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_wood_plank",
+			null,
+			"wall_wood_plank"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_wood_plank",
+			null,
+			"wall_wood_plank"
+		]
+	],
+	"width": 3
+}

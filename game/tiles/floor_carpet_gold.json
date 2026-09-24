@@ -1,0 +1,8 @@
+{
+	"tile_name": "floor_carpet_gold",
+	"atlas_texture": "res://resources/gfx/tileset/floor_carpet_gold.png",
+	"normal_texture": "res://resources/gfx/tileset/floor_carpet_gold_normal.png",
+	"specular_color": [0.02, 0.02, 0.02, 1],
+	"sort_order": 8,
+	"marker_color": [0.729412, 0.564706, 0.14902, 1]
+}

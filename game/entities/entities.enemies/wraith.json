@@ -1,4 +1,5 @@
 {
+	"tags": ["undead.ghostly"],
 	"doors": "phase",
 	"size_tiles": 1,
 	"max_health": 6,

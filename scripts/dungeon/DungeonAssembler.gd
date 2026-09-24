@@ -144,7 +144,29 @@ static func _rotate_points(points: Array, height: int) -> Array:
 	for c in points:
 		var x: int = int(c["position"]["x"])
 		var y: int = int(c["position"]["y"])
-		rotated.append({"position": {"x": height - 1 - y, "y": x}})
+		var turned: Dictionary = (c as Dictionary).duplicate(true)  # keeps "enemy" and any other key
+		turned["position"] = {"x": height - 1 - y, "y": x}
+		rotated.append(turned)
+	return rotated
+
+## Free-standing doors after one clockwise quarter turn of a room `height` tall.
+## A horizontal door (barrier between its cells and the ones north) turns into a
+## vertical one (barrier between its cell and the one east) and the other way round;
+## `cell` stays the first cell along the run, top-left of what the door covers.
+static func _rotate_doors(doors: Array, height: int) -> Array:
+	var rotated: Array = []
+	for d in doors:
+		var turned: Dictionary = (d as Dictionary).duplicate(true)
+		var x: int = int(d["cell"]["x"])
+		var y: int = int(d["cell"]["y"])
+		var width: int = int(d.get("width", 1))
+		if d.get("orient", "h") == "h":
+			turned["orient"] = "v"
+			turned["cell"] = {"x": height - 1 - y, "y": x}
+		else:
+			turned["orient"] = "h"
+			turned["cell"] = {"x": height - 1 - (y + width - 1), "y": x + 1}
+		rotated.append(turned)
 	return rotated
 
 static func _rotate_connectors(connectors: Array, height: int) -> Array:
@@ -163,6 +185,8 @@ static func rotate_room(room: Dictionary, quarter_turns: int) -> Dictionary:
 		result["walls"] = _rotate_grid(result["walls"], w, h)
 		result["connectors"] = _rotate_connectors(result["connectors"], h)
 		result["spawn_cells"] = _rotate_points(result.get("spawn_cells", []), h)
+		if result.has("doors"):
+			result["doors"] = _rotate_doors(result["doors"], h)
 		result["width"] = h
 		result["height"] = w
 	if turns != 0:
@@ -174,7 +198,9 @@ static func with_rotations(rooms: Dictionary) -> Dictionary:
 	for id in rooms.keys():
 		var room: Dictionary = rooms[id]
 		var role: String = room.get("role", "normal")
-		if role == "entrance" or role == "boss":
+		# The entrance stays as drawn (the dive starts there). Bosses rotate like any
+		# other room: with one fixed facing a boss only fit dead ends facing one way.
+		if role == "entrance":
 			continue
 		var seen := {_signature(room): true}
 		for turns in [1, 2, 3]:
@@ -187,7 +213,7 @@ static func with_rotations(rooms: Dictionary) -> Dictionary:
 	return expanded
 
 static func _signature(room: Dictionary) -> String:
-	return JSON.stringify([room["floor"], room["walls"], room["connectors"]])
+	return JSON.stringify([room["floor"], room["walls"], room["connectors"], room.get("doors", []), room.get("spawn_cells", [])])
 
 static func _dominant_tile(grid: Array, exclude: String) -> String:
 	var counts := {}
@@ -221,6 +247,9 @@ class Placement:
 	## layout itself.
 	var parent_index: int = -1
 	var door_cell: Vector2i = Vector2i.ZERO
+	## Every world cell of the joint on this room's side (door_cell is the middle
+	## one), so RoomGraph can aim at the nearest opening of a wide joint.
+	var joint_world: Array[Vector2i] = []
 	## Connector anchor (local first cell) -> the LOCAL cells of that connector
 	## that actually join another room. A connector with no entry is treated as
 	## joined along its whole length; cells of a wider connector outside its
@@ -237,8 +266,8 @@ static func generate(rooms: Dictionary, dungeon_seed: int, defines: Dictionary =
 	var target_count := rng.randi_range(min_count, max_count)
 	var tag_weights: Dictionary = defines.get("tag_weights", {})
 
-	var entrance_id := ""
-	var boss_id := ""
+	var entrance_ids: Array = []
+	var boss_ids: Array = []
 	var treasure_ids: Array = []
 	var pool_ids: Array = []  # normal/corridor rooms eligible for random growth
 	var corridor_ids: Array = []  # role=="corridor" only, for the boss fallback below
@@ -248,9 +277,9 @@ static func generate(rooms: Dictionary, dungeon_seed: int, defines: Dictionary =
 		var r: Dictionary = rooms[id]
 		var role: String = r.get("role", "normal")
 		if role == "entrance":
-			entrance_id = id
+			entrance_ids.append(id)
 		elif role == "boss":
-			boss_id = id
+			boss_ids.append(id)
 		elif (r.get("tags", []) as Array).has("treasure"):
 			treasure_ids.append(id)
 		else:
@@ -258,6 +287,10 @@ static func generate(rooms: Dictionary, dungeon_seed: int, defines: Dictionary =
 			if role == "corridor":
 				corridor_ids.append(id)
 
+	# Several entrance / boss rooms may exist; one is picked per dungeon. The RNG
+	# is only touched when there is a real choice, so a biome with a single one
+	# builds the same layout for a given seed as before.
+	var entrance_id := "" if entrance_ids.is_empty() else _pick(entrance_ids, rng)
 	if entrance_id == "":
 		push_error("DungeonAssembler: no room with role \"entrance\" found")
 		return []
@@ -290,8 +323,16 @@ static func generate(rooms: Dictionary, dungeon_seed: int, defines: Dictionary =
 		_lock(placements[entry["placement_index"]], entry["local_pos"])
 	open_connectors.clear()
 
-	if boss_id != "":
-		_place_farthest(rooms, boss_id, corridor_ids, placements, occupied)
+	if not boss_ids.is_empty():
+		# The picked boss first; if it fits nowhere, the others get a turn.
+		var first := _pick(boss_ids, rng)
+		var order: Array = [first]
+		for id in boss_ids:
+			if id != first:
+				order.append(id)
+		for boss_id in order:
+			if _place_farthest(rooms, boss_id, corridor_ids, placements, occupied):
+				break
 	else:
 		push_warning("DungeonAssembler: no room with role \"boss\" found, skipping")
 
@@ -347,6 +388,46 @@ static func collect_spawn_cells(rooms: Dictionary, placements: Array) -> Array[V
 			cells.append(p.offset + local)
 	return cells
 
+## World spawn cell -> the exact enemy id a room's spawn cell asks for ("enemy"
+## on the cell), only for cells that name one. Other cells roll the biome table.
+static func collect_spawn_enemies(rooms: Dictionary, placements: Array) -> Dictionary:
+	var fixed := {}
+	for p in placements:
+		var room: Dictionary = rooms[p.room_id]
+		for cell in room.get("spawn_cells", []):
+			var enemy := str(cell.get("enemy", ""))
+			if enemy == "":
+				continue
+			var local := Vector2i(int(cell["position"]["x"]), int(cell["position"]["y"]))
+			fixed[p.offset + local] = enemy
+	return fixed
+
+## World spawn cell -> that room's "favored_enemy" list ([{"tag", "weight"}]),
+## only for rooms that have one. A room's favor is a nudge to the biome's
+## monster table, see EnemySpawning.
+static func collect_spawn_favors(rooms: Dictionary, placements: Array) -> Dictionary:
+	var favors := {}
+	for p in placements:
+		var room: Dictionary = rooms[p.room_id]
+		var favor := favored_enemies(room)
+		if favor.is_empty():
+			continue
+		for cell in room.get("spawn_cells", []):
+			var local := Vector2i(int(cell["position"]["x"]), int(cell["position"]["y"]))
+			favors[p.offset + local] = favor
+	return favors
+
+## A room's "favored_enemy" as a list, whether it was written as one
+## {"tag", "weight"} entry or an array of them. Weight defaults to 3.
+static func favored_enemies(room: Dictionary) -> Array:
+	var raw = room.get("favored_enemy", [])
+	var list: Array = raw if raw is Array else [raw]
+	var result: Array = []
+	for entry in list:
+		if entry is Dictionary and entry.get("tag", "") != "":
+			result.append({"tag": str(entry["tag"]), "weight": float(entry.get("weight", 3.0))})
+	return result
+
 static func _try_place(rooms: Dictionary, candidate_ids: Array, entry: Dictionary, placements: Array[Placement], occupied: Array[Rect2i], open_connectors: Array, rng: RandomNumberGenerator, avoid_dead_ends: bool, tag_weights: Dictionary) -> bool:
 	var from_placement: Placement = placements[entry["placement_index"]]
 	var from_world: Vector2i = from_placement.offset + entry["local_pos"]
@@ -389,6 +470,7 @@ static func _try_place(rooms: Dictionary, candidate_ids: Array, entry: Dictionar
 				placement.joint_cells[local_pos] = joint["cand"]
 				from_placement.joint_cells[entry["local_pos"]] = joint["from"]
 				placement.door_cell = from_placement.offset + _middle_cell(joint["from"]) + step
+				placement.joint_world = _world_joint(from_placement.offset, joint["from"], step)
 				placements.append(placement)
 				occupied.append(rect)
 				_queue_connectors(cand, placements.size() - 1, open_connectors, local_pos)
@@ -432,6 +514,7 @@ static func _fit_room_at(rooms: Dictionary, room_id: String, from_placement: Pla
 			placement.joint_cells[cand_local] = joint["cand"]
 			from_placement.joint_cells[local_pos] = joint["from"]
 			placement.door_cell = from_placement.offset + _middle_cell(joint["from"]) + step
+			placement.joint_world = _world_joint(from_placement.offset, joint["from"], step)
 			placements.append(placement)
 			occupied.append(rect)
 			var extra: Array = []
@@ -484,6 +567,12 @@ static func _joint_cells(from_run: Dictionary, cand_run: Dictionary, shift: int,
 		from_cells.append(Connector.a(from_run) + axis * i)
 		cand_cells.append(Connector.a(cand_run) + axis * (i - shift))
 	return {"from": from_cells, "cand": cand_cells}
+
+static func _world_joint(offset: Vector2i, from_cells: Array, step: Vector2i) -> Array[Vector2i]:
+	var world: Array[Vector2i] = []
+	for c in from_cells:
+		world.append(offset + c + step)
+	return world
 
 static func _middle_cell(cells: Array) -> Vector2i:
 	return cells[floori(cells.size() / 2.0)]
@@ -590,6 +679,12 @@ static func _seal_random_entrance_doors(entrance_placement: Placement, entrance_
 			remaining -= 1
 		else:
 			entrance_connectors.append(entry)
+
+## One entry of `ids`; the RNG is only used when there is more than one.
+static func _pick(ids: Array, rng: RandomNumberGenerator) -> String:
+	if ids.size() == 1:
+		return ids[0]
+	return ids[rng.randi_range(0, ids.size() - 1)]
 
 static func _shuffle(arr: Array, rng: RandomNumberGenerator) -> void:
 	for i in range(arr.size() - 1, 0, -1):

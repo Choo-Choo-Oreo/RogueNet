@@ -1,0 +1,297 @@
+{
+	"biome": "flesh",
+	"connectors": [
+		{
+			"a": {
+				"x": 5,
+				"y": 8
+			},
+			"b": {
+				"x": 5,
+				"y": 8
+			},
+			"door": "iron",
+			"free": true
+		}
+	],
+	"base_floor": "floor_flesh",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			null,
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null,
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 2,
+	"height": 9,
+	"id": "Flesh_Adrenal_Gland_Mutant_11x9",
+	"objects": [],
+	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 8,
+				"y": 3
+			}
+		},
+		{
+			"position": {
+				"x": 2,
+				"y": 4
+			}
+		},
+		{
+			"position": {
+				"x": 6,
+				"y": 5
+			}
+		},
+		{
+			"position": {
+				"x": 9,
+				"y": 6
+			}
+		},
+		{
+			"position": {
+				"x": 7,
+				"y": 7
+			}
+		}
+	],
+	"tags": [
+		"combat"
+	],
+	"walls": [
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		]
+	],
+	"width": 11
+}

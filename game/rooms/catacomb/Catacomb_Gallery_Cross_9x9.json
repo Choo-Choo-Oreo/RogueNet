@@ -1,0 +1,265 @@
+{
+	"biome": "catacomb",
+	"connectors": [
+		{
+			"a": {
+				"x": 4,
+				"y": 0
+			},
+			"b": {
+				"x": 4,
+				"y": 0
+			},
+			"door": "any",
+			"free": true
+		},
+		{
+			"a": {
+				"x": 4,
+				"y": 8
+			},
+			"b": {
+				"x": 4,
+				"y": 8
+			},
+			"door": "any",
+			"free": true
+		},
+		{
+			"a": {
+				"x": 0,
+				"y": 4
+			},
+			"b": {
+				"x": 0,
+				"y": 4
+			},
+			"door": "any",
+			"free": true
+		},
+		{
+			"a": {
+				"x": 8,
+				"y": 4
+			},
+			"b": {
+				"x": 8,
+				"y": 4
+			},
+			"door": "any",
+			"free": true
+		}
+	],
+	"base_floor": "floor_smooth_stone",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			null,
+			null
+		],
+		[
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt"
+		],
+		[
+			null,
+			null,
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 2,
+	"height": 9,
+	"id": "Catacomb_Gallery_Cross_9x9",
+	"objects": [],
+	"role": "corridor",
+	"tags": [
+		"corridor"
+	],
+	"walls": [
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		]
+	],
+	"width": 9
+}

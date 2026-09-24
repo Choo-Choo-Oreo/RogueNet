@@ -4,8 +4,10 @@
 		"max": 30
 	},
 	"tag_weights": {
-		"maze": 0.6,
-		"corridor": 1.4
+		"corridor": 0.7,
+		"maze": 0.4,
+		"killzone": 0.5,
+		"peaceful": 0.7
 	},
 	"monsters": {
 		"rat": 2,
@@ -13,10 +15,5 @@
 		"rat_blind": 1
 	},
 	"music": "res://resources/sfx/music/Groovy.mp3",
-	"doors": {
-		"density": 0.5,
-		"types": [
-			"wood"
-		]
-	}
+	"default_door": "none"
 }

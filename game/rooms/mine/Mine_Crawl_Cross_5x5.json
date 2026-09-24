@@ -1,0 +1,132 @@
+{
+	"biome": "mine",
+	"connectors": [
+		{
+			"a": {
+				"x": 2,
+				"y": 0
+			},
+			"b": {
+				"x": 2,
+				"y": 0
+			},
+			"door": "any"
+		},
+		{
+			"a": {
+				"x": 2,
+				"y": 4
+			},
+			"b": {
+				"x": 2,
+				"y": 4
+			},
+			"door": "any"
+		},
+		{
+			"a": {
+				"x": 0,
+				"y": 2
+			},
+			"b": {
+				"x": 0,
+				"y": 2
+			},
+			"door": "any"
+		},
+		{
+			"a": {
+				"x": 4,
+				"y": 2
+			},
+			"b": {
+				"x": 4,
+				"y": 2
+			},
+			"door": "any"
+		}
+	],
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 2,
+	"height": 5,
+	"id": "Mine_Crawl_Cross_5x5",
+	"objects": [],
+	"role": "corridor",
+	"tags": [
+		"corridor"
+	],
+	"walls": [
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_wood_plank",
+			null,
+			null,
+			null,
+			"wall_wood_plank"
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			"wall_wood_plank",
+			null,
+			null,
+			null,
+			"wall_wood_plank"
+		],
+		[
+			"wall_rough_cave",
+			"wall_wood_plank",
+			null,
+			"wall_wood_plank",
+			"wall_rough_cave"
+		]
+	],
+	"width": 5
+}

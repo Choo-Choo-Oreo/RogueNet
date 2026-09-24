@@ -1,0 +1,350 @@
+{
+	"biome": "sewer",
+	"connectors": [
+		{
+			"a": {
+				"x": 4,
+				"y": 10
+			},
+			"b": {
+				"x": 6,
+				"y": 10
+			},
+			"door": "iron",
+			"free": true
+		}
+	],
+	"favored_enemy": {
+		"tag": "leech",
+		"weight": 5
+	},
+	"base_floor": "floor_smooth_stone",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			null
+		],
+		[
+			null,
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			null
+		],
+		[
+			null,
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			null
+		],
+		[
+			null,
+			"floor_water",
+			"floor_acid",
+			"floor_acid",
+			"floor_water",
+			"floor_smooth_stone",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			null
+		],
+		[
+			null,
+			"floor_water",
+			"floor_acid",
+			"floor_acid",
+			"floor_water",
+			"floor_smooth_stone",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			null
+		],
+		[
+			null,
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_wood_planks",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			null
+		],
+		[
+			null,
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_wood_planks",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			null
+		],
+		[
+			null,
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_wood_planks",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			null
+		],
+		[
+			null,
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_wood_planks",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			"floor_water",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_water",
+			"floor_wood_planks",
+			"floor_water",
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 2,
+	"height": 11,
+	"id": "Sewer_Lost_Cache_Flooded_11x11",
+	"objects": [
+		{
+			"position": {
+				"x": 88.0,
+				"y": 72.0
+			},
+			"rotation": 0.0,
+			"type": "chest"
+		}
+	],
+	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 9,
+				"y": 1
+			}
+		},
+		{
+			"position": {
+				"x": 7,
+				"y": 2
+			}
+		},
+		{
+			"position": {
+				"x": 9,
+				"y": 3
+			}
+		}
+	],
+	"tags": [
+		"treasure"
+	],
+	"walls": [
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick"
+		]
+	],
+	"width": 11
+}

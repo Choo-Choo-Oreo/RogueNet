@@ -1,0 +1,367 @@
+{
+	"biome": "flesh",
+	"connectors": [
+		{
+			"a": {
+				"x": 5,
+				"y": 0
+			},
+			"b": {
+				"x": 5,
+				"y": 0
+			},
+			"door": "iron",
+			"free": true
+		},
+		{
+			"a": {
+				"x": 5,
+				"y": 10
+			},
+			"b": {
+				"x": 5,
+				"y": 10
+			},
+			"door": "iron",
+			"free": true
+		},
+		{
+			"a": {
+				"x": 0,
+				"y": 5
+			},
+			"b": {
+				"x": 0,
+				"y": 5
+			},
+			"door": "iron",
+			"free": true
+		},
+		{
+			"a": {
+				"x": 10,
+				"y": 5
+			},
+			"b": {
+				"x": 10,
+				"y": 5
+			},
+			"door": "iron",
+			"free": true
+		}
+	],
+	"base_floor": "floor_flesh",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_flesh",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null,
+			"floor_flesh",
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null,
+			null,
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_flesh",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_flesh",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_flesh",
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 2,
+	"height": 11,
+	"id": "Flesh_Capillaries_11x11",
+	"objects": [],
+	"role": "corridor",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 8,
+				"y": 2
+			}
+		},
+		{
+			"position": {
+				"x": 6,
+				"y": 4
+			}
+		}
+	],
+	"tags": [
+		"corridor"
+	],
+	"walls": [
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			null,
+			null,
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			null,
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			null,
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			null,
+			null,
+			"wall_flesh"
+		],
+		[
+			null,
+			null,
+			null,
+			"wall_flesh",
+			null,
+			null,
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		]
+	],
+	"width": 11
+}

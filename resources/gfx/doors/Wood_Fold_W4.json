@@ -1,0 +1,62 @@
+{
+	"style": "Wood_Fold",
+	"widths": [
+		4,
+		4
+	],
+	"texture": "Wood_Fold_W4.png",
+	"normal_texture": "Wood_Fold_W4_Normal.png",
+	"frame_size": [
+		16,
+		32
+	],
+	"own_cell_row": 16,
+	"frames": 8,
+	"animation": "closed -> open, left to right (play backwards to close)",
+	"anchor": "the LAST 16 rows of a frame (rows 16..31, own_cell_row..) are the piece's own doorway cell; every row above overlaps the cells to the NORTH (doors draw over the wall there). Draw the frame with its top-left at (cell.x*16, cell.y*16 - own_cell_row), region 16x32 (frame_size) at (frame*16, atlas_y).",
+	"projection": "wall height: 8px face + top strip shifted up 8px, same as the wall tiles; closed slab sits on the seam between the two doorway cells",
+	"usage": {
+		"horizontal doorway (gap in a north/south wall)": "paint on the SOUTH cell of each column, the north cell stays floor. width 1: h_single. width N, column i: i==0 h_end_left, i==N-1 h_end_right, else h_middle_left when i < N/2 otherwise h_middle_right.",
+		"vertical doorway (gap in an east/west wall)": "each doorway row gets a *_left piece on the WEST cell and the matching *_right piece on the EAST cell. height 1: v_single. height N, row i: i==0 v_end_top, i==N-1 v_end_bottom, else v_middle_top when i < N/2 otherwise v_middle_bottom."
+	},
+	"split": "each 16x32 frame is 2 16x16 tiles, the last one on the doorway cell itself, the ones above it on the cells NORTH of it (over the wall).",
+	"pieces": {
+		"h_end_left": {
+			"atlas_y": 0
+		},
+		"h_middle_left": {
+			"atlas_y": 32
+		},
+		"h_middle_right": {
+			"atlas_y": 64
+		},
+		"h_end_right": {
+			"atlas_y": 96
+		},
+		"v_end_top_left": {
+			"atlas_y": 128
+		},
+		"v_end_top_right": {
+			"atlas_y": 160
+		},
+		"v_middle_top_left": {
+			"atlas_y": 192
+		},
+		"v_middle_top_right": {
+			"atlas_y": 224
+		},
+		"v_middle_bottom_left": {
+			"atlas_y": 256
+		},
+		"v_middle_bottom_right": {
+			"atlas_y": 288
+		},
+		"v_end_bottom_left": {
+			"atlas_y": 320
+		},
+		"v_end_bottom_right": {
+			"atlas_y": 352
+		}
+	},
+	"note": "dedicated 4-wide bi-fold door: each side is two 16px panels, the outer hinged on the jamb, the inner folding back with its end on a rail along the seam (rows 15..16 / columns 15..16, under the closed slab). Open: horizontal stacks on rows 8..31 inside the doorway, vertical stacks on the wall face above (rows 8..21) and, cut, on the doorway's last 6 rows; the rail shows between them."
+}

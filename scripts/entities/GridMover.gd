@@ -36,6 +36,21 @@ func _build_floor_speeds() -> void:
 		if tile.category == TileType.Category.FLOOR:
 			_floor_speed[registry.get_id(tile.tile_name)] = tile.move_speed()
 
+## True for a mover that flies: terrain never slows it, and its pathfinding
+## ignores terrain cost. Set from the enemy JSON's "flying" (EnemyController).
+var flies := false
+
+func _ignores_terrain() -> bool:
+	return flies or _is_ghost()
+
+## How much slower than normal ground stepping onto `cell` is: 1.0 normal,
+## 1.25 rough, 2.0 difficult, 5.0 severe (1 / the tile's speed). Feeds
+## pathfinding's costs; never below 1.0.
+func tile_cost(cell: Vector2i) -> float:
+	if floor_data == null or _ignores_terrain():
+		return 1.0
+	return 1.0 / _floor_speed.get(floor_data.get_cell_source_id(cell), 1.0)
+
 func _floor_source_at(target_global: Vector2) -> int:
 	if floor_data == null:
 		return -1
@@ -55,7 +70,23 @@ func _can_open(door: DoorRegistry.Door) -> bool:
 var phases_doors := false
 
 func _ignores_doors() -> bool:
-	return phases_doors or _is_ghost()
+	return phases_doors or _is_ghost() or _no_clip()
+
+## Debug: this machine's own player ignores walls, void and doors.
+func _no_clip() -> bool:
+	return DebugState.no_clip and _body.is_in_group("protagonist") and _body.is_multiplayer_authority()
+
+var _tween: Tween
+
+## Debug: put the body on a spot right now, cancelling any step in progress.
+func teleport(pos: Vector2) -> void:
+	if _tween != null and _tween.is_valid():
+		_tween.kill()
+	is_moving = false
+	for tile in _reserved.keys():
+		if _reserved[tile] == _body:
+			_reserved.erase(tile)
+	_body.global_position = pos
 
 func _is_ghost() -> bool:
 	return "stats" in _body and _body.stats != null and _body.stats.is_ghost
@@ -140,7 +171,7 @@ func is_tile_occupied(tile: Vector2i) -> bool:
 static var _reserved: Dictionary = {}  # Vector2i -> Node2D
 
 func _is_blocked(target_global: Vector2) -> bool:
-	if wall_data == null:
+	if wall_data == null or _no_clip():
 		return false
 	var cell: Vector2i = wall_data.local_to_map(wall_data.to_local(target_global))
 	var source_id := wall_data.get_cell_source_id(cell)
@@ -160,14 +191,23 @@ func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> bool:
 		return false
 	var is_ghost := _is_ghost()
 	var target_tile := Vector2i(floori(target_global.x / tile_size), floori(target_global.y / tile_size))
-	# Walking into a closed door opens it (if this mover may) but doesn't step
-	# this call -- the door is passable once the state change comes back.
+	# A door is a thin line, not a tile. Trying to cross that line while the door
+	# is closed (or still swinging) opens it (if this mover may) but doesn't step
+	# this call. Stepping ONTO a door cell from the front is fine and just starts
+	# it opening, so you can stand in the doorway while it swings.
 	# Ghosts and door-phasing enemies drift through closed doors.
-	var door := DoorRegistry.closed_door_at(target_tile)
-	if door != null and not _ignores_doors():
-		if _can_open(door):
-			NetworkSync.open_door(door.id)
-		return false
+	if not _ignores_doors():
+		var origin_tile := Vector2i(floori(origin_global.x / tile_size), floori(origin_global.y / tile_size))
+		var seam := DoorRegistry.crossing_door(origin_tile, target_tile)
+		if seam != null and DoorRegistry.is_blocking(seam):
+			if _can_open(seam):
+				NetworkSync.open_door(seam.id)
+			return false
+		var onto := DoorRegistry.closed_door_at(target_tile)
+		if onto != null:
+			if not _can_open(onto):
+				return false
+			NetworkSync.open_door(onto.id)
 	if not is_ghost and is_tile_occupied(target_tile):
 		return false
 	facing_direction = direction
@@ -180,12 +220,13 @@ func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> bool:
 	# first half of the step (still mostly on the old tile) uses the old
 	# tile's speed, and only the second half uses the new tile's.
 	var midpoint: Vector2 = origin_global.lerp(target_global, 0.5)
-	var ignore_terrain := is_ghost
+	var ignore_terrain := _ignores_terrain()
 	var origin_speed: float = (1.0 if ignore_terrain else _floor_speed.get(_floor_source_at(origin_global), 1.0)) * speed_scale
 	var target_speed: float = (1.0 if ignore_terrain else _floor_speed.get(_floor_source_at(target_global), 1.0)) * speed_scale
 	var half_time := move_time / 2.0
 
 	var tween := create_tween()
+	_tween = tween
 	tween.tween_property(_body, "global_position", midpoint, half_time / origin_speed)
 	tween.tween_property(_body, "global_position", target_global, half_time / target_speed)
 	tween.finished.connect(func():

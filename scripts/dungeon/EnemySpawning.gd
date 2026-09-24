@@ -22,8 +22,10 @@ const TILE_SIZE := 16.0
 ## across peers, not globally unique forever.
 static var _next_id: int = 1
 
-static func spawn_in_unseen_cells(spawn_cells: Array[Vector2i], monster_weights: Dictionary, light_map: LightMap, enemies_root: Node) -> void:
-	if monster_weights.is_empty():
+## `favors` maps a spawn cell to its room's favored-enemy list (see
+## DungeonAssembler.collect_spawn_favors); cells without one roll the plain table.
+static func spawn_in_unseen_cells(spawn_cells: Array[Vector2i], monster_weights: Dictionary, light_map: LightMap, enemies_root: Node, favors: Dictionary = {}, fixed_enemies: Dictionary = {}) -> void:
+	if monster_weights.is_empty() and fixed_enemies.is_empty():
 		return
 	var mp := enemies_root.get_multiplayer()
 	# Fails open (acts as host) when no peer is assigned at all -- eg. running
@@ -36,7 +38,13 @@ static func spawn_in_unseen_cells(spawn_cells: Array[Vector2i], monster_weights:
 	for tile in spawn_cells:
 		if light_map.is_tile_lit(tile):
 			continue
-		var enemy_id := _roll_enemy(monster_weights, rng)
+		# A cell that names its enemy always gets it (as long as that enemy exists).
+		var enemy_id: String = fixed_enemies.get(tile, "")
+		if enemy_id != "" and not FileAccess.file_exists(EnemyController.ENEMY_TYPES_DIR + enemy_id + ".json"):
+			push_warning("Spawn cell %s names unknown enemy '%s', rolling instead" % [tile, enemy_id])
+			enemy_id = ""
+		if enemy_id == "":
+			enemy_id = _roll_enemy(_favored_weights(monster_weights, favors.get(tile, [])), rng)
 		if enemy_id == "":
 			continue
 		var id := _next_id
@@ -44,6 +52,17 @@ static func spawn_in_unseen_cells(spawn_cells: Array[Vector2i], monster_weights:
 		spawn_one(id, enemy_id, tile, enemies_root)
 		spawned.append({"id": id, "type": enemy_id, "tile": tile})
 	NetworkSync.broadcast_enemy_spawns(spawned)
+
+## Debug menu: one enemy of a chosen type on a chosen tile, host only.
+static func spawn_debug(enemy_id: String, tile: Vector2i, enemies_root: Node) -> void:
+	if enemy_id.contains("/") or enemy_id.contains("\\") or enemy_id.contains(".."):
+		return
+	if not FileAccess.file_exists(EnemyController.ENEMY_TYPES_DIR + enemy_id + ".json"):
+		return
+	var id := _next_id
+	_next_id += 1
+	spawn_one(id, enemy_id, tile, enemies_root)
+	NetworkSync.broadcast_enemy_spawns([{"id": id, "type": enemy_id, "tile": tile}])
 
 ## Shared by the host's own roll above and NetworkSync.receive_spawn_enemies
 ## (each client building its local copy of what the host already rolled).
@@ -59,6 +78,41 @@ static func spawn_one(id: int, enemy_id: String, tile: Vector2i, enemies_root: N
 	enemy.global_position = Vector2(tile) * TILE_SIZE
 	enemy.set_enemy_type(enemy_id)
 	return enemy
+
+## The biome table with each matching enemy's weight multiplied by the room's
+## favor. Only a boost: an enemy the biome table does not list is never added,
+## and a favor that matches nothing leaves the table as it was. An enemy matches
+## a favor by its own id or by its "tags", main or main.secondary (see game/TAGS.md).
+static func _favored_weights(weights: Dictionary, favor: Array) -> Dictionary:
+	if favor.is_empty():
+		return weights
+	var result := {}
+	for id in weights:
+		var multiplier := 1.0
+		var tags := _tags_of(id)
+		for entry in favor:
+			if _matches(tags, entry["tag"]):
+				multiplier *= float(entry["weight"])
+		result[id] = float(weights[id]) * multiplier
+	return result
+
+## A tag is "main" or "main.secondary" (undead.skeleton). Asking for the main
+## one matches every secondary under it; asking for the full one matches only it.
+static func _matches(tags: Array, wanted: String) -> bool:
+	for tag: String in tags:
+		if tag == wanted or tag.begins_with(wanted + "."):
+			return true
+	return false
+
+static var _tag_cache := {}
+
+static func _tags_of(enemy_id: String) -> Array:
+	if not _tag_cache.has(enemy_id):
+		var data := JsonOnloading.load_dict(EnemyController.ENEMY_TYPES_DIR + enemy_id + ".json")
+		var tags: Array = (data.get("tags", []) as Array).duplicate()
+		tags.append(enemy_id)
+		_tag_cache[enemy_id] = tags
+	return _tag_cache[enemy_id]
 
 static func _roll_enemy(weights: Dictionary, rng: RandomNumberGenerator) -> String:
 	var total := 0.0

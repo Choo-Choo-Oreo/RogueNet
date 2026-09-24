@@ -60,9 +60,14 @@ Notes:
   `"senses": { "hearing": false }`. Only `sight` and `touch` are actually
   implemented right now — `hearing`/`smell`/`taste` exist but always report
   no detection.
-- `continuous_animation` (optional, default `false`) — set `true` for
-  enemies whose idle animation shouldn't freeze on a held frame (e.g. a
-  flying enemy's wing-flap).
+- `flying` (optional, default `false`) — set `true` for enemies that fly
+  (bat, flying hamsters). Terrain (water, lava, rough ground) never slows
+  them, their routes ignore terrain cost, and their idle animation never
+  freezes on a held frame (the wing-flap). Ground enemies slow down on
+  terrain and route around slow ground when a detour is cheaper.
+- `tags` (optional) — what kind of creature it is (`["beast.rodent"]`).
+  Rooms can favor a tag for spawns. The list of tags and what each means is
+  in `game/TAGS.md`; reuse one before inventing another.
 - Sprite PNGs and their animation JSON (if any, e.g. Aseprite exports) live
   together under `resources/gfx/entities/entities.enemies/<id>/`, not under
   `game/`.
@@ -102,29 +107,13 @@ Example (`Dungeon_Brick_Arena_9x9.json`, trimmed):
 }
 ```
 
-Notes:
-- `width`/`height` are in tiles; `floor`/`walls` are 2D arrays indexed
-  `[y][x]`, each cell either a tile id from `game/tiles/` or `null`.
-- `connectors` (format 2) are the openings on the room's edge: a straight
-  run of cells from `a` to `b`, both included, `a` being the top/left end
-  (`a` equal to `b` is a single-cell opening). Runs must sit on one edge and
-  not include a corner. They only describe the opening -- doors are a separate
-  idea, still to come (see CONNECTORS_TRACKER.md); there is no door tile now.
-  Two connectors join at equal widths, or at any width if either has
-  `"free": true`; cells of a wider run with no partner are sealed with wall.
-  Leave the connector cells' `walls` entries `null`; the painter places floor.
-  Old files with `{ "position": ... }` connectors (format 1) still load: they
-  are upgraded in memory.
-- `spawn_cells` are candidate enemy-spawn tiles for this room; skip cells
-  in `entrance`/`boss` rooms and anything tagged `"treasure"` (the
-  assembler enforces this, but keep it in mind when adding new rooms by
-  hand). Placement doesn't need to be exact science — spread a handful
-  around cover/corners rather than clustering them all in the open.
-- `tags` feed the biome's `tag_weights` (below) to bias which rooms get
-  picked more/less often.
-- `objects` are decorative placements (`type` must be a known object id);
-  `position` here is in **pixels**, not tiles, unlike everything else.
-- Tile size is 16px.
+Every key (size, `role`, `tags`, `floor`/`walls`, `connectors` and their
+`door`, `spawn_cells`, `favored_enemy`, `objects`) is explained in
+`game/rooms/README.md` under "Room JSON reference". Tile size is 16px.
+
+A spawn cell may also name an exact enemy, `{ "position": {...}, "enemy": "rat" }`
+(any id from `game/entities/entities.enemies/`): that cell always spawns it
+instead of rolling the biome table. The Dungeon Maker's enemy spawner sets this.
 
 ### Biome config — `game/rooms/<biome>/defines.json`
 
@@ -145,20 +134,40 @@ Notes:
   `spawn_cells`. Weights are relative, not percentages — they just need to
   be consistent within one table.
 - `music` — path to the biome's background track.
-- `doors` (optional) — `{ "density": 0..1, "types": ["wood", "iron"] }`. Each
-  open joint between two rooms rolls `density` for a door; the type is picked
-  from `types` among those whose width range fits the joint. No `doors` key =
-  no doors in that biome.
+- `default_door` (optional) — a door type name (`"wood"`) or `"none"`; missing
+  means `"none"`. It is what a joint gets when neither connector asks for
+  anything specific (see below). A type that is too narrow for a joint is
+  replaced by the first (by name) that fits, with a warning in the log.
+
+A room connector may carry a `"door"` key: a door type (`"wood"`), `"none"`, or
+`"any"` (the default, so it can be left out). The two connectors of a joint
+resolve like this:
+
+- a specific type always gets its door; if both sides ask for a type, the room
+  being entered (the deeper one) wins
+- otherwise `"none"` on either side means no door
+- `"any"` + `"any"` uses the biome's `default_door`
+
+E.g. a hallway's connectors stay `"none"`/`"any"` and the barracks entrance says
+`"door": "wood"`: hallway-to-hallway joints stay open, the barracks gets a wood
+door. (There is no editor field for it yet; add the key by hand in the room
+JSON. DungeonMaker keeps it when re-saving.)
 
 ### Doors — `game/doors/<type>.json`
 
 ```json
 {
 	"name": "wood",
-	"art": "res://resources/gfx/doors/door_wood.json",
+	"art": {
+		"1": "res://resources/gfx/doors/Wood_W1.json",
+		"2": "res://resources/gfx/doors/Wood_W2.json",
+		"3": "res://resources/gfx/doors/Wood_W3.json",
+		"4": "res://resources/gfx/doors/Wood_Fold_W4.json",
+		"5": "res://resources/gfx/doors/Wood_Fold_W5.json"
+	},
 	"transparent": false,
 	"min_width": 1,
-	"max_width": 2,
+	"max_width": 5,
 	"open_seconds": 0.3
 }
 ```
@@ -170,8 +179,10 @@ Notes:
   only while investigating or pursuing) or `"phase"` (passes through closed
   doors without opening them).
 - `open_seconds` — how long the swing / slide takes.
-- `min_width` / `max_width` — joint widths (in tiles) this door type can fill.
-- `art` — the piece atlas description next to the door PNGs.
+- `passable_at` — how far through that swing (0..1) the door can be walked through; until then it still blocks walking and shots (not sight or light), for monsters too. `0.5` for wood (swings clear early), `1.0` for bars that have to lift fully. Default `1.0`.
+- `min_width` / `max_width` — joint widths (in tiles) this door type can fill (`2`/`2` for a fixed-width door, `1`/`5` for a full set).
+- `art` — the atlas manifest(s) for this door: one path when a single atlas covers every width the type allows (`Iron_W1-5.json`), or a map of width to path when each width has its own (`"1": Wood_W1.json`, `"2": Wood_W2.json`). Each manifest names its atlas `<Style>_W<n>.png` or `<Style>_W<min>-<max>.png`, the `_Normal.png` beside it, the `widths` it covers, its `frame_size` and `own_cell_row` (`[16, 32]` / `16` for the wood and iron doors: 16 rows over the cell north of the doorway, then the piece's own cell; `[16, 48]` / `32` for the `Dungeon` boss door, whose frame stands one more cell north). DoorManager draws a piece with its top-left at `(cell.x*16, cell.y*16 - own_cell_row)` and a region `frame_size` tall, and the piece rows with `atlas_y`. Styles so far: `Wood` (swinging leaves, widths 1-3), `Wood_Fold` (bi-fold panels on a rail, widths 3-5; the `wood` type borrows it for 4 and 5, and the `wood_fold` type offers it as a second look for 3-wide gaps), `Iron` and `IronSink` (gates, 1-5), `Dungeon` (placeholder boss-room door, 4-5: flat red/blue sliding leaves 16px tall between 24px stone posts, 16 frames, detail still to come; its manifest also names a one-frame `_Overlay.png` holding the lintel at 50% alpha, to be drawn above creatures so they walk under it; on vertical doors it is a bar along the seam, and each vertical overlay piece only carries its own cell's rows so the translucency never stacks where pieces overlap). A door 5 wide repeats a middle piece on each side, so the second one is named with a `_2` suffix (`h_middle_left_2`, `v_middle_top_2_left`); DoorPlacer produces those names and every atlas that covers width 5 has a row for them (the iron atlases reuse their plain middle art). Names: CamelCase style, `W` plus the width or width range, `_Normal` last.
+- Boss doors live in `resources/gfx/doors/doors.boss/` and are LAYERED: one manifest per width (`Dungeon_W4.json`, `Dungeon_W5.json`) with a `layers` map and a `draw_order` of `frame` (`_Frame.png`, one frame, the posts), `leaves` (`_Leaves.png`, 16 frames, the sliding halves) and `overlay` (`_Overlay.png`, one frame, the lintel with 50% alpha baked in, drawn above creatures so they walk under it). All three share the manifest's `pieces` / `atlas_y`, `frame_size` `[16, 48]` and `own_cell_row` `32`, and their opaque pixels never overlap, so they are simply drawn at the same position. The flat red/blue `Dungeon` style is the placeholder template. The manifest's `frame_sets` map holds one real frame per wall tileset, keyed by the wall tile name (`wall_cobble_brick` -> `CobbleBrick_W4_Frame.png` + `CobbleBrick_W4_Overlay.png` + `_Frame_Normal.png`): same rows and geometry as the placeholder frame, cut 1:1 from that wall's own art (posts are three courses of the wall's face under a rimmed top, the lintel one course at 50%), using only that wall's colours, black only where the wall itself uses it (tops = unseen). The forest set is hand-drawn logs in the forest palette instead (no frame holding up trees). The manifest's `leaf_sets` map holds one leaves atlas per boss tier, keyed by tier (`wood` -> `Wood_W4_Leaves.png` + `_Leaves_Normal.png`, 16 frames): same rows, frames and opaque pixels as the placeholder leaves, drawn per width, never scaled, so the manager picks the tier's atlas instead of the placeholder. The tier tells the player how deadly the boss is and how good the loot: wood (a basic point-of-interest boss), then iron, bronze, silver, gold. Wood is the room doors' palette (planks, two iron straps with rivets, a rimmed meeting edge, brass handles). Each metal tier is a distinct design built on the tier below, one step back only, six colours each (three from the metal underneath, three from the metal on top). Iron replaces the wood door's cheap grey bands with an iron grid (two straps and vertical strips bolted at the crossings) over 8x8 squares of the wood planks. Bronze is an all-iron plated door (seams, rivets, no wood left) with bronze straps, edge plate and top cap. Silver is bronze plates inside a 2px silver border with a silver diamond boss on each plate. Gold is silver plates inside a 2px gold border with a riveted gold X brace across each leaf. The emblem is a separate small sign on the lintel that tells the player what the boss hits with. Emblems live in `resources/gfx/doors/doors.emblems/`, one 24x12 atlas per damage type (`Frigid_Emblem.png` + `_Emblem_Normal.png`): a 12x12 front view for horizontal doors and a 12x12 side view for vertical doors, where it sticks out of both faces of the 3px lintel bar. Each is a small raised carving drawn at the world's angle (lit top band above the face), in 8 colours ramped from that damage type's hit effect, with a motif taken from the effect: Arcana an unbroken gold ring standing on a slab (the substrate everything stands on), Necrotic a black void with fangs biting inward (an absence that has to keep feeding), Physical a sword; Ordo a cut crystal, Entropia a split ring spinning, Perditio the crystal emptied with its rim erased; Frigid a snowflake, Solum a boulder, Plenum a dense orb in a ring, Zeal a flame, Fluentia a drop, Inanis an open ring, Torpor a flat line in the void, Virulentia a solid shape eaten away to black with a few loose grains left, Ruina the ordered hex on one side of a rust threshold line and a dark angular wedge on the other (the same mass become something else). `emblems.json` maps each damage type id from `game/damage_types.json` to its atlas (fall back by dropping the last `.segment`, so `Physical.Slashing` uses Physical) and says where to draw the front and side frames on a door. Orea's separate boss-door manager reads these; the plain DoorManager does not.
 - Players open a door by walking into it. It closes again a couple of
   seconds after everyone has moved away. Open/closed state is host-owned.
 
@@ -191,10 +202,11 @@ Notes:
 - A new tile still needs a matching entry added to `game/tile_registry.json`
   to actually be usable from room JSON.
 - Tile art (and normal maps) live under `resources/gfx/tileset/`. Tileset
-  art is capped at 6 colors per tile (the black wall-top strip doesn't
-  count toward that) — regenerate normal maps after any wall/floor art
-  edit.
+  art is capped at 8 colors per tile (the black wall-top strip doesn't
+  count toward that; older tiles were made under a 6-color cap) —
+  regenerate normal maps after any wall/floor art edit.
 - Naming is subject-first: `wall_forest_dense`, not `wall_dense_forest`.
+- Wall/floor pairs share one 6-colour palette (`wall_smooth_cave` + `floor_smooth_cave`, added 2026-09-24: water-worn cave rock, a smooth sibling of `wall_rough_cave`; the wall reuses the rough cave's autotile mask, the floor reuses the dirt floor's rounded mask so both blend the same way).
 
 ## Tech stack
 

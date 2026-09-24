@@ -143,7 +143,11 @@ func set_enemy_type(enemy_id: String) -> void:
 	$HealthPixelBar.position = Vector2(_size_px / 2.0, _size_px + 2.0)
 	$HealthPixelBar.setup(stats, 32 if _size_px > grid_mover.tile_size else 16)
 	senses.apply_overrides(data.get("senses", {}))
-	animator.continuous_animation = data.get("continuous_animation", false)
+	# One "flying" flag: wings never freeze (animation), terrain never slows
+	# it, and its routes ignore terrain cost (GridMover.flies).
+	var flying: bool = data.get("flying", false)
+	animator.continuous_animation = flying
+	grid_mover.flies = flying
 	# speed_tiles_per_second is a flat, absolute rate -- 1.0 always means
 	# exactly one tile per second, not "1.0x whatever the player's current
 	# move_time is." Missing the field falls back to this node's own
@@ -195,6 +199,11 @@ func _ready() -> void:
 ## host last relayed, the same split PlayerController uses for a remote peer's
 ## body (animate_from_position instead of reading local input).
 func _process(delta: float) -> void:
+	var started := Time.get_ticks_usec()
+	_process_inner(delta)
+	DebugState.add_time("enemy AI", Time.get_ticks_usec() - started)
+
+func _process_inner(delta: float) -> void:
 	if not is_multiplayer_authority():
 		animator.animate_from_position(delta, global_position)
 		return
@@ -350,14 +359,30 @@ func _perform_ranged_attack(target: Node2D) -> void:
 	var projectile: ProjectileController = PROJECTILE_SCENE.instantiate()
 	get_tree().current_scene.add_child(projectile)
 	projectile.global_position = global_position + Vector2(_size_px / 2.0, _size_px / 2.0)
+	# The arrow hits the first living player whose tile it passes through, not
+	# whoever it was aimed at: stepping out of its way makes it miss, stepping
+	# into it gets you hit. Reaching the aimed tile with nobody there is a miss.
+	var hit_on_the_way := func(pos: Vector2) -> bool:
+		var tile := _to_tile(pos)
+		for player: PlayerController in get_tree().get_nodes_in_group("protagonist"):
+			if player.stats.is_ghost or _to_tile(player.global_position + Vector2(8, 8)) != tile:
+				continue
+			NetworkSync.relay_player_hit(int(str(player.name)), _attack_amount, _attack_type)
+			_play_ranged_target_effect(Vector2(tile) * grid_mover.tile_size)
+			return true
+		return false
 	projectile.launch(projectile_texture, target_global + Vector2(8, 8), grid_mover.tile_size, func():
-		_land_ranged_hit(target, target_global), grid_mover.is_position_blocked)
+		_play_ranged_target_effect(target_global), grid_mover.is_position_blocked, hit_on_the_way)
 	NetworkSync.share_projectile(projectile_texture, projectile.global_position, target_global + Vector2(8, 8))
 
 func _land_ranged_hit(target: Node2D, target_global: Vector2) -> void:
 	if not is_instance_valid(target):
 		return
 	NetworkSync.relay_player_hit(int(str(target.name)), _attack_amount, _attack_type)
+	_play_ranged_target_effect(target_global)
+
+## The "target" impact animation on a tile (cosmetic only).
+func _play_ranged_target_effect(target_global: Vector2) -> void:
 	var target_data: Dictionary = _attack_effect.get("target", {})
 	if not target_data.is_empty():
 		NetworkSync.play_effect(
@@ -408,7 +433,7 @@ func _try_pursue_step(target: Node2D, full_speed: bool) -> void:
 	if _try_surround_step(target, origin_cell, target_cell, full_speed):
 		return
 
-	var flow_step := FlowField.get_step(target.get_instance_id(), target_cell, origin_cell, grid_mover.is_tile_blocked)
+	var flow_step := FlowField.get_step(target.get_instance_id(), target_cell, origin_cell, grid_mover.is_tile_blocked, _terrain_cost())
 	if flow_step != Vector2i.ZERO:
 		_unreachable_since_msec = 0
 		# FlowField only routes around walls, same as _try_direct_step's own
@@ -463,10 +488,14 @@ func _try_surround_step(target: Node2D, origin_cell: Vector2i, target_cell: Vect
 	var best_step := Vector2i.ZERO
 	var best_score := 1 << 30
 	var blocked_forward: Array[Vector2i] = []
+	var avoided_hazard := false
 	for direction in MOVE_DIRECTIONS:
 		var step := Vector2i(direction)
 		var next_cell := origin_cell + step
 		if not distances.has(next_cell) or distances[next_cell] >= here:
+			continue
+		if grid_mover.tile_cost(next_cell) > HAZARD_COST and grid_mover.tile_cost(origin_cell) <= HAZARD_COST:
+			avoided_hazard = true  # do not fan out into lava or water
 			continue
 		if grid_mover.is_tile_occupied(next_cell):
 			blocked_forward.append(step)
@@ -494,6 +523,8 @@ func _try_surround_step(target: Node2D, origin_cell: Vector2i, target_cell: Vect
 				if score < best_score:
 					best_score = score
 					best_step = side_dir
+	if best_step == Vector2i.ZERO and avoided_hazard:
+		return false  # only hazard tiles lead closer: use the weighted chase instead
 	var chosen := best_step
 	if chosen != Vector2i.ZERO and _try_move(Vector2(chosen), full_speed):
 		_prev_cell = origin_cell
@@ -562,6 +593,11 @@ func _try_direct_step(origin_cell: Vector2i, target_cell: Vector2i, full_speed: 
 		if grid_mover.is_tile_blocked(step_tile):
 			saw_wall = true
 			continue
+		if grid_mover.tile_cost(step_tile) > HAZARD_COST and grid_mover.tile_cost(origin_cell) <= HAZARD_COST:
+			# Difficult or severe ground ahead (water, lava): let the weighted
+			# search decide whether crossing is worth it, same escalation as a wall.
+			saw_wall = true
+			continue
 		if grid_mover.is_tile_occupied(step_tile):
 			continue
 		_try_move(direction, full_speed)
@@ -569,6 +605,15 @@ func _try_direct_step(origin_cell: Vector2i, target_cell: Vector2i, full_speed: 
 	if saw_wall:
 		_try_pathfind_step(origin_cell, target_cell, full_speed)
 	# else: only occupancy in the way -- wait, don't escalate
+
+## Tiles costing more than this (difficult 2.0, severe 5.0; rough 1.25 is fine)
+## are not stepped onto blindly by _try_direct_step.
+const HAZARD_COST := 1.5
+
+## The terrain cost callable for routes, or an unset one for a flyer (its
+## routes then use the plain, unweighted field and search).
+func _terrain_cost() -> Callable:
+	return Callable() if grid_mover.flies else grid_mover.tile_cost
 
 ## Real pathfinding step for when the direct approach can't work -- no clear
 ## line to the target, or a wall blocks both preferred directions and a
@@ -592,6 +637,10 @@ func _try_pathfind_step(origin_cell: Vector2i, target_cell: Vector2i, full_speed
 ## tiles without invalidating the route (a fleeing target rarely changes the
 ## right general direction over 1-2 tiles); anything past that, or a tile on
 ## the route becoming newly blocked, forces a fresh solve.
+## For the route debug draw: the tile the last step tried to enter, and when.
+var _debug_step_tile := Vector2i.ZERO
+var _debug_step_msec := -100000
+
 var _cached_path: Array[Vector2i] = []
 var _cached_path_index: int = 0
 var _cached_path_target: Vector2i = Vector2i.ZERO
@@ -644,7 +693,7 @@ func _solve_and_cache_path(origin_cell: Vector2i, target_cell: Vector2i) -> Vect
 		return Vector2i.ZERO
 	var distance := maxi(absi(target_cell.x - origin_cell.x), absi(target_cell.y - origin_cell.y))
 	var radius := mini(distance + PATHFIND_RADIUS_MARGIN, PATHFIND_RADIUS_MAX)
-	var path := Pathfinding.full_path(origin_cell, target_cell, grid_mover.is_tile_blocked, radius)
+	var path := Pathfinding.full_path(origin_cell, target_cell, grid_mover.is_tile_blocked, radius, _terrain_cost())
 	if path.is_empty():
 		_failed_target = target_cell
 		_failed_until_frame = Engine.get_process_frames() + FAILED_SEARCH_COOLDOWN_FRAMES
@@ -699,6 +748,8 @@ func _is_boxed_in() -> bool:
 
 func _try_move(direction: Vector2, full_speed: bool = true) -> bool:
 	var target_tile := _to_tile(global_position + direction * grid_mover.tile_size)
+	_debug_step_tile = target_tile
+	_debug_step_msec = Time.get_ticks_msec()
 	if grid_mover.is_tile_blocked(target_tile) or grid_mover.is_tile_occupied(target_tile):
 		return false
 	var moved := grid_mover.move_one_tile(direction, 1.0 if full_speed else INVESTIGATE_SPEED_SCALE)

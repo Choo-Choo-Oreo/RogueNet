@@ -1,0 +1,164 @@
+{
+	"style": "Dungeon",
+	"widths": [
+		4,
+		4
+	],
+	"frame_size": [
+		16,
+		48
+	],
+	"own_cell_row": 32,
+	"draw_order": [
+		"frame",
+		"leaves",
+		"overlay"
+	],
+	"layers": {
+		"frame": {
+			"texture": "Dungeon_W4_Frame.png",
+			"frames": 1,
+			"normal_texture": "Dungeon_W4_Frame_Normal.png",
+			"note": "the posts, one frame, under the leaves; one per wall style later"
+		},
+		"leaves": {
+			"texture": "Dungeon_W4_Leaves.png",
+			"frames": 16,
+			"normal_texture": "Dungeon_W4_Leaves_Normal.png",
+			"note": "the two sliding leaves; one per tier later"
+		},
+		"overlay": {
+			"texture": "Dungeon_W4_Overlay.png",
+			"frames": 1,
+			"alpha": 0.5019607843137255,
+			"note": "the lintel, drawn ABOVE creatures so they walk under it; 50% alpha is baked into the pixels. Horizontal rows: the lintel across the doorway; vertical rows: the lintel edge-on, a 3px bar along the seam from post to post. A vertical piece only carries its own cell's rows (the first also the rows above), so overlapping pieces never stack."
+		}
+	},
+	"animation": "leaves: closed -> open, left to right (play backwards to close); frame and overlay have one frame",
+	"anchor": "the LAST 16 rows of a frame (rows 32..47, own_cell_row..) are the piece's own doorway cell; every row above overlaps the cells to the NORTH (doors draw over the wall there). Draw every layer with its top-left at (cell.x*16, cell.y*16 - own_cell_row), region 16x48 (frame_size) at (frame*16, atlas_y); the same atlas_y works for all three layers.",
+	"projection": "wall height: 8px face + top strip shifted up 8px, same as the wall tiles; closed slab sits on the seam between the two doorway cells",
+	"usage": {
+		"horizontal doorway (gap in a north/south wall)": "paint on the SOUTH cell of each column, the north cell stays floor. width N, column i: i==0 h_end_left, i==N-1 h_end_right, else h_middle_left when i < N/2 otherwise h_middle_right; the 2nd middle on a side is h_middle_left_2 / h_middle_right_2.",
+		"vertical doorway (gap in an east/west wall)": "each doorway row gets a *_left piece on the WEST cell and the matching *_right piece on the EAST cell. height N, row i: i==0 v_end_top, i==N-1 v_end_bottom, else v_middle_top when i < N/2 otherwise v_middle_bottom (_2 for the 2nd)."
+	},
+	"split": "each 16x48 frame is 3 16x16 tiles, the last one on the doorway cell itself, the two above it on the cells NORTH of it (over the wall and one cell further north).",
+	"pieces": {
+		"h_end_left": {
+			"atlas_y": 0
+		},
+		"h_middle_left": {
+			"atlas_y": 48
+		},
+		"h_middle_right": {
+			"atlas_y": 96
+		},
+		"h_end_right": {
+			"atlas_y": 144
+		},
+		"v_end_top_left": {
+			"atlas_y": 192
+		},
+		"v_end_top_right": {
+			"atlas_y": 240
+		},
+		"v_middle_top_left": {
+			"atlas_y": 288
+		},
+		"v_middle_top_right": {
+			"atlas_y": 336
+		},
+		"v_middle_bottom_left": {
+			"atlas_y": 384
+		},
+		"v_middle_bottom_right": {
+			"atlas_y": 432
+		},
+		"v_end_bottom_left": {
+			"atlas_y": 480
+		},
+		"v_end_bottom_right": {
+			"atlas_y": 528
+		}
+	},
+	"note": "PLACEHOLDER boss-room door, 4 wide, kept as the template for the real boss doors: flat red (west/north) and blue (east/south) leaves 16px tall between flat grey stone posts, lintel 24px tall, so it stands three wall heights high and reaches one cell north of the doorway. The leaves slide apart into the posts over 16 frames and vanish on the last one; nothing is ever drawn under the doorway. Opaque pixels of the three layers never overlap: horizontal leaves stay on columns 2..W-3 between the 2px posts; vertical leaves are tops only, red from the row under the north post's face, blue to the row above the south post's top, equal bands. Future boss doors: one frame atlas per wall style (matches the wall it sits in), one leaves atlas per tier (wood/iron/bronze/silver/gold, drawn per width, never scaled), the emblem is a separate small sprite on the lintel.",
+	"frame_sets": {
+		"wall_cobble_brick": {
+			"frame": "CobbleBrick_W4_Frame.png",
+			"normal_texture": "CobbleBrick_W4_Frame_Normal.png",
+			"overlay": "CobbleBrick_W4_Overlay.png",
+			"frames": 1,
+			"alpha": 0.5019607843137255
+		},
+		"wall_flesh": {
+			"frame": "Flesh_W4_Frame.png",
+			"normal_texture": "Flesh_W4_Frame_Normal.png",
+			"overlay": "Flesh_W4_Overlay.png",
+			"frames": 1,
+			"alpha": 0.5019607843137255
+		},
+		"wall_forest": {
+			"frame": "Forest_W4_Frame.png",
+			"normal_texture": "Forest_W4_Frame_Normal.png",
+			"overlay": "Forest_W4_Overlay.png",
+			"frames": 1,
+			"alpha": 0.5019607843137255
+		},
+		"wall_marble": {
+			"frame": "Marble_W4_Frame.png",
+			"normal_texture": "Marble_W4_Frame_Normal.png",
+			"overlay": "Marble_W4_Overlay.png",
+			"frames": 1,
+			"alpha": 0.5019607843137255
+		},
+		"wall_rough_cave": {
+			"frame": "RoughCave_W4_Frame.png",
+			"normal_texture": "RoughCave_W4_Frame_Normal.png",
+			"overlay": "RoughCave_W4_Overlay.png",
+			"frames": 1,
+			"alpha": 0.5019607843137255
+		},
+		"wall_smooth_stone": {
+			"frame": "SmoothStone_W4_Frame.png",
+			"normal_texture": "SmoothStone_W4_Frame_Normal.png",
+			"overlay": "SmoothStone_W4_Overlay.png",
+			"frames": 1,
+			"alpha": 0.5019607843137255
+		},
+		"wall_wood_plank": {
+			"frame": "WoodPlank_W4_Frame.png",
+			"normal_texture": "WoodPlank_W4_Frame_Normal.png",
+			"overlay": "WoodPlank_W4_Overlay.png",
+			"frames": 1,
+			"alpha": 0.5019607843137255
+		}
+	},
+	"frame_sets_note": "one frame + overlay pair per wall tileset, keyed by the wall tile the door stands in; same rows / atlas_y / frame_size / own_cell_row as the layers above, so pick the pair for the wall and draw it instead of layers.frame / layers.overlay. Cut 1:1 from the wall's own art (posts = three courses of the wall's 8-row face under a rimmed top; lintel = one course at 50% alpha), only that wall's colours, black only where the wall itself uses it (tops, void).",
+	"leaf_sets": {
+		"wood": {
+			"texture": "Wood_W4_Leaves.png",
+			"normal_texture": "Wood_W4_Leaves_Normal.png",
+			"frames": 16
+		},
+		"iron": {
+			"texture": "Iron_W4_Leaves.png",
+			"normal_texture": "Iron_W4_Leaves_Normal.png",
+			"frames": 16
+		},
+		"bronze": {
+			"texture": "Bronze_W4_Leaves.png",
+			"normal_texture": "Bronze_W4_Leaves_Normal.png",
+			"frames": 16
+		},
+		"silver": {
+			"texture": "Silver_W4_Leaves.png",
+			"normal_texture": "Silver_W4_Leaves_Normal.png",
+			"frames": 16
+		},
+		"gold": {
+			"texture": "Gold_W4_Leaves.png",
+			"normal_texture": "Gold_W4_Leaves_Normal.png",
+			"frames": 16
+		}
+	},
+	"leaf_sets_note": "one leaves atlas per tier (wood, iron, bronze, silver, gold: the tier tells the player how deadly the boss and how good the loot), keyed by tier; same rows / frames / geometry as layers.leaves, drawn per width, never scaled. Pick the tier's atlas instead of layers.leaves."
+}

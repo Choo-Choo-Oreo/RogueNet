@@ -15,7 +15,7 @@ Atlas layout: animation frames run left to right (Aseprite's horizontal strip), 
 top to bottom, each a 64x64 set. Any image size works because everything is done per tile.
 Every method works per 16x16 tile (or 8x8 quarter for bevel) so nothing leaks between tiles.
 """
-import math, sys
+import math, os, re, sys
 from PIL import Image
 
 ROOT = "C:/Users/Orea/Documents/Project-Godot/RogueNet/"
@@ -186,7 +186,7 @@ def bevel(src, tops, reach=3.0, blur_passes=2, strength=6.0):
     return res
 
 def door(src, tops, tilt=0.25, bump=2.0):
-    """Door pieces are 16x32 (own cell + the cell north of it) with no black wall top: the
+    """Door atlases (<Style>_W<Width>.png, 16x32 pieces = own cell + the cell north of it) with no black wall top: the
     `tops` colours are the leaf's flat top strip, every other opaque pixel is a face that leans
     toward the viewer by `tilt` and takes brightness bumps from the art, per 16x16 tile."""
     W, H = src.size; px = src.load()
@@ -215,6 +215,7 @@ def door(src, tops, tilt=0.25, bump=2.0):
 
 WOOD_TOPS = {(86, 46, 38)}      # door_build.py WOOD_T
 IRON_TOPS = {(52, 54, 60)}      # door_build.py IRON_D (also the 1px cross bar; close enough)
+DUNGEON_TOPS = {(120, 50, 50), (50, 65, 125), (165, 165, 172)}   # door_boss.py placeholder leaf/frame tops
 
 FLESH = {
     (0xAC, 0x32, 0x32): 0.0,   # base
@@ -233,21 +234,55 @@ MATERIALS = {
     "wall_cobble_brick": (wall, dict(bump=4.0, tilt=0.25, bevel=1.2)),
     "wall_wood_plank":   (wall, dict(bump=2.5, tilt=0.25, bevel=1.2)),
     "wall_rough_cave":   (wall, dict(bump=3.0, tilt=0.25, bevel=1.2)),
+    "wall_smooth_cave":  (wall, dict(bump=1.2, tilt=0.25, bevel=1.2)),
     "wall_flesh":        (palette, dict(heights=FLESH, base="wall", bump=0.0, tilt=0.25, bevel=1.2)),
     "floor_dirt":        (luminance_floor, {}),
     "floor_grass":       (luminance_floor, {}),
     "floor_flesh":       (palette, dict(heights=FLESH)),
     "floor_smooth_stone": (bevel, dict(tops=STONE_TOPS)),
+    "floor_smooth_cave": (luminance_floor, dict(strength=3.0)),   # flat worn pads: gentle bumps from the art's brightness
     "floor_water":       (palette, dict(heights=WATER, strength=3.0)),
     "floor_lava":        (plain, {}),   # emits its own light, so no shading from the player's
     "floor_acid":        (palette, dict(heights=ACID, strength=3.0)),
-    "door_wood":         (door, dict(tops=WOOD_TOPS, bump=2.5)),
-    "door_iron":         (door, dict(tops=IRON_TOPS, bump=2.0)),
-    "door_iron_sink":    (door, dict(tops=IRON_TOPS, bump=2.0)),
+    "Wood":              (door, dict(tops=WOOD_TOPS, bump=2.5)),
+    "Wood_Fold":         (door, dict(tops=WOOD_TOPS, bump=2.5)),
+    "Dungeon":           (door, dict(tops=DUNGEON_TOPS, bump=0.0)),   # flat placeholder, no grain yet
+    "Iron":              (door, dict(tops=IRON_TOPS, bump=2.0)),
+    "IronSink":          (door, dict(tops=IRON_TOPS, bump=2.0)),
 }
 
-# Materials that don't live in the tileset folder.
-FOLDERS = {"door_wood": DOORS, "door_iron": DOORS, "door_iron_sink": DOORS}
+# Materials that don't live in the tileset folder. Doors are one atlas per width,
+# <Style>_W<Width>.png or <Style>_W<Min>-<Max>.png -> same name + _Normal.png. Boss doors
+# (doors/doors.boss/) are layered: <Style>_W<n>_Frame.png and _Leaves.png each get a normal, the
+# translucent _Overlay.png does not.
+BOSS = DOORS + "doors.boss/"
+FOLDERS = {"Wood": DOORS, "Wood_Fold": DOORS, "Dungeon": BOSS, "Iron": DOORS, "IronSink": DOORS}
+
+# Boss door frame sets, cut from the wall tiles: <Set>_W<n>_Frame.png in doors.boss/. Their flat
+# "tops" are whatever the wall's top regions use (black + rims; canopy for the forest wall).
+FRAME_SETS = {"CobbleBrick": "wall_cobble_brick", "Flesh": "wall_flesh", "Forest": "wall_forest", "Marble": "wall_marble",
+              "RoughCave": "wall_rough_cave", "SmoothStone": "wall_smooth_stone", "WoodPlank": "wall_wood_plank"}
+
+
+def _wall_tops(tile):
+    im = Image.open(ART + tile + ".png").convert("RGBA"); px = im.load()
+    regions = [(32, 16, 48, 32), (48, 8, 64, 16), (24, 0, 32, 16), (48, 32, 56, 48), (8, 24, 16, 32), (32, 56, 40, 64)]   # interior, north edge, west, east, two corners
+    return {px[x, y][:3] for x0, y0, x1, y1 in regions for y in range(y0, y1) for x in range(x0, x1) if px[x, y][3]}
+
+
+for _set, _tile in FRAME_SETS.items():
+    if not os.path.exists(ART + _tile + ".png"):
+        continue                                   # wall tile gone (wall_marble was removed 2026-09-24): no frame material
+    MATERIALS[_set] = (door, dict(tops=_wall_tops(_tile), bump=1.5))
+    FOLDERS[_set] = BOSS
+
+# Boss door leaf tiers: <Tier>_W<n>_Leaves.png in doors.boss/. Wood and Iron are the same
+# materials as the room doors, so those two materials look in both folders.
+FOLDERS["Wood"] = (DOORS, BOSS)
+FOLDERS["Iron"] = (DOORS, BOSS)
+for _tier, _top in (("Bronze", (84, 50, 24)), ("Silver", (112, 120, 132)), ("Gold", (146, 100, 20))):
+    MATERIALS[_tier] = (door, dict(tops={_top}, bump=2.0))     # door_leaves.py METALS[tier]["TOP"]
+    FOLDERS[_tier] = BOSS
 
 # The dirt and grass PNGs in the game were made with different settings than these defaults
 # (about 1400-1600 pixels differ), so a plain rebuild leaves them alone. Name them to rebuild.
@@ -255,10 +290,19 @@ SKIP_BY_DEFAULT = {"floor_dirt", "floor_grass"}
 
 def build(name, out_dir=None):
     method, kw = MATERIALS[name]
-    folder = FOLDERS.get(name, ART)
-    src = Image.open(folder + name + ".png").convert("RGBA")
-    method(src, **kw).save((out_dir or folder) + name + "_normal.png")
-    print("ok", name, src.size)
+    folders = FOLDERS.get(name, ART)
+    for folder in (folders if isinstance(folders, tuple) else (folders,)):
+        if folder in (DOORS, BOSS):
+            targets = [f[:-4] for f in sorted(os.listdir(folder)) if re.fullmatch(name + r"_W\d+(-\d+)?(_Frame|_Leaves)?\.png", f)]
+            suffix = "_Normal"
+        else:
+            targets, suffix = [name], "_normal"
+        for t in targets:
+            if not os.path.exists(folder + t + ".png"):
+                continue
+            src = Image.open(folder + t + ".png").convert("RGBA")
+            method(src, **kw).save((out_dir or folder) + t + suffix + ".png")
+            print("ok", t, src.size)
 
 if __name__ == "__main__":
     args = sys.argv[1:]; out = None

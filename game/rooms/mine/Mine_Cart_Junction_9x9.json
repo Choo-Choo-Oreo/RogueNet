@@ -3,47 +3,47 @@
 	"connectors": [
 		{
 			"a": {
-				"x": 4,
+				"x": 3,
 				"y": 0
 			},
 			"b": {
 				"x": 5,
 				"y": 0
 			},
-			"free": true
+			"door": "any"
 		},
 		{
 			"a": {
-				"x": 0,
-				"y": 4
-			},
-			"b": {
-				"x": 0,
-				"y": 5
-			},
-			"free": true
-		},
-		{
-			"a": {
-				"x": 8,
-				"y": 4
-			},
-			"b": {
-				"x": 8,
-				"y": 5
-			},
-			"free": true
-		},
-		{
-			"a": {
-				"x": 4,
+				"x": 3,
 				"y": 8
 			},
 			"b": {
 				"x": 5,
 				"y": 8
 			},
-			"free": true
+			"door": "any"
+		},
+		{
+			"a": {
+				"x": 0,
+				"y": 3
+			},
+			"b": {
+				"x": 0,
+				"y": 5
+			},
+			"door": "any"
+		},
+		{
+			"a": {
+				"x": 8,
+				"y": 3
+			},
+			"b": {
+				"x": 8,
+				"y": 5
+			},
+			"door": "any"
 		}
 	],
 	"floor": [
@@ -150,85 +150,32 @@
 	"format": 2,
 	"height": 9,
 	"id": "Mine_Cart_Junction_9x9",
-	"objects": [
-		{
-			"position": {
-				"x": 40.0,
-				"y": 40.0
-			},
-			"rotation": 0.0,
-			"type": "torch"
-		},
-		{
-			"position": {
-				"x": 104.0,
-				"y": 40.0
-			},
-			"rotation": 0.0,
-			"type": "torch"
-		},
-		{
-			"position": {
-				"x": 40.0,
-				"y": 104.0
-			},
-			"rotation": 0.0,
-			"type": "torch"
-		},
-		{
-			"position": {
-				"x": 104.0,
-				"y": 104.0
-			},
-			"rotation": 0.0,
-			"type": "torch"
-		}
-	],
-	"role": "normal",
-	"spawn_cells": [
-		{
-			"position": {
-				"x": 4,
-				"y": 4
-			}
-		}
-	],
+	"objects": [],
+	"role": "corridor",
 	"tags": [
-		"peaceful",
-		"mine"
+		"corridor"
 	],
 	"walls": [
 		[
 			"wall_rough_cave",
 			"wall_rough_cave",
-			"wall_rough_cave",
 			"wall_wood_plank",
 			null,
 			null,
-			"wall_rough_cave",
-			"wall_rough_cave",
-			"wall_rough_cave"
-		],
-		[
-			"wall_rough_cave",
-			"wall_rough_cave",
 			null,
-			null,
-			null,
-			null,
-			null,
+			"wall_wood_plank",
 			"wall_rough_cave",
 			"wall_rough_cave"
 		],
 		[
 			"wall_rough_cave",
+			"wall_rough_cave",
 			null,
 			null,
 			null,
 			null,
 			null,
-			null,
-			null,
+			"wall_rough_cave",
 			"wall_rough_cave"
 		],
 		[
@@ -265,7 +212,6 @@
 			null
 		],
 		[
-			"wall_rough_cave",
 			null,
 			null,
 			null,
@@ -273,7 +219,19 @@
 			null,
 			null,
 			null,
-			"wall_rough_cave"
+			null,
+			null
+		],
+		[
+			"wall_wood_plank",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_wood_plank"
 		],
 		[
 			"wall_rough_cave",
@@ -287,13 +245,13 @@
 			"wall_rough_cave"
 		],
 		[
-			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_rough_cave",
 			"wall_wood_plank",
 			null,
 			null,
-			"wall_rough_cave",
+			null,
+			"wall_wood_plank",
 			"wall_rough_cave",
 			"wall_rough_cave"
 		]

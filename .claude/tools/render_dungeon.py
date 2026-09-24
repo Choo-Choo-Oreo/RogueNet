@@ -22,7 +22,7 @@ STEP = {N: (0, -1), S: (0, 1), E: (1, 0), W: (-1, 0)}
 MASK_TO_CELL = {1: (3, 3), 2: (0, 2), 3: (1, 2), 4: (0, 0), 5: (3, 2), 6: (2, 3), 7: (3, 1), 8: (1, 3),
                 9: (0, 1), 10: (1, 0), 11: (2, 2), 12: (3, 0), 13: (2, 0), 14: (1, 1), 15: (2, 1)}
 # draw order = TileType.sort_order, ties broken by name (the order TileInitialize creates the layers in)
-FLOOR_ORDER = {'floor_smooth_stone': 1, 'floor_wood_planks': 1, 'floor_dirt': 2, 'floor_grass': 3, 'floor_flesh': 4, 'floor_void': 10}
+FLOOR_ORDER = {'floor_smooth_stone': 1, 'floor_smooth_cave': 1, 'floor_wood_planks': 1, 'floor_dirt': 2, 'floor_grass': 3, 'floor_flesh': 4, 'floor_void': 10}
 VOID_PADDING = 2
 
 # ---------------------------------------------------------------- assembler (port of DungeonAssembler.gd)

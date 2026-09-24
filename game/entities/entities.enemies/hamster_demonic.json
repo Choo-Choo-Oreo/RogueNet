@@ -1,4 +1,5 @@
 {
+	"tags": ["beast.rodent", "demon"],
 	"size_tiles": 1,
 	"max_health": 8,
 	"strength": 0,
@@ -7,7 +8,7 @@
 	"cognitive": 3,
 	"resistances": {},
 	"speed_tiles_per_second": 6.0,
-	"continuous_animation": true,
+	"flying": true,
 	"attack": {
 		"amount": 2,
 		"type": "Entropia",

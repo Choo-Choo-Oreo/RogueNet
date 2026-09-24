@@ -8,15 +8,12 @@
 [ext_resource type="Script" path="res://scripts/dungeon/Dungeon.gd" id="1_dungeonroot"]
 [ext_resource type="Script" uid="uid://bc0lnb6o6cg5r" path="res://scripts/network/PlayerSpawner.gd" id="2_playerspawner"]
 [ext_resource type="Texture2D" uid="uid://cukpeoxqsmyde" path="res://resources/gfx/placeholders/flat-color.png" id="3_564yl"]
-[ext_resource type="Script" uid="uid://bjum48nmmaive" path="res://scripts/dungeon/DungeonDebugView.gd" id="3_dungeondebug"]
 [ext_resource type="Script" path="res://scripts/dungeon/PerfMonitor.gd" id="3_perfmonitor"]
 [ext_resource type="Script" uid="uid://ccetseq1iwch1" path="res://scripts/cells/tiles/LightMap.gd" id="99_lightmap"]
 [ext_resource type="Script" uid="uid://cmo0pwrdjr2df" path="res://scripts/cells/tiles/DualGridRender.gd" id="4_4podp"]
 [ext_resource type="Script" uid="uid://rvs3q27d6u0p" path="res://scripts/cells/tiles/TileInitialize.gd" id="4_tileinit"]
 [ext_resource type="Script" uid="uid://cyxbvo2hgsk2t" path="res://scripts/dungeon/DungeonPainter.gd" id="6_dungeonpainter"]
 [ext_resource type="Texture2D" uid="uid://30t8sgmrsu53" path="res://resources/gfx/tileset/floor_void.png" id="9_h8pbr"]
-[ext_resource type="Script" uid="uid://kwiwirkys8xp" path="res://scripts/cells/tiles/StaticTileRender.gd" id="12_e62lh"]
-[ext_resource type="Texture2D" path="res://resources/gfx/doors/door_wood.png" id="13_a577u"]
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_nbnrc"]
 resource_name = "floor_dirt_lit.tres"
 texture = ExtResource("3_564yl")
@@ -92,23 +89,9 @@ texture = ExtResource("3_564yl")
 0:0/0 = 0
 0:0/0/modulate = Color(0.458824, 0.458824, 0.458824, 1)
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6yh45"]
-resource_name = "Door.png"
-texture = ExtResource("3_564yl")
-0:0/0 = 0
-0:0/0/modulate = Color(0.454902, 0.360784, 0.239216, 1)
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7yvmr"]
-resource_name = "Door.png"
-texture = ExtResource("3_564yl")
-0:0/0 = 0
-0:0/0/modulate = Color(0.678431, 0.607843, 0.415686, 1)
-
 [sub_resource type="TileSet" id="TileSet_37u26"]
 occlusion_layer_0/light_mask = 1
 sources/6 = SubResource("TileSetAtlasSource_pxhlt")
-sources/8 = SubResource("TileSetAtlasSource_6yh45")
-sources/9 = SubResource("TileSetAtlasSource_7yvmr")
 sources/7 = SubResource("TileSetAtlasSource_hb7l8")
 sources/10 = SubResource("TileSetAtlasSource_57mhk")
 sources/11 = SubResource("TileSetAtlasSource_37u26")
@@ -185,20 +168,6 @@ texture_region_size = Vector2i(8, 8)
 [sub_resource type="TileSet" id="TileSet_p38gd"]
 tile_size = Vector2i(8, 8)
 sources/0 = SubResource("TileSetAtlasSource_vr7ml")
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7prql"]
-texture = ExtResource("13_a577u")
-0:0/0 = 0
-
-[sub_resource type="TileSet" id="TileSet_rjqam"]
-sources/0 = SubResource("TileSetAtlasSource_7prql")
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5pn2a"]
-texture = ExtResource("13_a577u")
-2:0/0 = 0
-
-[sub_resource type="TileSet" id="TileSet_io24f"]
-sources/0 = SubResource("TileSetAtlasSource_5pn2a")
 
 [node name="Dungeon" type="Node2D" unique_id=2115702958]
 script = ExtResource("1_dungeonroot")
@@ -282,29 +251,6 @@ source_id = 6
 [node name="DisplayLayer" type="TileMapLayer" parent="TileInitialize/wall_cobble_brick" unique_id=2054653166]
 position = Vector2(8, 8)
 
-[node name="wall_door" type="Node2D" parent="TileInitialize" unique_id=1156964601 node_paths=PackedStringArray("data_layer", "display_layer")]
-z_index = 100
-script = ExtResource("12_e62lh")
-data_layer = NodePath("../WallData")
-display_layer = NodePath("DisplayLayer")
-source_id = 8
-orientable = true
-
-[node name="DisplayLayer" type="TileMapLayer" parent="TileInitialize/wall_door" unique_id=55555174]
-tile_set = SubResource("TileSet_rjqam")
-
-[node name="wall_door_open" type="Node2D" parent="TileInitialize" unique_id=609989613 node_paths=PackedStringArray("data_layer", "display_layer")]
-z_index = 100
-script = ExtResource("12_e62lh")
-data_layer = NodePath("../WallData")
-display_layer = NodePath("DisplayLayer")
-source_id = 9
-atlas_coords = Vector2i(2, 0)
-orientable = true
-
-[node name="DisplayLayer" type="TileMapLayer" parent="TileInitialize/wall_door_open" unique_id=2044746161]
-tile_set = SubResource("TileSet_io24f")
-
 [node name="wall_smooth_stone" type="Node2D" parent="TileInitialize" unique_id=1773868972 node_paths=PackedStringArray("data_layer", "display_layer")]
 z_index = 100
 script = ExtResource("4_4podp")
@@ -353,9 +299,6 @@ tile_initialize = NodePath("../TileInitialize")
 script = ExtResource("2_playerspawner")
 
 [node name="Enemies" type="Node2D" parent="."]
-
-[node name="DungeonDebugView" type="Node" parent="." unique_id=314287876]
-script = ExtResource("3_dungeondebug")
 
 [node name="PerfMonitor" type="Node" parent="."]
 script = ExtResource("3_perfmonitor")

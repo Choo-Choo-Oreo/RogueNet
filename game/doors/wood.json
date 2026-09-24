@@ -1,8 +1,15 @@
 {
 	"name": "wood",
-	"art": "res://resources/gfx/doors/door_wood.json",
+	"art": {
+		"1": "res://resources/gfx/doors/Wood_W1.json",
+		"2": "res://resources/gfx/doors/Wood_W2.json",
+		"3": "res://resources/gfx/doors/Wood_W3.json",
+		"4": "res://resources/gfx/doors/Wood_Fold_W4.json",
+		"5": "res://resources/gfx/doors/Wood_Fold_W5.json"
+	},
 	"transparent": false,
 	"min_width": 1,
-	"max_width": 2,
-	"open_seconds": 0.6
+	"max_width": 5,
+	"open_seconds": 0.6,
+	"passable_at": 0.5
 }

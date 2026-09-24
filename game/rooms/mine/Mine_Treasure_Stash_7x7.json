@@ -4,46 +4,13 @@
 		{
 			"a": {
 				"x": 3,
-				"y": 0
-			},
-			"b": {
-				"x": 3,
-				"y": 0
-			},
-			"free": true
-		},
-		{
-			"a": {
-				"x": 0,
-				"y": 3
-			},
-			"b": {
-				"x": 0,
-				"y": 3
-			},
-			"free": true
-		},
-		{
-			"a": {
-				"x": 6,
-				"y": 3
-			},
-			"b": {
-				"x": 6,
-				"y": 3
-			},
-			"free": true
-		},
-		{
-			"a": {
-				"x": 3,
 				"y": 6
 			},
 			"b": {
 				"x": 3,
 				"y": 6
 			},
-			"free": true
+			"door": "any"
 		}
 	],
 	"floor": [
@@ -58,47 +25,47 @@
 		],
 		[
 			null,
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
 			null
 		],
 		[
 			null,
-			"floor_dirt",
 			"floor_wood_planks",
+			null,
 			"floor_wood_planks",
+			null,
 			"floor_wood_planks",
-			"floor_dirt",
 			null
 		],
 		[
 			null,
-			"floor_dirt",
 			"floor_wood_planks",
 			"floor_wood_planks",
 			"floor_wood_planks",
-			"floor_dirt",
+			"floor_wood_planks",
+			"floor_wood_planks",
 			null
 		],
 		[
 			null,
-			"floor_dirt",
 			"floor_wood_planks",
+			null,
 			"floor_wood_planks",
+			null,
 			"floor_wood_planks",
-			"floor_dirt",
 			null
 		],
 		[
 			null,
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
-			"floor_dirt",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
 			null
 		],
 		[
@@ -117,40 +84,23 @@
 	"objects": [
 		{
 			"position": {
-				"x": 24.0,
-				"y": 24.0
-			},
-			"rotation": 0.0,
-			"type": "torch"
-		},
-		{
-			"position": {
 				"x": 56.0,
 				"y": 56.0
 			},
 			"rotation": 0.0,
 			"type": "chest"
-		},
-		{
-			"position": {
-				"x": 88.0,
-				"y": 88.0
-			},
-			"rotation": 0.0,
-			"type": "torch"
 		}
 	],
 	"role": "normal",
 	"tags": [
-		"treasure",
-		"mine"
+		"treasure"
 	],
 	"walls": [
 		[
 			"wall_wood_plank",
 			"wall_wood_plank",
 			"wall_wood_plank",
-			null,
+			"wall_wood_plank",
 			"wall_wood_plank",
 			"wall_wood_plank",
 			"wall_wood_plank"
@@ -167,20 +117,11 @@
 		[
 			"wall_wood_plank",
 			null,
+			"wall_wood_plank",
 			null,
-			null,
-			null,
+			"wall_wood_plank",
 			null,
 			"wall_wood_plank"
-		],
-		[
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null
 		],
 		[
 			"wall_wood_plank",
@@ -188,6 +129,15 @@
 			null,
 			null,
 			null,
+			null,
+			"wall_wood_plank"
+		],
+		[
+			"wall_wood_plank",
+			null,
+			"wall_wood_plank",
+			null,
+			"wall_wood_plank",
 			null,
 			"wall_wood_plank"
 		],

@@ -12,7 +12,10 @@ extends RefCounted
 ## already have (e.g. GridMover.is_tile_blocked). Returns the full route
 ## (path[0] is `from` itself), or an empty array if already at `to`, `to` is
 ## outside max_radius, or no path exists within the region.
-static func full_path(from: Vector2i, to: Vector2i, is_blocked: Callable, max_radius: int) -> Array[Vector2i]:
+## `terrain_cost` (optional, tile -> float, 1.0 = normal ground, never below
+## 1.0) sets each tile's AStarGrid2D weight, so the route detours around slow
+## ground when that is cheaper. Leave unset for a mover that ignores terrain.
+static func full_path(from: Vector2i, to: Vector2i, is_blocked: Callable, max_radius: int, terrain_cost: Callable = Callable()) -> Array[Vector2i]:
 	if from == to:
 		return []
 	var region := Rect2i(from - Vector2i.ONE * max_radius, Vector2i.ONE * (max_radius * 2 + 1))
@@ -27,6 +30,10 @@ static func full_path(from: Vector2i, to: Vector2i, is_blocked: Callable, max_ra
 			var cell := Vector2i(x, y)
 			if is_blocked.call(cell):
 				grid.set_point_solid(cell)
+			elif terrain_cost.is_valid():
+				var cost: float = terrain_cost.call(cell)
+				if cost != 1.0:
+					grid.set_point_weight_scale(cell, cost)
 	var path := grid.get_id_path(from, to)
 	if path.size() < 2:
 		return []

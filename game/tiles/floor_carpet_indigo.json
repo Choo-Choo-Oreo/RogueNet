@@ -1,0 +1,8 @@
+{
+	"tile_name": "floor_carpet_indigo",
+	"atlas_texture": "res://resources/gfx/tileset/floor_carpet_indigo.png",
+	"normal_texture": "res://resources/gfx/tileset/floor_carpet_indigo_normal.png",
+	"specular_color": [0.02, 0.02, 0.02, 1],
+	"sort_order": 8,
+	"marker_color": [0.321569, 0.337255, 0.470588, 1]
+}

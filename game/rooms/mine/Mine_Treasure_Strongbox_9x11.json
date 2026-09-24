@@ -1,0 +1,294 @@
+{
+	"biome": "mine",
+	"connectors": [
+		{
+			"a": {
+				"x": 4,
+				"y": 10
+			},
+			"b": {
+				"x": 4,
+				"y": 10
+			},
+			"door": "any"
+		}
+	],
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			"floor_wood_planks",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_wood_planks",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 2,
+	"height": 11,
+	"id": "Mine_Treasure_Strongbox_9x11",
+	"objects": [
+		{
+			"position": {
+				"x": 72.0,
+				"y": 40.0
+			},
+			"rotation": 0.0,
+			"type": "chest"
+		}
+	],
+	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 2,
+				"y": 6
+			}
+		},
+		{
+			"position": {
+				"x": 6,
+				"y": 6
+			}
+		}
+	],
+	"tags": [
+		"treasure"
+	],
+	"walls": [
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_wood_plank",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_wood_plank",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_wood_plank",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_wood_plank",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_wood_plank",
+			null,
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_wood_plank",
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_rough_cave"
+		],
+		[
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_wood_plank",
+			null,
+			"wall_wood_plank",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			"wall_rough_cave"
+		]
+	],
+	"width": 9
+}

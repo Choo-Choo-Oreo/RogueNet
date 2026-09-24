@@ -1,8 +1,9 @@
 {
 	"name": "iron",
-	"art": "res://resources/gfx/doors/door_iron.json",
+	"art": "res://resources/gfx/doors/Iron_W1-5.json",
 	"transparent": true,
 	"min_width": 1,
-	"max_width": 2,
-	"open_seconds": 0.6
+	"max_width": 5,
+	"open_seconds": 0.6,
+	"passable_at": 1.0
 }

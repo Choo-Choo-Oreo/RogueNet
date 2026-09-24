@@ -1,0 +1,141 @@
+{
+	"biome": "forest",
+	"connectors": [
+		{
+			"a": {
+				"x": 2,
+				"y": 0
+			},
+			"b": {
+				"x": 2,
+				"y": 0
+			},
+			"door": "none",
+			"free": true
+		},
+		{
+			"a": {
+				"x": 2,
+				"y": 6
+			},
+			"b": {
+				"x": 2,
+				"y": 6
+			},
+			"door": "none",
+			"free": true
+		}
+	],
+	"base_floor": "floor_dirt",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			null,
+			"floor_dirt",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 2,
+	"height": 7,
+	"id": "Forest_Deer_Track_Short_5x7",
+	"objects": [],
+	"role": "corridor",
+	"tags": [
+		"corridor"
+	],
+	"walls": [
+		[
+			"wall_forest",
+			"wall_forest",
+			null,
+			"wall_forest",
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			"wall_forest",
+			null,
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			"wall_forest",
+			null,
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			"wall_forest",
+			null,
+			"wall_forest",
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			"wall_forest",
+			null,
+			"wall_forest",
+			"wall_forest"
+		]
+	],
+	"width": 5
+}

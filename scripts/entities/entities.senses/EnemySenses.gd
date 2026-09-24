@@ -71,7 +71,8 @@ func apply_overrides(overrides: Dictionary) -> void:
 ## delta is the time since the last call (not necessarily a frame -- callers
 ## may throttle how often they call update()).
 func update(origin: Vector2, target: Node2D, is_blocked: Callable, lit: bool, delta: float) -> State:
-	if target == null:
+	# Debug "unseen": every sense reads nothing, same as having no target at all.
+	if target == null or DebugState.unseen:
 		_active_timer = 0.0
 		_active_tier = State.PATROL
 		state = State.PATROL

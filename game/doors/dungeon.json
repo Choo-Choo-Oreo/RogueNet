@@ -1,0 +1,13 @@
+{
+	"name": "dungeon",
+	"art": {
+		"4": "res://resources/gfx/doors/doors.boss/Dungeon_W4.json",
+		"5": "res://resources/gfx/doors/doors.boss/Dungeon_W5.json"
+	},
+	"tier": "wood",
+	"transparent": false,
+	"min_width": 4,
+	"max_width": 5,
+	"open_seconds": 1.2,
+	"passable_at": 0.6
+}

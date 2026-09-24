@@ -14,9 +14,11 @@ func _ready() -> void:
 	var rooms := DungeonAssembler.load_rooms(biome)
 	var placements := DungeonAssembler.generate_with_retry(rooms, NetworkSync.dungeon_seed, defines)
 	RoomGraph.build(rooms, placements)
+	DebugState.rooms = rooms
+	DebugState.placements = placements
 	FlowField.clear()
 	SurroundSectors.clear()
-	_paint(rooms, placements, floor_data, wall_data, registry)
+	_paint(rooms, placements, floor_data, wall_data, registry, defines)
 	_place_doors(rooms, placements, defines)
 	MusicManager.play_for_biome(defines)
 	# LightMap is a later sibling in Dungeon.tscn -- its own _ready() (which
@@ -28,7 +30,7 @@ func _ready() -> void:
 ## joints, DoorRegistry holds the state, DoorManager draws them.
 func _place_doors(rooms: Dictionary, placements: Array, defines: Dictionary) -> void:
 	DoorRegistry.clear()
-	for door in DoorPlacer.place(rooms, placements, defines, NetworkSync.dungeon_seed):
+	for door in DoorPlacer.place(rooms, placements, defines):
 		DoorRegistry.register(door)
 	var manager := DoorManager.new()
 	manager.name = "Doors"
@@ -48,7 +50,7 @@ func _spawn_enemies(rooms: Dictionary, placements: Array, defines: Dictionary) -
 	for cell in DungeonAssembler.collect_spawn_cells(rooms, placements):
 		if not bad_cells.has(cell) and not DoorRegistry.is_door_cell(cell):
 			spawn_cells.append(cell)
-	EnemySpawning.spawn_in_unseen_cells(spawn_cells, defines.get("monsters", {}), light_map, enemies_root)
+	EnemySpawning.spawn_in_unseen_cells(spawn_cells, defines.get("monsters", {}), light_map, enemies_root, DungeonAssembler.collect_spawn_favors(rooms, placements), DungeonAssembler.collect_spawn_enemies(rooms, placements))
 
 ## Dev aid: checks each spawn cell against what was actually PAINTED (the same
 ## wall / void test GridMover uses), and names the room, its local cell, what
@@ -89,7 +91,7 @@ func _warn_bad_spawn_cells(rooms: Dictionary, placements: Array) -> Dictionary:
 				p.room_id, local, world, problem, data_wall, data_floor, p.locked_connectors.has(local), overlaps])
 	return bad_cells
 
-func _paint(rooms: Dictionary, placements: Array, floor_data: TileMapLayer, wall_data: TileMapLayer, registry: TileTypeRegistry) -> void:
+func _paint(rooms: Dictionary, placements: Array, floor_data: TileMapLayer, wall_data: TileMapLayer, registry: TileTypeRegistry, defines: Dictionary = {}) -> void:
 	for p in placements:
 		var room: Dictionary = rooms[p.room_id]
 		var locked := {}
@@ -98,7 +100,11 @@ func _paint(rooms: Dictionary, placements: Array, floor_data: TileMapLayer, wall
 		var suppressed := {}
 		for local_pos in p.suppressed_connectors:
 			suppressed[local_pos] = true
-		var sealed_tile := DungeonAssembler.dominant_wall_tile(room)
+		# The biome's own cap for unused connectors (defines.json "seal_tile"), else
+		# the room's most common wall.
+		var sealed_tile: String = defines.get("seal_tile", "")
+		if sealed_tile == "" or registry.get_id(sealed_tile) < 0:
+			sealed_tile = DungeonAssembler.dominant_wall_tile(room)
 		# Every cell of every connector run -> its connector, so a run wider than
 		# one cell is opened / sealed cell by cell instead of by its first cell.
 		var connector_of := {}
@@ -139,10 +145,25 @@ func _paint(rooms: Dictionary, placements: Array, floor_data: TileMapLayer, wall
 				if wall_name != null:
 					wall_data.set_cell(world, registry.get_id(wall_name), Vector2i.ZERO)
 
+		# Under an opening: the room's own floor there if it set one (a sewer
+		# channel running out through the gap), else base_floor.
 		for c in room["connectors"]:
 			for local in Connector.cells(c):
 				var world: Vector2i = p.offset + local
-				floor_data.set_cell(world, registry.get_id(floor_tile), Vector2i.ZERO)
+				var own: Variant = room["floor"][local.y][local.x]
+				floor_data.set_cell(world, registry.get_id(own if own != null else floor_tile), Vector2i.ZERO)
+
+		# Free-standing doors stand in the doorway itself: no wall on their cells,
+		# and the room's own floor (else base_floor) under them.
+		for d in room.get("doors", []):
+			var first := Vector2i(int(d["cell"]["x"]), int(d["cell"]["y"]))
+			for local in DoorPlacer.free_door_cells(first, d.get("orient", "h") == "v", maxi(1, int(d.get("width", 1)))):
+				if local.x < 0 or local.y < 0 or local.x >= room["width"] or local.y >= room["height"]:
+					continue
+				var world: Vector2i = p.offset + local
+				var own: Variant = room["floor"][local.y][local.x]
+				wall_data.erase_cell(world)
+				floor_data.set_cell(world, registry.get_id(own if own != null else floor_tile), Vector2i.ZERO)
 
 	_fill_void(floor_data, wall_data, registry)
 

@@ -18,21 +18,37 @@ from on its own:
 - 5 `normal` rooms
 - 10 maze pieces (`<Biome>_Maze_*`, role `normal`, tagged `"maze"`), see below
 
+That was the starting set. `dungeon/` and `mine/` were redesigned on
+2026-09-24 and now have much larger sets: two entrances, two bosses, several
+treasure rooms and 8 or 24 mazes. `flesh/` was redesigned the same day as
+84 rooms, one per organ plus a mutant of each, `forest/` as 78 rooms,
+one per landmark plus an Overgrown variant, and `cave/` as 76 rooms, one per
+formation plus a Deep variant. `sewer/` was added the same day as 111 rooms,
+one per feature plus a Flooded and a Collapsed variant, and `catacomb/` as
+80 rooms, one per feature plus a Desecrated variant, and `volcano/` as
+64 rooms, one per feature plus an Erupting variant. Each folder's own `README.md`
+lists every piece.
+
 | Folder | Walls | Floors | Idea |
 |---|---|---|---|
-| `dungeon/` | `wall_cobble_brick`, `wall_smooth_stone`, `wall_wood_plank` | smooth stone, wood planks, a little dirt | Built masonry. Wood rooms are barracks and cabins inside it. |
-| `cave/` | `wall_rough_cave` | dirt, grass patches | Thick irregular walls, few straight edges. |
-| `mine/` | `wall_rough_cave` rock with `wall_wood_plank` timber supports | dirt, wood plank walkways | A mine shaft. Plank tracks run door to door. Timber frames doorways and props up long tunnels. Includes `Mine_Cabin_Cavern_19x15`, a big cavern with a cabin in the middle. |
-| `flesh/` | `wall_flesh` | flesh, smooth stone | Flesh floor slows movement, so stone strips act as fast lanes. |
-| `liquid/` | `wall_smooth_stone` | smooth stone, `floor_water`, `floor_lava`, `floor_acid` | Test biome for the liquid floors (added 2026-09-21): normal rooms (pools, lava bridge, moat, acid vats, a 29x29 lava checkerboard maze) plus a 52x52 lava-lake boss room (a 40x40 lava pit, a stress test for the glow flood), so the entrance, treasure and corridors come from `fallback/`. Water and acid are `DIFFICULT` terrain, lava `SEVERE`. |
+| `dungeon/` | `wall_cobble_brick` | smooth stone | Built masonry. 2-wide corridors and open rooms, with small side rooms off 1-wide doors. |
+| `cave/` | `wall_rough_cave` rock, `wall_smooth_cave` flowstone and crystal | dirt, moss (grass), smooth cave, water, lava | Natural caves by formation: one room per feature (stalactite hall, underground lake, magma pool, geode), plus a Deep variant of each. No doors. Tight tunnels, and enemies come in bat swarms. |
+| `mine/` | `wall_rough_cave` rock with `wall_wood_plank` timber supports | dirt, wood plank walkways | A mine shaft. Plank tracks run door to door. Timber frames doorways and props up long tunnels. Includes `Mine_Cabin_Cavern_17x13`, a big cavern with a cabin in the middle. |
+| `flesh/` | `wall_flesh` | flesh, smooth stone, acid | Inside a body: one room per organ, plus a mutant of each (extra lobes, doubled parts). Lopsided, never symmetric. Flesh floor slows movement, so stone strips act as fast lanes. Very dense with enemies. |
+| `forest/` | `wall_forest` trees, `wall_rough_cave` rocks, `wall_wood_plank` timber | dirt, grass, water, wood planks | Woods by landmark: one room per forest feature (pond, fallen giant, wolf den), plus an Overgrown variant of each. No doors. Trails wind between openings, and enemies come in wolf packs. |
+| `sewer/` | `wall_cobble_brick` brick, `wall_smooth_stone` pillars and tank walls, `wall_rough_cave` rubble | smooth stone walkways, water, acid, dirt (silt), wood planks | Built sewers by feature: one room per feature (cistern, sluice gates, pump room, rat nest), plus a Flooded and a Collapsed variant of each. Symmetric brickwork, 5-wide mains with a water channel between two ledges, 1-wide crawls. Iron doors on side rooms, cisterns and treasure. Enemies come in rat swarms, with leeches in the water. |
+| `catacomb/` | `wall_cobble_brick` brick, `wall_smooth_stone` sarcophagi, bone stacks and altars, `wall_rough_cave` rubble | smooth stone, dirt, violet carpet (tombs only) | Burial galleries by feature: one room per feature (ossuary, columbarium, charnel pit, family tomb), plus a Desecrated variant of each. Burial niches cut every other tile into thick walls. 3-wide processionals and 1-wide galleries. Iron doors on tombs, treasure and boss crypts. Undead garrisons: skeleton archers pinned in lines, wraiths and the rest in the niches. |
+| `volcano/` | `wall_rough_cave` basalt, `wall_smooth_cave` obsidian | dirt (ash), smooth cave (cooled crust), lava | Volcanic features: one room per feature (lava river, caldera, cinder cone, fumarole vents, magma chamber), plus an Erupting variant with more lava. Every lava room has a crust path between its openings: the fast way through. No doors. Demon packs: hellhounds in tight packs on the ground, demonic hamster swarms over the lava. |
 
 ## `cathedral/` is a stress test, not a designed biome
 
-Added 2026-09-21 to see how generation and rendering hold up at size. It is
-the 20 `dungeon/` rooms with their interiors scaled 3x or 4x (outer wall
-still 1 thick, doors still 1 wide), plus `Cathedral_Boss_Nave_100x100`, which
-is the Dungeon Maker's maximum size. A dive here is about 25,000 room tiles
-inside a roughly 240 x 256 tile box. Because it is a folder in `game/rooms/`,
+Added 2026-09-21 to see how generation and rendering hold up at size.
+Rebuilt 2026-09-24: it is now the current 43 `dungeon/` rooms with their
+interiors scaled 3x (outer wall still 1 thick, doors 3 or 5 wide), redecorated
+with carpets, pillars and pews, plus `Cathedral_Boss_Nave_100x100`, which is
+the Dungeon Maker's maximum size. Rooms average about 700 tiles (flesh: about
+250), so a 25-40 room dive is roughly 18,000-28,000 room tiles, the biggest
+biome again. See `cathedral/README.md`. Because it is a folder in `game/rooms/`,
 `pick_biome()` will choose it like any other biome. Add it to
 `IGNORED_FOLDERS` in `DungeonAssembler.gd` when the test is over.
 
@@ -40,7 +56,8 @@ inside a roughly 240 x 256 tile box. Because it is a folder in `game/rooms/`,
 
 The assembler grows a dungeon as a tree: it never joins two branches back
 together. So the maze feel has to come from the pieces themselves. Each
-biome has the same ten kinds, drawn differently per biome:
+biome started with the same ten kinds, drawn differently per biome
+(`dungeon/` and `mine/` have since replaced theirs, see their READMEs):
 
 | Piece | Doors | What it does to the player |
 |---|---|---|
@@ -77,8 +94,8 @@ ask for: `Entrance_15x15`, `Boss_Vault_11x11`, `Treasure_Vault_5x5`,
 2026-09-22; the other legacy rooms are in git history if needed.
 The biome is picked from the dungeon seed, so every peer picks the same one.
 
-`DungeonPainter.gd` and `DungeonDebugView.gd` both call
-`load_rooms(pick_biome(seed))`. `fallback/` is in `IGNORED_FOLDERS`, so it is
+`DungeonPainter.gd` calls
+`load_rooms(pick_biome(seed))` (the F5 debug draws in `scripts/debug/` read its result from `DebugState`). `fallback/` is in `IGNORED_FOLDERS`, so it is
 never picked as a biome; it only fills in room kinds a biome is missing.
 
 ## Dungeon Maker and biomes

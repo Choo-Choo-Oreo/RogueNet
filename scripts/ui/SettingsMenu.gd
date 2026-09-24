@@ -6,12 +6,6 @@ class_name SettingsMenu
 @onready var v_sync_check_button: CheckButton = $MarginContainer/VBoxContainer/VSyncCheckButton
 
 func _ready():
-	#var audio_settings = ConfigFileHandler.load_audio_settings()
-	#audio_slider_master.value = min(audio_settings.Master_volume, 1.0)
-	#audio_slider_music.value = min(audio_settings.Music_volume, 1.0)
-	#audio_slider_sfx.value = min(audio_settings.SFX_volume, 1.0)
-	#audio_slider_ui.value = min(audio_settings.UI_volume, 1.0)
-
 	# set_pressed_no_signal, not button_pressed = ...: this is reading the
 	# already-applied setting back into the UI, not a user action -- setting
 	# button_pressed directly fires the same "toggled" signal a real click
