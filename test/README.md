@@ -7,7 +7,7 @@ Automated checks that run without the game open. Framework: [GUT](https://github
 ## Try things by hand: the Test Lab
 `test/lab/TestLab.tscn`: right-click it in the editor and choose Run. It builds the development
 biome and shows a panel telling you, cell by cell, what it is, what to do, what counts as a bug,
-plus a button that copies a bug report to paste to Claude. See `game/rooms/development/README.md`.
+plus a button that copies a bug report to paste to Claude. See `test/lab/development/README.md`.
 
 ## Run them
 Easiest: double-click or run `run_tests.bat` in the repo root. It uses a Godot copy you keep in

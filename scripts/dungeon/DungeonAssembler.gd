@@ -102,8 +102,15 @@ static func _read_folder(folder: String) -> Dictionary:
 			rooms[data["id"]] = data
 	return rooms
 
+## A biome is a folder name under game/rooms/, or a full "res://" folder path for content that
+## is not a real biome (the Test Lab's development hub lives under test/ so no mission picks it).
+static func _biome_dir(biome: String) -> String:
+	if biome.begins_with("res://"):
+		return biome.trim_suffix("/") + "/"
+	return ROOMS_DIR + (biome + "/" if biome != "" else "")
+
 static func load_rooms(biome: String = "") -> Dictionary:
-	var rooms := _read_folder(ROOMS_DIR + (biome + "/" if biome != "" else ""))
+	var rooms := _read_folder(_biome_dir(biome))
 	_fill_from_fallback(rooms)
 	return with_rotations(rooms)
 
@@ -114,7 +121,7 @@ static func load_rooms(biome: String = "") -> Dictionary:
 static func load_defines(biome: String) -> Dictionary:
 	if biome == "":
 		return {}
-	var defines := JsonOnloading.load_dict(ROOMS_DIR + biome + "/defines.json")
+	var defines := JsonOnloading.load_dict(_biome_dir(biome) + "defines.json")
 	var fallback := JsonOnloading.load_dict(ROOMS_DIR + FALLBACK_FOLDER + "/defines.json")
 	for key in fallback:
 		if not defines.has(key):

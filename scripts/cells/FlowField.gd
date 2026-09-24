@@ -108,9 +108,21 @@ static func get_step(target_id: Variant, target_cell: Vector2i, from_cell: Vecto
 	var field := _field_for(target_id, target_cell, is_blocked)
 	var map_name := "terrain_directions" if terrain_cost.is_valid() else "directions"
 	if not field.has(map_name):
-		field[map_name] = _build_directions(target_cell, terrain_cost, field["grid"])
+		var times := {}
+		field[map_name] = _build_directions(target_cell, terrain_cost, field["grid"], times)
+		if terrain_cost.is_valid():
+			field["terrain_times"] = times
 	var directions: Dictionary = field[map_name]
 	return directions.get(from_cell, Vector2i.ZERO)
+
+## Travel time (see _build_directions) from each reachable cell to `target_cell` for a walker
+## whose terrain costs are `terrain_cost`. Lets a caller pick steps that get closer in TIME,
+## so it does not wade through slow ground where going round is quicker.
+static func get_times(target_id: Variant, target_cell: Vector2i, is_blocked: Callable, terrain_cost: Callable) -> Dictionary:
+	var field := _field_for(target_id, target_cell, is_blocked)
+	if not field.has("terrain_times"):
+		get_step(target_id, target_cell, target_cell, is_blocked, terrain_cost)
+	return field["terrain_times"]
 
 ## Walking distance (in steps, walls only; a diagonal step counts as one) from
 ## each reachable cell to `target_cell`, from the same shared field get_step
@@ -144,10 +156,11 @@ static func _field_for(target_id: Variant, target_cell: Vector2i, is_blocked: Ca
 ## terrain_cost unset for plain ground everywhere. A cell can be reached again
 ## by a cheaper route, so it is re-queued when improved. Returns cell -> the
 ## step to take from it.
-static func _build_directions(target_cell: Vector2i, terrain_cost: Callable, grid: StepCache) -> Dictionary:
+static func _build_directions(target_cell: Vector2i, terrain_cost: Callable, grid: StepCache, times_out: Dictionary) -> Dictionary:
 	var weighted := terrain_cost.is_valid()
 	var directions := {target_cell: Vector2i.ZERO}
 	var best := {target_cell: 0.0}
+	times_out[target_cell] = 0.0
 	var costs := {}
 	var queued := {target_cell: true}
 	var queue: Array[Vector2i] = [target_cell]
@@ -170,6 +183,7 @@ static func _build_directions(target_cell: Vector2i, terrain_cost: Callable, gri
 			var total: float = best[cell] + step_cost
 			if total < best.get(neighbor, INF):
 				best[neighbor] = total
+				times_out[neighbor] = total
 				directions[neighbor] = -step
 				if not queued.has(neighbor):
 					queued[neighbor] = true

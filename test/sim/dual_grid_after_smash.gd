@@ -13,7 +13,7 @@ var changes := []
 func _initialize() -> void:
 	var sync := root.get_node("NetworkSync")
 	sync.dungeon_seed = 1
-	sync.dungeon_biome = "development"
+	sync.dungeon_biome = "res://test/lab/development"
 	change_scene_to_file("res://scenes/dungeon/Dungeon.tscn")
 func snap(layer) -> Dictionary:
 	var d := {}

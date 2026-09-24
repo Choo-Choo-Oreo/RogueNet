@@ -500,6 +500,15 @@ func _try_pursue_step(target: Node2D, full_speed: bool) -> void:
 ## trading places forever). Returns false (caller uses the normal chase) for
 ## ranged minions or ones too far / unreachable.
 const SURROUND_RADIUS := 12
+## How much longer (in tile-steps of time) a route has to be than plain ground before the surround
+## step stops fanning out and sticks to the quickest route.
+const TERRAIN_MATTERS_EXTRA := 0.75
+
+## Time one step from `cell` takes for this walker: its length times the average terrain cost of
+## the two tiles, the same sum FlowField uses to build its times.
+func _step_time(cell: Vector2i, step: Vector2i) -> float:
+	var length := FlowField.DIAGONAL_LENGTH if step.x != 0 and step.y != 0 else 1.0
+	return length * (grid_mover.tile_cost(cell) + grid_mover.tile_cost(cell + step)) * 0.5
 const SLIDE_COOLDOWN_MSEC := 1500
 var _slide_ready_msec := 0
 var _prev_cell := Vector2i.ZERO
@@ -513,6 +522,17 @@ func _try_surround_step(target: Node2D, origin_cell: Vector2i, target_cell: Vect
 	if not distances.has(origin_cell):
 		return false
 	var here: int = distances[origin_cell]
+	# A walker on uneven ground only takes steps that get it there sooner (not merely nearer), or
+	# the fan-out would drift along a tie into water or acid the flow field would have gone round.
+	var times := {}
+	var terrain_matters := false
+	if _terrain_cost().is_valid():
+		times = FlowField.get_times(_flow_key(target_id), target_cell, grid_mover.is_tile_blocked, _terrain_cost())
+		# On plain ground the time is just the walking distance; well above that, slow ground is
+		# steering the route, and then only steps ON the quickest route are safe to fan out with.
+		var offset := (target_cell - origin_cell).abs()
+		var ideal: float = maxi(offset.x, offset.y) + (FlowField.DIAGONAL_LENGTH - 1.0) * mini(offset.x, offset.y)
+		terrain_matters = float(times.get(origin_cell, ideal)) > ideal + TERRAIN_MATTERS_EXTRA
 	var counts := SurroundSectors.counts_for(get_tree(), target_id, grid_mover.tile_size)
 	var sector_count := func(cell: Vector2i) -> int:
 		if counts.is_empty():
@@ -527,6 +547,12 @@ func _try_surround_step(target: Node2D, origin_cell: Vector2i, target_cell: Vect
 		var step := Vector2i(direction)
 		var next_cell := origin_cell + step
 		if not distances.has(next_cell) or distances[next_cell] >= here:
+			continue
+		if not times.is_empty() and float(times.get(next_cell, INF)) >= float(times.get(origin_cell, INF)):
+			avoided_hazard = true  # nearer but not sooner: leave it to the weighted chase below
+			continue
+		if terrain_matters and _step_time(origin_cell, step) + float(times.get(next_cell, INF)) > float(times[origin_cell]) + 0.01:
+			avoided_hazard = true  # not on the quickest route round the slow ground
 			continue
 		if not _step_open(origin_cell, step):
 			continue

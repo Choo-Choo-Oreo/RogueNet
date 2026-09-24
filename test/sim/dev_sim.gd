@@ -1,6 +1,6 @@
 extends SceneTree
 
-## Headless playtest of the development biome (game/rooms/development/). For each test cell it
+## Headless playtest of the development biome (test/lab/development/). For each test cell it
 ## rebuilds the dungeon, puts an invincible player at the cell's entry tile, opens the cell's
 ## door, lets the game run, and reports how each creature from that cell behaved: closest it got
 ## to the player, whether it stalled, and whether it ever stood on a wall, void or no-floor tile.
@@ -13,13 +13,13 @@ extends SceneTree
 ## to notice the player through their own senses.
 ##
 ## With no cell names it runs the bug cells. Cell names and door/entry tiles come from
-## test/sim/dev_cells.json, which game/rooms/development/generate_hub.py writes.
+## test/sim/dev_cells.json, which test/lab/development/generate_hub.py writes.
 ## Real time, not simulated: minion timers use the wall clock, so 15 s takes 15 s per cell.
 
 const CELLS_FILE := "res://test/sim/dev_cells.json"
 const DEFAULT_CELLS := ["minion_minotaur", "bug1_spawn_fit", "bug1_no_room_for_boss", "bug1_hole_band",
 	"bug2_two_wide_gap", "bug2_one_wide_gap", "bug6_boss_blocks_gap", "bug3_smash_plain", "bug3_smash_door", "bug3_smash_pillar",
-	"bug4_corridor_archer", "bug4_open_archer", "bug5_boss_crowd"]
+	"bug4_corridor_archer", "bug4_open_archer", "bug5_boss_crowd", "terrain_lava", "terrain_water", "terrain_acid"]
 const SAMPLE_SECONDS := 0.25
 ## A creature that moved less than this (tiles) over STALL_SECONDS while the player was farther
 ## than STALL_MIN_DISTANCE is reported as stalled.
@@ -68,7 +68,7 @@ func _initialize() -> void:
 	_meta = JSON.parse_string(FileAccess.get_file_as_string(CELLS_FILE))
 	_cells = _meta["cells"]
 	_center = Vector2i(int(_meta["width"] / 2), int(_meta["height"] / 2))
-	var hub = JSON.parse_string(FileAccess.get_file_as_string("res://game/rooms/development/%s.json" % _meta["hub"]))
+	var hub = JSON.parse_string(FileAccess.get_file_as_string("res://test/lab/development/%s.json" % _meta["hub"]))
 	for s in hub["spawn_cells"]:
 		_spawn_ids[Vector2i(int(s["position"]["x"]), int(s["position"]["y"])) - _center] = str(s.get("minion", "?"))
 	var wanted: Array = names if not names.is_empty() else DEFAULT_CELLS
@@ -90,7 +90,7 @@ func _next_cell() -> void:
 	_cell = _queue.pop_front()
 	var sync := root.get_node("NetworkSync")
 	sync.dungeon_seed = 1
-	sync.dungeon_biome = "development"
+	sync.dungeon_biome = "res://test/lab/development"
 	_log.lines.clear()
 	change_scene_to_file("res://scenes/dungeon/Dungeon.tscn")
 	_state = "wait_scene"
@@ -133,7 +133,7 @@ func _begin_run() -> void:
 		var tile := Vector2i(floori(m.global_position.x / tile_size), floori(m.global_position.y / tile_size))
 		if area.has_point(tile):
 			_watch.append({"node": m, "id": _label(m, tile), "start": tile, "zone": null, "zone_changes": 0, "state": 0, "attack_msec": -1, "closest": 9999.0,
-				"last_pos": m.global_position, "last_moved_msec": Time.get_ticks_msec(), "stalled": false, "bad": ""})
+				"last_pos": m.global_position, "last_moved_msec": Time.get_ticks_msec(), "stalled": false, "bad": "", "waded": 0, "wade_first": ""})
 	_expected = 0
 	for s in _spawn_ids:
 		if area.has_point(s):
@@ -142,7 +142,7 @@ func _begin_run() -> void:
 	for door in _doors.doors:
 		if door.cells.has(door_tile):
 			_doors.set_open(door.id, true)
-	_player.grid_mover.teleport(Vector2(_world_tile(_cell["entry"]) * tile_size))
+	_player.grid_mover.teleport(Vector2(_world_tile(_cell["player_at"] if _cell.get("player_at") != null else _cell["entry"]) * tile_size))
 	if not _natural:
 		for w in _watch:
 			w["node"].force_target(_player, _seconds)
@@ -179,6 +179,12 @@ func _sample(now: int) -> void:
 			w["last_moved_msec"] = now
 		elif state == 2 and d > STALL_MIN_DISTANCE and now - int(w["last_moved_msec"]) >= int(STALL_SECONDS * 1000.0):
 			w["stalled"] = true
+		# Standing on terrain that costs more than plain ground (water, acid, lava) while it could
+		# walk round: counted per sample, and a cell can require none (WADE_MAX in generate_hub.py).
+		if not m.grid_mover.flies and m.grid_mover.tile_cost(Vector2i(floori(m.global_position.x / tile_size), floori(m.global_position.y / tile_size))) > 1.5:
+			w["waded"] += 1
+			if w["wade_first"] == "":
+				w["wade_first"] = "first at (%d,%d) after %.1fs" % [floori(m.global_position.x / tile_size), floori(m.global_position.y / tile_size), (now - _started_msec) / 1000.0]
 		if w["bad"] == "":
 			var mover = m.get("grid_mover")
 			var fp: int = mover.footprint
@@ -218,6 +224,8 @@ func _finish() -> void:
 			flags += "  STALLED"
 		if int(w["zone_changes"]) > 0:
 			flags += "  boss zone changed %d times while standing still" % w["zone_changes"]
+		if int(w["waded"]) > 0:
+			flags += "  waded in costly terrain for %.1fs (%s)" % [int(w["waded"]) * SAMPLE_SECONDS, w["wade_first"]]
 		if w["bad"] != "":
 			flags += "  BAD TILE: " + w["bad"]
 			_bad_total += 1
@@ -247,6 +255,10 @@ func _finish() -> void:
 	for w in _watch:
 		if w["bad"] != "":
 			problems.append("%s stood on a bad tile" % w["id"])
+	if int(_cell.get("wade_max", -1)) >= 0:
+		for w in _watch:
+			if int(w["waded"]) > int(_cell["wade_max"]):
+				problems.append("%s waded through slow or harmful ground when it could go round" % w["id"])
 	var zone_max: int = int(_cell.get("zone_changes_max", -1))
 	for w in _watch:
 		if zone_max >= 0 and int(w["zone_changes"]) > zone_max:

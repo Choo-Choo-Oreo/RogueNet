@@ -22,7 +22,9 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 0,
+   "player_at": null,
    "what": "rat alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
@@ -46,7 +48,9 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 2,
+   "player_at": null,
    "what": "rat_toothless alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
@@ -70,7 +74,9 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 4,
+   "player_at": null,
    "what": "bat_echo alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
@@ -94,7 +100,9 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 6,
+   "player_at": null,
    "what": "hamster_flying alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
@@ -118,7 +126,9 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 8,
+   "player_at": null,
    "what": "leech alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
@@ -142,7 +152,9 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 10,
+   "player_at": null,
    "what": "wolf alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
@@ -166,7 +178,9 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 12,
+   "player_at": null,
    "what": "skeleton_archer alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
@@ -192,7 +206,9 @@
    ],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 14,
+   "player_at": null,
    "what": "minotaur alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
@@ -216,7 +232,9 @@
    "reach": [],
    "may_skip": true,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 16,
+   "player_at": null,
    "what": "The Minotaur is pinned in a sealed 1-wide corridor with no 2x2 spot nearby.",
    "try": "Just look inside; nothing should be there.",
    "look": "A Minotaur exists here (it must be skipped). The debug log (F4) should say \"No room for a 2x2\"."
@@ -243,7 +261,9 @@
    ],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 19,
+   "player_at": null,
    "what": "The same, but the gap is 1 wide, so the Minotaur cannot fit.",
    "try": "Stand past the gap, in line with it, and press Enter.",
    "look": "The Minotaur cannot fit the gap, so it should smash the wall (even with a straight line through the gap) and both reach you. It parks in front of the gap instead."
@@ -269,7 +289,9 @@
    ],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 21,
+   "player_at": null,
    "what": "The Minotaur behind a solid wall with no way round.",
    "try": "Stand on the far side and wait.",
    "look": "It should break the wall and reach you. It gives up, or walks through the wall without breaking it."
@@ -295,7 +317,9 @@
    ],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 23,
+   "player_at": null,
    "what": "The Minotaur among pillars, with a way round.",
    "try": "Stand behind the pillars.",
    "look": "It should walk round or smash through, and never stand inside a pillar."
@@ -321,7 +345,9 @@
    ],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 25,
+   "player_at": null,
    "what": "An archer among rats in the open.",
    "try": "Stand at the far side.",
    "look": "The archer holds back and shoots while the rats run past it."
@@ -345,7 +371,9 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 27,
+   "player_at": null,
    "what": "A pillared arena with the Minotaur and its crowd.",
    "try": "Run circles round the pillars so they chase you.",
    "look": "Bug 5: rats jittering near the Minotaur. Archers should hold back and shoot. Anything standing in a wall."
@@ -369,7 +397,9 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 29,
+   "player_at": null,
    "what": "Pillars with 1-wide gaps (Minotaur cannot use them) and open bands (2+).",
    "try": "Run the Minotaur through the pillars, changing side often.",
    "look": "The Minotaur standing in a wall or clipping a corner. (Screenshot it and note the tile from F4.)"
@@ -393,7 +423,12 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": 0,
    "index": 31,
+   "player_at": {
+    "x": 254,
+    "y": 11
+   },
    "what": "A lava band with a stone way round.",
    "try": "Stand across the band.",
    "look": "Walkers must route round; flyers may cross. Anything walking through lava."
@@ -417,10 +452,15 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": 0,
    "index": 33,
+   "player_at": {
+    "x": 271,
+    "y": 11
+   },
    "what": "An acid band with a stone way round.",
    "try": "Stand across the band.",
-   "look": "Known: walkers currently DO walk on acid (it will become a damaging tile later, like water). Note anything else odd."
+   "look": "Walkers should take the stone way round, not wade through the acid (a flyer may cross). Acid will become a damaging tile later."
   },
   {
    "name": "swarm_rats",
@@ -441,7 +481,9 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 35,
+   "player_at": null,
    "what": "About 60 rats in one room.",
    "try": "Open the door and fight or run.",
    "look": "Frame rate (F4 shows it) dropping badly, or rats stuck in a pile."
@@ -465,7 +507,9 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 1,
+   "player_at": null,
    "what": "rat_blind alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
@@ -489,7 +533,9 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 3,
+   "player_at": null,
    "what": "bat alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
@@ -513,7 +559,9 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 5,
+   "player_at": null,
    "what": "hamster alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
@@ -537,7 +585,9 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 7,
+   "player_at": null,
    "what": "hamster_demonic alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
@@ -561,7 +611,9 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 9,
+   "player_at": null,
    "what": "leech_flesh alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
@@ -585,7 +637,9 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 11,
+   "player_at": null,
    "what": "wolf_hellhound alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
@@ -609,7 +663,9 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 13,
+   "player_at": null,
    "what": "wraith alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
@@ -635,7 +691,9 @@
    ],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 15,
+   "player_at": null,
    "what": "The Minotaur is pinned in a 1-wide nook it cannot stand in, and a rat sits beside a hole in the floor.",
    "try": "Let them come for you.",
    "look": "The Minotaur is moved to a free 2x2 spot, never left inside a wall. The rat never walks on the hole."
@@ -661,7 +719,9 @@
    ],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 17,
+   "player_at": null,
    "what": "A chasm across the room with a bridge at one side and a rat on each side.",
    "try": "Stand opposite a rat and watch it cross.",
    "look": "A rat walking on the holes instead of using the bridge."
@@ -688,7 +748,9 @@
    ],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 18,
+   "player_at": null,
    "what": "A rat and the Minotaur chase you through a 2-wide gap.",
    "try": "Stand past the gap and wait.",
    "look": "Either one stopping at the gap and never coming through."
@@ -714,7 +776,9 @@
    ],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 20,
+   "player_at": null,
    "what": "An unbreakable wall with a 1-wide gap. The Minotaur stands right in front of the gap (it cannot fit through), rats behind it.",
    "try": "Stand on the far side of the wall, in line with the gap, and press Enter.",
    "look": "The Minotaur should step back and hold while the rats squeeze through the gap to you. It stays parked in front of the gap, or the rats jam behind it."
@@ -740,7 +804,9 @@
    ],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 22,
+   "player_at": null,
    "what": "The Minotaur behind a closed door.",
    "try": "Stand on the far side.",
    "look": "It should smash the door (or open it) and reach you."
@@ -766,7 +832,9 @@
    ],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 24,
+   "player_at": null,
    "what": "An archer with rats queued behind it in a 1-wide corridor.",
    "try": "Stand at the far end.",
    "look": "The archer and the rats should trade places until the rats reach you. Someone stuck, or a swap that looks like a jump."
@@ -790,7 +858,9 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": 2,
+   "wade_max": -1,
    "index": 26,
+   "player_at": null,
    "what": "The Minotaur idling among rats.",
    "try": "Watch from the door without waking it, then step in.",
    "look": "Rats jittering in and out of the Minotaur's way while it stands or turns."
@@ -814,7 +884,9 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 28,
+   "player_at": null,
    "what": "A long 1-wide corridor: an archer with four rats behind it.",
    "try": "Enter from the far end.",
    "look": "Bug 4: the archer and rats should walk past each other. Say if the swap reads badly."
@@ -838,7 +910,9 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 30,
+   "player_at": null,
    "what": "A thick wall with a long way round along the bottom.",
    "try": "Stand on the far side of the wall, then walk around it once.",
    "look": "Decide what it should do: walk round, smash, or both. Right now it walks to the wall, loses its target and never smashes."
@@ -862,7 +936,12 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": 0,
    "index": 32,
+   "player_at": {
+    "x": 260,
+    "y": 24
+   },
    "what": "A water band with a stone way round.",
    "try": "Stand across the band.",
    "look": "Walkers must route round; flyers may cross. Anything wading through."
@@ -886,7 +965,9 @@
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
+   "wade_max": -1,
    "index": 34,
+   "player_at": null,
    "what": "Minotaur, archer, rat and wraith behind 1, 2 and 3 wide wooden doors.",
    "try": "Open each door and step back.",
    "look": "The Minotaur cannot use the 1-wide door; everyone else should get out of theirs."

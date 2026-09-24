@@ -4,7 +4,7 @@ extends CanvasLayer
 ## The Test Lab panel: which test cell you are at, what it is for, what to do, what counts as a
 ## bug, a live readout of the creatures, and a button that copies a bug report. Built in code,
 ## like DebugMenu. Cell text comes from test/sim/dev_cells.json (written by
-## game/rooms/development/generate_hub.py, where the text lives beside each cell).
+## test/lab/development/generate_hub.py, where the text lives beside each cell).
 ##
 ##   [ or PageUp    previous cell            ] or PageDown  next cell
 ##   '  or F6       open the door            Enter or F7    open the door and wake everything in the cell
@@ -147,7 +147,8 @@ func _open_door() -> void:
 
 func _step_inside() -> void:
 	if _player != null:
-		_player.grid_mover.teleport(Vector2(_world(_cells[_index]["entry"]) * _player.grid_mover.tile_size))
+		var c: Dictionary = _cells[_index]
+		_player.grid_mover.teleport(Vector2(_world(c["player_at"] if c.get("player_at") != null else c["entry"]) * _player.grid_mover.tile_size))
 
 ## The same call a taunt makes: every creature in the cell knows where you are, so a wall
 ## between you tests their pathfinding instead of their eyesight.
@@ -206,7 +207,7 @@ func _refresh_readout() -> void:
 
 func _copy_report() -> void:
 	var c: Dictionary = _cells[_index]
-	var text := "Bug report from the Test Lab\ncell: %s (seed %d, biome development)\nyou: %s, %.0fs after arriving\n" % [
+	var text := "Bug report from the Test Lab\ncell: %s (seed %d, hub test/lab/development)\nyou: %s, %.0fs after arriving\n" % [
 		c["name"], NetworkSync.dungeon_seed, _tile_of(_player), (Time.get_ticks_msec() - _started_msec) / 1000.0]
 	text += "creatures:\n  " + "\n  ".join(_lines()) + "\n"
 	text += "debug log (last lines):\n  " + "\n  ".join(DebugLog.lines.slice(-8)) + "\n"

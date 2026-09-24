@@ -1,6 +1,6 @@
 # Headless playtests
 
-`dev_sim.gd` plays the development biome (`game/rooms/development/`) without a window and reports
+`dev_sim.gd` plays the development biome (`test/lab/development/`) without a window and reports
 what the creatures did, so the AI bugs in `docs/TODO.md` ("Big bodies, movement, abilities") can be
 checked by a command instead of by walking around. It is a script run by Godot, not a GUT test:
 it takes real time (about `seconds` per cell) and prints a report.
@@ -27,7 +27,7 @@ godot --headless -s res://test/sim/dev_sim.gd -- [seconds=15] [natural] [cell_na
   checks (no bad tile, no more creatures than pinned). The exit code is 1 if any cell fails.
 - **A cell that fails means a bug is present or came back.** Cells stay after their bug is fixed; add
   the expectation first, watch it fail, then fix.
-- `dev_cells.json` is written by `game/rooms/development/generate_hub.py`; do not edit it by hand.
+- `dev_cells.json` is written by `test/lab/development/generate_hub.py`; do not edit it by hand.
 
 Not covered: the smash telegraph is visual. The boss zone (bug 5) is sampled, but the flicker the audit
 describes has not been reproduced yet.

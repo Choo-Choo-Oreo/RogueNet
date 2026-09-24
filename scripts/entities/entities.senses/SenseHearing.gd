@@ -1,11 +1,17 @@
 class_name SenseHearing
 extends Node
 
-## Not developed yet -- static range 3, Warden-style directional noise
-## tracking on player movement (see the minion senses design memory). Always
-## passes (never detects) until that's built.
-
+## Hears noises (see Noise): unlike sight and touch it is not a check made every tick against a
+## player, it is told when something made a sound. A noise carries `loudness`; this creature
+## hears it when it is within `range_tiles * loudness` tiles, straight-line, walls do not
+## muffle it (yet). So `range_tiles` is how far it hears a footstep (loudness 1.0), and a
+## thrown rock (loudness 3.0) carries three times as far. A blind rat has a big range.
+## What a hit does is MinionSenses.hear(): the creature goes to look at where the noise was.
 @export var enabled: bool = true
+@export var range_tiles: float = 3.0
+@export var tile_size: float = 16.0
 
-func detects(_origin: Vector2, _target: Node2D) -> bool:
-	return false
+func hears(origin: Vector2, noise_position: Vector2, loudness: float) -> bool:
+	if not enabled:
+		return false
+	return origin.distance_to(noise_position) <= range_tiles * loudness * tile_size

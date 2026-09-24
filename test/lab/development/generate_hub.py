@@ -1,7 +1,7 @@
-"""Generates game/rooms/development/: one big entrance-role hub with test cells behind wood doors.
-Run from the repo root: python game/rooms/development/generate_hub.py"""
+"""Generates test/lab/development/: one big entrance-role hub with test cells behind wood doors.
+Run from the repo root: python test/lab/development/generate_hub.py"""
 import json, os
-OUT = 'game/rooms/development'
+OUT = 'test/lab/development'
 FLOOR, WALL = 'floor_smooth_stone', 'wall_smooth_stone'
 TILE = {'.': FLOOR, 'L': 'floor_lava', '~': 'floor_water', 'A': 'floor_acid'}
 MINION = {'r': 'rat', 'R': 'rat_blind', 'T': 'rat_toothless', 'b': 'bat', 'B': 'bat_echo', 'h': 'hamster',
@@ -241,10 +241,17 @@ REACH = {
     'bug4_open_archer': ['rat'],
 }
 
+# Where the player stands instead of at the door (interior column, row), for cells that test a
+# straight line to the creature. The sim and the Test Lab both use it for "step inside".
+PLAYER_AT = {'terrain_lava': (13, 1), 'terrain_water': (13, 1), 'terrain_acid': (13, 1)}
+
 # The Minotaur is expected to be skipped here, so the cell may spawn fewer creatures than it pins.
 MAY_SKIP = ['bug1_no_room_for_boss']
 # A boss standing still may change its zone at most this many times (bug 5: it flipped with its facing).
 ZONE_CHANGES_MAX = {'bug5_boss_crowd': 2}
+# Walking creatures may spend at most this many samples (0.25 s each) on slow or harmful ground when
+# a stone way round exists. Found in the Test Lab: the crowd fan-out drifted a hellhound into acid.
+WADE_MAX = {'terrain_lava': 0, 'terrain_water': 0, 'terrain_acid': 0}
 
 
 # ---- what the Test Lab (test/lab/TestLab.tscn) shows you for each cell ----
@@ -304,7 +311,7 @@ NOTES = {
     'terrain_water': ('A water band with a stone way round.', 'Stand across the band.',
                       'Walkers must route round; flyers may cross. Anything wading through.'),
     'terrain_acid': ('An acid band with a stone way round.', 'Stand across the band.',
-                     'Known: walkers currently DO walk on acid (it will become a damaging tile later, like water). Note anything else odd.'),
+                     'Walkers should take the stone way round, not wade through the acid (a flyer may cross). Acid will become a damaging tile later.'),
     'doors_widths': ('Minotaur, archer, rat and wraith behind 1, 2 and 3 wide wooden doors.',
                      'Open each door and step back.',
                      'The Minotaur cannot use the 1-wide door; everyone else should get out of theirs.'),
@@ -399,7 +406,10 @@ def place(b, ox, oy, door_side):
                       'rect': {'x': ox, 'y': oy, 'w': b['W'], 'h': b['H']},
                       'reach': REACH.get(c['name'], []), 'may_skip': c['name'] in MAY_SKIP,
                       'zone_changes_max': ZONE_CHANGES_MAX.get(c['name'], -1),
+                      'wade_max': WADE_MAX.get(c['name'], -1),
                       'index': [k['name'] for k in cells].index(c['name']),
+                      'player_at': ({'x': ox + 1 + PLAYER_AT[c['name']][0], 'y': oy + 1 + PLAYER_AT[c['name']][1]}
+                                    if c['name'] in PLAYER_AT else None),
                       'what': note[0], 'try': note[1], 'look': note[2]})
 
 

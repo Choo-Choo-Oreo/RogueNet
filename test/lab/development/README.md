@@ -1,6 +1,6 @@
 # Development: a test map
 
-Not a real biome: a place to try creatures and AI. Pick "development" in the location picker.
+Not a real biome: a place to try creatures and AI. It lives under `test/lab/`, so the location picker and random biome pick never see it; run `test/lab/TestLab.tscn` to play it (a biome value that starts with `res://` is read as a folder path, see `DungeonAssembler._biome_dir`).
 It always builds the same thing, whatever the seed: `room_count` is 1, and the one big room
 is an **entrance** room, which is never rotated and is where you start. Everything else the
 generator needs (a boss room and a treasure room, so it does not retry) is a 5x5 stub on
@@ -52,7 +52,7 @@ The hub file is generated: edit `generate_hub.py` (each cell is a few lines of t
 creature pinned to that tile) and run it from the repo root:
 
 ```
-python game/rooms/development/generate_hub.py
+python test/lab/development/generate_hub.py
 ```
 
 It deletes and rewrites the `Development_*.json` files. The Dungeon Maker can open the result

@@ -67,7 +67,7 @@ Status key: [ ] todo, [x] done, [~] built / needs playtest, [-] on hold
 ## Done this session (needs playtest)
 
 - [~] Alertness icon replaces the previous one instead of stacking (Investigate -> Attack no longer overlaps) -- MinionController._show_alertness
-- [~] Development biome now rolls all 14 enemy types at equal weight (game/rooms/development/defines.json), to stress-test the AI across speeds, ranged and flying
+- [~] Development biome now rolls all 14 enemy types at equal weight (test/lab/development/defines.json), to stress-test the AI across speeds, ranged and flying
 
 ## Built 2026-09-23 (all [~] need playtest)
 
