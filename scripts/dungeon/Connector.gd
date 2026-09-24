@@ -107,7 +107,8 @@ static func rotate(c: Dictionary, room_height: int) -> Dictionary:
 	return make(
 		Vector2i(room_height - 1 - p.y, p.x),
 		Vector2i(room_height - 1 - q.y, q.x),
-		is_free(c))
+		is_free(c),
+		c.get("door", ""))
 
 ## Human-readable problems with a room's (format 2) connectors; empty = fine.
 static func validate(room: Dictionary) -> Array[String]:

@@ -144,7 +144,29 @@ static func _rotate_points(points: Array, height: int) -> Array:
 	for c in points:
 		var x: int = int(c["position"]["x"])
 		var y: int = int(c["position"]["y"])
-		rotated.append({"position": {"x": height - 1 - y, "y": x}})
+		var turned: Dictionary = (c as Dictionary).duplicate(true)  # keeps "enemy" and any other key
+		turned["position"] = {"x": height - 1 - y, "y": x}
+		rotated.append(turned)
+	return rotated
+
+## Free-standing doors after one clockwise quarter turn of a room `height` tall.
+## A horizontal door (barrier between its cells and the ones north) turns into a
+## vertical one (barrier between its cell and the one east) and the other way round;
+## `cell` stays the first cell along the run, top-left of what the door covers.
+static func _rotate_doors(doors: Array, height: int) -> Array:
+	var rotated: Array = []
+	for d in doors:
+		var turned: Dictionary = (d as Dictionary).duplicate(true)
+		var x: int = int(d["cell"]["x"])
+		var y: int = int(d["cell"]["y"])
+		var width: int = int(d.get("width", 1))
+		if d.get("orient", "h") == "h":
+			turned["orient"] = "v"
+			turned["cell"] = {"x": height - 1 - y, "y": x}
+		else:
+			turned["orient"] = "h"
+			turned["cell"] = {"x": height - 1 - (y + width - 1), "y": x + 1}
+		rotated.append(turned)
 	return rotated
 
 static func _rotate_connectors(connectors: Array, height: int) -> Array:
@@ -163,6 +185,8 @@ static func rotate_room(room: Dictionary, quarter_turns: int) -> Dictionary:
 		result["walls"] = _rotate_grid(result["walls"], w, h)
 		result["connectors"] = _rotate_connectors(result["connectors"], h)
 		result["spawn_cells"] = _rotate_points(result.get("spawn_cells", []), h)
+		if result.has("doors"):
+			result["doors"] = _rotate_doors(result["doors"], h)
 		result["width"] = h
 		result["height"] = w
 	if turns != 0:
@@ -189,7 +213,7 @@ static func with_rotations(rooms: Dictionary) -> Dictionary:
 	return expanded
 
 static func _signature(room: Dictionary) -> String:
-	return JSON.stringify([room["floor"], room["walls"], room["connectors"]])
+	return JSON.stringify([room["floor"], room["walls"], room["connectors"], room.get("doors", []), room.get("spawn_cells", [])])
 
 static func _dominant_tile(grid: Array, exclude: String) -> String:
 	var counts := {}
@@ -363,6 +387,20 @@ static func collect_spawn_cells(rooms: Dictionary, placements: Array) -> Array[V
 			var local := Vector2i(int(cell["position"]["x"]), int(cell["position"]["y"]))
 			cells.append(p.offset + local)
 	return cells
+
+## World spawn cell -> the exact enemy id a room's spawn cell asks for ("enemy"
+## on the cell), only for cells that name one. Other cells roll the biome table.
+static func collect_spawn_enemies(rooms: Dictionary, placements: Array) -> Dictionary:
+	var fixed := {}
+	for p in placements:
+		var room: Dictionary = rooms[p.room_id]
+		for cell in room.get("spawn_cells", []):
+			var enemy := str(cell.get("enemy", ""))
+			if enemy == "":
+				continue
+			var local := Vector2i(int(cell["position"]["x"]), int(cell["position"]["y"]))
+			fixed[p.offset + local] = enemy
+	return fixed
 
 ## World spawn cell -> that room's "favored_enemy" list ([{"tag", "weight"}]),
 ## only for rooms that have one. A room's favor is a nudge to the biome's

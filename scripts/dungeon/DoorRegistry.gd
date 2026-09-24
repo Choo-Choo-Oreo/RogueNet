@@ -30,6 +30,10 @@ class Door:
 	## What to draw: [{"cell": Vector2i, "piece": String}] (piece names come
 	## from the door art's own json).
 	var pieces: Array = []
+	## Boss doors only (layered art): which leaves set to draw (wood .. gold) and
+	## the wall tile the frame stands in (picks the frame set).
+	var tier := "wood"
+	var wall_tile := ""
 	var is_open := false
 	## True from the moment it starts opening until passable_seconds have passed:
 	## it counts as closed (blocks walking and shots, not sight) for that time, then

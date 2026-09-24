@@ -50,7 +50,7 @@ func _spawn_enemies(rooms: Dictionary, placements: Array, defines: Dictionary) -
 	for cell in DungeonAssembler.collect_spawn_cells(rooms, placements):
 		if not bad_cells.has(cell) and not DoorRegistry.is_door_cell(cell):
 			spawn_cells.append(cell)
-	EnemySpawning.spawn_in_unseen_cells(spawn_cells, defines.get("monsters", {}), light_map, enemies_root, DungeonAssembler.collect_spawn_favors(rooms, placements))
+	EnemySpawning.spawn_in_unseen_cells(spawn_cells, defines.get("monsters", {}), light_map, enemies_root, DungeonAssembler.collect_spawn_favors(rooms, placements), DungeonAssembler.collect_spawn_enemies(rooms, placements))
 
 ## Dev aid: checks each spawn cell against what was actually PAINTED (the same
 ## wall / void test GridMover uses), and names the room, its local cell, what
@@ -145,10 +145,25 @@ func _paint(rooms: Dictionary, placements: Array, floor_data: TileMapLayer, wall
 				if wall_name != null:
 					wall_data.set_cell(world, registry.get_id(wall_name), Vector2i.ZERO)
 
+		# Under an opening: the room's own floor there if it set one (a sewer
+		# channel running out through the gap), else base_floor.
 		for c in room["connectors"]:
 			for local in Connector.cells(c):
 				var world: Vector2i = p.offset + local
-				floor_data.set_cell(world, registry.get_id(floor_tile), Vector2i.ZERO)
+				var own: Variant = room["floor"][local.y][local.x]
+				floor_data.set_cell(world, registry.get_id(own if own != null else floor_tile), Vector2i.ZERO)
+
+		# Free-standing doors stand in the doorway itself: no wall on their cells,
+		# and the room's own floor (else base_floor) under them.
+		for d in room.get("doors", []):
+			var first := Vector2i(int(d["cell"]["x"]), int(d["cell"]["y"]))
+			for local in DoorPlacer.free_door_cells(first, d.get("orient", "h") == "v", maxi(1, int(d.get("width", 1)))):
+				if local.x < 0 or local.y < 0 or local.x >= room["width"] or local.y >= room["height"]:
+					continue
+				var world: Vector2i = p.offset + local
+				var own: Variant = room["floor"][local.y][local.x]
+				wall_data.erase_cell(world)
+				floor_data.set_cell(world, registry.get_id(own if own != null else floor_tile), Vector2i.ZERO)
 
 	_fill_void(floor_data, wall_data, registry)
 

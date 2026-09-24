@@ -41,8 +41,55 @@ static func place(rooms: Dictionary, placements: Array, defines: Dictionary) -> 
 		var world_cells: Array[Vector2i] = []
 		for cell in cells:
 			world_cells.append(p.offset + cell)
-		result.append(_build(type, world_cells, step))
+		var door := _build(type, world_cells, step)
+		door.tier = str(DoorRegistry.get_def(type).get("tier", "wood"))
+		door.wall_tile = DungeonAssembler.dominant_wall_tile(room)
+		result.append(door)
+	result.append_array(place_free(rooms, placements, defines))
 	return result
+
+## Free-standing doors: a room's own `doors` list, [{"cell", "orient": "h" | "v",
+## "width", "type"}], for doors that are not on a connector (a door across a corridor
+## inside one room). `cell` is the first cell of the run: for "h" (blocks north-south)
+## the SOUTH cell of each column, the barrier lies between it and the cell above; for
+## "v" the WEST cell of each row, the barrier between it and the cell to its east.
+## `type` is a door type, or "any" for the biome's default_door ("none" = no door).
+## Appended after every connector door, so those ids never shift.
+static func place_free(rooms: Dictionary, placements: Array, defines: Dictionary) -> Array[DoorRegistry.Door]:
+	var result: Array[DoorRegistry.Door] = []
+	var fallback: String = defines.get("default_door", "none")
+	for p in placements:
+		var room: Dictionary = rooms[p.room_id]
+		for d in room.get("doors", []):
+			var type := str(d.get("type", "any"))
+			if type == "any":
+				type = fallback
+			if type == "none":
+				continue
+			var width := maxi(1, int(d.get("width", 1)))
+			type = _fit(type, width)
+			if type == "":
+				continue
+			var vertical: bool = d.get("orient", "h") == "v"
+			var first := Vector2i(int(d["cell"]["x"]), int(d["cell"]["y"]))
+			var run: Array[Vector2i] = []
+			for i in width:
+				run.append(p.offset + first + (Vector2i(0, i) if vertical else Vector2i(i, 0)))
+			var door := _build(type, run, Vector2i(1, 0) if vertical else Vector2i(0, -1))
+			door.tier = str(DoorRegistry.get_def(type).get("tier", "wood"))
+			door.wall_tile = DungeonAssembler.dominant_wall_tile(room)
+			result.append(door)
+	return result
+
+## Every cell a free-standing door covers, local to its room.
+static func free_door_cells(first: Vector2i, vertical: bool, width: int) -> Array[Vector2i]:
+	var cells: Array[Vector2i] = []
+	for i in width:
+		var cell := first + (Vector2i(0, i) if vertical else Vector2i(i, 0))
+		cells.append(cell)
+		if vertical:
+			cells.append(cell + Vector2i(1, 0))
+	return cells
 
 ## The "door" setting of the connector of `room` whose first cell is `anchor`.
 static func _want(room: Dictionary, anchor: Vector2i) -> String:

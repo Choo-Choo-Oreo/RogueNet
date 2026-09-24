@@ -11,6 +11,11 @@ extends Node2D
 ## doors, 16x48 for the tall boss doors) and its bottom 16 rows are the piece's own
 ## doorway cell (`own_cell_row` is where that starts); everything above hangs over
 ## the cells to the north.
+##
+## A LAYERED manifest (the boss doors in doors.boss/, it has a "layers" map) is
+## drawn as up to three sprites per piece: frame (posts, picked by the wall the
+## door stands in), leaves (the sliding halves, picked by the door's tier, the
+## only layer that animates) and overlay (the lintel, above creatures).
 
 const SHADING_MATERIAL := preload("res://resources/shaders/normal_lit_material.tres")
 const TILE := 16
@@ -22,11 +27,14 @@ const DOOR_Z := 101
 ## lifted before the creature steps onto the overhang cell, no clipping mid-step) -- behind it, under its
 ## overhang -- the piece is lifted over them so it covers their lower body.
 const BEHIND_Z := 1600
+## A boss door's overlay (the lintel, baked 50% alpha) always draws above creatures
+## so they walk under it; still below the light overlay at 2000.
+const OVERLAY_Z := 1800
 const LAYER_INTERVAL := 0.05
 const CLOSE_DELAY := 2.0
 const CHECK_INTERVAL := 0.25
 
-var _art := {}       # "type:width" -> {"texture": CanvasTexture, "pieces": Dictionary, "frames": int, "frame_size": Vector2i, "own_cell_row": int}
+var _art := {}       # "type:width:tier:wall" -> {"layers": [{"texture": CanvasTexture, "animated": bool, "overlay": bool}], "pieces": Dictionary, "frames": int, "frame_size": Vector2i, "own_cell_row": int}
 var _visuals: Array = []  # [{"door": Door, "sprites": Array, "frame": float, "shown": int}]
 var _empty_for := {}  # door id -> seconds nobody has been near it
 var _check_left := 0.0
@@ -39,24 +47,26 @@ func build() -> void:
 			continue
 		var sprites: Array = []
 		for entry in door.pieces:
-			var sprite := Sprite2D.new()
-			sprite.texture = art["texture"]
-			sprite.centered = false
-			sprite.region_enabled = true
-			sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-			sprite.material = SHADING_MATERIAL
-			sprite.z_index = DOOR_Z
-			var cell: Vector2i = entry["cell"]
-			sprite.position = Vector2(cell.x * TILE, cell.y * TILE - art["own_cell_row"])
-			sprite.set_meta("cell", cell)
 			if not art["pieces"].has(entry["piece"]):
 				push_warning("DoorManager: art for '%s' (width %d) has no piece '%s'" % [door.type, door.width, entry["piece"]])
-				sprite.free()
 				continue
-			sprite.set_meta("atlas_y", art["pieces"][entry["piece"]]["atlas_y"])
-			sprite.set_meta("frame_size", art["frame_size"])
-			add_child(sprite)
-			sprites.append(sprite)
+			var cell: Vector2i = entry["cell"]
+			for layer: Dictionary in art["layers"]:
+				var sprite := Sprite2D.new()
+				sprite.texture = layer["texture"]
+				sprite.centered = false
+				sprite.region_enabled = true
+				sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+				sprite.material = SHADING_MATERIAL
+				sprite.z_index = OVERLAY_Z if layer["overlay"] else DOOR_Z
+				sprite.position = Vector2(cell.x * TILE, cell.y * TILE - art["own_cell_row"])
+				sprite.set_meta("cell", cell)
+				sprite.set_meta("atlas_y", art["pieces"][entry["piece"]]["atlas_y"])
+				sprite.set_meta("frame_size", art["frame_size"])
+				sprite.set_meta("animated", layer["animated"])
+				sprite.set_meta("overlay", layer["overlay"])
+				add_child(sprite)
+				sprites.append(sprite)
 		var visual := {"door": door, "sprites": sprites, "frame": 0.0, "shown": -1}
 		_show_frame(visual, 0)
 		_visuals.append(visual)
@@ -66,7 +76,7 @@ func _exit_tree() -> void:
 	DoorRegistry.clear()
 
 func _art_key(door: DoorRegistry.Door) -> String:
-	return "%s:%d" % [door.type, door.width]
+	return "%s:%d:%s:%s" % [door.type, door.width, door.tier, door.wall_tile]
 
 ## A type's "art" is one manifest path, or a map of width -> path when each width
 ## has its own art (game/doors/wood.json).
@@ -83,18 +93,58 @@ func _load_art(door: DoorRegistry.Door) -> Dictionary:
 		_art[key] = {}
 		return {}
 	var json: Dictionary = JSON.parse_string(file.get_as_text())
-	var canvas := CanvasTexture.new()
-	canvas.diffuse_texture = load(art_path.get_basename() + ".png")
-	canvas.normal_texture = load(art_path.get_base_dir().path_join(json.get("normal_texture", "")))
 	var size: Array = json.get("frame_size", [TILE, TILE * 2])
+	var layers: Array
+	var frames: int
+	if json.has("layers"):
+		layers = _boss_layers(json, art_path.get_base_dir(), door)
+		frames = int(_leaf_entry(json, door.tier).get("frames", 16))
+	else:
+		var canvas := CanvasTexture.new()
+		canvas.diffuse_texture = load(art_path.get_basename() + ".png")
+		canvas.normal_texture = load(art_path.get_base_dir().path_join(json.get("normal_texture", "")))
+		layers = [{"texture": canvas, "animated": true, "overlay": false}]
+		frames = int(json.get("frames", 8))
 	_art[key] = {
-		"texture": canvas,
+		"layers": layers,
 		"pieces": json["pieces"],
-		"frames": int(json.get("frames", 8)),
+		"frames": frames,
 		"frame_size": Vector2i(int(size[0]), int(size[1])),
 		"own_cell_row": int(json.get("own_cell_row", int(size[1]) - TILE)),
 	}
 	return _art[key]
+
+## The leaves entry for a tier (leaf_sets), else the plain placeholder leaves.
+func _leaf_entry(json: Dictionary, tier: String) -> Dictionary:
+	var sets: Dictionary = json.get("leaf_sets", {})
+	return sets.get(tier, json["layers"]["leaves"])
+
+## The layers of a boss door, in the manifest's draw_order: the frame and overlay
+## of the wall set the door stands in (else the placeholder ones), and the tier's leaves.
+func _boss_layers(json: Dictionary, dir: String, door: DoorRegistry.Door) -> Array:
+	var frame_set: Dictionary = json.get("frame_sets", {}).get(door.wall_tile, {})
+	if frame_set.is_empty():
+		push_warning("DoorManager: no boss door frame set for wall '%s', using the placeholder frame" % door.wall_tile)
+	var result: Array = []
+	for name in json.get("draw_order", ["frame", "leaves", "overlay"]):
+		var diffuse := ""
+		var normal := ""
+		match name:
+			"frame":
+				diffuse = frame_set.get("frame", json["layers"]["frame"]["texture"])
+				normal = frame_set.get("normal_texture", json["layers"]["frame"].get("normal_texture", ""))
+			"leaves":
+				var leaves := _leaf_entry(json, door.tier)
+				diffuse = leaves["texture"]
+				normal = leaves.get("normal_texture", "")
+			"overlay":
+				diffuse = frame_set.get("overlay", json["layers"]["overlay"]["texture"])
+		var canvas := CanvasTexture.new()
+		canvas.diffuse_texture = load(dir.path_join(diffuse))
+		if normal != "":
+			canvas.normal_texture = load(dir.path_join(normal))
+		result.append({"texture": canvas, "animated": name == "leaves", "overlay": name == "overlay"})
+	return result
 
 func _process(delta: float) -> void:
 	DoorRegistry.tick()
@@ -129,6 +179,8 @@ func _update_layering() -> void:
 		if not visual["door"].horizontal:
 			continue
 		for sprite: Sprite2D in visual["sprites"]:
+			if sprite.get_meta("overlay"):
+				continue
 			var cell: Vector2i = sprite.get_meta("cell")
 			sprite.z_index = BEHIND_Z if occupied.has(cell + Vector2i.UP) or occupied.has(cell + Vector2i.UP * 2) else DOOR_Z
 
@@ -136,7 +188,8 @@ func _show_frame(visual: Dictionary, frame: int) -> void:
 	visual["shown"] = frame
 	for sprite: Sprite2D in visual["sprites"]:
 		var size: Vector2i = sprite.get_meta("frame_size")
-		sprite.region_rect = Rect2(frame * size.x, sprite.get_meta("atlas_y"), size.x, size.y)
+		var column: int = frame if sprite.get_meta("animated") else 0
+		sprite.region_rect = Rect2(column * size.x, sprite.get_meta("atlas_y"), size.x, size.y)
 
 func _is_authority() -> bool:
 	return multiplayer.multiplayer_peer == null or multiplayer.is_server()

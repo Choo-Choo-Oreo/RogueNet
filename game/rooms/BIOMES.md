@@ -23,7 +23,10 @@ That was the starting set. `dungeon/` and `mine/` were redesigned on
 treasure rooms and 8 or 24 mazes. `flesh/` was redesigned the same day as
 84 rooms, one per organ plus a mutant of each, `forest/` as 78 rooms,
 one per landmark plus an Overgrown variant, and `cave/` as 76 rooms, one per
-formation plus a Deep variant. Each folder's own `README.md`
+formation plus a Deep variant. `sewer/` was added the same day as 111 rooms,
+one per feature plus a Flooded and a Collapsed variant, and `catacomb/` as
+80 rooms, one per feature plus a Desecrated variant, and `volcano/` as
+64 rooms, one per feature plus an Erupting variant. Each folder's own `README.md`
 lists every piece.
 
 | Folder | Walls | Floors | Idea |
@@ -33,6 +36,9 @@ lists every piece.
 | `mine/` | `wall_rough_cave` rock with `wall_wood_plank` timber supports | dirt, wood plank walkways | A mine shaft. Plank tracks run door to door. Timber frames doorways and props up long tunnels. Includes `Mine_Cabin_Cavern_17x13`, a big cavern with a cabin in the middle. |
 | `flesh/` | `wall_flesh` | flesh, smooth stone, acid | Inside a body: one room per organ, plus a mutant of each (extra lobes, doubled parts). Lopsided, never symmetric. Flesh floor slows movement, so stone strips act as fast lanes. Very dense with enemies. |
 | `forest/` | `wall_forest` trees, `wall_rough_cave` rocks, `wall_wood_plank` timber | dirt, grass, water, wood planks | Woods by landmark: one room per forest feature (pond, fallen giant, wolf den), plus an Overgrown variant of each. No doors. Trails wind between openings, and enemies come in wolf packs. |
+| `sewer/` | `wall_cobble_brick` brick, `wall_smooth_stone` pillars and tank walls, `wall_rough_cave` rubble | smooth stone walkways, water, acid, dirt (silt), wood planks | Built sewers by feature: one room per feature (cistern, sluice gates, pump room, rat nest), plus a Flooded and a Collapsed variant of each. Symmetric brickwork, 5-wide mains with a water channel between two ledges, 1-wide crawls. Iron doors on side rooms, cisterns and treasure. Enemies come in rat swarms, with leeches in the water. |
+| `catacomb/` | `wall_cobble_brick` brick, `wall_smooth_stone` sarcophagi, bone stacks and altars, `wall_rough_cave` rubble | smooth stone, dirt, violet carpet (tombs only) | Burial galleries by feature: one room per feature (ossuary, columbarium, charnel pit, family tomb), plus a Desecrated variant of each. Burial niches cut every other tile into thick walls. 3-wide processionals and 1-wide galleries. Iron doors on tombs, treasure and boss crypts. Undead garrisons: skeleton archers pinned in lines, wraiths and the rest in the niches. |
+| `volcano/` | `wall_rough_cave` basalt, `wall_smooth_cave` obsidian | dirt (ash), smooth cave (cooled crust), lava | Volcanic features: one room per feature (lava river, caldera, cinder cone, fumarole vents, magma chamber), plus an Erupting variant with more lava. Every lava room has a crust path between its openings: the fast way through. No doors. Demon packs: hellhounds in tight packs on the ground, demonic hamster swarms over the lava. |
 
 ## `cathedral/` is a stress test, not a designed biome
 

@@ -81,7 +81,8 @@ Each one is a straight run of cells on the outer ring:
 - `a` and `b` are the first and last cell, both included. `a` is the top or left end. `a` equal to `b` is a 1-wide opening.
 - A run must sit on one edge and must not include a corner.
 - The direction it faces comes from the edge it is on (north edge faces north).
-- Leave the connector cells' `walls` (and `floor`) as `null` so the wall opens. The painter fills the opening.
+- Leave the connector cells' `walls` as `null` so the wall opens.
+- The floor under an opening is the connector cell's `floor` value if it has one, otherwise `base_floor` (or the most common floor). Most rooms leave it `null`. The sewer sets it so water channels run out through the gap.
 - Two connectors join only when they face each other with equal width, unless either has `"free": true` (`free` is optional, default false). Free joins any widths with at least one cell overlapping, centred first; leftover cells become wall.
 - `door` *(optional, default `"any"`)*: what this opening wants.
   - a door type name from `game/doors/` (`"wood"`, `"iron"`, `"iron_sink"`): always gets that door
@@ -93,13 +94,30 @@ Each one is a straight run of cells on the outer ring:
 ### Spawns
 
 - `spawn_cells` *(optional)*: `[{ "position": {"x": 3, "y": 4} }, ...]`, tile coordinates inside the room, on floor. Each is a place an enemy may spawn. What spawns comes from the biome's `monsters` table in `defines.json`, not from the room.
+  - A cell can pin its enemy with `"enemy"`: `{ "position": {"x": 3, "y": 4}, "enemy": "skeleton_archer" }` always spawns that enemy id (from `game/entities/entities.enemies/`), skipping the table and `favored_enemy`. The catacomb uses it to stand archers in lines.
   - Leave them out of `entrance`, `boss` and `treasure` rooms.
   - Spread a handful around cover and corners instead of clustering them in the open.
+  - A spawn cell may name its enemy: `{ "position": {...}, "enemy": "rat" }` (any id from `game/entities/entities.enemies/`). That cell then always spawns it instead of rolling the table. The Dungeon Maker's enemy spawner sets this.
 - `favored_enemy` *(optional)*: nudges what spawns in this room's cells.
   - Written as `{ "tag": "beast.rodent", "weight": 3 }`, or a list of those. `weight` is optional (default 3).
   - Every enemy in the biome's `monsters` table that carries the tag (or has that id) gets its weight multiplied by `weight`.
   - It only boosts: enemies not in the biome table are never added.
   - Tags and their meanings are in `game/TAGS.md`.
+
+### Free-standing doors: `doors`
+
+`doors` *(optional)*: doors inside a room that are not on a connector (a door across a corridor, a vault door). Each entry:
+
+```json
+{ "cell": { "x": 4, "y": 3 }, "orient": "h", "width": 2, "type": "iron" }
+```
+
+- `orient`: `"h"` blocks north-south, `"v"` blocks east-west.
+- `cell` is the first cell of the run. For `"h"` it is the south cell of the leftmost column; the barrier lies between it and the cell above, and the door covers `width` cells to the right. For `"v"` it is the west cell of the top row; the barrier lies between it and the cell to its east, and the door covers `width` rows down (both the west and the east cell of each row).
+- `type` is a door type from `game/doors/`, or `"any"` for the biome's `default_door` (`"none"` = no door). A type that does not fit `width` is swapped for one that does, with a warning.
+- The painter removes any wall on the door's cells and lays floor there, so the room can leave them as they are. Use a 1-thick wall for `"h"` and a 2-thick one for `"v"`.
+- They rotate with the room. They are added after every connector door, so those door ids do not change.
+- The Dungeon Maker places them: the connector section's tool picker, "free-standing door".
 
 ### Objects
 
@@ -137,5 +155,5 @@ A 3x3 closet with one 1-wide opening on the south edge:
 }
 ```
 
-(The floor in the connector cell `(1,2)` is `null` too; the painter fills it.
+(The floor in the connector cell `(1,2)` is `null` too, so the painter fills it with `base_floor`.
 Real rooms are bigger than this. It only shows the shape of the file.)

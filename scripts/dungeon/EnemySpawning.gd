@@ -24,8 +24,8 @@ static var _next_id: int = 1
 
 ## `favors` maps a spawn cell to its room's favored-enemy list (see
 ## DungeonAssembler.collect_spawn_favors); cells without one roll the plain table.
-static func spawn_in_unseen_cells(spawn_cells: Array[Vector2i], monster_weights: Dictionary, light_map: LightMap, enemies_root: Node, favors: Dictionary = {}) -> void:
-	if monster_weights.is_empty():
+static func spawn_in_unseen_cells(spawn_cells: Array[Vector2i], monster_weights: Dictionary, light_map: LightMap, enemies_root: Node, favors: Dictionary = {}, fixed_enemies: Dictionary = {}) -> void:
+	if monster_weights.is_empty() and fixed_enemies.is_empty():
 		return
 	var mp := enemies_root.get_multiplayer()
 	# Fails open (acts as host) when no peer is assigned at all -- eg. running
@@ -38,7 +38,13 @@ static func spawn_in_unseen_cells(spawn_cells: Array[Vector2i], monster_weights:
 	for tile in spawn_cells:
 		if light_map.is_tile_lit(tile):
 			continue
-		var enemy_id := _roll_enemy(_favored_weights(monster_weights, favors.get(tile, [])), rng)
+		# A cell that names its enemy always gets it (as long as that enemy exists).
+		var enemy_id: String = fixed_enemies.get(tile, "")
+		if enemy_id != "" and not FileAccess.file_exists(EnemyController.ENEMY_TYPES_DIR + enemy_id + ".json"):
+			push_warning("Spawn cell %s names unknown enemy '%s', rolling instead" % [tile, enemy_id])
+			enemy_id = ""
+		if enemy_id == "":
+			enemy_id = _roll_enemy(_favored_weights(monster_weights, favors.get(tile, [])), rng)
 		if enemy_id == "":
 			continue
 		var id := _next_id

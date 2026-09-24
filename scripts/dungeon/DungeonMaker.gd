@@ -53,7 +53,8 @@ const OBJECT_MARKER_TEXTURES := {
 const CONNECTOR_TEXTURE_PATH := "res://resources/gfx/doors/Wood_W1.png"
 const PLAYER_SPAWNER_TEXTURE_PATH := "res://resources/gfx/players/player.protagonist/knight/Knight-Down.png"
 const PLAYER_CONTROLLER_SCENE_PATH := "res://scenes/player/PlayerController.tscn"
-const ENEMY_TYPE_NAMES := ["mouse"]
+## "" = any enemy from the biome table; otherwise an id from game/entities/entities.enemies/.
+const ENEMY_ANY_LABEL := "Any (biome table)"
 const ENEMY_SPAWNER_ICON_COLOR := Color(0.85, 0.25, 0.25)
 const CAMERA_ZOOM_MIN := 0.25
 const CAMERA_ZOOM_MAX := 3.0
@@ -69,6 +70,8 @@ const BRUSH_SIZE_MAX := 5
 const PAINT_MODE_COLOR := Color(0.3, 0.7, 0.95)
 const OBJECT_MODE_COLOR := Color(0.95, 0.65, 0.2)
 const CONNECTOR_MODE_COLOR := Color(0.35, 0.9, 0.55)
+const CONNECTOR_FREE_COLOR := Color(0.35, 0.8, 0.95)
+const FREE_DOOR_COLOR := Color(1.0, 0.65, 0.2)
 const ERASER_MODE_COLOR := Color(0.95, 0.35, 0.35)
 const OBJECT_SELECT_COLOR := Color(1, 1, 0.3, 0.95)
 const SPAWNER_MODE_COLOR := Color(0.85, 0.35, 0.85)
@@ -205,6 +208,25 @@ var group_drag_start_positions: Dictionary = {}
 var connector_mode_active: bool = false
 var connectors: Array = []
 var connector_markers: Array[Node2D] = []
+## First click of the two-click connector tool (a boundary cell), or null.
+var connector_run_start: Variant = null
+## Room keys the Maker has no control for (base_floor, favored_enemy): carried
+## from load to save, or re-saving a room silently drops them.
+var room_extras: Dictionary = {}
+## Free-standing doors (the room's "doors" list): {"cell": Vector2i (first cell),
+## "vertical": bool, "width": int, "type": String ("any" = the biome default)}.
+var free_doors: Array = []
+var connector_tool_option: OptionButton
+var door_tool_box: VBoxContainer
+var door_orient_option: OptionButton
+var door_width_spin: SpinBox
+var door_type_option: OptionButton
+var free_doors_list: ItemList
+const ROOM_EXTRA_KEYS := ["base_floor", "favored_enemy"]
+## Controls for the selected connector, built in code under ConnectorSection.
+var connector_free_check: CheckBox
+var connector_door_option: OptionButton
+var _syncing_connector_controls := false
 
 var spawner_mode_active: bool = false
 var selected_spawner_type: String = ""
@@ -253,6 +275,7 @@ func _ready() -> void:
 	_setup_delete_folder_confirm_dialog()
 	_style_selection_highlight(save_location_folder_list, ROOM_BROWSER_ACCENT_COLOR)
 	_style_mode_button(connector_mode_button, CONNECTOR_MODE_COLOR)
+	_setup_connector_controls()
 	_style_mode_button(eraser_button, ERASER_MODE_COLOR)
 	_update_camera_bounds()
 	camera.position = WORLD_OFFSET + Vector2(width, height) * TILE_SIZE / 2.0
@@ -277,6 +300,31 @@ func _draw() -> void:
 	draw_rect(rect, ROOM_FILL_COLOR)
 	_draw_grid_lines(rect)
 	draw_rect(rect, ROOM_BORDER_COLOR, false, 2.0)
+	_draw_connector_runs()
+
+## Every connector run as a tinted bar over its cells (green = exact, cyan = free,
+## a brighter edge when it names a door), plus the pending first click.
+func _draw_connector_runs() -> void:
+	for connector in connectors:
+		var start: Vector2i = connector["position"]
+		var end: Vector2i = connector.get("b", start)
+		var bar := Rect2(WORLD_OFFSET + Vector2(start) * TILE_SIZE, Vector2(end - start + Vector2i.ONE) * TILE_SIZE)
+		var color := CONNECTOR_FREE_COLOR if connector.get("free", false) else CONNECTOR_MODE_COLOR
+		draw_rect(bar, Color(color, 0.3))
+		draw_rect(bar, Color(color, 0.9), false, 2.0 if connector.get("door", "") == "" else 3.0)
+	for door in free_doors:
+		for door_cell in _free_door_cells(door):
+			draw_rect(Rect2(WORLD_OFFSET + Vector2(door_cell) * TILE_SIZE, Vector2(TILE_SIZE, TILE_SIZE)), Color(FREE_DOOR_COLOR, 0.35))
+		var origin: Vector2 = WORLD_OFFSET + Vector2(door["cell"]) * TILE_SIZE
+		var span: float = door["width"] * TILE_SIZE
+		# The barrier line the door closes: above a horizontal door, between the halves of a vertical one.
+		if door["vertical"]:
+			draw_line(origin + Vector2(TILE_SIZE, 0), origin + Vector2(TILE_SIZE, span), FREE_DOOR_COLOR, 3.0)
+		else:
+			draw_line(origin, origin + Vector2(span, 0), FREE_DOOR_COLOR, 3.0)
+	if connector_run_start != null:
+		var first: Vector2i = connector_run_start
+		draw_rect(Rect2(WORLD_OFFSET + Vector2(first) * TILE_SIZE, Vector2(TILE_SIZE, TILE_SIZE)), Color(1, 1, 1, 0.6), false, 3.0)
 
 func _draw_grid_lines(rect: Rect2) -> void:
 	for x in range(1, width):
@@ -792,7 +840,9 @@ func _confirm_delete_room_file(room_file: String) -> void:
 	delete_room_confirm_dialog.popup_centered()
 
 func _setup_delete_confirm_dialog() -> void:
-	delete_room_confirm_dialog.confirmed.connect(_on_delete_room_confirmed)
+	# DungeonMaker.tscn already connects this; only connect here if it did not.
+	if not delete_room_confirm_dialog.confirmed.is_connected(_on_delete_room_confirmed):
+		delete_room_confirm_dialog.confirmed.connect(_on_delete_room_confirmed)
 
 func _on_delete_room_confirmed() -> void:
 	if pending_delete_room_file == "":
@@ -835,7 +885,9 @@ func _confirm_delete_folder(folder_name: String) -> void:
 	delete_folder_confirm_dialog.popup_centered()
 
 func _setup_delete_folder_confirm_dialog() -> void:
-	delete_folder_confirm_dialog.confirmed.connect(_on_delete_folder_confirmed)
+	# DungeonMaker.tscn already connects this; only connect here if it did not.
+	if not delete_folder_confirm_dialog.confirmed.is_connected(_on_delete_folder_confirmed):
+		delete_folder_confirm_dialog.confirmed.connect(_on_delete_folder_confirmed)
 
 func _on_delete_folder_confirmed() -> void:
 	if pending_delete_folder == "":
@@ -1105,15 +1157,20 @@ func _flip_room(horizontal: bool) -> void:
 			new_walls[y][x] = walls_names[src_y][src_x]
 	var old_connectors := connectors.duplicate(true)
 	var new_connectors := _flipped_connectors(horizontal)
+	var old_doors := free_doors.duplicate(true)
+	var new_doors := _flipped_free_doors(horizontal)
 	_restore_grids(new_floor, new_walls)
 	_set_connectors(new_connectors)
+	_set_free_doors(new_doors)
 	_push_undo(
 		func():
 			_restore_grids(old_floor, old_walls)
-			_set_connectors(old_connectors),
+			_set_connectors(old_connectors)
+			_set_free_doors(old_doors),
 		func():
 			_restore_grids(new_floor, new_walls)
 			_set_connectors(new_connectors)
+			_set_free_doors(new_doors)
 	)
 	_show_export_status("Flipped tiles and connectors %s (objects unchanged)" % ("horizontally" if horizontal else "vertically"))
 	queue_redraw()
@@ -1141,10 +1198,7 @@ func _flipped_connectors(horizontal: bool) -> Array:
 func _set_connectors(new_list: Array) -> void:
 	_clear_connectors()
 	for connector in new_list:
-		_insert_connector(connector["position"], connectors.size())
-		for key in connector:
-			if key != "position":
-				connectors[connectors.size() - 1][key] = connector[key]
+		_insert_connector_data(connector.duplicate(), connectors.size())
 
 func _restore_grids(new_floor: Array, new_walls: Array) -> void:
 	floor_names = new_floor.duplicate(true)
@@ -1319,6 +1373,8 @@ func _delete_selected() -> void:
 	elif not connectors_list.get_selected_items().is_empty():
 		var index: int = connectors_list.get_selected_items()[0]
 		_remove_connector_with_undo(index)
+	elif free_doors_list != null and not free_doors_list.get_selected_items().is_empty():
+		_remove_free_door_with_undo(free_doors_list.get_selected_items()[0])
 	elif not spawners_list.get_selected_items().is_empty():
 		_on_delete_spawner_pressed()
 
@@ -1936,65 +1992,450 @@ func _clear_objects() -> void:
 
 func _on_connector_mode_toggled(pressed: bool) -> void:
 	connector_mode_active = pressed
+	if not pressed:
+		connector_run_start = null
 	if pressed:
 		_set_object_mode_active(false)
 		_set_spawner_mode_active(false)
 	queue_redraw()
 
 func _handle_connector_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		var cell := _mouse_to_cell()
-		if not _is_boundary_cell(cell):
-			return
-		var index := _find_connector_at(cell)
+	if connector_tool_option != null and connector_tool_option.selected == 1:
+		_handle_free_door_input(event)
+		return
+	if not (event is InputEventMouseButton and event.pressed):
+		return
+	if event.button_index == MOUSE_BUTTON_RIGHT and connector_run_start != null:
+		_cancel_connector_run()
+		return
+	if event.button_index != MOUSE_BUTTON_LEFT:
+		return
+	var cell := _mouse_to_cell()
+	if not _is_boundary_cell(cell):
+		return
+	var index := _find_connector_at(cell)
+	if connector_run_start == null:
+		# Clicking an existing run removes it; otherwise this click starts a new one.
 		if index != -1:
 			_remove_connector_with_undo(index)
 		else:
-			_add_connector_with_undo(cell)
+			connector_run_start = cell
+			queue_redraw()
+		return
+	var first: Vector2i = connector_run_start
+	var last := _snap_run_end(first, cell)
+	if last == Vector2i(-1, -1):
+		_show_export_status("A connector can't run along a corner")
+		return
+	var run := {"position": Vector2i(mini(first.x, last.x), mini(first.y, last.y))}
+	var far := Vector2i(maxi(first.x, last.x), maxi(first.y, last.y))
+	if far != run["position"]:
+		run["b"] = far
+	for other in connectors:
+		if _runs_overlap(run, other):
+			_show_export_status("That run overlaps another connector")
+			_cancel_connector_run()
+			return
+	_cancel_connector_run()
+	_add_connector_with_undo(run)
+	_clear_walls_under_run(run)
 
-func _add_connector_with_undo(cell: Vector2i) -> void:
+## A connector is an opening, so the wall tiles on its cells are erased (one undo
+## step of its own: Ctrl+Z brings the walls back, a second one removes the run).
+func _clear_walls_under_run(run: Dictionary) -> void:
+	var start: Vector2i = run["position"]
+	var end: Vector2i = run.get("b", start)
+	var cells: Array[Vector2i] = []
+	for y in range(start.y, end.y + 1):
+		for x in range(start.x, end.x + 1):
+			cells.append(Vector2i(x, y))
+	_clear_walls_under_cells(cells)
+
+func _clear_walls_under_cells(cells: Array[Vector2i]) -> void:
+	var old_floor = floor_names.duplicate(true)
+	var old_walls = walls_names.duplicate(true)
+	var new_walls = walls_names.duplicate(true)
+	var changed := false
+	for cell in cells:
+		if _cell_in_bounds(cell) and new_walls[cell.y][cell.x] != null:
+			new_walls[cell.y][cell.x] = null
+			changed = true
+	if not changed:
+		return
+	_restore_grids(old_floor, new_walls)
+	_push_undo(
+		func(): _restore_grids(old_floor, old_walls),
+		func(): _restore_grids(old_floor, new_walls)
+	)
+
+func _cancel_connector_run() -> void:
+	connector_run_start = null
+	queue_redraw()
+
+## The second click, moved onto the same edge as the first: a first click on the
+## top / bottom edge runs along x, on the left / right edge along y. Corners have
+## no side, so a run starting on one (or ending past the ends) is clamped or refused.
+func _snap_run_end(first: Vector2i, clicked: Vector2i) -> Vector2i:
+	var on_horizontal_edge := first.y == 0 or first.y == height - 1
+	var on_vertical_edge := first.x == 0 or first.x == width - 1
+	if on_horizontal_edge and on_vertical_edge:
+		return Vector2i(-1, -1)
+	if on_horizontal_edge:
+		return Vector2i(clampi(clicked.x, 1, width - 2), first.y)
+	return Vector2i(first.x, clampi(clicked.y, 1, height - 2))
+
+func _runs_overlap(x: Dictionary, y: Dictionary) -> bool:
+	var xb: Vector2i = x.get("b", x["position"])
+	var yb: Vector2i = y.get("b", y["position"])
+	return x["position"].x <= yb.x and y["position"].x <= xb.x and x["position"].y <= yb.y and y["position"].y <= xb.y
+
+func _add_connector_with_undo(connector: Dictionary) -> void:
 	var index := connectors.size()
-	_insert_connector(cell, index)
+	var saved := connector.duplicate()
+	_insert_connector_data(saved.duplicate(), index)
 	_push_undo(
 		func(): _remove_connector(index),
-		func(): _insert_connector(cell, index)
+		func(): _insert_connector_data(saved.duplicate(), index)
 	)
 
+## Undo keeps the WHOLE connector (both ends, free, door), not just its first cell.
 func _remove_connector_with_undo(index: int) -> void:
-	var cell = connectors[index]["position"]
+	var saved: Dictionary = connectors[index].duplicate()
 	_remove_connector(index)
 	_push_undo(
-		func(): _insert_connector(cell, index),
+		func(): _insert_connector_data(saved.duplicate(), index),
 		func(): _remove_connector(index)
 	)
+
+## Free + door controls for the connector selected in the list. Built here, not
+## in the scene, so DungeonMaker.tscn stays untouched.
+func _setup_connector_controls() -> void:
+	connector_free_check = CheckBox.new()
+	connector_free_check.text = "Free (joins a run of any width)"
+	connector_free_check.toggled.connect(_on_connector_free_toggled)
+	connector_section.add_child(connector_free_check)
+	var row := HBoxContainer.new()
+	var label := Label.new()
+	label.text = "Door"
+	row.add_child(label)
+	connector_door_option = OptionButton.new()
+	connector_door_option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	connector_door_option.item_selected.connect(_on_connector_door_selected)
+	row.add_child(connector_door_option)
+	connector_section.add_child(row)
+	connectors_list.item_selected.connect(_on_connector_selected)
+	_sync_connector_controls()
+	_setup_free_door_controls()
+
+## The tool picker (connector run / free-standing door) and the free door settings.
+func _setup_free_door_controls() -> void:
+	connector_tool_option = OptionButton.new()
+	connector_tool_option.add_item("Tool: connector run")
+	connector_tool_option.add_item("Tool: free-standing door")
+	connector_tool_option.item_selected.connect(_on_connector_tool_selected)
+	connector_section.add_child(connector_tool_option)
+	connector_section.move_child(connector_tool_option, connector_mode_button.get_index() + 1)
+
+	door_tool_box = VBoxContainer.new()
+	door_tool_box.visible = false
+	var hint := Label.new()
+	hint.text = "Click a cell: the door starts there and runs right (horizontal) or down (vertical). Click a door to remove it."
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	door_tool_box.add_child(hint)
+	door_orient_option = OptionButton.new()
+	door_orient_option.add_item("Horizontal (blocks north-south)")
+	door_orient_option.add_item("Vertical (blocks east-west)")
+	door_tool_box.add_child(door_orient_option)
+	var width_row := HBoxContainer.new()
+	var width_label := Label.new()
+	width_label.text = "Width"
+	width_row.add_child(width_label)
+	door_width_spin = SpinBox.new()
+	door_width_spin.min_value = 1
+	door_width_spin.max_value = 5
+	door_width_spin.value = 1
+	door_width_spin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	door_width_spin.value_changed.connect(func(_v): _fill_free_door_types())
+	width_row.add_child(door_width_spin)
+	door_tool_box.add_child(width_row)
+	door_type_option = OptionButton.new()
+	door_tool_box.add_child(door_type_option)
+	_fill_free_door_types()
+	free_doors_list = ItemList.new()
+	free_doors_list.custom_minimum_size = Vector2(0, 80)
+	door_tool_box.add_child(free_doors_list)
+	connector_section.add_child(door_tool_box)
+
+func _on_connector_tool_selected(_item: int) -> void:
+	connector_run_start = null
+	door_tool_box.visible = connector_tool_option.selected == 1
+	queue_redraw()
+
+## any (the biome default), then each door type; ones that do not fit the chosen width are marked.
+func _fill_free_door_types() -> void:
+	var keep := door_type_option.get_item_text(door_type_option.selected).get_slice(" ", 0) if door_type_option.selected >= 0 and door_type_option.item_count > 0 else "any"
+	door_type_option.clear()
+	door_type_option.add_item("any")
+	var width := int(door_width_spin.value)
+	var types := DoorRegistry.all_types()
+	types.sort()
+	for type_name in types:
+		var def := DoorRegistry.get_def(type_name)
+		var fits := width >= int(def.get("min_width", 1)) and width <= int(def.get("max_width", 1))
+		door_type_option.add_item("%s (%d-%d wide)%s" % [type_name, int(def.get("min_width", 1)), int(def.get("max_width", 1)), "" if fits else "  - does not fit w%d" % width])
+	for i in door_type_option.item_count:
+		if door_type_option.get_item_text(i).get_slice(" ", 0) == keep:
+			door_type_option.select(i)
+
+func _free_door_cells(door: Dictionary) -> Array[Vector2i]:
+	return DoorPlacer.free_door_cells(door["cell"], door["vertical"], door["width"])
+
+func _free_door_label(door: Dictionary) -> String:
+	var cell: Vector2i = door["cell"]
+	return "%s w%d @ (%d, %d)  %s" % ["vertical" if door["vertical"] else "horizontal", door["width"], cell.x, cell.y, door["type"]]
+
+func _find_free_door_at(cell: Vector2i) -> int:
+	for i in free_doors.size():
+		if _free_door_cells(free_doors[i]).has(cell):
+			return i
+	return -1
+
+func _handle_free_door_input(event: InputEvent) -> void:
+	if not (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT):
+		return
+	var cell := _mouse_to_cell()
+	if not _cell_in_bounds(cell):
+		return
+	var existing := _find_free_door_at(cell)
+	if existing != -1:
+		_remove_free_door_with_undo(existing)
+		return
+	var door := {
+		"cell": cell,
+		"vertical": door_orient_option.selected == 1,
+		"width": int(door_width_spin.value),
+		"type": door_type_option.get_item_text(door_type_option.selected).get_slice(" ", 0),
+	}
+	for door_cell in _free_door_cells(door):
+		if not _cell_in_bounds(door_cell):
+			_show_export_status("That door does not fit inside the room here")
+			return
+		if _find_free_door_at(door_cell) != -1:
+			_show_export_status("That door overlaps another door")
+			return
+	var index := free_doors.size()
+	var saved := door.duplicate()
+	_insert_free_door(saved.duplicate(), index)
+	_push_undo(
+		func(): _remove_free_door(index),
+		func(): _insert_free_door(saved.duplicate(), index)
+	)
+	_clear_walls_under_cells(_free_door_cells(door))
+
+func _insert_free_door(door: Dictionary, index: int) -> void:
+	free_doors.insert(index, door)
+	_refresh_free_doors_list()
+	_update_validation_display()
+	queue_redraw()
+
+func _remove_free_door(index: int) -> void:
+	free_doors.remove_at(index)
+	_refresh_free_doors_list()
+	_update_validation_display()
+	queue_redraw()
+
+func _remove_free_door_with_undo(index: int) -> void:
+	var saved: Dictionary = free_doors[index].duplicate()
+	_remove_free_door(index)
+	_push_undo(
+		func(): _insert_free_door(saved.duplicate(), index),
+		func(): _remove_free_door(index)
+	)
+
+func _set_free_doors(new_list: Array) -> void:
+	free_doors = new_list.duplicate(true)
+	_refresh_free_doors_list()
+	_update_validation_display()
+	queue_redraw()
+
+func _clear_free_doors() -> void:
+	free_doors.clear()
+	if free_doors_list != null:
+		_refresh_free_doors_list()
+
+func _refresh_free_doors_list() -> void:
+	if free_doors_list == null:
+		return
+	free_doors_list.clear()
+	for door in free_doors:
+		free_doors_list.add_item(_free_door_label(door))
+
+## The doors mirrored across the room: a horizontal door's cells are the SOUTH cell of
+## each column (barrier above them), a vertical door's the WEST cell of each row (barrier
+## to their east), so a mirror that swaps a door's sides also moves its first cell.
+func _flipped_free_doors(horizontal: bool) -> Array:
+	var result: Array = []
+	for door in free_doors:
+		var copy: Dictionary = door.duplicate()
+		var cell: Vector2i = door["cell"]
+		var w: int = door["width"]
+		if horizontal:
+			if door["vertical"]:
+				copy["cell"] = Vector2i(width - 2 - cell.x, cell.y)
+			else:
+				copy["cell"] = Vector2i(width - cell.x - w, cell.y)
+		else:
+			if door["vertical"]:
+				copy["cell"] = Vector2i(cell.x, height - cell.y - w)
+			else:
+				copy["cell"] = Vector2i(cell.x, height - cell.y)
+		result.append(copy)
+	return result
+
+func _serialize_free_doors() -> Array:
+	var result: Array = []
+	for door in free_doors:
+		var cell: Vector2i = door["cell"]
+		result.append({
+			"cell": {"x": cell.x, "y": cell.y},
+			"orient": "v" if door["vertical"] else "h",
+			"width": door["width"],
+			"type": door["type"],
+		})
+	return result
+
+func _selected_connector_index() -> int:
+	var selected := connectors_list.get_selected_items()
+	return -1 if selected.is_empty() else selected[0]
+
+## Shows the selected connector's settings; disabled when nothing is selected.
+func _sync_connector_controls() -> void:
+	_syncing_connector_controls = true
+	var index := _selected_connector_index()
+	connector_free_check.disabled = index == -1
+	connector_door_option.disabled = index == -1
+	connector_free_check.set_pressed_no_signal(index != -1 and connectors[index].get("free", false))
+	var door_value: String = "any" if index == -1 else connectors[index].get("door", "")
+	if door_value == "":
+		door_value = "any"
+	_fill_door_options(index)
+	connector_door_option.select(0)
+	for i in connector_door_option.item_count:
+		if connector_door_option.get_item_text(i).get_slice(" ", 0) == door_value:
+			connector_door_option.select(i)
+	_syncing_connector_controls = false
+
+## any / none, then every door type, marking the ones that do not fit the run's
+## width (game/doors/<type>.json min_width / max_width). A joint is only as wide as the
+## overlap with the room next to it, so a misfit is a warning, not forbidden.
+func _fill_door_options(index: int) -> void:
+	connector_door_option.clear()
+	connector_door_option.add_item("any")
+	connector_door_option.add_item("none")
+	var run_width := 1
+	if index != -1:
+		var start: Vector2i = connectors[index]["position"]
+		var end: Vector2i = connectors[index].get("b", start)
+		run_width = maxi(end.x - start.x, end.y - start.y) + 1
+	var types := DoorRegistry.all_types()
+	types.sort()
+	for type_name in types:
+		var def := DoorRegistry.get_def(type_name)
+		var fits := run_width >= int(def.get("min_width", 1)) and run_width <= int(def.get("max_width", 1))
+		var label := "%s (%d-%d wide)" % [type_name, int(def.get("min_width", 1)), int(def.get("max_width", 1))]
+		connector_door_option.add_item(label if fits else label + "  - does not fit w%d" % run_width)
+
+func _on_connector_selected(_index: int) -> void:
+	_sync_connector_controls()
+
+func _on_connector_free_toggled(pressed: bool) -> void:
+	if _syncing_connector_controls:
+		return
+	_edit_selected_connector("free", pressed if pressed else null)
+
+func _on_connector_door_selected(item: int) -> void:
+	if _syncing_connector_controls:
+		return
+	var text := connector_door_option.get_item_text(item).get_slice(" ", 0)
+	_edit_selected_connector("door", null if text == "any" else text)
+
+## Sets (or, for null, removes) one field of the selected connector, undoable as a
+## whole-connector swap.
+func _edit_selected_connector(key: String, value: Variant) -> void:
+	var index := _selected_connector_index()
+	if index == -1:
+		return
+	var before: Dictionary = connectors[index].duplicate()
+	var after: Dictionary = before.duplicate()
+	if value == null:
+		after.erase(key)
+	else:
+		after[key] = value
+	_replace_connector(index, after)
+	_push_undo(
+		func(): _replace_connector(index, before),
+		func(): _replace_connector(index, after)
+	)
+
+func _replace_connector(index: int, connector: Dictionary) -> void:
+	connectors[index] = connector.duplicate()
+	connectors_list.set_item_text(index, _connector_label(connector))
+	_sync_connector_controls()
+	_update_validation_display()
+	queue_redraw()
 
 func _is_boundary_cell(cell: Vector2i) -> bool:
 	if cell.x < 0 or cell.x >= width or cell.y < 0 or cell.y >= height:
 		return false
 	return cell.x == 0 or cell.x == width - 1 or cell.y == 0 or cell.y == height - 1
 
+## The connector whose run covers `cell`, or -1.
 func _find_connector_at(cell: Vector2i) -> int:
 	for i in range(connectors.size()):
-		if connectors[i]["position"] == cell:
+		var start: Vector2i = connectors[i]["position"]
+		var end: Vector2i = connectors[i].get("b", start)
+		if cell.x >= start.x and cell.x <= end.x and cell.y >= start.y and cell.y <= end.y:
 			return i
 	return -1
 
 func _insert_connector(cell: Vector2i, index: int) -> void:
-	connectors.insert(index, {"position": cell})
+	_insert_connector_data({"position": cell}, index)
+
+## `connector` is {"position", "b"?, "free"?, "door"?}, the same shape as the list.
+func _insert_connector_data(connector: Dictionary, index: int) -> void:
+	var cell: Vector2i = connector["position"]
+	connectors.insert(index, connector)
 	var marker := _make_connector_marker(cell)
 	connectors_layer.add_child(marker)
 	connector_markers.insert(index, marker)
-	connectors_list.add_item("(%d, %d)" % [cell.x, cell.y])
+	connectors_list.add_item(_connector_label(connector))
 	if index != connectors_list.item_count - 1:
 		connectors_list.move_item(connectors_list.item_count - 1, index)
 	_update_validation_display()
+	queue_redraw()
+
+## "(2, 0)-(4, 0)  w3  free  door: iron" -- only what is set beyond the defaults.
+func _connector_label(connector: Dictionary) -> String:
+	var start: Vector2i = connector["position"]
+	var end: Vector2i = connector.get("b", start)
+	var text := "(%d, %d)" % [start.x, start.y]
+	if end != start:
+		text += "-(%d, %d)  w%d" % [end.x, end.y, maxi(end.x - start.x, end.y - start.y) + 1]
+	if connector.get("free", false):
+		text += "  free"
+	if connector.get("door", "") != "":
+		text += "  door: " + connector["door"]
+	return text
 
 func _remove_connector(index: int) -> void:
 	connectors.remove_at(index)
 	connector_markers[index].queue_free()
 	connector_markers.remove_at(index)
 	connectors_list.remove_item(index)
+	if connector_free_check != null:
+		_sync_connector_controls()
 	_update_validation_display()
+	queue_redraw()
 
 func _prune_invalid_connectors() -> void:
 	var i := connectors.size() - 1
@@ -2009,6 +2450,10 @@ func _clear_connectors() -> void:
 	connectors.clear()
 	connector_markers.clear()
 	connectors_list.clear()
+	connector_run_start = null
+	if connector_free_check != null:
+		_sync_connector_controls()
+	queue_redraw()
 
 func _make_connector_marker(cell: Vector2i) -> Sprite2D:
 	var marker := Sprite2D.new()
@@ -2135,7 +2580,7 @@ func _clear_player_spawner() -> void:
 
 func _add_enemy_spawner_with_undo(cell: Vector2i) -> void:
 	var index := enemy_spawners.size()
-	var data := {"cell": cell, "enemy_type": "mouse", "spawn_interval": 2.0, "spawn_count": 3}
+	var data := {"cell": cell, "enemy_type": "", "spawn_interval": 2.0, "spawn_count": 3}
 	_insert_enemy_spawner(data, index)
 	_push_undo(
 		func(): _remove_enemy_spawner(index),
@@ -2193,7 +2638,8 @@ func _refresh_spawners_list() -> void:
 		spawners_list.add_item("Player Spawner @ (%d, %d)" % [player_spawner_cell.x, player_spawner_cell.y])
 	for spawner in enemy_spawners:
 		var cell: Vector2i = spawner["cell"]
-		spawners_list.add_item("Enemy Spawner (%s) @ (%d, %d) — every %.1fs x%d" % [spawner["enemy_type"], cell.x, cell.y, spawner["spawn_interval"], spawner["spawn_count"]])
+		var kind: String = spawner["enemy_type"] if spawner["enemy_type"] != "" else "any"
+		spawners_list.add_item("Enemy Spawner (%s) @ (%d, %d) — test: every %.1fs x%d" % [kind, cell.x, cell.y, spawner["spawn_interval"], spawner["spawn_count"]])
 
 func _spawners_list_index_to_enemy_index(list_index: int) -> int:
 	var offset := 1 if has_player_spawner else 0
@@ -2221,13 +2667,24 @@ func _on_delete_spawner_pressed() -> void:
 	if enemy_index != -1:
 		_remove_enemy_spawner_with_undo(enemy_index)
 
+## Every enemy id (its json filename) in the game's enemy folder, sorted.
+func _enemy_type_ids() -> Array:
+	var ids: Array = []
+	for file_name in DirAccess.get_files_at(EnemyController.ENEMY_TYPES_DIR):
+		if file_name.ends_with(".json"):
+			ids.append(file_name.get_basename())
+	ids.sort()
+	return ids
+
 func _open_spawner_settings(enemy_index: int) -> void:
 	editing_spawner_index = enemy_index
 	var data: Dictionary = enemy_spawners[enemy_index]
 	enemy_type_option.clear()
-	for i in range(ENEMY_TYPE_NAMES.size()):
-		enemy_type_option.add_item(ENEMY_TYPE_NAMES[i].capitalize(), i)
-	enemy_type_option.select(max(ENEMY_TYPE_NAMES.find(data["enemy_type"]), 0))
+	enemy_type_option.add_item(ENEMY_ANY_LABEL, 0)
+	var ids := _enemy_type_ids()
+	for i in ids.size():
+		enemy_type_option.add_item(ids[i], i + 1)
+	enemy_type_option.select(ids.find(data["enemy_type"]) + 1)
 	interval_spin_box.value = data["spawn_interval"]
 	count_spin_box.value = data["spawn_count"]
 	spawner_settings_dialog.popup_centered()
@@ -2238,7 +2695,8 @@ func _on_spawner_settings_confirmed() -> void:
 	var index := editing_spawner_index
 	var old_data: Dictionary = enemy_spawners[index].duplicate()
 	var new_data := old_data.duplicate()
-	new_data["enemy_type"] = ENEMY_TYPE_NAMES[enemy_type_option.get_selected_id()]
+	var picked := enemy_type_option.get_selected_id()
+	new_data["enemy_type"] = "" if picked == 0 else _enemy_type_ids()[picked - 1]
 	new_data["spawn_interval"] = interval_spin_box.value
 	new_data["spawn_count"] = int(count_spin_box.value)
 	_apply_spawner_settings(index, new_data)
@@ -2401,12 +2859,17 @@ func _load_room_data(data: Dictionary) -> void:
 	redo_stack.clear()
 	_clear_objects()
 	_clear_connectors()
+	_clear_free_doors()
 	_clear_spawners()
 
 	room_id = str(data.get("id", ""))
 	id_line_edit.text = room_id
 	room_role = str(data.get("role", "normal"))
 	room_biome = str(data.get("biome", ""))
+	room_extras.clear()
+	for key in ROOM_EXTRA_KEYS:
+		if data.has(key):
+			room_extras[key] = data[key]
 	_show_role_and_biome()
 
 	tags.clear()
@@ -2433,19 +2896,37 @@ func _load_room_data(data: Dictionary) -> void:
 		}
 		_insert_object(obj, objects.size())
 
+	for door_data in data.get("doors", []):
+		var door_cell: Dictionary = door_data.get("cell", {})
+		free_doors.append({
+			"cell": Vector2i(int(door_cell.get("x", 0)), int(door_cell.get("y", 0))),
+			"vertical": door_data.get("orient", "h") == "v",
+			"width": maxi(1, int(door_data.get("width", 1))),
+			"type": str(door_data.get("type", "any")),
+		})
+	_refresh_free_doors_list()
+
+	for spawn_data in data.get("spawn_cells", []):
+		var position_data: Dictionary = spawn_data.get("position", {})
+		_insert_enemy_spawner({
+			"cell": Vector2i(int(position_data.get("x", 0)), int(position_data.get("y", 0))),
+			"enemy_type": str(spawn_data.get("enemy", "")),
+			"spawn_interval": 2.0,
+			"spawn_count": 3,
+		}, enemy_spawners.size())
+
 	for conn_data in data.get("connectors", []):
-		# Accepts format 1 ({"position"}) and format 2 ({"a", "b"}). The editor
-		# still only places single cells, so a wider run is carried along
-		# untouched in "b" (and saved back out as-is) until it can edit runs.
+		# Accepts format 1 ({"position"}) and format 2 ({"a", "b"}). "b", "free" and
+		# "door" are carried along, or re-saving a room would drop them.
 		var conn := Connector.upgrade(conn_data)
-		_insert_connector(Connector.a(conn), connectors.size())
+		var loaded := {"position": Connector.a(conn)}
 		if Connector.b(conn) != Connector.a(conn):
-			connectors[connectors.size() - 1]["b"] = Connector.b(conn)
+			loaded["b"] = Connector.b(conn)
 		if Connector.is_free(conn):
-			connectors[connectors.size() - 1]["free"] = true
-		# Carried along like "b" and "free", or re-saving a room drops its door type.
-		if Connector.door(conn) != "":
-			connectors[connectors.size() - 1]["door"] = Connector.door(conn)
+			loaded["free"] = true
+		if Connector.door(conn) != "" and Connector.door(conn) != "any":
+			loaded["door"] = Connector.door(conn)
+		_insert_connector_data(loaded, connectors.size())
 
 	_update_camera_bounds()
 	camera.position = WORLD_OFFSET + Vector2(width, height) * TILE_SIZE / 2.0
@@ -2526,7 +3007,27 @@ func _build_export_data() -> Dictionary:
 	}
 	if room_biome != "":
 		data["biome"] = room_biome
+	for key in room_extras:
+		data[key] = room_extras[key]
+	var spawn_cells := _serialize_spawn_cells()
+	if not spawn_cells.is_empty():
+		data["spawn_cells"] = spawn_cells
+	if not free_doors.is_empty():
+		data["doors"] = _serialize_free_doors()
 	return data
+
+## The enemy spawners are the room's spawn_cells: each is a cell the dungeon
+## rolls an enemy for, or (when "enemy" is set) always spawns that exact enemy.
+## The test-mode interval / count are editor-only and not saved.
+func _serialize_spawn_cells() -> Array:
+	var result: Array = []
+	for spawner in enemy_spawners:
+		var cell: Vector2i = spawner["cell"]
+		var entry := {"position": {"x": cell.x, "y": cell.y}}
+		if spawner.get("enemy_type", "") != "":
+			entry["enemy"] = spawner["enemy_type"]
+		result.append(entry)
+	return result
 
 func _write_room_file(path: String, data: Dictionary) -> void:
 	if not JsonOnloading.write_dict(path, data):
@@ -2585,6 +3086,11 @@ func _validate_room() -> Array[String]:
 	for connector in connectors:
 		if not _is_boundary_cell(connector["position"]):
 			errors.append("Connector %s is not on a boundary cell" % str(connector["position"]))
+	for door in free_doors:
+		for door_cell in _free_door_cells(door):
+			if not _cell_in_bounds(door_cell):
+				errors.append("Free door at %s leaves the room" % str(door["cell"]))
+				break
 	return errors
 
 func _update_validation_display() -> void:
