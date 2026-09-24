@@ -111,7 +111,7 @@ The entrance is 10×10 inside, so it's 12×12 in the file and named
 
 | Kind | role | tags | Notes |
 |---|---|---|---|
-| Entrance | `entrance` | *(none)* | Only one per biome. Not rotated. No spawns. |
+| Entrance | `entrance` | *(none)* | The generator picks one per dive. Not rotated. No spawns. |
 | Corridor, bend, junction, narrow link | `corridor` | `corridor` | Also used to stretch a path so the boss fits. |
 | Combat room | `normal` | `combat` | The bread and butter. |
 | Kill zone | `normal` | `killzone` | Many spawns, a hard fight. Kept rarer. |
@@ -120,7 +120,7 @@ The entrance is 10×10 inside, so it's 12×12 in the file and named
 | Side room / dead end | `normal` | `combat` | Usually one narrow door. |
 | Barracks | `normal` | `barracks` | A hall with pockets off it. Favors `undead.skeleton` (weight 3). |
 | Treasure | `normal` | `treasure` | Never random. Placed on a leftover doorway. |
-| Boss | `boss` | `combat` | Not rotated. Placed on the deepest doorway. |
+| Boss | `boss` | `combat` | Rotated like any other room. Placed on the deepest doorway. |
 
 ### How often each kind shows up (`defines.json` → `tag_weights`)
 
@@ -160,7 +160,8 @@ Lower weight means less often, but never impossible.
 - **Side rooms:** Closet 5×5, Storeroom 7×7, Cells 9×7 (all narrow), DeadEnd
   6×8 (wide).
 - **Barracks:** Barracks 12×12.
-- **Treasure:** Vault 7×7, Hoard 9×11 (both narrow).
+- **Treasure:** Vault 7×7, Hoard 9×11 (both narrow), Armory 8×10, Reliquary
+  8×8 (both wide, two chests each).
 - **Boss:** Throne 18×18, Pit 16×16 (8 minion spawns each).
 
 ## Adding a new room, step by step
