@@ -29,7 +29,7 @@ lists every piece.
 | Folder | Walls | Floors | Idea |
 |---|---|---|---|
 | `dungeon/` | `wall_cobble_brick` | smooth stone | Built masonry. 2-wide corridors and open rooms, with small side rooms off 1-wide doors. |
-| `cave/` | `wall_rough_cave` rock, `wall_smooth_stone` flowstone and crystal | dirt, moss (grass), smooth stone, water, lava | Natural caves by formation: one room per feature (stalactite hall, underground lake, magma pool, geode), plus a Deep variant of each. No doors. Tight tunnels, and enemies come in bat swarms. |
+| `cave/` | `wall_rough_cave` rock, `wall_smooth_cave` flowstone and crystal | dirt, moss (grass), smooth cave, water, lava | Natural caves by formation: one room per feature (stalactite hall, underground lake, magma pool, geode), plus a Deep variant of each. No doors. Tight tunnels, and enemies come in bat swarms. |
 | `mine/` | `wall_rough_cave` rock with `wall_wood_plank` timber supports | dirt, wood plank walkways | A mine shaft. Plank tracks run door to door. Timber frames doorways and props up long tunnels. Includes `Mine_Cabin_Cavern_17x13`, a big cavern with a cabin in the middle. |
 | `flesh/` | `wall_flesh` | flesh, smooth stone, acid | Inside a body: one room per organ, plus a mutant of each (extra lobes, doubled parts). Lopsided, never symmetric. Flesh floor slows movement, so stone strips act as fast lanes. Very dense with enemies. |
 | `forest/` | `wall_forest` trees, `wall_rough_cave` rocks, `wall_wood_plank` timber | dirt, grass, water, wood planks | Woods by landmark: one room per forest feature (pond, fallen giant, wolf den), plus an Overgrown variant of each. No doors. Trails wind between openings, and enemies come in wolf packs. |

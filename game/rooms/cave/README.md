@@ -18,10 +18,10 @@ places rooms, and all of that applies here too.
 | Material | Tile | Where it goes |
 |---|---|---|
 | Rock | `wall_rough_cave` | Outer walls, stalagmites, boulders, rubble, pinches in tunnels. |
-| Flowstone, crystal | `wall_smooth_stone` | Columns, rimstone lips, crystal clusters, the geode's shell. |
+| Flowstone, crystal | `wall_smooth_cave` | Columns, rimstone lips, crystal clusters, the geode's shell. |
 | Dirt | `floor_dirt` | The normal floor. |
 | Moss | `floor_grass` | Only where there's light (the cave mouth, under the sinkhole) or damp (by water). |
-| Smooth stone | `floor_smooth_stone` | Flowstone floors, the old lava tube's glassy floor, cooled crust around lava. |
+| Smooth cave | `floor_smooth_cave` | Flowstone floors, the old lava tube's glassy floor, cooled crust around lava. |
 | Water | `floor_water` | Lakes, streams, pools, sumps. Slows movement. |
 | Lava | `floor_lava` | Lava tubes and magma rooms. Slows movement a lot (to a fifth of normal speed) but does no damage. |
 
@@ -133,7 +133,7 @@ file names (grid size = inside + 2).
 ## Adding a new room, step by step
 
 1. **Pick the formation and sketch it** as a text grid: `#` rock, `O`
-   flowstone/crystal, `.` dirt, `,` moss, `=` smooth stone, `~` water, `^`
+   flowstone/crystal, `.` dirt, `,` moss, `=` smooth cave floor, `~` water, `^`
    lava, `D` openings. Pick an odd inside size, then add 2 for the grid.
 2. **Make it rough.** If you can fold it in half and it matches, break it
    up.
