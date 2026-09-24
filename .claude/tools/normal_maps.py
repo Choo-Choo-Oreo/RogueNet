@@ -244,6 +244,7 @@ MATERIALS = {
     "floor_water":       (palette, dict(heights=WATER, strength=3.0)),
     "floor_lava":        (plain, {}),   # emits its own light, so no shading from the player's
     "floor_acid":        (palette, dict(heights=ACID, strength=3.0)),
+    "floor_void":        (plain, {}),   # pure black nothing: no surface to shade
     "Wood":              (door, dict(tops=WOOD_TOPS, bump=2.5)),
     "Wood_Fold":         (door, dict(tops=WOOD_TOPS, bump=2.5)),
     "Dungeon":           (door, dict(tops=DUNGEON_TOPS, bump=0.0)),   # flat placeholder, no grain yet

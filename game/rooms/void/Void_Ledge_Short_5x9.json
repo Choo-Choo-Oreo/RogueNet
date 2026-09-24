@@ -1,0 +1,169 @@
+{
+	"biome": "void",
+	"connectors": [
+		{
+			"a": {
+				"x": 2,
+				"y": 0
+			},
+			"b": {
+				"x": 2,
+				"y": 0
+			},
+			"door": "none",
+			"free": true
+		},
+		{
+			"a": {
+				"x": 2,
+				"y": 8
+			},
+			"b": {
+				"x": 2,
+				"y": 8
+			},
+			"door": "none",
+			"free": true
+		}
+	],
+	"base_floor": "floor_smooth_stone",
+	"floor": [
+		[
+			null,
+			null,
+			"floor_smooth_stone",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_smooth_stone",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_smooth_stone",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_smooth_stone",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_smooth_stone",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_smooth_stone",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_smooth_stone",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_smooth_stone",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_smooth_stone",
+			null,
+			null
+		]
+	],
+	"format": 2,
+	"height": 9,
+	"id": "Void_Ledge_Short_5x9",
+	"objects": [],
+	"role": "corridor",
+	"tags": [
+		"corridor"
+	],
+	"walls": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"width": 5
+}

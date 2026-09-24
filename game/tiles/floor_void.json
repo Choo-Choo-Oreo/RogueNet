@@ -1,6 +1,8 @@
 {
 	"tile_name": "floor_void",
 	"atlas_texture": "res://resources/gfx/tileset/floor_void.png",
+	"normal_texture": "res://resources/gfx/tileset/floor_void_normal.png",
+	"specular_color": [0, 0, 0, 1],
 	"sort_order": -1,
 	"marker_color": [0.101961, 0.101961, 0.101961, 1]
 }
