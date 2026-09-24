@@ -7,6 +7,86 @@ Last verified: 2026-09-24, every item re-checked against the current files (not 
 
 The networking audit below was mostly stale and has been rewritten: enemy spawning, enemy AI, damage and death are now host-authoritative and synced. See the Multiplayer section for what is still open.
 
+## Ranked order (2026-09-24: three-agent audit, checked against the files, nothing run)
+
+The sections further down are unchanged and remain the full list. This section is the
+order to walk them in. Each entry says where its detail lives. Sizes: small (an hour or
+two), medium (a session), large (several sessions). "Unblocked" means it can start now.
+
+Tier meaning: S = do first, everything else stands on it. A = the missing game core.
+B = important, wait for A. C = parked on purpose.
+
+### S tier: verify and clean up first
+
+- [✗] Playtest everything written but never run in Godot (only Orea can; small, unblocked, high risk if delayed). One pass: terrain-aware routing (lava and water avoided, flyers ignore slowdown), free-standing doors (a sewer room is the natural test), the boss door drawing, the DungeonMaker tools (connector run tool, walls cleared under a run, door dropdown, enemy spawner type, flip), and re-saving a room to confirm `spawn_cells`, `base_floor` and `favored_enemy` survive; then boss room rotation (Throne and Pit sideways), new treasure rooms, generation in all 10 biomes, and one two-player run: host, join, town, party, dive, End Mission, return, re-host. Detail: the "written, not run" items in every section below
+- [✗] Join failure path: a failed join, a second Join press or a Steam-offline join hangs with no message. Null the peer, guard a second Join, show a message, add a ~15 s timeout (`LobbyMenu.gd`, `SteamManager`). Small, unblocked
+- [✗] Small clean-ups that cost minutes: remove `PerfMonitor` from `Dungeon.tscn` (it prints to the console every second; see the item below), put cathedral `default_door` back to `iron`, delete the old `Dungeon_W4/W5` in `resources/gfx/doors/` (only after `game/doors/dungeon.json` points at `doors.boss/`, which it now does), fix `CLAUDE.md` calling the transport an "ENet template" (it is `SteamMultiplayerPeer` only; singleplayer uses `OfflineMultiplayerPeer`)
+- [✗] Rewrite `ART_TODO.md` from the current state: it still says four biomes, one enemy, and that carpet, water and lava floors are missing. Anyone picking art from it would draw duplicates. Small, unblocked (a teammate, reviewed by Silvery Foxy)
+- [✗] Test export once (Windows build) and commit a shared export preset (`export_presets.cfg` is gitignored today). This checks that the JSON loaders and floor speeds work under an export, and fills the empty "Build command" and "Test command" lines in `CLAUDE.md`. Small to medium; needs Godot on Orea's machine
+- [✗] Commit hygiene: keep commits small and by topic, and separate debug PNG swaps from code. Only Orea commits; Claude never commits without a per-instance yes
+
+### A tier: the missing game core
+
+Two decisions gate most of these (see "Decisions needed" below): what `power` means, and how a dive ends.
+
+- [✗] Player stats and character save (large, unblocked). The four attributes exist in `EntityStats.gd` but nothing reads them; there is no XP, level, inventory or saved character (`user://` holds only settings and debug settings; even the character choice does not persist between launches). This is the foundation for loot, skills, scaling and difficulty tiers. Use the `ConfigFileHandler` pattern and reserve a difficulty tier field in the save from day one
+- [✗] Boss encounter, minimal version (medium, unblocked for a 1x1 boss). A boss enemy JSON (tier wood to gold, high health, bound to its room) spawned in `role: boss` rooms through the `"enemy"` field on a spawn cell; boss doors actually placed (no room sets `"door": "dungeon"` today, and `DoorPlacer` never gives a boss room a boss door, so all the boss door art, leaf tiers and emblems are unused); a boss-death event and a mission-complete flow (the dive has no win condition, only the host's End Mission). The boss door layered drawing is written in `DoorManager.gd`; still open there: which tier and emblem a boss gets, and drawing the emblem from `emblems.json`. AI phases and attack patterns come after this. (Answers the "actual antagonist AI, not player control" question)
+- [✗] Item and loot foundation (large; a stub schema can start before the stat model): item JSON, a basic inventory, weighted loot tables (`game/loot/*.json`), enemy drops, and real hotbar slots (`Hotbar.gd` is placeholder labels). There is no `game/items`, `game/loot` or `game/objects` folder yet
+- [✗] Object runtime (medium to large, unblocked): the `actor` group, the draw-order table, the object manifest and registry, `rotate_room` for objects, then the interact key, chests and the blocker registry (chests block walking, decided). Nothing reads a room's `objects` at runtime today, so treasure rooms hold nothing. Detail and tiers: `OBJECTS_ROUTES_TRACKER.md`
+- [✗] Wire the damage types (small to medium, unblocked): `game/damage_types.json` is only referenced in docs, so validate attack type strings, fill enemy resistance tables (empty today) and give lava and acid damage (slowdown only now). Cheap now, harder once content is authored
+
+### B tier: important, after the A tier
+
+- [✗] Multi-tile (2x2) enemies: size-aware occupancy, reservation, flow field and spawn; real bosses need it (large; all 14 enemies are `size_tiles: 1`). Ties to the multi-tile item in `SURROUND_AI_TRACKER.md`
+- [✗] Skill system and hotbar binding: skills as data, roles unlocked by skills (Shield, Sword, Healer, Support, Leader), taunt as the first one (large; after stats and items)
+- [✗] Netcode decision written into `CLAUDE.md`: Steam listen-server only, or add ENet for a persistent town. It gates late join, the persistent town and per-party instances (small to write, decision for Orea)
+- [✗] Late join and mid-dive state: a joiner catches up on nothing (door state, enemy state, who is dead). Only matters if joining a started mission is ever allowed; `_join_mission` refuses today. Depends on the netcode decision
+- [✗] Persistent root plus branch instancing (research option 4 in `TOWN_PERSISTENCE_RESEARCH.md`): medium to large, removes `current_scene` lookups and hard-coded node paths in `NetworkSync`. Risk grows with every new hard-coded path
+- [✗] Trust and validation for public play: reject NaN and out-of-range in `report_position`, cap name length, check the privacy string, and confirm `request_debug_spawn` and god mode are not open to any peer in real multiplayer (small; only matters for public play)
+- [✗] Real Steam app id: `SteamManager` uses 480 (the Spacewar test id) and so does `steam_appid.txt`. Needed before any build outside the team; blocked on having a Steamworks app
+- [✗] Sound effects: hits, doors, footsteps, UI; `resources/sfx/effects` and `ambiance` are empty and there are no audio buses beyond music (large; sourcing and wiring is a generalist job, direction from Silvery Foxy)
+- [✗] Player animation states: idle, attack, hurt, death for the knight and dwarf (large; Silvery Foxy; wait for the character list decision)
+- [✗] Enemy attack and death frames, and per-biome enemy rosters and boss designs (large; needs the roster design from Orea before art starts)
+- [✗] Per-biome `seal_tile` in `defines.json` (the code is in `DungeonPainter`, no biome sets it yet; forest foliage, flesh membrane...) and per-biome door choices (only cathedral has doors on; the other nine use `none`). Small, Orea's and Silvery Foxy's art call
+- [✗] Character difficulty tiers (softcore, mediumcore, hardcore): depends on the character save and the inventory. Keep the save format ready for a tier field
+- [✗] Locked doors, keys and treasure gating: `doors.treasure` is an empty folder; needs items and loot first
+- [✗] Dynamic monster scaling v1: a `power` field in enemy JSON and a soft-band weight step in `EnemySpawning`; depends on what `power` means (see `dynamic-monster-scaling.md`)
+
+### C tier: parked on purpose
+
+- Optional boss/antagonist player role (needs the boss enemy, skills and the `actor` group), routes, minecarts and conveyors, ceilings and multi-floor, dedicated headless server (blocked upstream by GodotSteam), host migration, controller support, rebindable keys, path caching and flow-field reuse for large swarms, the light flood in flat arrays (profile first), hearing/smell/taste senses, UI art and effects, app icon (still `icon.svg`), Steam capsule art, DungeonMaker polish (drag ends, hover), secret doors, one-way doors, flare tiles, `DungeonMaker.gd` at 2700+ lines (split when it hurts)
+
+### Quick wins (small, unblocked, any time)
+
+- [✗] Shuffle the treasure room order in `_place_any_locked` so `Armory` does not always win (offered, not decided)
+- [✗] Split data and UI in `receive_mission_members`, which still force-shows `PanelMission`
+- [✗] Seed the enemy RNG from the dungeon seed and stop checking the host's fog when rolling spawns (matters once boss-death respawns exist)
+- [✗] Cache `GridMover`'s floor-speed table as static instead of rebuilding it per instance
+- [✗] An automated check: a script that validates every room JSON (`Validate All` in the Maker already exists) and runs the generator once per biome
+- [✗] Maze share tuning: mazes are about 21% of dungeon and cathedral normal and corridor rooms; adjust `tag_weights`
+- [✗] Doc clean-up: `BIOMES.md` counts and its "doorways 1 wide" wording; confirm the old dungeon Corridor/Hallway files are gone; `NPC_SIMULATION_RESEARCH.md` still mentions the deleted move-state relay; the stale comment in `EnemyController.gd` line 5 ("aggro comes later"); `EnemySpawning.gd` says it runs "on boss death" but nothing calls it there
+- [✗] Reconcile the two trackers that disagree: `AGGRO_AI_TRACKER.md` lists projectile body hits as C tier and says the development biome rolls all 14 enemies, but projectile hits are done and `game/rooms/development/` no longer exists; its "flyers are cosmetic-only" line is also out of date now that `flying` skips terrain slowdown (the wraith is still not flagged as flying)
+
+### Decisions needed from Orea
+
+1. What does `power` mean: a character level, or a gear-and-stats rating? Gates stats, loot, skills, scaling and the boss role
+2. How does a dive end: boss death ends it, or the boss only opens a route onward? Do boss deaths trigger respawns?
+3. Which tier and emblem does each boss get, and what sets it (how deadly the boss is)?
+4. Netcode path: Steam listen-server only, or add ENet. Is the town persistent? (`CLAUDE.md` says no persistent world; `TOWN_PERSISTENCE_RESEARCH.md` argues for one)
+5. Dead players: free-roaming ghost (the code) or a placeholder soldier (`dynamic-monster-scaling.md` and the README)?
+6. Difficulty tier: where is it chosen, and must a party share one? What does "drop everything" mean before an inventory exists?
+7. Objects: placement modes (`wall`, `floor`, `free`), one cell or multi-cell, chest rarities, auto-snap torches or a migrator report to approve (recommended)
+8. Interact key: fixed E or rebindable? Loot with no inventory: a chat line or a floating pickup?
+9. Do enemies open free doors and break barrels, or only players? Should a boss fight lock the doors?
+10. Enemy roster per biome and the boss designs; which `seal_tile` each biome gets; the character list (blocks player animation)
+11. Can a client create a mission or host, given that the host must dive?
+12. Boss and elite taunt: half duration (tracker recommendation) or fully immune?
+
+### Stale statements in this file (left as they were, noted here)
+
+- The header says the latest commit is `95feb80`; HEAD has moved on and most of the work described as pending has been committed.
+- Items dated 2026-09-24 marked "written, not run in Godot" stay marked that way until a playtest; the S tier playtest item above collects them.
+
 ## Small cleanups
 - [✓] Unused `_pieces()` in `DualGridRender.gd` removed
 - [✓] Stray `floor_flesh_normal.png~` deleted
