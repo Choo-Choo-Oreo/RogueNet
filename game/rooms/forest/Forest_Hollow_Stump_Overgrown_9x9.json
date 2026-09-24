@@ -1,0 +1,243 @@
+{
+	"biome": "forest",
+	"connectors": [
+		{
+			"a": {
+				"x": 4,
+				"y": 8
+			},
+			"b": {
+				"x": 4,
+				"y": 8
+			},
+			"door": "none",
+			"free": true
+		}
+	],
+	"base_floor": "floor_dirt",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_dirt",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			"floor_dirt",
+			"floor_grass",
+			"floor_dirt",
+			null
+		],
+		[
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_grass",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_dirt",
+			"floor_dirt",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 2,
+	"height": 9,
+	"id": "Forest_Hollow_Stump_Overgrown_9x9",
+	"objects": [],
+	"role": "normal",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 4,
+				"y": 1
+			}
+		},
+		{
+			"position": {
+				"x": 4,
+				"y": 3
+			}
+		}
+	],
+	"tags": [
+		"combat"
+	],
+	"walls": [
+		[
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			null,
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			"wall_forest",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest",
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			null,
+			null,
+			null,
+			"wall_forest",
+			null,
+			null,
+			null,
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest",
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			"wall_forest",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_forest",
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			null,
+			null,
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest"
+		],
+		[
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			null,
+			"wall_forest",
+			"wall_forest",
+			"wall_forest",
+			"wall_forest"
+		]
+	],
+	"width": 9
+}

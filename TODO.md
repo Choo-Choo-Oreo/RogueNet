@@ -36,7 +36,7 @@ The networking audit below was mostly stale and has been rewritten: enemy spawni
 - [✓] Dungeon Maker room list, known tags and "Validate All" look inside the biome folders
 
 ### Pinned (parked on purpose, revisit only if it comes up)
-- [✗] Maze share: still open, but biome `tag_weights` now down-weight maze rooms in dungeon (0.6), cathedral (0.6), mine (0.4) and flesh (0.6). Raw share of normal and corridor rooms tagged `maze`: dungeon 21%, cathedral 50%, mine 44%, cave 52%, flesh 11% (8 of 72, after the 2026-09-24 organ remake), forest 56% (cave and forest weights are 1.4-1.5, so they are boosted, not cut). Estimated by arithmetic, not by simulated runs
+- [✗] Maze share: still open, but biome `tag_weights` now down-weight maze rooms in dungeon (0.6), cathedral (0.6), mine (0.4), flesh (0.6) and forest (0.6). Raw share of normal and corridor rooms tagged `maze`: dungeon 21%, cathedral 50%, mine 44%, cave 52%, flesh 11% (8 of 72, after the 2026-09-24 organ remake), forest 12% (8 of 66, after the 2026-09-24 landmark remake) (cave's weight is 1.5, so it is boosted, not cut). Estimated by arithmetic, not by simulated runs
 - [✓] `Mine_Cabin_Cavern_19x15`: about 8% of its floor was unreachable from its doors. Gone since the 2026-09-24 mine redesign; the new `Mine_Cabin_Cavern_17x13` has every floor tile reachable
 
 ## Rendering and art
@@ -79,7 +79,7 @@ The networking audit below was mostly stale and has been rewritten: enemy spawni
 - [✗] Door locks and keys (no lock or key code exists; treasure/boss dead ends should be lockable); doors for flesh maybe later (decided: no doors in cave or forest); door state for a player joining mid-dive (not possible today). The per-connector `door` override ("none" / type / "any") is done in data
 - [✓] Door art moved to the new `<Style>_W<n>.png` / `_W<min>-<max>.png` sets, 2026-09-23 (written, not run in Godot yet): `DoorManager` picks the manifest per door width (`art` may be a path or a width map, wood is per width), `Connector` keeps an optional `"door"` (type / `"none"` / `"any"`), `DoorPlacer` resolves each joint from both connectors (specific beats none beats any; deeper room wins a tie), biome `default_door` replaces `doors: {density, types}`, iron `max_width` is 5
 - [✓] Deleted the leftover `wall_door` / `wall_door_open` tiles, 2026-09-23: their `game/tiles/*.json`, `tile_registry.json` entries (ids 8 and 9 are not reused), and their nodes and resources in `Dungeon.tscn` / `DungeonMaker.tscn`. `.claude/tools/render_dungeon.py` still mentions them for old room files
-- [✗] DungeonMaker field for a connector's `door`: the Maker only round-trips the value, there is no control for it. `door` is now set on real rooms by hand or script: dungeon 31 of 42 rooms, mine 59 of 59, flesh 80 of 80 (1-wide `iron`, 3-wide `any`, all `free`), none in cathedral, cave, fallback or forest
+- [✗] DungeonMaker field for a connector's `door`: the Maker only round-trips the value, there is no control for it. `door` is now set on real rooms by hand or script: dungeon 31 of 42 rooms, mine 59 of 59, flesh 80 of 80 (1-wide `iron`, 3-wide `any`, all `free`), forest 74 of 74 (all `none`, all `free`), none in cathedral, cave or fallback
 - [✓] `wood_fold` (3-5 wide) and `dungeon` (4-5 wide, placeholder boss door) door types, 2026-09-24; `DoorManager` reads `frame_size` and `own_cell_row` per art JSON so the 16x48 dungeon door works. Cathedral's `default_door` is TEMPORARILY `wood_fold` for testing (was `iron`); revert when done
 
 ## Gameplay

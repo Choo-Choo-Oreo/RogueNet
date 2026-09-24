@@ -37,6 +37,12 @@ guesses are marked as guesses.
 - Steampunk biome (lifts, pistons, vents, moving floors) is not made yet;
   the only requirement now is expandability.
 
+## Decisions made (Orea, 2026-09-24)
+
+- Chests BLOCK walking (you cannot walk over one; a mimic is planned for one day). So a chest is a `floor` object that registers in the blocker registry, and enemies and pathfinding must treat it as blocked. (Answers Q7)
+- Wall placement stores the WALL CELL plus the face it hangs on. Cells are the data layer; tiles (the dual-grid mesh, visuals) sit under them and are derived from cell data, so an object reads what it needs from its cell instead of storing tile info. (Answers Q1; this is my reading of Orea's explanation, confirm when we build it)
+- Belts: standing still on a belt moves you one tile every second in its direction; pressing a movement key overrides the push (input wins over forced movement). (Answers Q13)
+
 ## Current state (found while researching)
 
 - Room JSON `objects` (pixel `position`, `rotation`, `type`) hold 148 torches
@@ -79,7 +85,7 @@ vehicles in B because objects unblock them.
 - [ ] `actor` group, additive: `add_to_group("actor")` where players and enemies already join their groups, and switch only the both-groups loop in `GridMover.gd` (~142) to `actor`; leave the ~20 single-group call sites alone and migrate lazily. Keep `DebugMenu` protagonist / antagonist counts as they are (a2, a3)
 - [ ] One draw-order table (`DrawOrder.gd` constants: floor, overlay, object, door, actor, door-behind, ceiling ~1800, darkness 2000, glow 2001, debug 4000) plus a `layer` field on objects (floor / overlay / object / ceiling). Replace the magic z numbers in `DoorManager`, `PlayerController`, `LightMap`, `DebugDraw`. Cheap, and keeps 2.0 possible (a1, a2, a3)
 - [ ] Object manifest `game/objects/<type>.json` + `ObjectType` / `ObjectRegistry` (mirrors `DoorRegistry`: runtime record with id, cell, state, hp; ids are list positions from the seed) + a validator shared by the loader, DungeonMaker and a check script (same pattern as the Connector validator) (a1, a3). Sketch (a1): id, layer, placement modes allowed, size, blocks {walk, sight, shot}, art (folder, frames, fps) or boss-door style layers, light {color, radius, pulse}, interact, loot, destructible, alpha, tags. Behaviours are optional properties
-- [ ] Room placement schema, cell-based so rotation is an integer transform: `{type, mode: wall|floor|free, cell, face, quarter, rotation, overrides, id}`; `mode` checked against the manifest's allowed modes; overrides limited to whitelisted manifest fields (a1)
+- [ ] Room placement schema, cell-based so rotation is an integer transform: `{type, mode: wall|floor|free, cell, face, quarter, rotation, overrides, id}`; `wall` mode stores the wall cell + the face it hangs on (decided); `mode` checked against the manifest's allowed modes; overrides limited to whitelisted manifest fields (a1)
 - [ ] `rotate_room` transforms objects (helper like the connector one; check all four rotations; free-mode pixels rotate about the tile grid: verify), the `#rN` rotation signature includes objects, DungeonMaker flip transforms them too (a1, a3)
 - [ ] One-time migrator for the existing 187 objects: pixel positions become `free` at first, torches near a wall cell are snapped to `wall` by a script that writes a REPORT for a human to review, `format` bumped with a legacy-load warning (a1)
 - [ ] `ObjectSpawner` step in `DungeonPainter` between `_paint` and `_place_doors`: a deterministic geometry pass like `DoorPlacer` (no rng) (a1)
@@ -95,7 +101,7 @@ vehicles in B because objects unblock them.
 - [ ] Light-source family: objects register runtime glow sources `{position, color, radius, pulse, owner}` through `rebake_around` (the open glow-rebake item), not a full re-bake. Pulse is a shader uniform or tween, never a per-frame re-flood. Wall torches seed glow on the wall face (`_flood_glow` seeds look compatible: guess, verify) (a1, a3)
 - [ ] Free-standing doors: room-level `doors: [{cell, orient, type, lock}]`, `DoorPlacer.place_free` as a second entry point, cells transformed with the room offset and rotation, appended AFTER connector doors so their ids do not shift; must not count as connectors in the assembler; DungeonMaker door tool (a1, a3)
 - [ ] DungeonMaker: object palette built from the registry (removes the hard-coded dict), `mode` toggle, wall-snap to the nearest wall face, overrides inspector (a1)
-- [ ] Forced-movement hook on `GridMover` (`forced_step(dir, speed_scale)`) sharing the wall / void / door / occupancy / reservation checks of `move_one_tile`, run only on the body's own authority so a conveyor needs no new sync; flyers and ghosts skip it via `_ignores_terrain()` (a2)
+- [ ] Forced-movement hook on `GridMover` (`forced_step(dir, speed_scale)`; a belt only pushes a body that is idle, one tile per second, and any movement input cancels it: decided) sharing the wall / void / door / occupancy / reservation checks of `move_one_tile`, run only on the body's own authority so a conveyor needs no new sync; flyers and ghosts skip it via `_ignores_terrain()` (a2)
 - [ ] Route data model: static `RouteRegistry` (cells -> `{dir, route_id, carrier}`, nodes and edges for junctions, `hub_room`, `switch_state`); direction is data so later carriers reuse it (a2)
 
 ## B tier
@@ -130,7 +136,7 @@ vehicles in B because objects unblock them.
 - Are the 148 torches actually near walls? Run an audit script before the migrator (a1)
 - Object ids as list positions break if peers build objects in different orders; any rng in placement must come from the seed (a1, a3)
 - `LightMap._blocked_cache` is cleared only inside a flood or bake; a destroyed object needs a version bump like doors (a3)
-- Belt versus input: if a belt chains a forced step at `tween.finished`, the player can never step off; decide who wins (a2)
+- Belt versus input: DECIDED input wins. Implementation note: the belt tick must only fire when the body is idle and no movement key is held, and must not chain steps at `tween.finished` (a2)
 - Remote copies must not run the forced-movement hook (guard on authority) or bodies move twice (a2)
 - Remote bodies snap with no interpolation, so a fast cart looks choppy (guess) (a2)
 - Riders share a cell with the cart: exempt them in the occupancy check or the cart's own steps are refused (a2)
@@ -143,7 +149,7 @@ vehicles in B because objects unblock them.
 ## Questions for Orea
 
 Objects and placement
-1. `wall` mode: store the wall cell plus the face it hangs on (easier for editor snap), or the floor cell it faces?
+1. ANSWERED: wall cell plus face (cells are data, tiles are derived visuals).
 2. Is an object always one cell, or do we need multi-cell footprints (machines, big chests)?
 3. Migrator: auto-snap near-wall torches, or produce a report for you to approve? (Recommended: report.)
 4. Overrides per placement: whitelist of manifest fields, or free-form?
@@ -151,7 +157,7 @@ Objects and placement
 6. Must decorations be identical on every client (seed-derived), or is host-owned plus sync fine for everything that is not purely visual?
 
 Interaction, loot, destructibles
-7. Does a chest block walking (floor object) or can you walk over it? This decides the blocker registry.
+7. ANSWERED: chests block walking (mimic planned). Blocker registry needed.
 8. Do enemies open free doors and destroy barrels, or only players?
 9. Chest rolls at open time (recommended) or at generation?
 10. Interact key: fixed E or configurable in the input map?
@@ -159,7 +165,7 @@ Interaction, loot, destructibles
 12. Which rooms may hold free doors: all rooms, or only tagged ones?
 
 Routes and carts
-13. Can a player step off a belt freely, or does the belt override input?
+13. ANSWERED: idle bodies are moved one tile per second; a movement key overrides the belt.
 14. Should enemies ever ride carts or belts on purpose (ambush)?
 15. Can riders attack, be hit, be targeted?
 16. Does a cart run on demand (boarding starts it), on a schedule, or only when a switch is thrown?
