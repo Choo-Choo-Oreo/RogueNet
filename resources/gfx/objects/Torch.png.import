@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://blj1rdpqc5coi"
-path="res://.godot/imported/Waling_South+East.png-41f3941fa70d1cc9f563eefa78ddba86.ctex"
+uid="uid://bwxitguhrhwuu"
+path="res://.godot/imported/Torch.png-7282043af5580e3646854b51f9ffdaca.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/players/player.protagonist/Human/Waling_South+East.png"
-dest_files=["res://.godot/imported/Waling_South+East.png-41f3941fa70d1cc9f563eefa78ddba86.ctex"]
+source_file="res://resources/gfx/objects/Torch.png"
+dest_files=["res://.godot/imported/Torch.png-7282043af5580e3646854b51f9ffdaca.ctex"]
 
 [params]
 

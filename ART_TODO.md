@@ -27,11 +27,11 @@ Enemies (section 4) come next, but the enemy roster isn't designed yet, so check
 | Thing | Rule |
 |---|---|
 | Tile size | 16x16 pixels. The camera is top-down, and walls show a front face on their south side. |
-| Tile colors | At most 6 colors per tile. For walls the pure black top doesn't count. |
+| Tile colors | At most 8 colors per tile (was 6 until 2026-09-24; older tiles still use 4-6). For walls the pure black top doesn't count. |
 | Edges | Hard pixels only. No soft brushes, no semi-transparent pixels, no anti-aliasing. |
 | Shades | No two shades that are nearly the same. If you can't tell them apart at 1x, merge them. |
 | Wall tops | Pure black `#000000`. This is what makes walls merge into the void. |
-| Characters, objects | 16x16 per frame. The 6-color limit does not apply (the knight uses up to 17). |
+| Characters, objects | 16x16 per frame. The tile color limit does not apply (the knight uses up to 17). |
 | Files | PNG in the repo, keep the `.aseprite` next to it. |
 | Normal maps | Not your job. They are generated from your PNG by a script. Tell Orea when a tile changes. |
 
@@ -110,7 +110,7 @@ A biome is at least: 1 wall, 2 floors, 1 door, about 6 objects.
 `torch` and `chest` exist. Objects aren't spawned in a live dive yet (that's a code job),
 but they show up in the Dungeon Maker as soon as Orea registers them, so art can run ahead.
 
-If something should animate, put the frames side by side in one PNG like `Tortch.png` does.
+If something should animate, put the frames side by side in one PNG like `Torch.png` does.
 
 ### Everywhere
 
@@ -202,6 +202,8 @@ Frames are 16x16, in strips. What exists:
 - [✗] Attack, all four directions. Combat is real-time, so this is the one players see most.
 - [✗] Hurt flash or flinch
 - [✗] Death
+- [~] The current knight and dwarf are TEMPORARY (2026-09-24, Orea). A teammate is building a new `human` character with EIGHT-direction movement (walking north, north+east, east, south+east, south, and so on) in `resources/gfx/players/player.protagonist/human/`; the flipped directions come from the right-facing art. It comes with an equipment slot map (head, neck, chest, back, gloves, legs, feet, main hand, off hand) that says, per direction, which worn pieces draw over or behind the body and where a held item's grip pixel sits. Do not draw more frames for the old knight and dwarf until that lands
+- [✗] Human: `walking_south+east.png` was misnamed `Waling_South+East.png` and is now fixed (2026-09-24); `walking_south+east.aseprite` sits beside it. The set is still incomplete and its names do not match the `Knight-Up/Down/Left/Right` pattern; eight directions need a new naming and animation scheme, and the game only handles four directions today (`DirectionalAnimator`)
 - [✗] More classes **(decide first)**. Don't draw new classes until Orea confirms what they are.
 
 ## 4. Enemies

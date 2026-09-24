@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://g63c16rm3irg"
-path="res://.godot/imported/Tortch.png-9473433184a56f542c77763f90ad594a.ctex"
+uid="uid://cfy1q3bn10qq"
+path="res://.godot/imported/walking_south+east.png-6b998b1bce13f2fc2d86a3e90af0f459.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/objects/Tortch.png"
-dest_files=["res://.godot/imported/Tortch.png-9473433184a56f542c77763f90ad594a.ctex"]
+source_file="res://resources/gfx/players/player.protagonist/human/walking_south+east.png"
+dest_files=["res://.godot/imported/walking_south+east.png-6b998b1bce13f2fc2d86a3e90af0f459.ctex"]
 
 [params]
 

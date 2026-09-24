@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cgfgb58m1lfer"
-path="res://.godot/imported/walking_South.png-fbac89242474234a4e889fa285dbd222.ctex"
+uid="uid://dq6w74spkv5tg"
+path="res://.godot/imported/walking_South.png-f1aceecc54dfb7988912ea6232209156.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/players/player.protagonist/Human/walking_South.png"
-dest_files=["res://.godot/imported/walking_South.png-fbac89242474234a4e889fa285dbd222.ctex"]
+source_file="res://resources/gfx/players/player.protagonist/human/walking_South.png"
+dest_files=["res://.godot/imported/walking_South.png-f1aceecc54dfb7988912ea6232209156.ctex"]
 
 [params]
 

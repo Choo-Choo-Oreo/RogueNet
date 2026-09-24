@@ -47,7 +47,7 @@ const ROOM_THUMB_MATERIAL_COLORS := {
 	"void": ROOM_THUMB_VOID_COLOR,
 }
 const OBJECT_MARKER_TEXTURES := {
-	"torch": "res://resources/gfx/objects/Tortch.png",
+	"torch": "res://resources/gfx/objects/Torch.png",
 	"chest": "res://resources/gfx/objects/Chest_Wood.png",
 }
 const CONNECTOR_TEXTURE_PATH := "res://resources/gfx/doors/Wood_W1.png"
