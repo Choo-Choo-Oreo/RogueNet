@@ -174,7 +174,9 @@ static func with_rotations(rooms: Dictionary) -> Dictionary:
 	for id in rooms.keys():
 		var room: Dictionary = rooms[id]
 		var role: String = room.get("role", "normal")
-		if role == "entrance" or role == "boss":
+		# The entrance stays as drawn (the dive starts there). Bosses rotate like any
+		# other room: with one fixed facing a boss only fit dead ends facing one way.
+		if role == "entrance":
 			continue
 		var seen := {_signature(room): true}
 		for turns in [1, 2, 3]:

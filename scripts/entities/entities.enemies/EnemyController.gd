@@ -143,7 +143,11 @@ func set_enemy_type(enemy_id: String) -> void:
 	$HealthPixelBar.position = Vector2(_size_px / 2.0, _size_px + 2.0)
 	$HealthPixelBar.setup(stats, 32 if _size_px > grid_mover.tile_size else 16)
 	senses.apply_overrides(data.get("senses", {}))
-	animator.continuous_animation = data.get("continuous_animation", false)
+	# One "flying" flag: wings never freeze (animation), terrain never slows
+	# it, and its routes ignore terrain cost (GridMover.flies).
+	var flying: bool = data.get("flying", false)
+	animator.continuous_animation = flying
+	grid_mover.flies = flying
 	# speed_tiles_per_second is a flat, absolute rate -- 1.0 always means
 	# exactly one tile per second, not "1.0x whatever the player's current
 	# move_time is." Missing the field falls back to this node's own
@@ -429,7 +433,7 @@ func _try_pursue_step(target: Node2D, full_speed: bool) -> void:
 	if _try_surround_step(target, origin_cell, target_cell, full_speed):
 		return
 
-	var flow_step := FlowField.get_step(target.get_instance_id(), target_cell, origin_cell, grid_mover.is_tile_blocked)
+	var flow_step := FlowField.get_step(target.get_instance_id(), target_cell, origin_cell, grid_mover.is_tile_blocked, _terrain_cost())
 	if flow_step != Vector2i.ZERO:
 		_unreachable_since_msec = 0
 		# FlowField only routes around walls, same as _try_direct_step's own
@@ -484,10 +488,14 @@ func _try_surround_step(target: Node2D, origin_cell: Vector2i, target_cell: Vect
 	var best_step := Vector2i.ZERO
 	var best_score := 1 << 30
 	var blocked_forward: Array[Vector2i] = []
+	var avoided_hazard := false
 	for direction in MOVE_DIRECTIONS:
 		var step := Vector2i(direction)
 		var next_cell := origin_cell + step
 		if not distances.has(next_cell) or distances[next_cell] >= here:
+			continue
+		if grid_mover.tile_cost(next_cell) > HAZARD_COST and grid_mover.tile_cost(origin_cell) <= HAZARD_COST:
+			avoided_hazard = true  # do not fan out into lava or water
 			continue
 		if grid_mover.is_tile_occupied(next_cell):
 			blocked_forward.append(step)
@@ -515,6 +523,8 @@ func _try_surround_step(target: Node2D, origin_cell: Vector2i, target_cell: Vect
 				if score < best_score:
 					best_score = score
 					best_step = side_dir
+	if best_step == Vector2i.ZERO and avoided_hazard:
+		return false  # only hazard tiles lead closer: use the weighted chase instead
 	var chosen := best_step
 	if chosen != Vector2i.ZERO and _try_move(Vector2(chosen), full_speed):
 		_prev_cell = origin_cell
@@ -583,6 +593,11 @@ func _try_direct_step(origin_cell: Vector2i, target_cell: Vector2i, full_speed: 
 		if grid_mover.is_tile_blocked(step_tile):
 			saw_wall = true
 			continue
+		if grid_mover.tile_cost(step_tile) > HAZARD_COST and grid_mover.tile_cost(origin_cell) <= HAZARD_COST:
+			# Difficult or severe ground ahead (water, lava): let the weighted
+			# search decide whether crossing is worth it, same escalation as a wall.
+			saw_wall = true
+			continue
 		if grid_mover.is_tile_occupied(step_tile):
 			continue
 		_try_move(direction, full_speed)
@@ -590,6 +605,15 @@ func _try_direct_step(origin_cell: Vector2i, target_cell: Vector2i, full_speed: 
 	if saw_wall:
 		_try_pathfind_step(origin_cell, target_cell, full_speed)
 	# else: only occupancy in the way -- wait, don't escalate
+
+## Tiles costing more than this (difficult 2.0, severe 5.0; rough 1.25 is fine)
+## are not stepped onto blindly by _try_direct_step.
+const HAZARD_COST := 1.5
+
+## The terrain cost callable for routes, or an unset one for a flyer (its
+## routes then use the plain, unweighted field and search).
+func _terrain_cost() -> Callable:
+	return Callable() if grid_mover.flies else grid_mover.tile_cost
 
 ## Real pathfinding step for when the direct approach can't work -- no clear
 ## line to the target, or a wall blocks both preferred directions and a
@@ -669,7 +693,7 @@ func _solve_and_cache_path(origin_cell: Vector2i, target_cell: Vector2i) -> Vect
 		return Vector2i.ZERO
 	var distance := maxi(absi(target_cell.x - origin_cell.x), absi(target_cell.y - origin_cell.y))
 	var radius := mini(distance + PATHFIND_RADIUS_MARGIN, PATHFIND_RADIUS_MAX)
-	var path := Pathfinding.full_path(origin_cell, target_cell, grid_mover.is_tile_blocked, radius)
+	var path := Pathfinding.full_path(origin_cell, target_cell, grid_mover.is_tile_blocked, radius, _terrain_cost())
 	if path.is_empty():
 		_failed_target = target_cell
 		_failed_until_frame = Engine.get_process_frames() + FAILED_SEARCH_COOLDOWN_FRAMES

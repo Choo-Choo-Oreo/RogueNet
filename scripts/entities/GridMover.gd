@@ -36,6 +36,21 @@ func _build_floor_speeds() -> void:
 		if tile.category == TileType.Category.FLOOR:
 			_floor_speed[registry.get_id(tile.tile_name)] = tile.move_speed()
 
+## True for a mover that flies: terrain never slows it, and its pathfinding
+## ignores terrain cost. Set from the enemy JSON's "flying" (EnemyController).
+var flies := false
+
+func _ignores_terrain() -> bool:
+	return flies or _is_ghost()
+
+## How much slower than normal ground stepping onto `cell` is: 1.0 normal,
+## 1.25 rough, 2.0 difficult, 5.0 severe (1 / the tile's speed). Feeds
+## pathfinding's costs; never below 1.0.
+func tile_cost(cell: Vector2i) -> float:
+	if floor_data == null or _ignores_terrain():
+		return 1.0
+	return 1.0 / _floor_speed.get(floor_data.get_cell_source_id(cell), 1.0)
+
 func _floor_source_at(target_global: Vector2) -> int:
 	if floor_data == null:
 		return -1
@@ -205,7 +220,7 @@ func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> bool:
 	# first half of the step (still mostly on the old tile) uses the old
 	# tile's speed, and only the second half uses the new tile's.
 	var midpoint: Vector2 = origin_global.lerp(target_global, 0.5)
-	var ignore_terrain := is_ghost
+	var ignore_terrain := _ignores_terrain()
 	var origin_speed: float = (1.0 if ignore_terrain else _floor_speed.get(_floor_source_at(origin_global), 1.0)) * speed_scale
 	var target_speed: float = (1.0 if ignore_terrain else _floor_speed.get(_floor_source_at(target_global), 1.0)) * speed_scale
 	var half_time := move_time / 2.0
