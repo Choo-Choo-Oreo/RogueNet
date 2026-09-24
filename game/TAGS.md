@@ -48,7 +48,7 @@ Acts on instinct: no tools, no magic, not dead, not infernal.
 
 | Tag | Meaning | Minions |
 |---|---|---|
-| `beast` (plain) | An animal that has no secondary category yet. | bat, bat_echo, leech, leech_flesh |
+| `beast` (plain) | An animal that has no secondary category yet. | bat, bat_echo, leech, leech_flesh, dragon, spider, minotaur |
 | `beast.rodent` | Rats and hamsters. | rat, rat_blind, rat_toothless, hamster, hamster_flying, hamster_demonic |
 | `beast.canine` | Wolves and dogs. | wolf, wolf_hellhound |
 
@@ -59,6 +59,13 @@ Acts on instinct: no tools, no magic, not dead, not infernal.
 | `undead.skeleton` | Walking bones, whatever they carry or how big they are. A giant skeleton would be this too. | skeleton_archer |
 | `undead.ghostly` | Spirits with no body to speak of: wraiths and other ghosts. | wraith |
 | `undead.ghoul` | Rotting flesh that walks. Reserved, no minion uses it yet. | none |
+
+### `giant`: huge humanoid brutes
+Big, strong and dim, walks on two legs, uses crude weapons. Not an animal (that is `beast`).
+
+| Tag | Meaning | Minions |
+|---|---|---|
+| `giant` (plain) | A giant with no secondary category yet. | ogre |
 
 ### `demon`: infernal or corrupted versions of ordinary things
 Add it *on top of* the creature's own tag. It has no secondary category yet.
@@ -73,15 +80,19 @@ Add it *on top of* the creature's own tag. It has no secondary category yet.
 |---|---|
 | bat | beast |
 | bat_echo | beast |
+| dragon | beast |
 | hamster | beast.rodent |
 | hamster_demonic | beast.rodent, demon |
 | hamster_flying | beast.rodent |
 | leech | beast |
 | leech_flesh | beast |
+| minotaur | beast |
+| ogre | giant |
 | rat | beast.rodent |
 | rat_blind | beast.rodent |
 | rat_toothless | beast.rodent |
 | skeleton_archer | undead.skeleton |
+| spider | beast |
 | wolf | beast.canine |
 | wolf_hellhound | beast.canine, demon |
 | wraith | undead.ghostly |

@@ -1,0 +1,22 @@
+{
+	"tags": ["beast"],
+	"size_tiles": 5,
+	"max_health": 120,
+	"strength": 7,
+	"dexterity": 5,
+	"constitution": 5,
+	"cognitive": 2,
+	"resistances": {},
+	"speed_tiles_per_second": 3.5,
+	"actions": [{ "action": "bite", "amount": 8, "interval": 1.2, "type": "Physical.Piercing" }],
+	"sprite_frames": {
+		"frame_size": [80, 80],
+		"animations": {
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/spider/Spider-Down.png", "frame_count": 8, "speed": 10.0 },
+			"FrontRight": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/spider/Spider-DownRight.png", "frame_count": 8, "speed": 10.0 },
+			"Side": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/spider/Spider-Right.png", "frame_count": 8, "speed": 10.0 },
+			"BackRight": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/spider/Spider-UpRight.png", "frame_count": 8, "speed": 10.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/spider/Spider-Up.png", "frame_count": 8, "speed": 10.0 }
+		}
+	}
+}

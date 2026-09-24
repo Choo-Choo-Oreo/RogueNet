@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://4b1dfb4mi6rs"
-path="res://.godot/imported/Minotaur-Left.png-e45e761bc319668f480be77138825e33.ctex"
+uid="uid://bmm1hib87pbjf"
+path="res://.godot/imported/Ogre-Down.png-447168663a5efc951ab9b67196eaa76c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/entities/entities.antagonist/bosses/minotaur/Minotaur-Left.png"
-dest_files=["res://.godot/imported/Minotaur-Left.png-e45e761bc319668f480be77138825e33.ctex"]
+source_file="res://resources/gfx/entities/entities.antagonist/bosses/ogre/Ogre-Down.png"
+dest_files=["res://.godot/imported/Ogre-Down.png-447168663a5efc951ab9b67196eaa76c.ctex"]
 
 [params]
 

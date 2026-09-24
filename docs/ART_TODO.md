@@ -233,7 +233,8 @@ Frames are 16x16, in strips. What exists:
 | Knight | 4 frames | 4 | 8 | 8 | none | none | none | none |
 | Dwarf | 4 frames | 4 | 7 | 7 (placeholder, see below) | none | none | none | none |
 | Ghost | 4 frames | 4 | 4 | 4 | none | none | none | none |
-| Minotaur (antagonist boss, `entities.antagonist/bosses/minotaur`) | 4 frames | 4 | 4 | 4 | none | none | none | none |
+| Minotaur (antagonist boss, `entities.antagonist/bosses/minotaur`, 48x48) | 8 frames | 8 | 8 | 8 (mirrored), plus diagonals | none | none | none | none |
+| Dragon, Spider, Ogre (antagonist bosses, 112 / 80 / 64 px) | 8 frames | 8 | 8 | 8 (mirrored), plus diagonals | none | none | none | none |
 
 - [✓] Knight: walking west, 2026-09-22 (`Knight-Left.png`) — real art, confirmed by pixel diff to be an exact mirror of `Knight-Right.png`. Wired into `Knight.tres` as a proper `SideLeft` animation (was briefly using the flip trick instead, which Orea flagged as not actually hooked up correctly — fixed)
 - [✗] Dwarf: even out the frame count (east/west have 7, the knight has 8)

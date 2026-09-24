@@ -1,0 +1,23 @@
+{
+	"tags": ["giant"],
+	"doors": "open",
+	"size_tiles": 4,
+	"max_health": 90,
+	"strength": 9,
+	"dexterity": 1,
+	"constitution": 7,
+	"cognitive": 0,
+	"resistances": {},
+	"speed_tiles_per_second": 2.5,
+	"actions": [{ "action": "bludgeon", "amount": 8, "interval": 2.0 }, "wall_smash"],
+	"sprite_frames": {
+		"frame_size": [64, 64],
+		"animations": {
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/ogre/Ogre-Down.png", "frame_count": 8, "speed": 10.0 },
+			"FrontRight": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/ogre/Ogre-DownRight.png", "frame_count": 8, "speed": 10.0 },
+			"Side": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/ogre/Ogre-Right.png", "frame_count": 8, "speed": 10.0 },
+			"BackRight": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/ogre/Ogre-UpRight.png", "frame_count": 8, "speed": 10.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/ogre/Ogre-Up.png", "frame_count": 8, "speed": 10.0 }
+		}
+	}
+}

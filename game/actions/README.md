@@ -40,13 +40,13 @@ walks) and for the player (the order is the hotbar slot).
 
 | Id | What it does | Used by |
 |---|---|---|
-| `bite` | 1 Physical, 1.0 s, adjacent. | most minions (interval or amount overridden) |
+| `bite` | 1 Physical, 1.0 s, adjacent. | most minions (interval or amount overridden), dragon and spider (as Physical.Piercing) |
 | `slash` | 3 Physical, 0.5 s, adjacent. | the player |
-| `bludgeon` | 6 Physical.Bludgeoning, 1.5 s. | minotaur |
+| `bludgeon` | 6 Physical.Bludgeoning, 1.5 s. | minotaur, dragon, ogre |
 | `perditio_touch` | 2 Perditio, 1.4 s. | wraith |
 | `arrow_shot` | 2 Physical, projectile, ranged, 4 tiles. | skeleton_archer, the player |
 | `entropia_bolt` | 2 Entropia, ranged, 4 tiles. | hamster_demonic, the player |
-| `wall_smash` | Breaks walls in a 3x2 line, 6 s, only through walls. | minotaur |
+| `wall_smash` | Breaks walls in a 3x2 line, 6 s, only through walls. | minotaur, ogre |
 | `taunt` | Pulls minions within 6 tiles for 4 s, 12 s cooldown. | the player |
 
 Costs (ammo, magic, stamina) are not built.

@@ -1,7 +1,7 @@
 {
 	"tags": ["beast"],
 	"doors": "open",
-	"size_tiles": 2,
+	"size_tiles": 3,
 	"max_health": 60,
 	"strength": 6,
 	"dexterity": 1,
@@ -11,12 +11,13 @@
 	"speed_tiles_per_second": 3.0,
 	"actions": ["bludgeon", "wall_smash"],
 	"sprite_frames": {
-		"frame_size": [32, 32],
+		"frame_size": [48, 48],
 		"animations": {
-			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/minotaur/Minotaur-Down.png", "frame_count": 4, "speed": 8.0 },
-			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/minotaur/Minotaur-Up.png", "frame_count": 4, "speed": 8.0 },
-			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/minotaur/Minotaur-Left.png", "frame_count": 4, "speed": 8.0 },
-			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/minotaur/Minotaur-Right.png", "frame_count": 4, "speed": 8.0 }
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/minotaur/Minotaur-Down.png", "frame_count": 8, "speed": 10.0 },
+			"FrontRight": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/minotaur/Minotaur-DownRight.png", "frame_count": 8, "speed": 10.0 },
+			"Side": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/minotaur/Minotaur-Right.png", "frame_count": 8, "speed": 10.0 },
+			"BackRight": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/minotaur/Minotaur-UpRight.png", "frame_count": 8, "speed": 10.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/minotaur/Minotaur-Up.png", "frame_count": 8, "speed": 10.0 }
 		}
 	}
 }

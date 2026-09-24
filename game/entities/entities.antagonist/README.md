@@ -31,6 +31,7 @@ later. The full list, what each means, and how to add one is in
 | Main | Secondary | Meaning |
 |---|---|---|
 | `beast` | plain, `beast.rodent`, `beast.canine` | Wild animals and animal-like vermin. |
+| `giant` | none yet | Huge humanoid brutes (ogres). |
 | `undead` | `undead.skeleton`, `undead.ghostly`, `undead.ghoul` (reserved) | Dead things that still move. |
 | `demon` | none yet | Infernal or corrupted. Added on top of the creature's own tag. |
 
@@ -55,7 +56,10 @@ strong it is.
 | `wolf` | beast.canine | 10 | 3 Physical | none | |
 | `wolf_hellhound` | beast.canine, demon | 9 | 3 Physical | none | Meant to track by smell; smell is not built yet. |
 | `wraith` | undead.ghostly | 6 | 2 Perditio | phase | Passes through closed doors without opening them. Meant to see through walls at short range; not built yet. |
-| `minotaur` | beast | 60 | 6 Physical.Bludgeoning | open | Boss (lives in `bosses/`, first pass): picked through a boss room's `favored_antagonist` (same matching as `favored_minion`). Slow (3 tiles/s). `size_tiles: 2`: a 2x2 body (32x32 hitbox). Its position is its top-left tile; walls, doors, occupancy and pathing check all four tiles, so it does not fit through a 1-wide door or gap. First pass, untested. Not in any biome table: spawn it with `"minion": "minotaur"` on a boss room's spawn cell, or from the debug spawn tool. Art is a placeholder. |
+| `minotaur` | beast | 60 | 6 Physical.Bludgeoning | open | Boss (lives in `bosses/`, first pass): picked through a boss room's `favored_antagonist` (same matching as `favored_minion`). Slow (3 tiles/s). `size_tiles: 3`: a 3x3 body (48x48 hitbox). Its position is its top-left tile; walls, doors, occupancy and pathing check every tile of the body, so it does not fit through a door or gap narrower than 3. First pass, untested. Not in any biome table: spawn it with `"minion": "minotaur"` on a boss room's spawn cell, or from the debug spawn tool. 8-direction walk art, 48x48, 8 frames at 10 fps (2026-09-24). |
+| `dragon` | beast | 250 | 12 Physical.Piercing bite, 10 Physical.Bludgeoning | none | Boss, the ultimate one. `size_tiles: 7` (112x112), so it only fits big boss rooms. Slow (1.5 tiles/s). 8-direction walk art, crimson and gold, 8 frames at 10 fps. Stats are a first guess, untested. |
+| `spider` | beast | 120 | 8 Physical.Piercing | none | Boss. `size_tiles: 5` (80x80). 3.5 tiles/s. 8-direction walk art, 8 frames at 10 fps. Stats are a first guess, untested. |
+| `ogre` | giant | 90 | 8 Physical.Bludgeoning | open | Boss. `size_tiles: 4` (64x64). Slow (2.5 tiles/s); smashes walls like the minotaur. 8-direction walk art, 8 frames at 10 fps. Stats are a first guess, untested. |
 
 Attack types are damage type ids from `game/damage_types.json`. `doors` is
 `none` (cannot open doors), `open` (can open them), or `phase` (passes through
