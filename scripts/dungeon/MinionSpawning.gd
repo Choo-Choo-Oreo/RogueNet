@@ -47,9 +47,11 @@ static func spawn_in_unseen_cells(spawn_cells: Array[Vector2i], monster_weights:
 			minion_id = _roll_minion(_favored_weights(monster_weights, favors.get(tile, [])), rng)
 		if minion_id == "":
 			continue
+		var placed := fit_tile(minion_id, tile, minions_root)
+		if placed == NO_FIT:
+			continue
 		var id := _next_id
 		_next_id += 1
-		var placed := fit_tile(minion_id, tile, minions_root)
 		spawn_one(id, minion_id, placed, minions_root)
 		spawned.append({"id": id, "type": minion_id, "tile": placed})
 	NetworkSync.broadcast_minion_spawns(spawned)
@@ -69,9 +71,11 @@ static func spawn_antagonists(entries: Array, minions_root: Node) -> void:
 		if minion_id == "" or not MinionIndex.has(minion_id):
 			push_warning("Antagonist spawn at %s found no boss (minion '%s'), skipped" % [entry["tile"], minion_id])
 			continue
+		var placed := fit_tile(minion_id, entry["tile"], minions_root)
+		if placed == NO_FIT:
+			continue
 		var id := _next_id
 		_next_id += 1
-		var placed := fit_tile(minion_id, entry["tile"], minions_root)
 		spawn_one(id, minion_id, placed, minions_root)
 		spawned.append({"id": id, "type": minion_id, "tile": placed})
 	if not spawned.is_empty():
@@ -95,9 +99,11 @@ static func spawn_debug(minion_id: String, tile: Vector2i, minions_root: Node) -
 		return
 	if not MinionIndex.has(minion_id):
 		return
+	var placed := fit_tile(minion_id, tile, minions_root)
+	if placed == NO_FIT:
+		return
 	var id := _next_id
 	_next_id += 1
-	var placed := fit_tile(minion_id, tile, minions_root)
 	spawn_one(id, minion_id, placed, minions_root)
 	NetworkSync.broadcast_minion_spawns([{"id": id, "type": minion_id, "tile": placed}])
 
@@ -105,8 +111,10 @@ static func spawn_debug(minion_id: String, tile: Vector2i, minions_root: Node) -
 ## stands on a square of tiles starting at its top-left one, and a spawn cell only
 ## promises that one tile is open. Returns `tile` itself when the body fits there, else
 ## the nearest tile (searching up to FIT_SEARCH_RADIUS out) where every tile of the
-## square is open floor, else `tile` again with a warning. Host only, before broadcasting.
+## square is open floor, else NO_FIT with a warning. Host only, before broadcasting.
 const FIT_SEARCH_RADIUS := 6
+## What fit_tile returns when the body fits nowhere: the spawn is skipped, never placed in a wall.
+const NO_FIT := Vector2i(-2147483648, -2147483648)
 
 static func fit_tile(minion_id: String, tile: Vector2i, minions_root: Node) -> Vector2i:
 	var size := int(MinionIndex.load_data(minion_id).get("size_tiles", 1))
@@ -129,7 +137,8 @@ static func fit_tile(minion_id: String, tile: Vector2i, minions_root: Node) -> V
 			best = candidate
 			best_distance = distance
 	if best_distance == INF:
-		push_warning("No room for a %dx%d '%s' within %d tiles of %s, spawning it there anyway" % [size, size, minion_id, FIT_SEARCH_RADIUS, tile])
+		push_warning("No room for a %dx%d '%s' within %d tiles of %s, not spawning it" % [size, size, minion_id, FIT_SEARCH_RADIUS, tile])
+		return NO_FIT
 	return best
 
 static func _body_fits(top_left: Vector2i, size: int, wall_data: TileMapLayer, floor_data: TileMapLayer, void_id: int) -> bool:

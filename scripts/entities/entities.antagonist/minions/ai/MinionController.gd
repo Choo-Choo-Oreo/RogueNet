@@ -21,6 +21,8 @@ var _wander_timer := 0.0
 var _target: Node2D = null
 var _last_state: MinionSenses.State = MinionSenses.State.PATROL
 var _size_px: float = 16.0
+## Which minion this is (set by set_minion_type); BodySweep and the test tools name creatures by it.
+var minion_id := ""
 ## Tiles per side (json "size_tiles"): 1 normally, 2 for a boss like the minotaur.
 var size_tiles := 1
 ## True for a minion whose json sits in a bosses/ folder (MinionIndex.is_boss). Bosses get privileges over their allies: they walk through
@@ -143,12 +145,13 @@ const ALERTNESS_FRAME := {
 ## there, nothing here needs to change.
 var _can_open_doors := false
 
-func set_minion_type(minion_id: String) -> void:
-	var data := MinionIndex.load_data(minion_id)
+func set_minion_type(id: String) -> void:
+	minion_id = id
+	var data := MinionIndex.load_data(id)
 	stats.load_from_data(data)
 	$AnimatedSprite2D.sprite_frames = SpriteFramesLoader.build(data["sprite_frames"])
 	size_tiles = int(data.get("size_tiles", 1))
-	is_boss = MinionIndex.is_boss(minion_id)
+	is_boss = MinionIndex.is_boss(id)
 	_size_px = size_tiles * grid_mover.tile_size
 	grid_mover.footprint = size_tiles
 	set_meta("is_boss", is_boss)
@@ -340,6 +343,8 @@ func _process_inner(delta: float) -> void:
 	if is_tracking:
 		var reached_range := _target != null and _in_attack_range(_target)
 		if not reached_range:
+			if is_boss and _make_way_for_allies(_target):
+				return
 			_try_pursue_step(_target, is_engaging)
 			if grid_mover.is_moving:
 				_blocked_since_msec = 0
@@ -378,12 +383,22 @@ func _try_specials(target: Node2D, delta: float) -> bool:
 			continue
 		# "only_through_walls": fire only when a wall is between us and the target, so a
 		# wall-breaker does not chew the scenery while the way to the target is open.
-		if special["through_walls"] and LineOfSight.clear(_to_tile(global_position), _to_tile(target.global_position), grid_mover.blocks_shot):
+		# The way counts as open only if the whole body fits along it: a 2x2 boss facing a 1-wide gap
+		# has a clear line of sight through it but cannot follow, so it must still smash.
+		if special["through_walls"] and _body_can_walk_line_to(target):
 			continue
 		if ActionRunner.perform(self, target.global_position, special["attack"]):
 			special["timer"] = special["interval"]
 			fired = true
 	return fired
+
+## True when a straight line to `target` is open for this whole body (footprint-aware, like
+## walking), not just for a point.
+func _body_can_walk_line_to(target: Node2D) -> bool:
+	var target_tile := _to_tile(target.global_position)
+	var fits := func(tile: Vector2i) -> bool:
+		return tile != target_tile and grid_mover.is_tile_blocked(tile)
+	return LineOfSight.clear(_to_tile(global_position), target_tile, fits)
 
 ## `attack` is one attack entry (amount, type, effect); empty = the default attack.
 func _perform_attack(target: Node2D, attack: Dictionary = {}) -> void:
@@ -412,6 +427,16 @@ func _show_alertness(state: MinionSenses.State) -> void:
 
 var _alertness_icon: AttackEffect = null
 
+## See _make_way_for_allies: how far away an ally is looked for, and how long the boss holds still.
+const MAKE_WAY_TILES := 4
+const MAKE_WAY_MSEC := 1500
+var _make_way_until_msec := 0
+
+## FlowField shares one map per key, and a map is only right for one body size (a 2x2 boss
+## cannot use the route a rat takes through a 1-wide gap), so the key carries the size.
+func _flow_key(target_id: int) -> Array:
+	return [target_id, size_tiles]
+
 ## Step toward the target, shared by both Investigate and Attack tracking --
 ## this is the one place either of them actually moves. full_speed is false
 ## while merely Investigating (half speed, see _try_move).
@@ -435,7 +460,7 @@ func _try_pursue_step(target: Node2D, full_speed: bool) -> void:
 	if _try_surround_step(target, origin_cell, target_cell, full_speed):
 		return
 
-	var flow_step := FlowField.get_step(target.get_instance_id(), target_cell, origin_cell, grid_mover.is_tile_blocked, _terrain_cost())
+	var flow_step := FlowField.get_step(_flow_key(target.get_instance_id()), target_cell, origin_cell, grid_mover.is_tile_blocked, _terrain_cost())
 	if flow_step != Vector2i.ZERO:
 		_unreachable_since_msec = 0
 		# FlowField only routes around walls, same as _try_direct_step's own
@@ -444,7 +469,7 @@ func _try_pursue_step(target: Node2D, full_speed: bool) -> void:
 		# this exact same blocked step.
 		if not grid_mover.is_tile_occupied(origin_cell + flow_step):
 			_try_move(Vector2(flow_step), full_speed)
-		else:
+		elif not _try_swap_with_ranged(origin_cell + flow_step):
 			_try_detour_step(target, origin_cell, target_cell, full_speed)
 		return
 
@@ -457,6 +482,10 @@ func _try_pursue_step(target: Node2D, full_speed: bool) -> void:
 
 	if not LineOfSight.clear(origin_cell, local_target, grid_mover.is_tile_blocked):
 		_try_pathfind_step(origin_cell, local_target, full_speed)
+		# No route (a wall-breaker's target walled in): walk straight at it until the wall
+		# is in smashing range, instead of standing where no special can reach.
+		if not grid_mover.is_moving and _can_break_walls():
+			_try_direct_step(origin_cell, local_target, full_speed, target)
 		return
 	_try_direct_step(origin_cell, local_target, full_speed, target)
 
@@ -480,7 +509,7 @@ func _try_surround_step(target: Node2D, origin_cell: Vector2i, target_cell: Vect
 	if size_tiles > 1 or _attack_range != 1 or _cheb(target_cell - origin_cell) > SURROUND_RADIUS:
 		return false
 	var target_id := target.get_instance_id()
-	var distances := FlowField.get_distances(target_id, target_cell, grid_mover.is_tile_blocked)
+	var distances := FlowField.get_distances(_flow_key(target_id), target_cell, grid_mover.is_tile_blocked)
 	if not distances.has(origin_cell):
 		return false
 	var here: int = distances[origin_cell]
@@ -531,6 +560,10 @@ func _try_surround_step(target: Node2D, origin_cell: Vector2i, target_cell: Vect
 				if score < best_score:
 					best_score = score
 					best_step = side_dir
+	if best_step == Vector2i.ZERO:
+		for forward in blocked_forward:
+			if _try_swap_with_ranged(origin_cell + forward):
+				return true
 	if best_step == Vector2i.ZERO and avoided_hazard:
 		return false  # only hazard tiles lead closer: use the weighted chase instead
 	var chosen := best_step
@@ -547,7 +580,7 @@ func _try_surround_step(target: Node2D, origin_cell: Vector2i, target_cell: Vect
 var _detour_prev := Vector2i.ZERO
 
 func _try_detour_step(target: Node2D, origin_cell: Vector2i, target_cell: Vector2i, full_speed: bool) -> bool:
-	var distances := FlowField.get_distances(target.get_instance_id(), target_cell, grid_mover.is_tile_blocked)
+	var distances := FlowField.get_distances(_flow_key(target.get_instance_id()), target_cell, grid_mover.is_tile_blocked)
 	if not distances.has(origin_cell):
 		return false
 	var here: int = distances[origin_cell]
@@ -573,6 +606,33 @@ func _try_detour_step(target: Node2D, origin_cell: Vector2i, target_cell: Vector
 	if _try_move(Vector2(best_step), full_speed):
 		_detour_prev = origin_cell
 		return true
+	return false
+
+## A melee minion whose way forward is blocked by a ranged ally that is already shooting (in
+## range of its own target, standing still) swaps places with it: the shooter does not need the
+## front, and in a corridor nobody can step aside. They walk through each other one tile, not jump. Only 1x1 bodies swap. Returns true if it did.
+func _try_swap_with_ranged(tile: Vector2i) -> bool:
+	if _attack_range != 1 or size_tiles > 1 or grid_mover.is_moving:
+		return false
+	var here := _to_tile(global_position)
+	for other in grid_mover.occupants_at(tile):
+		if not is_instance_valid(other) or not (other is MinionController) or other == self or other.size_tiles > 1 or other.is_boss:
+			continue
+		if other._attack_range <= 1 or other.grid_mover.is_moving or not is_instance_valid(other._target):
+			continue
+		if not other._in_attack_range(other._target) or _cheb(_to_tile(other.global_position) - here) != 1:
+			continue
+		if not grid_mover.swap_step(Vector2(_to_tile(other.global_position) - here), other.grid_mover):
+			continue
+		other._wake_up()
+		return true
+	return false
+
+## Has a special that only fires through a wall (json "only_through_walls").
+func _can_break_walls() -> bool:
+	for special in _specials:
+		if special["through_walls"]:
+			return true
 	return false
 
 ## The tiles a boss claims: its own body, plus the body's next step when it is
@@ -619,6 +679,50 @@ func _yield_to_boss() -> bool:
 			# Move directly: _try_move refuses tiles inside a boss zone.
 			return grid_mover.move_one_tile(best, 1.0)
 	return false
+
+## Boss with no route to its target (a gap it cannot fit, a wall it is about to smash): if a
+## smaller ally's next step toward the same target is inside this boss's body, step one tile
+## away and hold there for MAKE_WAY_MSEC so the ally can get by and find its own way round.
+## Returns true while making way (the boss then does nothing else this tick).
+func _make_way_for_allies(target: Node2D) -> bool:
+	var now := Time.get_ticks_msec()
+	if now < _make_way_until_msec:
+		return true
+	var here := _to_tile(global_position)
+	var target_cell := _to_tile(target.global_position)
+	if FlowField.get_step(_flow_key(target.get_instance_id()), target_cell, here, grid_mover.is_tile_blocked, _terrain_cost()) != Vector2i.ZERO:
+		return false  # it has a route: it moves on by itself
+	var body := Rect2i(here, Vector2i(size_tiles, size_tiles))
+	var blocked_ally_tile := Vector2i.ZERO
+	var found := false
+	for other in get_tree().get_nodes_in_group("antagonist"):
+		if not is_instance_valid(other) or not (other is MinionController) or other == self or other.is_boss or other.size_tiles > 1:
+			continue
+		var ally_tile: Vector2i = _to_tile(other.global_position)
+		if _cheb(ally_tile - here) > MAKE_WAY_TILES:
+			continue
+		var step := FlowField.get_step([target.get_instance_id(), 1], target_cell, ally_tile, other.grid_mover.is_tile_blocked, other._terrain_cost())
+		if step != Vector2i.ZERO and body.has_point(ally_tile + step):
+			blocked_ally_tile = ally_tile
+			found = true
+			break
+	if not found:
+		return false
+	var best := Vector2i.ZERO
+	var best_score := -1.0e9
+	for direction in MOVE_DIRECTIONS:
+		var step := Vector2i(direction)
+		if not _step_open(here, step) or grid_mover.is_tile_occupied(here + step):
+			continue
+		var score := Vector2(here + step).distance_to(Vector2(blocked_ally_tile))
+		if score > best_score:
+			best_score = score
+			best = step
+	if best == Vector2i.ZERO:
+		return false
+	_make_way_until_msec = now + MAKE_WAY_MSEC
+	grid_mover.move_one_tile(Vector2(best), 1.0)
+	return true
 
 ## A melee minion already touching its target that has another creature
 ## queued right behind it (one tile farther out) shuffles one tile sideways to

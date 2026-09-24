@@ -128,6 +128,20 @@ func teleport(pos: Vector2) -> void:
 			_reserved.erase(tile)
 	_body.global_position = pos
 
+## Only set for the length of swap_step: the creature this one is trading tiles with, which
+## must not count as standing in the way.
+var _swap_partner: Node2D = null
+
+## Two creatures trade tiles in one step: this body steps `direction`, the partner the opposite
+## way, and they walk through each other. Returns false if either step is refused.
+func swap_step(direction: Vector2, partner: GridMover) -> bool:
+	_swap_partner = partner._body
+	partner._swap_partner = _body
+	var swapped := not is_moving and not partner.is_moving and move_one_tile(direction) and partner.move_one_tile(-direction)
+	_swap_partner = null
+	partner._swap_partner = null
+	return swapped
+
 func _is_ghost() -> bool:
 	return "stats" in _body and _body.stats != null and _body.stats.is_ghost
 
@@ -182,6 +196,10 @@ func is_position_blocked(global_pos: Vector2) -> bool:
 static var _occupancy_frame: int = -1
 static var _occupancy_index: Dictionary = {}  # Vector2i -> Array[Node2D]
 
+## Every living creature on `tile` this frame (ghosts excluded).
+func occupants_at(tile: Vector2i) -> Array:
+	return _tile_occupants(tile)
+
 func _tile_occupants(tile: Vector2i) -> Array:
 	var frame := Engine.get_process_frames()
 	if frame != _occupancy_frame:
@@ -219,13 +237,13 @@ func _tile_occupied_single(tile: Vector2i) -> bool:
 	# (they step aside, see MinionController._yield_to_boss). Players still block it.
 	var is_boss: bool = _body.get_meta("is_boss", false)
 	for body in _tile_occupants(tile):
-		if body == _body:
+		if body == _body or body == _swap_partner:
 			continue
 		if is_boss and body.is_in_group("antagonist") and not body.get_meta("is_boss", false):
 			continue
 		return true
 	var holder = _reserved.get(tile)
-	if holder == null or not is_instance_valid(holder) or holder == _body:
+	if holder == null or not is_instance_valid(holder) or holder == _body or holder == _swap_partner:
 		return false
 	return not (is_boss and holder.is_in_group("antagonist") and not holder.get_meta("is_boss", false))
 

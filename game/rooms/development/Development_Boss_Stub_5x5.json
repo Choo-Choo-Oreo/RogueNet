@@ -1,0 +1,23 @@
+{
+	"format": 2,
+	"id": "Development_Boss_Stub_5x5",
+	"width": 5,
+	"height": 5,
+	"role": "boss",
+	"tags": ["development"],
+	"floor": [
+		[null, null, null, null, null],
+		[null, "floor_smooth_stone", "floor_smooth_stone", "floor_smooth_stone", null],
+		[null, "floor_smooth_stone", "floor_smooth_stone", "floor_smooth_stone", null],
+		[null, "floor_smooth_stone", "floor_smooth_stone", "floor_smooth_stone", null],
+		[null, null, null, null, null]
+	],
+	"walls": [
+		["wall_smooth_stone", "wall_smooth_stone", "wall_smooth_stone", "wall_smooth_stone", "wall_smooth_stone"],
+		["wall_smooth_stone", null, null, null, "wall_smooth_stone"],
+		[null, null, null, null, "wall_smooth_stone"],
+		["wall_smooth_stone", null, null, null, "wall_smooth_stone"],
+		["wall_smooth_stone", "wall_smooth_stone", "wall_smooth_stone", "wall_smooth_stone", "wall_smooth_stone"]
+	],
+	"connectors": [{"a": {"x": 0, "y": 2}, "b": {"x": 0, "y": 2}, "free": true, "door": "none"}]
+}

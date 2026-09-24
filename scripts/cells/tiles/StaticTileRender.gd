@@ -16,6 +16,16 @@ func _ready():
 func _on_data_layer_changed() -> void:
 	refresh.call_deferred()
 
+## Redraws just `cells`; see DualGridRender.refresh_cells.
+func refresh_cells(cells: Array) -> void:
+	if not is_instance_valid(display_layer):
+		return
+	for cell: Vector2i in cells:
+		display_layer.erase_cell(cell)
+		if data_layer.get_cell_source_id(cell) == source_id:
+			var alt := data_layer.get_cell_alternative_tile(cell) if orientable else 0
+			display_layer.set_cell(cell, 0, atlas_coords, alt)
+
 func refresh():
 	if not is_instance_valid(display_layer):
 		return

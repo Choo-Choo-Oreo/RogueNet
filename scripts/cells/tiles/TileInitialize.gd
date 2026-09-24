@@ -54,6 +54,12 @@ func _link_wall_group(wall_data_layer: TileMapLayer) -> void:
 			child.group_sources = group
 			child.void_floor_source = void_source
 
+## Redraws only these cells in every renderer (see DualGridRender.refresh_cells).
+func refresh_cells(cells: Array) -> void:
+	for child in get_children():
+		if child.has_method("refresh_cells"):
+			child.refresh_cells(cells)
+
 func refresh_all() -> void:
 	for child in get_children():
 		if child.has_method("refresh"):

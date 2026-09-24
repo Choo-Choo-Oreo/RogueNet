@@ -190,7 +190,7 @@ func _draw_flow_field() -> void:
 	var player := PlayerLookup.find_local(get_tree())
 	if player == null:
 		return
-	var field: Dictionary = FlowField._fields.get(player.get_instance_id(), {})
+	var field: Dictionary = FlowField._fields.get([player.get_instance_id(), 1], {})
 	var distances: Dictionary = field.get("distances", {})
 	var directions: Dictionary = field.get("terrain_directions", field.get("directions", {}))
 	var tiles := _visible_tiles()

@@ -87,7 +87,7 @@ See [README.md](../README.md) for the data-driven content formats
   personally wants to build C# skills through this project, but that's
   not a team-wide commitment.
 - Build command: _(fill in once established)_
-- Test command: _(fill in once established)_
+- Test command: `godot --headless -s res://addons/gut/gut_cmdln.gd` (GUT; first run `godot --headless --import`; see `test/README.md`)
 - Networking: Steam lobby through `SteamMultiplayerPeer` (GodotSteam), with
   the host as peer 1 running a listen server; singleplayer uses
   `OfflineMultiplayerPeer`. There is no ENet code. Minion spawning, AI, damage
