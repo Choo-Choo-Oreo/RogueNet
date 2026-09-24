@@ -3,6 +3,7 @@ extends Control
 @onready var panel_main: Panel = $PanelMain
 @onready var panel_guild: Panel = $PanelGuild
 @onready var panel_character: Panel = $PanelCharacter
+@onready var panel_storage: Panel = $PanelStorage
 @onready var current_character_label: Label = $PanelCharacter/VBoxContainer/CurrentLabel
 @onready var player_list: VBoxContainer = $HSplitContainer/PlayerListPanel/PlayersBox/PlayerList
 @onready var sidebar: Panel = $Sidebar
@@ -16,6 +17,8 @@ func _ready() -> void:
 	refresh_player_list()
 	refresh_character_label()
 	_apply_session_mode()
+	# Tell everyone what this player wears: after joining a server, or coming back from a dive.
+	NetworkSync.share_equipment(PlayerInventory.worn())
 	chat_log.scroll_following = true
 	send_button.pressed.connect(_send_chat)
 	chat_input.text_submitted.connect(func(_text): _send_chat())
@@ -69,7 +72,7 @@ func _on_leave_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/ui/MainMenu.tscn")
 
 func refresh_character_label() -> void:
-	var character_id: String = NetworkSync.peer_characters.get(multiplayer.get_unique_id(), "knight")
+	var character_id: String = NetworkSync.peer_characters.get(multiplayer.get_unique_id(), "human")
 	current_character_label.text = "Current: " + character_id.capitalize()
 
 func _on_swap_characters_button_pressed() -> void:
@@ -80,6 +83,14 @@ func _on_character_back_button_pressed() -> void:
 	panel_character.hide()
 	panel_main.show()
 
+func _on_storage_button_pressed() -> void:
+	panel_main.hide()
+	panel_storage.show()
+
+func _on_storage_back_pressed() -> void:
+	panel_storage.hide()
+	panel_main.show()
+
 func _choose_character(character_id: String) -> void:
 	if multiplayer.is_server():
 		NetworkSync._set_character(1, character_id)
@@ -87,8 +98,5 @@ func _choose_character(character_id: String) -> void:
 		NetworkSync.report_player_character.rpc_id(1, character_id)
 	refresh_character_label()
 
-func _on_knight_button_pressed() -> void:
-	_choose_character("knight")
-
-func _on_dwarf_button_pressed() -> void:
-	_choose_character("dwarf")
+func _on_human_button_pressed() -> void:
+	_choose_character("human")

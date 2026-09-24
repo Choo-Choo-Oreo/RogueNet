@@ -1,0 +1,6 @@
+{
+	"name": "Cleric mace",
+	"slot": "main_hand",
+	"set": "cleric",
+	"art": "res://resources/gfx/gear/main_hand/cleric/ClericMace"
+}

@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://bom5jxuqhni1a" path="res://scripts/ui/town/MainTown.gd" id="2_maintown"]
 [ext_resource type="PackedScene" uid="uid://b7uns6j0fj3jv" path="res://scenes/ui/town/GuildMission.tscn" id="3_guildmission"]
 [ext_resource type="PackedScene" path="res://scenes/ui/PauseMenu.tscn" id="4_pausemenu"]
+[ext_resource type="PackedScene" path="res://scenes/ui/town/TownStorage.tscn" id="5_townstorage"]
 
 [node name="MainTown" type="Control" unique_id=748747690]
 layout_mode = 3
@@ -166,18 +167,13 @@ horizontal_alignment = 1
 
 [node name="CurrentLabel" type="Label" parent="PanelCharacter/VBoxContainer" unique_id=1126673912]
 layout_mode = 2
-text = "Current: Knight"
+text = "Current: Human"
 horizontal_alignment = 1
 
-[node name="KnightButton" type="Button" parent="PanelCharacter/VBoxContainer" unique_id=1126673913]
+[node name="HumanButton" type="Button" parent="PanelCharacter/VBoxContainer" unique_id=1126673920]
 custom_minimum_size = Vector2(220, 50)
 layout_mode = 2
-text = "Knight"
-
-[node name="DwarfButton" type="Button" parent="PanelCharacter/VBoxContainer" unique_id=1126673914]
-custom_minimum_size = Vector2(220, 50)
-layout_mode = 2
-text = "Dwarf"
+text = "Human"
 
 [node name="BackButton" type="Button" parent="PanelCharacter/VBoxContainer" unique_id=1126673915]
 custom_minimum_size = Vector2(220, 50)
@@ -218,13 +214,31 @@ grow_vertical = 2
 [node name="GuildMission" parent="PanelMission" unique_id=82301945 instance=ExtResource("3_guildmission")]
 layout_mode = 1
 
+[node name="PanelStorage" type="Panel" parent="."]
+visible = false
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 280.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TownStorage" parent="PanelStorage" instance=ExtResource("5_townstorage")]
+layout_mode = 1
+
 [node name="PauseMenu" parent="." unique_id=21659558 instance=ExtResource("4_pausemenu")]
 visible = false
 layout_mode = 1
 
 [connection signal="pressed" from="PanelMain/VBoxContainer/GuildButton" to="." method="_on_guild_button_pressed"]
 [connection signal="pressed" from="PanelMain/VBoxContainer/SwapCharactersButton" to="." method="_on_swap_characters_button_pressed"]
+[connection signal="pressed" from="PanelMain/VBoxContainer/StorageButton" to="." method="_on_storage_button_pressed"]
 [connection signal="pressed" from="PanelMain/VBoxContainer/LeaveButton" to="." method="_on_leave_button_pressed"]
-[connection signal="pressed" from="PanelCharacter/VBoxContainer/KnightButton" to="." method="_on_knight_button_pressed"]
-[connection signal="pressed" from="PanelCharacter/VBoxContainer/DwarfButton" to="." method="_on_dwarf_button_pressed"]
+[connection signal="pressed" from="PanelCharacter/VBoxContainer/HumanButton" to="." method="_on_human_button_pressed"]
 [connection signal="pressed" from="PanelCharacter/VBoxContainer/BackButton" to="." method="_on_character_back_button_pressed"]
+[connection signal="back_pressed" from="PanelStorage/TownStorage" to="." method="_on_storage_back_pressed"]
