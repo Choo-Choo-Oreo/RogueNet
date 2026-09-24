@@ -61,7 +61,15 @@ func refresh_all() -> void:
 
 func _get_or_build_shared_data_layer(layer_name: String) -> TileMapLayer:
 	if has_node(layer_name):
-		return get_node(layer_name)
+		var existing := get_node(layer_name) as TileMapLayer
+		# The TileSet is a sub-resource of the scene file, so every copy of the scene
+		# shares one cached instance -- and _register_marker_source adds sources to it
+		# at runtime. Reloading the dungeon (debug "New dungeon") loads the scene while
+		# the old copy still holds that cache, so the second run would find its own
+		# marker sources already there. Each run works on a private copy instead.
+		if not Engine.is_editor_hint() and existing.tile_set != null:
+			existing.tile_set = existing.tile_set.duplicate(true)
+		return existing
 	var data_layer := TileMapLayer.new()
 	data_layer.name = layer_name
 	data_layer.tile_set = TileSet.new()

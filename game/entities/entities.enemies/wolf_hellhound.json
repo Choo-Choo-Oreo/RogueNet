@@ -1,4 +1,5 @@
 {
+	"tags": ["beast.canine", "demon"],
 	"size_tiles": 1,
 	"max_health": 9,
 	"strength": 2,

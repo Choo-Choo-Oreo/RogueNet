@@ -50,7 +50,7 @@ func _spawn_enemies(rooms: Dictionary, placements: Array, defines: Dictionary) -
 	for cell in DungeonAssembler.collect_spawn_cells(rooms, placements):
 		if not bad_cells.has(cell) and not DoorRegistry.is_door_cell(cell):
 			spawn_cells.append(cell)
-	EnemySpawning.spawn_in_unseen_cells(spawn_cells, defines.get("monsters", {}), light_map, enemies_root)
+	EnemySpawning.spawn_in_unseen_cells(spawn_cells, defines.get("monsters", {}), light_map, enemies_root, DungeonAssembler.collect_spawn_favors(rooms, placements))
 
 ## Dev aid: checks each spawn cell against what was actually PAINTED (the same
 ## wall / void test GridMover uses), and names the room, its local cell, what

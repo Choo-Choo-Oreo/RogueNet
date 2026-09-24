@@ -7,8 +7,10 @@ extends Node2D
 ## node only shows it.
 ##
 ## Art comes from each door type's art json (resources/gfx/doors/<Style>_W<n>.json):
-## 8 frames left to right, closed -> open, 16x32 per piece. Each piece is drawn
-## on its doorway cell with the top 16 rows hanging over the cell to the north.
+## 8 frames left to right, closed -> open. A frame is `frame_size` (16x32 for most
+## doors, 16x48 for the tall boss doors) and its bottom 16 rows are the piece's own
+## doorway cell (`own_cell_row` is where that starts); everything above hangs over
+## the cells to the north.
 
 const SHADING_MATERIAL := preload("res://resources/shaders/normal_lit_material.tres")
 const TILE := 16
@@ -24,7 +26,7 @@ const LAYER_INTERVAL := 0.05
 const CLOSE_DELAY := 2.0
 const CHECK_INTERVAL := 0.25
 
-var _art := {}       # "type:width" -> {"texture": CanvasTexture, "pieces": Dictionary, "frames": int}
+var _art := {}       # "type:width" -> {"texture": CanvasTexture, "pieces": Dictionary, "frames": int, "frame_size": Vector2i, "own_cell_row": int}
 var _visuals: Array = []  # [{"door": Door, "sprites": Array, "frame": float, "shown": int}]
 var _empty_for := {}  # door id -> seconds nobody has been near it
 var _check_left := 0.0
@@ -45,13 +47,14 @@ func build() -> void:
 			sprite.material = SHADING_MATERIAL
 			sprite.z_index = DOOR_Z
 			var cell: Vector2i = entry["cell"]
-			sprite.position = Vector2(cell.x * TILE, cell.y * TILE - TILE)
+			sprite.position = Vector2(cell.x * TILE, cell.y * TILE - art["own_cell_row"])
 			sprite.set_meta("cell", cell)
 			if not art["pieces"].has(entry["piece"]):
 				push_warning("DoorManager: art for '%s' (width %d) has no piece '%s'" % [door.type, door.width, entry["piece"]])
 				sprite.free()
 				continue
 			sprite.set_meta("atlas_y", art["pieces"][entry["piece"]]["atlas_y"])
+			sprite.set_meta("frame_size", art["frame_size"])
 			add_child(sprite)
 			sprites.append(sprite)
 		var visual := {"door": door, "sprites": sprites, "frame": 0.0, "shown": -1}
@@ -83,7 +86,14 @@ func _load_art(door: DoorRegistry.Door) -> Dictionary:
 	var canvas := CanvasTexture.new()
 	canvas.diffuse_texture = load(art_path.get_basename() + ".png")
 	canvas.normal_texture = load(art_path.get_base_dir().path_join(json.get("normal_texture", "")))
-	_art[key] = {"texture": canvas, "pieces": json["pieces"], "frames": int(json.get("frames", 8))}
+	var size: Array = json.get("frame_size", [TILE, TILE * 2])
+	_art[key] = {
+		"texture": canvas,
+		"pieces": json["pieces"],
+		"frames": int(json.get("frames", 8)),
+		"frame_size": Vector2i(int(size[0]), int(size[1])),
+		"own_cell_row": int(json.get("own_cell_row", int(size[1]) - TILE)),
+	}
 	return _art[key]
 
 func _process(delta: float) -> void:
@@ -125,7 +135,8 @@ func _update_layering() -> void:
 func _show_frame(visual: Dictionary, frame: int) -> void:
 	visual["shown"] = frame
 	for sprite: Sprite2D in visual["sprites"]:
-		sprite.region_rect = Rect2(frame * TILE, sprite.get_meta("atlas_y"), TILE, TILE * 2)
+		var size: Vector2i = sprite.get_meta("frame_size")
+		sprite.region_rect = Rect2(frame * size.x, sprite.get_meta("atlas_y"), size.x, size.y)
 
 func _is_authority() -> bool:
 	return multiplayer.multiplayer_peer == null or multiplayer.is_server()

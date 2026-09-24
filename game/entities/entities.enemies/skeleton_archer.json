@@ -1,4 +1,5 @@
 {
+	"tags": ["undead.skeleton"],
 	"doors": "open",
 	"size_tiles": 1,
 	"max_health": 7,

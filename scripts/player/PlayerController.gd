@@ -104,6 +104,13 @@ func _process(delta: float) -> void:
 			animator.animate_idle()
 		_attack_timer = maxf(_attack_timer - delta, 0.0)
 		_update_tile_hover()
+		if _attack_held:
+			if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+				_try_attack()
+			else:
+				_attack_held = false
+		# Debug "unseen": your own sprite goes see-through as the reminder.
+		$AnimatedSprite2D.modulate.a = 0.4 if DebugState.unseen else 1.0
 	else:
 		visible = not stats.is_ghost or local_is_ghost
 		animator.animate_from_position(delta, global_position)
@@ -165,6 +172,10 @@ const MOVE_ACTIONS := {
 	"ui_down": Vector2.DOWN,
 }
 
+# Left mouse held down since a press that started as an attack: _process repeats
+# the attack as its cooldown allows.
+var _attack_held := false
+
 # The movement keys currently held, oldest first, so the newest press decides the direction.
 var _held: Array = []
 
@@ -191,6 +202,9 @@ func _input(event: InputEvent) -> void:
 		elif event.is_action_released(action):
 			_held.erase(action)
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		# Holding the button keeps swinging (see _process); a press that starts on
+		# the debug menu or a click tool never turns into a held attack.
+		_attack_held = not DebugState.blocks_attack()
 		_try_attack()
 
 ## Melee (target_mode "melee", the default) always hits one of the 8 tiles
@@ -222,16 +236,22 @@ func _try_attack() -> void:
 	_attack_timer = attack.get("interval", 0.5)
 	var target_global := Vector2(target_tile) * grid_mover.tile_size
 	var effect_data: Dictionary = attack.get("effect", {})
-	var deal_damage := func():
+	# Hits every enemy standing on `tile`; true if there was one.
+	var hit_enemies_at := func(tile: Vector2i) -> bool:
+		var hit := false
 		for enemy in get_tree().get_nodes_in_group("antagonist"):
-			if _to_tile(enemy.global_position) == target_tile:
+			if _to_tile(enemy.global_position) == tile:
 				# Enemies are host-owned (EnemySpawning.spawn_one) -- route
 				# through NetworkSync so the host actually applies it and
 				# tells every peer, instead of mutating this client's own
 				# possibly-non-authoritative copy directly.
 				NetworkSync.report_enemy_hit(int(str(enemy.name)), amount, attack.get("type", ""))
+				hit = true
+		return hit
+	var deal_damage := func():
+		hit_enemies_at.call(target_tile)
 	if effect_data.has("attacker") or effect_data.has("target"):
-		_play_bow_effect(effect_data, target_global, deal_damage)
+		_play_bow_effect(effect_data, target_global, deal_damage, hit_enemies_at)
 		return
 	if not effect_data.is_empty():
 		NetworkSync.play_effect(
@@ -265,8 +285,10 @@ const PROJECTILE_SCENE := preload("res://scenes/entities/ProjectileController.ts
 ## Bow-style attack: the "attacker" effect plays on the player as the shot
 ## leaves (purely cosmetic), a real projectile (e.g. the arrow) flies from
 ## their center to the target tile's center at a fixed speed, and only on
-## arrival does the "target" hit effect play and the damage land.
-func _play_bow_effect(effect_data: Dictionary, target_global: Vector2, on_hit: Callable) -> void:
+## arrival does the "target" hit effect play and the damage land. The arrow
+## also hits the first enemy it passes on the way (hit_enemies_at), so anything
+## that steps into its path is struck instead of the arrow flying through.
+func _play_bow_effect(effect_data: Dictionary, target_global: Vector2, on_hit: Callable, hit_enemies_at: Callable) -> void:
 	var direction := target_global - global_position
 	var attacker_data: Dictionary = effect_data.get("attacker", {})
 	if not attacker_data.is_empty():
@@ -281,8 +303,19 @@ func _play_bow_effect(effect_data: Dictionary, target_global: Vector2, on_hit: C
 	get_tree().current_scene.add_child(projectile)
 	var center := Vector2(8, 8)
 	projectile.global_position = global_position + center
+	var hit_on_the_way := func(pos: Vector2) -> bool:
+		var tile := _to_tile(pos)
+		if not hit_enemies_at.call(tile):
+			return false
+		var target_data: Dictionary = effect_data.get("target", {})
+		if not target_data.is_empty():
+			var tile_global := Vector2(tile) * grid_mover.tile_size
+			NetworkSync.play_effect(
+				AttackEffect.effect_position(global_position, tile_global, target_data),
+				target_data, tile_global - global_position)
+		return true
 	projectile.launch(projectile_texture, target_global + center, grid_mover.tile_size, func():
-		_land_hit(effect_data, target_global, on_hit), grid_mover.is_position_blocked)
+		_land_hit(effect_data, target_global, on_hit), grid_mover.is_position_blocked, hit_on_the_way)
 	NetworkSync.share_projectile(projectile_texture, global_position + center, target_global + center)
 
 func _land_hit(effect_data: Dictionary, target_global: Vector2, on_hit: Callable) -> void:

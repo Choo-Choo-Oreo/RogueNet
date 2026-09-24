@@ -15,6 +15,8 @@ extends RefCounted
 static var god_mode := false
 static var no_clip := false
 static var see_all := false
+## Enemies never notice the local player (tools tab, singleplayer only).
+static var unseen := false
 
 ## F5. Gates every option on the "debug" tab.
 static var debug_view := false

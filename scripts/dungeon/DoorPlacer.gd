@@ -128,7 +128,7 @@ static func _horizontal_piece(i: int, count: int) -> String:
 		return "h_end_left"
 	if i == count - 1:
 		return "h_end_right"
-	return "h_middle_left" if i < count / 2.0 else "h_middle_right"
+	return _middle_piece(i, count, "h_middle_left", "h_middle_right")
 
 static func _vertical_piece(i: int, count: int) -> String:
 	if count == 1:
@@ -137,4 +137,13 @@ static func _vertical_piece(i: int, count: int) -> String:
 		return "v_end_top"
 	if i == count - 1:
 		return "v_end_bottom"
-	return "v_middle_top" if i < count / 2.0 else "v_middle_bottom"
+	return _middle_piece(i, count, "v_middle_top", "v_middle_bottom")
+
+## Middle pieces lean toward the nearer end. When a side has more than one middle
+## (5 wide: columns 1 and 2 both lean left) the 2nd, 3rd... get a _2, _3 suffix so
+## every cell can have its own art (Wood_Fold_W5 has h_middle_left_2, v_middle_top_2).
+static func _middle_piece(i: int, count: int, near_a: String, near_b: String) -> String:
+	var first_half := i < count / 2.0
+	var nth := i if first_half else count - 1 - i
+	var base := near_a if first_half else near_b
+	return base if nth == 1 else "%s_%d" % [base, nth]

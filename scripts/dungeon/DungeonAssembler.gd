@@ -237,8 +237,8 @@ static func generate(rooms: Dictionary, dungeon_seed: int, defines: Dictionary =
 	var target_count := rng.randi_range(min_count, max_count)
 	var tag_weights: Dictionary = defines.get("tag_weights", {})
 
-	var entrance_id := ""
-	var boss_id := ""
+	var entrance_ids: Array = []
+	var boss_ids: Array = []
 	var treasure_ids: Array = []
 	var pool_ids: Array = []  # normal/corridor rooms eligible for random growth
 	var corridor_ids: Array = []  # role=="corridor" only, for the boss fallback below
@@ -248,9 +248,9 @@ static func generate(rooms: Dictionary, dungeon_seed: int, defines: Dictionary =
 		var r: Dictionary = rooms[id]
 		var role: String = r.get("role", "normal")
 		if role == "entrance":
-			entrance_id = id
+			entrance_ids.append(id)
 		elif role == "boss":
-			boss_id = id
+			boss_ids.append(id)
 		elif (r.get("tags", []) as Array).has("treasure"):
 			treasure_ids.append(id)
 		else:
@@ -258,6 +258,10 @@ static func generate(rooms: Dictionary, dungeon_seed: int, defines: Dictionary =
 			if role == "corridor":
 				corridor_ids.append(id)
 
+	# Several entrance / boss rooms may exist; one is picked per dungeon. The RNG
+	# is only touched when there is a real choice, so a biome with a single one
+	# builds the same layout for a given seed as before.
+	var entrance_id := "" if entrance_ids.is_empty() else _pick(entrance_ids, rng)
 	if entrance_id == "":
 		push_error("DungeonAssembler: no room with role \"entrance\" found")
 		return []
@@ -290,8 +294,16 @@ static func generate(rooms: Dictionary, dungeon_seed: int, defines: Dictionary =
 		_lock(placements[entry["placement_index"]], entry["local_pos"])
 	open_connectors.clear()
 
-	if boss_id != "":
-		_place_farthest(rooms, boss_id, corridor_ids, placements, occupied)
+	if not boss_ids.is_empty():
+		# The picked boss first; if it fits nowhere, the others get a turn.
+		var first := _pick(boss_ids, rng)
+		var order: Array = [first]
+		for id in boss_ids:
+			if id != first:
+				order.append(id)
+		for boss_id in order:
+			if _place_farthest(rooms, boss_id, corridor_ids, placements, occupied):
+				break
 	else:
 		push_warning("DungeonAssembler: no room with role \"boss\" found, skipping")
 
@@ -346,6 +358,32 @@ static func collect_spawn_cells(rooms: Dictionary, placements: Array) -> Array[V
 			var local := Vector2i(int(cell["position"]["x"]), int(cell["position"]["y"]))
 			cells.append(p.offset + local)
 	return cells
+
+## World spawn cell -> that room's "favored_enemy" list ([{"tag", "weight"}]),
+## only for rooms that have one. A room's favor is a nudge to the biome's
+## monster table, see EnemySpawning.
+static func collect_spawn_favors(rooms: Dictionary, placements: Array) -> Dictionary:
+	var favors := {}
+	for p in placements:
+		var room: Dictionary = rooms[p.room_id]
+		var favor := favored_enemies(room)
+		if favor.is_empty():
+			continue
+		for cell in room.get("spawn_cells", []):
+			var local := Vector2i(int(cell["position"]["x"]), int(cell["position"]["y"]))
+			favors[p.offset + local] = favor
+	return favors
+
+## A room's "favored_enemy" as a list, whether it was written as one
+## {"tag", "weight"} entry or an array of them. Weight defaults to 3.
+static func favored_enemies(room: Dictionary) -> Array:
+	var raw = room.get("favored_enemy", [])
+	var list: Array = raw if raw is Array else [raw]
+	var result: Array = []
+	for entry in list:
+		if entry is Dictionary and entry.get("tag", "") != "":
+			result.append({"tag": str(entry["tag"]), "weight": float(entry.get("weight", 3.0))})
+	return result
 
 static func _try_place(rooms: Dictionary, candidate_ids: Array, entry: Dictionary, placements: Array[Placement], occupied: Array[Rect2i], open_connectors: Array, rng: RandomNumberGenerator, avoid_dead_ends: bool, tag_weights: Dictionary) -> bool:
 	var from_placement: Placement = placements[entry["placement_index"]]
@@ -590,6 +628,12 @@ static func _seal_random_entrance_doors(entrance_placement: Placement, entrance_
 			remaining -= 1
 		else:
 			entrance_connectors.append(entry)
+
+## One entry of `ids`; the RNG is only used when there is more than one.
+static func _pick(ids: Array, rng: RandomNumberGenerator) -> String:
+	if ids.size() == 1:
+		return ids[0]
+	return ids[rng.randi_range(0, ids.size() - 1)]
 
 static func _shuffle(arr: Array, rng: RandomNumberGenerator) -> void:
 	for i in range(arr.size() - 1, 0, -1):

@@ -140,6 +140,7 @@ func _build_panel() -> void:
 	_check(tools_box, "god-mode (can't be hurt)", DebugState.god_mode, func(on): _set_god(on))
 	_check(tools_box, "no-clip (walk through walls)", DebugState.no_clip, func(on): DebugState.no_clip = on)
 	_check(tools_box, "see-all (no darkness)", DebugState.see_all, func(on): DebugState.see_all = on)
+	_check(tools_box, "unseen (enemies cannot see you)", DebugState.unseen, func(on): DebugState.unseen = on)
 	var types := OptionButton.new()
 	for file_name in DirAccess.get_files_at(ENEMY_DIR):
 		if file_name.ends_with(".json"):
@@ -156,6 +157,8 @@ func _build_panel() -> void:
 	_button(tools_box, "Open all doors", func(): _all_doors(true))
 	_button(tools_box, "Close all doors", func(): _all_doors(false))
 	_button(tools_box, "Heal me to full", _heal)
+	_button(tools_box, "New dungeon (same biome)", func(): _regenerate(false))
+	_button(tools_box, "New dungeon (random biome)", func(): _regenerate(true))
 	_hint = Label.new()
 	_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_hint.custom_minimum_size = Vector2(300, HINT_HEIGHT)
@@ -351,8 +354,22 @@ func _update_tools_lock() -> void:
 		_set_god(false)
 		DebugState.no_clip = false
 		DebugState.see_all = false
+		DebugState.unseen = false
 		DebugState.click_tool = ""
 		DebugLog.add("tools locked (multiplayer)")
+
+## Rebuilds the dungeon from a fresh seed without going back through the town:
+## the same path a mission start takes, minus the menus. Tools only exist in
+## singleplayer, so there is no other peer to keep in step.
+func _regenerate(new_biome: bool) -> void:
+	if _in_multiplayer():
+		return
+	NetworkSync.dungeon_seed = randi()
+	if new_biome or NetworkSync.dungeon_biome == "":
+		NetworkSync.dungeon_biome = DungeonAssembler.pick_biome(NetworkSync.dungeon_seed)
+	DebugLog.add("regenerating dungeon: seed %d, biome %s" % [NetworkSync.dungeon_seed, NetworkSync.dungeon_biome])
+	DebugState.click_tool = ""
+	get_tree().reload_current_scene()
 
 func _set_god(on: bool) -> void:
 	DebugState.god_mode = on
@@ -492,6 +509,7 @@ func _overlay_text() -> String:
 	if DebugState.god_mode: active.append("god")
 	if DebugState.no_clip: active.append("no clip")
 	if DebugState.see_all: active.append("see all")
+	if DebugState.unseen: active.append("unseen")
 	if not active.is_empty():
 		lines.append("Active: " + ", ".join(active))
 	return "\n".join(lines)

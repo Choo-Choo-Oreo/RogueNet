@@ -355,14 +355,30 @@ func _perform_ranged_attack(target: Node2D) -> void:
 	var projectile: ProjectileController = PROJECTILE_SCENE.instantiate()
 	get_tree().current_scene.add_child(projectile)
 	projectile.global_position = global_position + Vector2(_size_px / 2.0, _size_px / 2.0)
+	# The arrow hits the first living player whose tile it passes through, not
+	# whoever it was aimed at: stepping out of its way makes it miss, stepping
+	# into it gets you hit. Reaching the aimed tile with nobody there is a miss.
+	var hit_on_the_way := func(pos: Vector2) -> bool:
+		var tile := _to_tile(pos)
+		for player: PlayerController in get_tree().get_nodes_in_group("protagonist"):
+			if player.stats.is_ghost or _to_tile(player.global_position + Vector2(8, 8)) != tile:
+				continue
+			NetworkSync.relay_player_hit(int(str(player.name)), _attack_amount, _attack_type)
+			_play_ranged_target_effect(Vector2(tile) * grid_mover.tile_size)
+			return true
+		return false
 	projectile.launch(projectile_texture, target_global + Vector2(8, 8), grid_mover.tile_size, func():
-		_land_ranged_hit(target, target_global), grid_mover.is_position_blocked)
+		_play_ranged_target_effect(target_global), grid_mover.is_position_blocked, hit_on_the_way)
 	NetworkSync.share_projectile(projectile_texture, projectile.global_position, target_global + Vector2(8, 8))
 
 func _land_ranged_hit(target: Node2D, target_global: Vector2) -> void:
 	if not is_instance_valid(target):
 		return
 	NetworkSync.relay_player_hit(int(str(target.name)), _attack_amount, _attack_type)
+	_play_ranged_target_effect(target_global)
+
+## The "target" impact animation on a tile (cosmetic only).
+func _play_ranged_target_effect(target_global: Vector2) -> void:
 	var target_data: Dictionary = _attack_effect.get("target", {})
 	if not target_data.is_empty():
 		NetworkSync.play_effect(

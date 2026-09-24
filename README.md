@@ -63,6 +63,9 @@ Notes:
 - `continuous_animation` (optional, default `false`) — set `true` for
   enemies whose idle animation shouldn't freeze on a held frame (e.g. a
   flying enemy's wing-flap).
+- `tags` (optional) — what kind of creature it is (`["beast.rodent"]`).
+  Rooms can favor a tag for spawns. The list of tags and what each means is
+  in `game/TAGS.md`; reuse one before inventing another.
 - Sprite PNGs and their animation JSON (if any, e.g. Aseprite exports) live
   together under `resources/gfx/entities/entities.enemies/<id>/`, not under
   `game/`.
@@ -102,29 +105,9 @@ Example (`Dungeon_Brick_Arena_9x9.json`, trimmed):
 }
 ```
 
-Notes:
-- `width`/`height` are in tiles; `floor`/`walls` are 2D arrays indexed
-  `[y][x]`, each cell either a tile id from `game/tiles/` or `null`.
-- `connectors` (format 2) are the openings on the room's edge: a straight
-  run of cells from `a` to `b`, both included, `a` being the top/left end
-  (`a` equal to `b` is a single-cell opening). Runs must sit on one edge and
-  not include a corner. They only describe the opening -- doors are a separate
-  idea, still to come (see CONNECTORS_TRACKER.md); there is no door tile now.
-  Two connectors join at equal widths, or at any width if either has
-  `"free": true`; cells of a wider run with no partner are sealed with wall.
-  Leave the connector cells' `walls` entries `null`; the painter places floor.
-  Old files with `{ "position": ... }` connectors (format 1) still load: they
-  are upgraded in memory.
-- `spawn_cells` are candidate enemy-spawn tiles for this room; skip cells
-  in `entrance`/`boss` rooms and anything tagged `"treasure"` (the
-  assembler enforces this, but keep it in mind when adding new rooms by
-  hand). Placement doesn't need to be exact science — spread a handful
-  around cover/corners rather than clustering them all in the open.
-- `tags` feed the biome's `tag_weights` (below) to bias which rooms get
-  picked more/less often.
-- `objects` are decorative placements (`type` must be a known object id);
-  `position` here is in **pixels**, not tiles, unlike everything else.
-- Tile size is 16px.
+Every key (size, `role`, `tags`, `floor`/`walls`, `connectors` and their
+`door`, `spawn_cells`, `favored_enemy`, `objects`) is explained in
+`game/rooms/README.md` under "Room JSON reference". Tile size is 16px.
 
 ### Biome config — `game/rooms/<biome>/defines.json`
 
@@ -171,11 +154,14 @@ JSON. DungeonMaker keeps it when re-saving.)
 	"name": "wood",
 	"art": {
 		"1": "res://resources/gfx/doors/Wood_W1.json",
-		"2": "res://resources/gfx/doors/Wood_W2.json"
+		"2": "res://resources/gfx/doors/Wood_W2.json",
+		"3": "res://resources/gfx/doors/Wood_W3.json",
+		"4": "res://resources/gfx/doors/Wood_Fold_W4.json",
+		"5": "res://resources/gfx/doors/Wood_Fold_W5.json"
 	},
 	"transparent": false,
 	"min_width": 1,
-	"max_width": 2,
+	"max_width": 5,
 	"open_seconds": 0.3
 }
 ```
@@ -189,7 +175,7 @@ JSON. DungeonMaker keeps it when re-saving.)
 - `open_seconds` — how long the swing / slide takes.
 - `passable_at` — how far through that swing (0..1) the door can be walked through; until then it still blocks walking and shots (not sight or light), for monsters too. `0.5` for wood (swings clear early), `1.0` for bars that have to lift fully. Default `1.0`.
 - `min_width` / `max_width` — joint widths (in tiles) this door type can fill (`2`/`2` for a fixed-width door, `1`/`5` for a full set).
-- `art` — the atlas manifest(s) for this door: one path when a single atlas covers every width the type allows (`Iron_W1-5.json`), or a map of width to path when each width has its own (`"1": Wood_W1.json`, `"2": Wood_W2.json`). Each manifest names its atlas `<Style>_W<n>.png` or `<Style>_W<min>-<max>.png`, the `_Normal.png` beside it, the `widths` it covers, and the piece rows with `atlas_y`. Names: CamelCase style, `W` plus the width or width range, `_Normal` last.
+- `art` — the atlas manifest(s) for this door: one path when a single atlas covers every width the type allows (`Iron_W1-5.json`), or a map of width to path when each width has its own (`"1": Wood_W1.json`, `"2": Wood_W2.json`). Each manifest names its atlas `<Style>_W<n>.png` or `<Style>_W<min>-<max>.png`, the `_Normal.png` beside it, the `widths` it covers, its `frame_size` and `own_cell_row` (`[16, 32]` / `16` for the wood and iron doors: 16 rows over the cell north of the doorway, then the piece's own cell; `[16, 48]` / `32` for the `Dungeon` boss door, whose frame stands one more cell north). DoorManager draws a piece with its top-left at `(cell.x*16, cell.y*16 - own_cell_row)` and a region `frame_size` tall, and the piece rows with `atlas_y`. Styles so far: `Wood` (swinging leaves, widths 1-3), `Wood_Fold` (bi-fold panels on a rail, widths 3-5; the `wood` type borrows it for 4 and 5, and the `wood_fold` type offers it as a second look for 3-wide gaps), `Iron` and `IronSink` (gates, 1-5), `Dungeon` (placeholder boss-room door, 4-5: flat red/blue sliding leaves 16px tall between 24px stone posts, 16 frames, detail still to come; its manifest also names a one-frame `_Overlay.png` holding the lintel at 50% alpha, to be drawn above creatures so they walk under it; on vertical doors it is a bar along the seam, and each vertical overlay piece only carries its own cell's rows so the translucency never stacks where pieces overlap). A door 5 wide repeats a middle piece on each side, so the second one is named with a `_2` suffix (`h_middle_left_2`, `v_middle_top_2_left`); DoorPlacer produces those names and every atlas that covers width 5 has a row for them (the iron atlases reuse their plain middle art). Names: CamelCase style, `W` plus the width or width range, `_Normal` last.
 - Players open a door by walking into it. It closes again a couple of
   seconds after everyone has moved away. Open/closed state is host-owned.
 

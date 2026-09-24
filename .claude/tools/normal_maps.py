@@ -215,6 +215,7 @@ def door(src, tops, tilt=0.25, bump=2.0):
 
 WOOD_TOPS = {(86, 46, 38)}      # door_build.py WOOD_T
 IRON_TOPS = {(52, 54, 60)}      # door_build.py IRON_D (also the 1px cross bar; close enough)
+DUNGEON_TOPS = {(120, 50, 50), (50, 65, 125), (165, 165, 172)}   # door_boss.py placeholder leaf/frame tops
 
 FLESH = {
     (0xAC, 0x32, 0x32): 0.0,   # base
@@ -242,13 +243,15 @@ MATERIALS = {
     "floor_lava":        (plain, {}),   # emits its own light, so no shading from the player's
     "floor_acid":        (palette, dict(heights=ACID, strength=3.0)),
     "Wood":              (door, dict(tops=WOOD_TOPS, bump=2.5)),
+    "Wood_Fold":         (door, dict(tops=WOOD_TOPS, bump=2.5)),
+    "Dungeon":           (door, dict(tops=DUNGEON_TOPS, bump=0.0)),   # flat placeholder, no grain yet
     "Iron":              (door, dict(tops=IRON_TOPS, bump=2.0)),
     "IronSink":          (door, dict(tops=IRON_TOPS, bump=2.0)),
 }
 
 # Materials that don't live in the tileset folder. Doors are one atlas per width,
 # <Style>_W<Width>.png or <Style>_W<Min>-<Max>.png -> same name + _Normal.png.
-FOLDERS = {"Wood": DOORS, "Iron": DOORS, "IronSink": DOORS}
+FOLDERS = {"Wood": DOORS, "Wood_Fold": DOORS, "Dungeon": DOORS, "Iron": DOORS, "IronSink": DOORS}
 
 # The dirt and grass PNGs in the game were made with different settings than these defaults
 # (about 1400-1600 pixels differ), so a plain rebuild leaves them alone. Name them to rebuild.

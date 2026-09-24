@@ -1,4 +1,5 @@
 {
+	"tags": ["beast.rodent", "demon"],
 	"size_tiles": 1,
 	"max_health": 8,
 	"strength": 0,
