@@ -250,8 +250,11 @@ MATERIALS = {
 }
 
 # Materials that don't live in the tileset folder. Doors are one atlas per width,
-# <Style>_W<Width>.png or <Style>_W<Min>-<Max>.png -> same name + _Normal.png.
-FOLDERS = {"Wood": DOORS, "Wood_Fold": DOORS, "Dungeon": DOORS, "Iron": DOORS, "IronSink": DOORS}
+# <Style>_W<Width>.png or <Style>_W<Min>-<Max>.png -> same name + _Normal.png. Boss doors
+# (doors/boss/) are layered: <Style>_W<n>_Frame.png and _Leaves.png each get a normal, the
+# translucent _Overlay.png does not.
+BOSS = DOORS + "boss/"
+FOLDERS = {"Wood": DOORS, "Wood_Fold": DOORS, "Dungeon": BOSS, "Iron": DOORS, "IronSink": DOORS}
 
 # The dirt and grass PNGs in the game were made with different settings than these defaults
 # (about 1400-1600 pixels differ), so a plain rebuild leaves them alone. Name them to rebuild.
@@ -260,8 +263,8 @@ SKIP_BY_DEFAULT = {"floor_dirt", "floor_grass"}
 def build(name, out_dir=None):
     method, kw = MATERIALS[name]
     folder = FOLDERS.get(name, ART)
-    if folder == DOORS:
-        targets = [f[:-4] for f in sorted(os.listdir(folder)) if re.fullmatch(name + r"_W\d+(-\d+)?\.png", f)]
+    if folder in (DOORS, BOSS):
+        targets = [f[:-4] for f in sorted(os.listdir(folder)) if re.fullmatch(name + r"_W\d+(-\d+)?(_Frame|_Leaves)?\.png", f)]
         suffix = "_Normal"
     else:
         targets, suffix = [name], "_normal"

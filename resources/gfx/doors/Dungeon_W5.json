@@ -67,7 +67,7 @@
 			"atlas_y": 672
 		}
 	},
-	"note": "PLACEHOLDER boss-room door, 5 wide: two flat-coloured leaves (west/north red, east/south blue) 16px tall between stone posts and a lintel 24px tall, so it stands three wall heights high and the frame reaches one cell north of the doorway. Frames are 16x48: rows 32..47 own cell, 16..31 the cell north, 0..15 one more cell north. The leaves slide apart into the posts over 16 frames; nothing is ever drawn under the doorway. The lintel lives in the overlay atlas (see overlay).",
+	"note": "PLACEHOLDER boss-room door, 5 wide: two flat-coloured leaves (west/north red, east/south blue) 16px tall between stone posts and a lintel 24px tall, so it stands three wall heights high and the frame reaches one cell north of the doorway. Frames are 16x48: rows 32..47 own cell, 16..31 the cell north, 0..15 one more cell north. The leaves slide apart into the posts over 16 frames; nothing is ever drawn under the doorway. Vertical rows: the leaves are tops only (no end faces), red from the row under the north post's face, blue up to the south post's top, equal bands that vanish together on the last frame. The lintel lives in the overlay atlas (see overlay).",
 	"overlay": {
 		"texture": "Dungeon_W5_Overlay.png",
 		"frames": 1,
