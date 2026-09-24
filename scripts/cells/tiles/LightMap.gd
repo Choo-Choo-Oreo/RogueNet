@@ -98,9 +98,15 @@ func bake_glow() -> void:
 	smooth.set_shader_parameter("glow_size", Vector2(_glow_image.get_size()))
 
 func _process(_delta: float) -> void:
+	var started := Time.get_ticks_usec()
+	_process_inner()
+	DebugState.add_time("light", Time.get_ticks_usec() - started)
+
+func _process_inner() -> void:
 	var player := _local_player()
 	if player == null:
 		return
+	_sprite.visible = not DebugState.see_all
 	if DoorRegistry.version != _door_version:
 		# A door opened or closed: every light re-floods next update.
 		_door_version = DoorRegistry.version

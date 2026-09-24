@@ -155,7 +155,7 @@ Notes:
 ```json
 {
 	"name": "wood",
-	"art": "res://resources/gfx/doors/door_wood.json",
+	"art": "res://resources/gfx/doors/Wood",
 	"transparent": false,
 	"min_width": 1,
 	"max_width": 2,

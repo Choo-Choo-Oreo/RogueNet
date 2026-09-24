@@ -195,6 +195,11 @@ func _ready() -> void:
 ## host last relayed, the same split PlayerController uses for a remote peer's
 ## body (animate_from_position instead of reading local input).
 func _process(delta: float) -> void:
+	var started := Time.get_ticks_usec()
+	_process_inner(delta)
+	DebugState.add_time("enemy AI", Time.get_ticks_usec() - started)
+
+func _process_inner(delta: float) -> void:
 	if not is_multiplayer_authority():
 		animator.animate_from_position(delta, global_position)
 		return
@@ -592,6 +597,10 @@ func _try_pathfind_step(origin_cell: Vector2i, target_cell: Vector2i, full_speed
 ## tiles without invalidating the route (a fleeing target rarely changes the
 ## right general direction over 1-2 tiles); anything past that, or a tile on
 ## the route becoming newly blocked, forces a fresh solve.
+## For the route debug draw: the tile the last step tried to enter, and when.
+var _debug_step_tile := Vector2i.ZERO
+var _debug_step_msec := -100000
+
 var _cached_path: Array[Vector2i] = []
 var _cached_path_index: int = 0
 var _cached_path_target: Vector2i = Vector2i.ZERO
@@ -699,6 +708,8 @@ func _is_boxed_in() -> bool:
 
 func _try_move(direction: Vector2, full_speed: bool = true) -> bool:
 	var target_tile := _to_tile(global_position + direction * grid_mover.tile_size)
+	_debug_step_tile = target_tile
+	_debug_step_msec = Time.get_ticks_msec()
 	if grid_mover.is_tile_blocked(target_tile) or grid_mover.is_tile_occupied(target_tile):
 		return false
 	var moved := grid_mover.move_one_tile(direction, 1.0 if full_speed else INVESTIGATE_SPEED_SCALE)

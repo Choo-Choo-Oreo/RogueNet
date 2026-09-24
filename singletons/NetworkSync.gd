@@ -513,6 +513,70 @@ func set_door(id: int, open: bool) -> void:
 func receive_door_state(id: int, open: bool) -> void:
 	DoorRegistry.set_open(id, open)
 
+# Debug menu (DebugMenu.gd). God mode is a flag on the player node that every peer
+# has to agree on (damage is applied on every peer), so it is copied like a
+# state change: a client asks the host, the host applies it and tells the rest.
+func set_god_mode(on: bool) -> void:
+	var my_id := multiplayer.get_unique_id()
+	_apply_god_mode(my_id, on)
+	if multiplayer.multiplayer_peer == null:
+		return
+	if multiplayer.is_server():
+		receive_god_mode.rpc(my_id, on)
+	else:
+		report_god_mode.rpc_id(1, on)
+
+@rpc("any_peer", "reliable")
+func report_god_mode(on: bool) -> void:
+	if not multiplayer.is_server():
+		return
+	var sender := multiplayer.get_remote_sender_id()
+	_apply_god_mode(sender, on)
+	receive_god_mode.rpc(sender, on)
+
+@rpc("authority", "reliable")
+func receive_god_mode(player_id: int, on: bool) -> void:
+	_apply_god_mode(player_id, on)
+
+func _apply_god_mode(player_id: int, on: bool) -> void:
+	var scene := get_tree().current_scene
+	if scene == null:
+		return
+	var player := scene.get_node_or_null("Player/" + str(player_id))
+	if player != null and "debug_god" in player:
+		player.debug_god = on
+
+## Enemies are host-owned, so a client asks the host to place one.
+func debug_spawn_enemy(enemy_id: String, tile: Vector2i) -> void:
+	if multiplayer.multiplayer_peer == null or multiplayer.is_server():
+		_host_debug_spawn(enemy_id, tile)
+	else:
+		request_debug_spawn.rpc_id(1, enemy_id, tile)
+
+@rpc("any_peer", "reliable")
+func request_debug_spawn(enemy_id: String, tile: Vector2i) -> void:
+	if multiplayer.is_server():
+		_host_debug_spawn(enemy_id, tile)
+
+func _host_debug_spawn(enemy_id: String, tile: Vector2i) -> void:
+	var scene := get_tree().current_scene
+	var enemies_root := scene.get_node_or_null("Enemies") if scene != null else null
+	if enemies_root != null:
+		EnemySpawning.spawn_debug(enemy_id, tile, enemies_root)
+
+## Opening works from anywhere (every door asks the host); closing is host only.
+func debug_all_doors(open: bool) -> void:
+	var is_host := multiplayer.multiplayer_peer == null or multiplayer.is_server()
+	if open:
+		for door: DoorRegistry.Door in DoorRegistry.doors:
+			if is_host:
+				set_door(door.id, true)
+			elif not door.is_open:
+				request_door_open.rpc_id(1, door.id)
+	elif is_host:
+		for door: DoorRegistry.Door in DoorRegistry.doors:
+			set_door(door.id, false)
+
 # Cosmetic effects (sword swings, bites, arrows, magic) are only ever drawn by
 # whoever's attack it is, so every one goes through play_effect / play_projectile:
 # it plays locally, then tells everyone else to play the same thing. A client's

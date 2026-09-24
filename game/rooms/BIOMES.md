@@ -77,8 +77,8 @@ ask for: `Entrance_15x15`, `Boss_Vault_11x11`, `Treasure_Vault_5x5`,
 2026-09-22; the other legacy rooms are in git history if needed.
 The biome is picked from the dungeon seed, so every peer picks the same one.
 
-`DungeonPainter.gd` and `DungeonDebugView.gd` both call
-`load_rooms(pick_biome(seed))`. `fallback/` is in `IGNORED_FOLDERS`, so it is
+`DungeonPainter.gd` calls
+`load_rooms(pick_biome(seed))` (the F5 debug draws in `scripts/debug/` read its result from `DebugState`). `fallback/` is in `IGNORED_FOLDERS`, so it is
 never picked as a biome; it only fills in room kinds a biome is missing.
 
 ## Dungeon Maker and biomes

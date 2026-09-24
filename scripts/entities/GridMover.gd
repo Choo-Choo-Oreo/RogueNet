@@ -55,7 +55,23 @@ func _can_open(door: DoorRegistry.Door) -> bool:
 var phases_doors := false
 
 func _ignores_doors() -> bool:
-	return phases_doors or _is_ghost()
+	return phases_doors or _is_ghost() or _no_clip()
+
+## Debug: this machine's own player ignores walls, void and doors.
+func _no_clip() -> bool:
+	return DebugState.no_clip and _body.is_in_group("protagonist") and _body.is_multiplayer_authority()
+
+var _tween: Tween
+
+## Debug: put the body on a spot right now, cancelling any step in progress.
+func teleport(pos: Vector2) -> void:
+	if _tween != null and _tween.is_valid():
+		_tween.kill()
+	is_moving = false
+	for tile in _reserved.keys():
+		if _reserved[tile] == _body:
+			_reserved.erase(tile)
+	_body.global_position = pos
 
 func _is_ghost() -> bool:
 	return "stats" in _body and _body.stats != null and _body.stats.is_ghost
@@ -140,7 +156,7 @@ func is_tile_occupied(tile: Vector2i) -> bool:
 static var _reserved: Dictionary = {}  # Vector2i -> Node2D
 
 func _is_blocked(target_global: Vector2) -> bool:
-	if wall_data == null:
+	if wall_data == null or _no_clip():
 		return false
 	var cell: Vector2i = wall_data.local_to_map(wall_data.to_local(target_global))
 	var source_id := wall_data.get_cell_source_id(cell)
@@ -186,6 +202,7 @@ func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> bool:
 	var half_time := move_time / 2.0
 
 	var tween := create_tween()
+	_tween = tween
 	tween.tween_property(_body, "global_position", midpoint, half_time / origin_speed)
 	tween.tween_property(_body, "global_position", target_global, half_time / target_speed)
 	tween.finished.connect(func():

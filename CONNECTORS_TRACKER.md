@@ -90,7 +90,7 @@ Status key: [ ] todo, [x] done, [~] built / needs playtest, [-] on hold
 - New scripts/dungeon/Connector.gd: make / upgrade / upgrade_room / a / b / cells / width / dir / rotate / validate.
 - DungeonAssembler: rooms are upgraded + validated on load; rotation turns both endpoints; placement still uses each run's `a` cell, so width-1 behaviour is identical. Wider runs load but warn "assembler only joins width-1".
 - All 139 room JSONs (407 connectors) rewritten to `{a, b}` with `format: 2` by a checked script (everything else in each file verified unchanged). Runtime shim still accepts format 1.
-- DungeonPainter opens every cell of a run; DungeonDebugView draws runs; DungeonMaker reads format 1 and 2, keeps a wider run's `b` when re-saving, writes format 2, file check uses the shared validator. Editor still places single cells only.
+- DungeonPainter opens every cell of a run; DebugDraw (F5 debug view) draws runs; DungeonMaker reads format 1 and 2, keeps a wider run's `b` when re-saving, writes format 2, file check uses the shared validator. Editor still places single cells only.
 - Rotation of a run is not "flip": editor Flip still leaves connectors alone (unchanged from before).
 - Found: Flesh_Chambers_7x9 (3,5) and Mine_Cabin_Cavern_19x15 (12,7) have interior `wall_door` cells that are not connectors; the painter still turns them into open door tiles.
 - Not done yet from S tier: flip transform in the editor, format upgrader versioning beyond the shim, everything from "width-matching helper" down.
@@ -124,4 +124,4 @@ Status key: [ ] todo, [x] done, [~] built / needs playtest, [-] on hold
 
 - Should a free connection ever join two runs where only a partial overlap exists, or must the narrower run fit fully inside the wider one? (agents assume fully inside)
 - Doors in play: do doors open on walk-into (auto) or need an interact key? Locked doors need a key item, which the game doesn't have yet.
-- ~~Do wide openings (3+) ever get doors, or is that always an open arch?~~ Decided 2026-09-23: widths 1-2 get swinging wood or iron gates; widths 3-5 get a portcullis only (iron rise-and-fade or iron sink). Art for all of it is in `resources/gfx/doors/door_{wood,iron,iron_sink}.png` with `.json` manifests (piece selection rule + 16x16 tile split) and normal maps.
+- ~~Do wide openings (3+) ever get doors, or is that always an open arch?~~ Decided 2026-09-23: widths 1-2 get swinging wood or iron gates; widths 3-5 get a portcullis only (iron rise-and-fade or iron sink). Art for all of it is in `resources/gfx/doors/<Style>_<Width>.png` (Wood_1..2, Iron_1..5, IronSink_1..5), one atlas per door width, with `<Style>_<Width>.json` manifests (piece rows, selection rule, 16x16 tile split) and `<Style>_<Width>_Normal.png` normal maps.

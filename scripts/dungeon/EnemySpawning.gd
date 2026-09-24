@@ -45,6 +45,17 @@ static func spawn_in_unseen_cells(spawn_cells: Array[Vector2i], monster_weights:
 		spawned.append({"id": id, "type": enemy_id, "tile": tile})
 	NetworkSync.broadcast_enemy_spawns(spawned)
 
+## Debug menu: one enemy of a chosen type on a chosen tile, host only.
+static func spawn_debug(enemy_id: String, tile: Vector2i, enemies_root: Node) -> void:
+	if enemy_id.contains("/") or enemy_id.contains("\\") or enemy_id.contains(".."):
+		return
+	if not FileAccess.file_exists(EnemyController.ENEMY_TYPES_DIR + enemy_id + ".json"):
+		return
+	var id := _next_id
+	_next_id += 1
+	spawn_one(id, enemy_id, tile, enemies_root)
+	NetworkSync.broadcast_enemy_spawns([{"id": id, "type": enemy_id, "tile": tile}])
+
 ## Shared by the host's own roll above and NetworkSync.receive_spawn_enemies
 ## (each client building its local copy of what the host already rolled).
 static func spawn_one(id: int, enemy_id: String, tile: Vector2i, enemies_root: Node) -> EnemyController:

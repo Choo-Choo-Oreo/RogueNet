@@ -49,7 +49,13 @@ func _load_player_data() -> void:
 func _current_attack() -> Dictionary:
 	return _attacks[active_slot] if active_slot < _attacks.size() else {}
 
+## Debug god mode (DebugMenu), copied to every peer by NetworkSync so all of
+## them agree this player can't be hurt.
+var debug_god := false
+
 func take_damage(amount: int, type: String = "") -> void:
+	if debug_god:
+		return
 	stats.take_damage(amount, type)
 
 ## Swaps to the ghost skin and stops the player from attacking -- movement
@@ -193,6 +199,8 @@ func _input(event: InputEvent) -> void:
 ## "ranged") can hit any tile clicked instead, effect anchored on the
 ## target -- see AttackEffect.effect_position().
 func _try_attack() -> void:
+	if DebugState.blocks_attack():
+		return
 	var attack: Dictionary = _current_attack()
 	if attack.get("kind", "") == "taunt":
 		_try_taunt(attack)
