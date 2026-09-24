@@ -1,0 +1,535 @@
+{
+	"biome": "flesh",
+	"connectors": [
+		{
+			"a": {
+				"x": 6,
+				"y": 12
+			},
+			"b": {
+				"x": 8,
+				"y": 12
+			},
+			"door": "any",
+			"free": true
+		},
+		{
+			"a": {
+				"x": 0,
+				"y": 5
+			},
+			"b": {
+				"x": 0,
+				"y": 7
+			},
+			"door": "any",
+			"free": true
+		},
+		{
+			"a": {
+				"x": 14,
+				"y": 5
+			},
+			"b": {
+				"x": 14,
+				"y": 7
+			},
+			"door": "any",
+			"free": true
+		}
+	],
+	"base_floor": "floor_flesh",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_flesh",
+			null,
+			"floor_flesh",
+			null,
+			null,
+			null,
+			"floor_flesh",
+			null,
+			"floor_flesh",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			null,
+			null,
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null,
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			null,
+			null,
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null,
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			null,
+			null,
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null,
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null,
+			null,
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 2,
+	"height": 13,
+	"id": "Flesh_Aorta_Mutant_15x13",
+	"objects": [],
+	"role": "corridor",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 3,
+				"y": 1
+			}
+		},
+		{
+			"position": {
+				"x": 7,
+				"y": 2
+			}
+		},
+		{
+			"position": {
+				"x": 12,
+				"y": 2
+			}
+		},
+		{
+			"position": {
+				"x": 4,
+				"y": 4
+			}
+		},
+		{
+			"position": {
+				"x": 10,
+				"y": 4
+			}
+		},
+		{
+			"position": {
+				"x": 8,
+				"y": 7
+			}
+		}
+	],
+	"tags": [
+		"corridor"
+	],
+	"walls": [
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_flesh"
+		],
+		[
+			null,
+			null,
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			null,
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh",
+			"wall_flesh"
+		]
+	],
+	"width": 15
+}
