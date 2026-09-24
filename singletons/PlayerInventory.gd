@@ -36,7 +36,7 @@ func _ready() -> void:
 	for i in ids.size():
 		storage[i] = ids[i]
 
-static func place(where: String, key) -> Dictionary:
+func place(where: String, key) -> Dictionary:
 	return {"where": where, "key": key}
 
 func get_at(at: Dictionary) -> String:

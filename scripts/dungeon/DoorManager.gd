@@ -126,10 +126,10 @@ func _boss_layers(json: Dictionary, dir: String, door: DoorRegistry.Door) -> Arr
 	if frame_set.is_empty():
 		push_warning("DoorManager: no boss door frame set for wall '%s', using the placeholder frame" % door.wall_tile)
 	var result: Array = []
-	for name in json.get("draw_order", ["frame", "leaves", "overlay"]):
+	for layer in json.get("draw_order", ["frame", "leaves", "overlay"]):
 		var diffuse := ""
 		var normal := ""
-		match name:
+		match layer:
 			"frame":
 				diffuse = frame_set.get("frame", json["layers"]["frame"]["texture"])
 				normal = frame_set.get("normal_texture", json["layers"]["frame"].get("normal_texture", ""))
@@ -143,7 +143,7 @@ func _boss_layers(json: Dictionary, dir: String, door: DoorRegistry.Door) -> Arr
 		canvas.diffuse_texture = load(dir.path_join(diffuse))
 		if normal != "":
 			canvas.normal_texture = load(dir.path_join(normal))
-		result.append({"texture": canvas, "animated": name == "leaves", "overlay": name == "overlay"})
+		result.append({"texture": canvas, "animated": layer == "leaves", "overlay": layer == "overlay"})
 	return result
 
 func _process(delta: float) -> void:
