@@ -145,6 +145,35 @@ Notes:
   `spawn_cells`. Weights are relative, not percentages — they just need to
   be consistent within one table.
 - `music` — path to the biome's background track.
+- `doors` (optional) — `{ "density": 0..1, "types": ["wood", "iron"] }`. Each
+  open joint between two rooms rolls `density` for a door; the type is picked
+  from `types` among those whose width range fits the joint. No `doors` key =
+  no doors in that biome.
+
+### Doors — `game/doors/<type>.json`
+
+```json
+{
+	"name": "wood",
+	"art": "res://resources/gfx/doors/door_wood.json",
+	"transparent": false,
+	"min_width": 1,
+	"max_width": 2,
+	"open_seconds": 0.3
+}
+```
+
+- `transparent` — see-through (bars / grate): a closed one still blocks
+  walking and shots but not sight or light.
+- Whether an enemy opens doors is its own `"doors"` field in its enemy json:
+  `"none"` (default, can't), `"open"` (see-through doors any time, solid ones
+  only while investigating or pursuing) or `"phase"` (passes through closed
+  doors without opening them).
+- `open_seconds` — how long the swing / slide takes.
+- `min_width` / `max_width` — joint widths (in tiles) this door type can fill.
+- `art` — the piece atlas description next to the door PNGs.
+- Players open a door by walking into it. It closes again a couple of
+  seconds after everyone has moved away. Open/closed state is host-owned.
 
 ### Tiles — `game/tiles/<id>.json` + `game/tile_registry.json`
 

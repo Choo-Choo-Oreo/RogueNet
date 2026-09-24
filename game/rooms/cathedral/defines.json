@@ -1,6 +1,22 @@
 {
-	"room_count": { "min": 15, "max": 20 },
-	"tag_weights": { "maze": 0.6, "corridor": 0.6 },
-	"monsters": { "skeleton_archer": 3, "hamster_demonic": 1 },
-	"music": "res://resources/sfx/music/Groovy.mp3"
+	"room_count": {
+		"min": 15,
+		"max": 20
+	},
+	"tag_weights": {
+		"maze": 0.6,
+		"corridor": 0.6
+	},
+	"monsters": {
+		"skeleton_archer": 3,
+		"hamster_demonic": 1
+	},
+	"music": "res://resources/sfx/music/Groovy.mp3",
+	"doors": {
+		"density": 1.0,
+		"types": [
+			"iron",
+			"iron_sink"
+		]
+	}
 }

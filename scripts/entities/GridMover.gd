@@ -42,17 +42,53 @@ func _floor_source_at(target_global: Vector2) -> int:
 	var cell: Vector2i = floor_data.local_to_map(floor_data.to_local(target_global))
 	return floor_data.get_cell_source_id(cell)
 
+## Set by whatever owns this mover if it may only open SOME doors (an idle
+## enemy leaves solid doors shut). Called with the DoorRegistry.Door, returns
+## true if this mover may open it. Unset = opens any door, like a player.
+var open_predicate := Callable()
+
+func _can_open(door: DoorRegistry.Door) -> bool:
+	return not open_predicate.is_valid() or open_predicate.call(door)
+
+## True for a mover that passes through closed doors without opening them
+## (a wraith). Ghost players always do.
+var phases_doors := false
+
+func _ignores_doors() -> bool:
+	return phases_doors or _is_ghost()
+
+func _is_ghost() -> bool:
+	return "stats" in _body and _body.stats != null and _body.stats.is_ghost
+
 ## Tile-coordinate version of the same wall/void/door check, for grid
-## algorithms (LineOfSight, LightFlood) that work in cell units rather than
-## world positions.
+## algorithms (Pathfinding, FlowField) and step checks that work in cell units
+## rather than world positions. A closed door only counts as blocked for a
+## mover that can't open it -- one that can just walks into it (move_one_tile
+## opens it), so paths and flow fields route straight through.
 func is_tile_blocked(tile: Vector2i) -> bool:
-	return _is_blocked(Vector2(tile) * tile_size)
+	if _is_blocked(Vector2(tile) * tile_size):
+		return true
+	var door := DoorRegistry.closed_door_at(tile)
+	return door != null and not _ignores_doors() and not _can_open(door)
+
+## Walls, void and closed opaque doors: what stops SIGHT (LineOfSight,
+## enemy senses). Bars (transparent doors) let you see through.
+func blocks_sight(tile: Vector2i) -> bool:
+	return _is_blocked(Vector2(tile) * tile_size) or DoorRegistry.blocks_sight(tile)
+
+## Walls, void and any closed door: what stops a SHOT (ranged attack range).
+func blocks_shot(tile: Vector2i) -> bool:
+	return _is_blocked(Vector2(tile) * tile_size) or DoorRegistry.closed_door_at(tile) != null
 
 ## Pixel-position version, for anything that moves through continuous space
 ## rather than snapping tile to tile (e.g. a flying projectile) -- avoids
-## ever having to round a fractional position to a tile index itself.
+## ever having to round a fractional position to a tile index itself. A closed
+## door stops a projectile the same as a wall.
 func is_position_blocked(global_pos: Vector2) -> bool:
-	return _is_blocked(global_pos)
+	if _is_blocked(global_pos):
+		return true
+	var tile := Vector2i(floori(global_pos.x / tile_size), floori(global_pos.y / tile_size))
+	return DoorRegistry.closed_door_at(tile) != null
 
 ## Shared per-frame index backing is_tile_occupied() -- rescanning every
 ## protagonist/antagonist on every single query was O(n) per call, and with
@@ -122,8 +158,16 @@ func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> bool:
 	var target_global := origin_global + direction * tile_size
 	if _is_blocked(target_global):
 		return false
-	var is_ghost: bool = "stats" in _body and _body.stats != null and _body.stats.is_ghost
+	var is_ghost := _is_ghost()
 	var target_tile := Vector2i(floori(target_global.x / tile_size), floori(target_global.y / tile_size))
+	# Walking into a closed door opens it (if this mover may) but doesn't step
+	# this call -- the door is passable once the state change comes back.
+	# Ghosts and door-phasing enemies drift through closed doors.
+	var door := DoorRegistry.closed_door_at(target_tile)
+	if door != null and not _ignores_doors():
+		if _can_open(door):
+			NetworkSync.open_door(door.id)
+		return false
 	if not is_ghost and is_tile_occupied(target_tile):
 		return false
 	facing_direction = direction
@@ -136,7 +180,7 @@ func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> bool:
 	# first half of the step (still mostly on the old tile) uses the old
 	# tile's speed, and only the second half uses the new tile's.
 	var midpoint: Vector2 = origin_global.lerp(target_global, 0.5)
-	var ignore_terrain: bool = "stats" in _body and _body.stats != null and _body.stats.is_ghost
+	var ignore_terrain := is_ghost
 	var origin_speed: float = (1.0 if ignore_terrain else _floor_speed.get(_floor_source_at(origin_global), 1.0)) * speed_scale
 	var target_speed: float = (1.0 if ignore_terrain else _floor_speed.get(_floor_source_at(target_global), 1.0)) * speed_scale
 	var half_time := move_time / 2.0

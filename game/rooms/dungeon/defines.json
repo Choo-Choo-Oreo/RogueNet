@@ -1,6 +1,26 @@
 {
-	"room_count": { "min": 20, "max": 30 },
-	"tag_weights": { "maze": 0.6, "corridor": 0.6 },
-	"monsters": { "rat": 3, "rat_blind": 1, "skeleton_archer": 2, "wolf": 1 },
-	"music": "res://resources/sfx/music/Groovy.mp3"
+	"room_count": {
+		"min": 20,
+		"max": 30
+	},
+	"tag_weights": {
+		"maze": 0.6,
+		"corridor": 0.6
+	},
+	"monsters": {
+		"rat": 3,
+		"rat_blind": 1,
+		"skeleton_archer": 2,
+		"wolf": 1,
+		"wraith": 2
+	},
+	"music": "res://resources/sfx/music/Groovy.mp3",
+	"doors": {
+		"density": 1.0,
+		"types": [
+			"wood",
+			"iron",
+			"iron_sink"
+		]
+	}
 }

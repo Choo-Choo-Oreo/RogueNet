@@ -1,0 +1,8 @@
+{
+	"name": "wood",
+	"art": "res://resources/gfx/doors/door_wood.json",
+	"transparent": false,
+	"min_width": 1,
+	"max_width": 2,
+	"open_seconds": 0.6
+}

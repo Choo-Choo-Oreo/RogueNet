@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://drkbbgtkdtsru"
-path="res://.godot/imported/Alertness.png-7403b5ae1940ced3727d0a9bcb3165cf.ctex"
+uid="uid://bips8japjdf0s"
+path="res://.godot/imported/door_iron.png-960adb57e2388aea0beb974a440c2cae.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/effects/Alertness.png"
-dest_files=["res://.godot/imported/Alertness.png-7403b5ae1940ced3727d0a9bcb3165cf.ctex"]
+source_file="res://resources/gfx/doors/door_iron.png"
+dest_files=["res://.godot/imported/door_iron.png-960adb57e2388aea0beb974a440c2cae.ctex"]
 
 [params]
 

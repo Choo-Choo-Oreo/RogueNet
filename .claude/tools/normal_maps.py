@@ -9,6 +9,8 @@ To add a material: add a line to MATERIALS. Pick a method:
   wall             tilt + rim bevel + optional brightness bumps (walls with black tops)
   palette          each art colour has a height role (flesh); walls get their wall base under it
   bevel            named "top" colours are flat, everything else slopes away from them (smooth stone)
+  door             named "top" colours are the flat top strip of a door leaf, everything else is
+                   its south face (tilted at the viewer like a wall face) with brightness bumps
 Atlas layout: animation frames run left to right (Aseprite's horizontal strip), variants run
 top to bottom, each a 64x64 set. Any image size works because everything is done per tile.
 Every method works per 16x16 tile (or 8x8 quarter for bevel) so nothing leaks between tiles.
@@ -18,6 +20,7 @@ from PIL import Image
 
 ROOT = "C:/Users/Orea/Documents/Project-Godot/RogueNet/"
 ART = ROOT + "resources/gfx/tileset/"
+DOORS = ROOT + "resources/gfx/doors/"
 T = 16          # atlas tile size
 Q = 8           # dual-grid quarter size
 KERNEL = [1, 2, 1]
@@ -182,7 +185,36 @@ def bevel(src, tops, reach=3.0, blur_passes=2, strength=6.0):
             rp[x, y] = pack(nx, ny, 1.0)
     return res
 
+def door(src, tops, tilt=0.25, bump=2.0):
+    """Door pieces are 16x32 (own cell + the cell north of it) with no black wall top: the
+    `tops` colours are the leaf's flat top strip, every other opaque pixel is a face that leans
+    toward the viewer by `tilt` and takes brightness bumps from the art, per 16x16 tile."""
+    W, H = src.size; px = src.load()
+    res = Image.new("RGBA", src.size, (128, 128, 255, 0)); rp = res.load()
+    for ty in range(0, H, T):
+        for tx in range(0, W, T):
+            p = {(x, y): px[tx + x, ty + y] for y in range(T) for x in range(T)}
+            def at(x, y): return p[min(max(x, 0), T - 1), min(max(y, 0), T - 1)]
+            def is_top(x, y): return at(x, y)[3] > 0 and at(x, y)[:3] in tops
+            def lum(x, y): return sum(at(x, y)[:3]) / 765.0
+            def face_h(x, y, cx, cy): return lum(x, y) if at(x, y)[3] > 0 and not is_top(x, y) else lum(cx, cy)
+            for y in range(T):
+                for x in range(T):
+                    a = p[x, y][3]
+                    if a == 0: continue
+                    nx = ny = 0.0
+                    if not is_top(x, y):
+                        gx = (face_h(x + 1, y, x, y) - face_h(x - 1, y, x, y)) / 2
+                        gy = (face_h(x, y + 1, x, y) - face_h(x, y - 1, x, y)) / 2
+                        nx, ny = -gx * bump, gy * bump - tilt
+                    nz = math.sqrt(max(0.05, 1 - nx * nx - ny * ny)) if abs(nx) < 1 and abs(ny) < 1 else 0.3
+                    rp[tx + x, ty + y] = pack(nx, ny, nz, a)
+    return res
+
 # ---------- materials ----------
+
+WOOD_TOPS = {(86, 46, 38)}      # door_build.py WOOD_T
+IRON_TOPS = {(52, 54, 60)}      # door_build.py IRON_D (also the 1px cross bar; close enough)
 
 FLESH = {
     (0xAC, 0x32, 0x32): 0.0,   # base
@@ -209,20 +241,27 @@ MATERIALS = {
     "floor_water":       (palette, dict(heights=WATER, strength=3.0)),
     "floor_lava":        (plain, {}),   # emits its own light, so no shading from the player's
     "floor_acid":        (palette, dict(heights=ACID, strength=3.0)),
+    "door_wood":         (door, dict(tops=WOOD_TOPS, bump=2.5)),
+    "door_iron":         (door, dict(tops=IRON_TOPS, bump=2.0)),
+    "door_iron_sink":    (door, dict(tops=IRON_TOPS, bump=2.0)),
 }
+
+# Materials that don't live in the tileset folder.
+FOLDERS = {"door_wood": DOORS, "door_iron": DOORS, "door_iron_sink": DOORS}
 
 # The dirt and grass PNGs in the game were made with different settings than these defaults
 # (about 1400-1600 pixels differ), so a plain rebuild leaves them alone. Name them to rebuild.
 SKIP_BY_DEFAULT = {"floor_dirt", "floor_grass"}
 
-def build(name, out_dir=ART):
+def build(name, out_dir=None):
     method, kw = MATERIALS[name]
-    src = Image.open(ART + name + ".png").convert("RGBA")
-    method(src, **kw).save(out_dir + name + "_normal.png")
+    folder = FOLDERS.get(name, ART)
+    src = Image.open(folder + name + ".png").convert("RGBA")
+    method(src, **kw).save((out_dir or folder) + name + "_normal.png")
     print("ok", name, src.size)
 
 if __name__ == "__main__":
-    args = sys.argv[1:]; out = ART
+    args = sys.argv[1:]; out = None
     if "--out" in args:
         i = args.index("--out"); out = args[i + 1].rstrip("/") + "/"; del args[i:i + 2]
     for n in (args or [m for m in MATERIALS if m not in SKIP_BY_DEFAULT]):

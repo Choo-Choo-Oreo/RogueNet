@@ -132,6 +132,8 @@ const ENEMY_TYPES_DIR := "res://game/entities/entities.enemies/"
 ## enemy_id is always exactly its JSON's filename (see ENEMY_TYPES_DIR) -- no
 ## separate registry to keep in sync, so a new enemy is really just a new
 ## JSON file dropped in that folder, nothing here needs to change.
+var _can_open_doors := false
+
 func set_enemy_type(enemy_id: String) -> void:
 	var data := JsonOnloading.load_dict(ENEMY_TYPES_DIR + enemy_id + ".json")
 	stats.load_from_data(data)
@@ -154,6 +156,12 @@ func set_enemy_type(enemy_id: String) -> void:
 	_attack_interval = attack_data.get("interval", 1.0)
 	_attack_range = attack_data.get("range_tiles", 1)
 	_attack_effect = attack_data.get("effect", {})
+	# "doors": "none" (default) can't open doors, "open" can (see-through doors any
+	# time, solid ones only while investigating or pursuing), "phase" passes through
+	# closed doors without opening them.
+	var door_mode: String = data.get("doors", "none")
+	_can_open_doors = door_mode == "open"
+	grid_mover.phases_doors = door_mode == "phase"
 
 func take_damage(amount: int, type: String = "") -> void:
 	stats.take_damage(amount, type)
@@ -178,6 +186,9 @@ func _ready() -> void:
 		set_enemy_type(default_enemy_type)
 	_home_position = global_position
 	stats.died.connect(queue_free)
+	# Which doors this enemy may open depends on its "doors" field (see set_enemy_type).
+	grid_mover.open_predicate = func(door: DoorRegistry.Door) -> bool:
+		return _can_open_doors and (door.transparent or _last_state != EnemySenses.State.PATROL)
 
 ## Enemies are always host-owned (see EnemySpawning.spawn_one) -- a client
 ## never runs AI for one, it only ever renders whatever position/state the
@@ -234,7 +245,7 @@ func _process(delta: float) -> void:
 	else:
 		_target = _nearest_player()
 	var lit := _target != null and _light_map != null and _light_map.is_tile_lit(_to_tile(global_position))
-	var state := senses.update(global_position, _target, grid_mover.is_tile_blocked, lit, delta)
+	var state := senses.update(global_position, _target, grid_mover.blocks_sight, lit, delta)
 	if _override == null:
 		if state == EnemySenses.State.PATROL:
 			_lock = null
@@ -669,7 +680,7 @@ func _in_attack_range(target: Node2D) -> bool:
 	var offset := target_cell - origin_cell
 	if absi(offset.x) > _attack_range or absi(offset.y) > _attack_range:
 		return false
-	return LineOfSight.clear(origin_cell, target_cell, grid_mover.is_tile_blocked)
+	return LineOfSight.clear(origin_cell, target_cell, grid_mover.blocks_shot)
 
 ## True when all 4 orthogonal neighbor tiles are blocked or occupied -- a
 ## stronger check than "the two directions _try_direct_step happened to

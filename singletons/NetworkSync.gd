@@ -477,6 +477,42 @@ func receive_enemy_damage(enemy_id: int, amount: int, type: String) -> void:
 	if enemy and enemy.has_method("take_damage"):
 		enemy.take_damage(amount, type)
 
+# Doors. Open/closed state is host-authoritative: anyone who bumps a door (a
+# player, or an enemy on the host) calls open_door; a client asks the host, the
+# host applies it and tells everybody. Closing is the host's own timer
+# (DoorManager) through set_door. Door ids are positions in DoorRegistry.doors,
+# identical on every peer because the dungeon is built from the same seed.
+var _door_asked_msec := {}
+const DOOR_ASK_COOLDOWN_MSEC := 300
+
+func open_door(id: int) -> void:
+	# A held movement key bumps the door every physics tick until the answer
+	# comes back, so don't ask more than once per cooldown.
+	var now := Time.get_ticks_msec()
+	if now - _door_asked_msec.get(id, -DOOR_ASK_COOLDOWN_MSEC) < DOOR_ASK_COOLDOWN_MSEC:
+		return
+	_door_asked_msec[id] = now
+	if multiplayer.multiplayer_peer == null or multiplayer.is_server():
+		set_door(id, true)
+	else:
+		request_door_open.rpc_id(1, id)
+
+@rpc("any_peer", "reliable")
+func request_door_open(id: int) -> void:
+	if multiplayer.is_server():
+		set_door(id, true)
+
+## Host / singleplayer: apply a door state and tell every other peer.
+func set_door(id: int, open: bool) -> void:
+	if not DoorRegistry.set_open(id, open):
+		return
+	if multiplayer.multiplayer_peer != null and multiplayer.is_server():
+		receive_door_state.rpc(id, open)
+
+@rpc("authority", "reliable")
+func receive_door_state(id: int, open: bool) -> void:
+	DoorRegistry.set_open(id, open)
+
 # Cosmetic effects (sword swings, bites, arrows, magic) are only ever drawn by
 # whoever's attack it is, so every one goes through play_effect / play_projectile:
 # it plays locally, then tells everyone else to play the same thing. A client's

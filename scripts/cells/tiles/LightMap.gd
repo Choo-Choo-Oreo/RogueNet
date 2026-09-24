@@ -34,6 +34,7 @@ var _others := {}  # other player's node -> Light (vision is shared; at most MAX
 var _side := 0
 var _sprite: Sprite2D
 var _blocked_cache := {}
+var _door_version := 0
 var _glow_cost := {}
 var _glow_from := {}
 var _glow_seed := {}
@@ -100,6 +101,12 @@ func _process(_delta: float) -> void:
 	var player := _local_player()
 	if player == null:
 		return
+	if DoorRegistry.version != _door_version:
+		# A door opened or closed: every light re-floods next update.
+		_door_version = DoorRegistry.version
+		_local.last_origin = Vector2i(-99999, -99999)
+		for other: Light in _others.values():
+			other.last_origin = Vector2i(-99999, -99999)
 	_update_light(_local, player, true)
 	_shading.set_shader_parameter("light_pos", _local.light_pos)
 	_update_others()
@@ -229,8 +236,39 @@ func _flood(light: Light, origin: Vector2i, is_local: bool) -> void:
 		_sprite.material.set_shader_parameter("window_origin", _sprite.position)
 	var radius_cells := light_radius / CELL
 	var flood := LightFlood.flood(origin, radius_cells, _is_blocked)
+	_reveal_doors(flood)
 	light.cost = flood["cost"]
 	light.reached = flood["reached"]
+
+# The flood stops at the first cell of a closed solid door, so the rest of it (the far half of a
+# vertical door, the overhang above a horizontal one) would stay dark. Once any part of a door is
+# lit, light all of it at the same cost, so it draws whole from whichever side it is seen.
+func _reveal_doors(flood: Dictionary) -> void:
+	var cost: Dictionary = flood["cost"]
+	var reached: Array = flood["reached"]
+	for door: DoorRegistry.Door in DoorRegistry.doors:
+		if door.is_open or door.transparent:
+			continue
+		var best := -1
+		for tile in door.cells:
+			for c in _half_cells(tile):
+				if cost.has(c) and (best < 0 or cost[c] < best):
+					best = cost[c]
+		if best < 0:
+			continue
+		var shown: Array[Vector2i] = door.cells.duplicate()
+		for entry in door.pieces:
+			shown.append(entry["cell"] + Vector2i(0, -1))
+		for tile in shown:
+			for c in _half_cells(tile):
+				if not cost.has(c):
+					cost[c] = best
+					reached.append(c)
+
+# The four half-tile (CELL) cells that make up one tile.
+func _half_cells(tile: Vector2i) -> Array[Vector2i]:
+	var base := tile * 2
+	return [base, base + Vector2i(1, 0), base + Vector2i(0, 1), base + Vector2i(1, 1)]
 
 func _flood_glow() -> void:
 	_glow_cost.clear()
@@ -299,6 +337,6 @@ func _is_blocked(cell: Vector2i) -> bool:
 		return _blocked_cache[tile]
 	var wall_id := _wall_data.get_cell_source_id(tile)
 	var floor_id := _floor_data.get_cell_source_id(tile)
-	var blocked := wall_id != -1 or floor_id == -1 or floor_id == _void_id
+	var blocked := wall_id != -1 or floor_id == -1 or floor_id == _void_id or DoorRegistry.blocks_sight(tile)
 	_blocked_cache[tile] = blocked
 	return blocked

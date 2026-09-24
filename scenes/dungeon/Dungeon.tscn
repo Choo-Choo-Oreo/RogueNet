@@ -16,7 +16,7 @@
 [ext_resource type="Script" uid="uid://cyxbvo2hgsk2t" path="res://scripts/dungeon/DungeonPainter.gd" id="6_dungeonpainter"]
 [ext_resource type="Texture2D" uid="uid://30t8sgmrsu53" path="res://resources/gfx/tileset/floor_void.png" id="9_h8pbr"]
 [ext_resource type="Script" uid="uid://kwiwirkys8xp" path="res://scripts/cells/tiles/StaticTileRender.gd" id="12_e62lh"]
-[ext_resource type="Texture2D" uid="uid://c807vxen01fgd" path="res://resources/gfx/doors/Door.png" id="13_a577u"]
+[ext_resource type="Texture2D" path="res://resources/gfx/doors/door_wood.png" id="13_a577u"]
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_nbnrc"]
 resource_name = "floor_dirt_lit.tres"
 texture = ExtResource("3_564yl")

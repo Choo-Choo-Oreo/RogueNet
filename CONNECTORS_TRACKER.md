@@ -49,11 +49,11 @@ Status key: [ ] todo, [x] done, [~] built / needs playtest, [-] on hold
 - [~] `free` flag on a connector (join any width) vs exact-match; legacy connectors default to exact so old seeds behave the same (Orea + agent 2)
 - [~] Free-mode alignment order: center first, then start, end, random -- fixed order from the seeded rng so seeds stay deterministic (agent 2)
 - [~] Painter seals / opens every cell of a run, not one cell (agent 2)
-- [ ] Doors decoupled from walls: a `DoorPlacer` pass after assembly outputs door records (cell, orient, type, state, id); connectors stay geometry only (agent 3)
+- [~] Doors decoupled from walls: a `DoorPlacer` pass after assembly outputs door records (cell, orient, type, state, id); connectors stay geometry only (agent 3)
 - [ ] Unused-connector sealing becomes its own step with a per-biome cap tile (wall, foliage, flesh...); a used connector with no door stays plain open floor (agent 3)
-- [ ] Doors on/off: `defines.json` `doors: {density, types}` per biome (0 = none), overridable by room tag and per-connector `door` field ("none" / "auto" / type) (Orea + agent 3)
-- [ ] Door state is host-authoritative with a tiny sync (request -> host validates -> broadcast), full door list in the dungeon snapshot for late joiners (agent 3)
-- [ ] Door blocking through a runtime DoorRegistry (cell -> door state) asked by GridMover / LightMap, not painted tiles or physics bodies (agent 3)
+- [~] Doors on/off: `defines.json` `doors: {density, types}` per biome (0 = none), overridable by room tag and per-connector `door` field ("none" / "auto" / type) (Orea + agent 3)
+- [~] Door state is host-authoritative with a tiny sync (request -> host validates -> broadcast), full door list in the dungeon snapshot for late joiners (agent 3)
+- [~] Door blocking through a runtime DoorRegistry (cell -> door state) asked by GridMover / LightMap, not painted tiles or physics bodies (agent 3)
 
 ## A tier
 
@@ -124,4 +124,4 @@ Status key: [ ] todo, [x] done, [~] built / needs playtest, [-] on hold
 
 - Should a free connection ever join two runs where only a partial overlap exists, or must the narrower run fit fully inside the wider one? (agents assume fully inside)
 - Doors in play: do doors open on walk-into (auto) or need an interact key? Locked doors need a key item, which the game doesn't have yet.
-- Do wide openings (3+) ever get doors, or is that always an open arch? (agent 2 recommends none above width 2)
+- ~~Do wide openings (3+) ever get doors, or is that always an open arch?~~ Decided 2026-09-23: widths 1-2 get swinging wood or iron gates; widths 3-5 get a portcullis only (iron rise-and-fade or iron sink). Art for all of it is in `resources/gfx/doors/door_{wood,iron,iron_sink}.png` with `.json` manifests (piece selection rule + 16x16 tile split) and normal maps.
