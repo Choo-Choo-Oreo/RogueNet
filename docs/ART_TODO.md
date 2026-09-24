@@ -143,7 +143,7 @@ A biome is at least: 1 wall, 2 floors, 1 door, about 6 objects.
 ## 2. Objects
 
 16x16, transparent background, placed freely in a room (not locked to the grid). Only
-`Torch.png`, `Chest_Wood.png` and the grave set exist. Objects aren't spawned in a live dive yet (that's a code job),
+`Torch.png`, `Chest_Wood.png`, `sign.png` and the grave set exist. Objects aren't spawned in a live dive yet (that's a code job),
 but they show up in the Dungeon Maker as soon as Orea registers them, so art can run ahead.
 
 If something should animate, put the frames side by side in one PNG like `Torch.png` does.
@@ -152,6 +152,7 @@ If something should animate, put the frames side by side in one PNG like `Torch.
 
 - [✓] Graves (`objects/objects.graves/`): wooden crosses in 8 woods (Ash, Birch, Cedar, Chestnut, Oak, Redwood, Teak, Walnut) and `Grave_Pile_<Floor>` mounds for 14 floors
 
+- [✓] Sign (`objects/sign.png`): wooden signpost, in the Dungeon Maker's object list as `sign` (placeable only, can't be read yet; readable signs are a later code job)
 - [✗] Torch: more flame frames (it has 2)
 - [✗] Chest: open frame
 - [✗] Chest rarity variants: iron, gold, something cursed **(decide first:** how many rarities)

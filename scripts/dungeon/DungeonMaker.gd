@@ -49,6 +49,7 @@ const ROOM_THUMB_MATERIAL_COLORS := {
 const OBJECT_MARKER_TEXTURES := {
 	"torch": "res://resources/gfx/objects/Torch.png",
 	"chest": "res://resources/gfx/objects/Chest_Wood.png",
+	"sign": "res://resources/gfx/objects/sign.png",
 }
 const CONNECTOR_TEXTURE_PATH := "res://resources/gfx/doors/Wood_W1.png"
 const PLAYER_SPAWNER_TEXTURE_PATH := "res://resources/gfx/entities/entities.protagonist/knight/Knight-Down.png"
