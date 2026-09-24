@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://drkbbgtkdtsru"
-path="res://.godot/imported/alertness.png-4c50fde862706ef21ffa9318c7dab2d9.ctex"
+uid="uid://ccs5ixojvmfrh"
+path="res://.godot/imported/heavy_iron_helm_down.png-993fb62469bba897610404aff443ba90.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/effects/alertness.png"
-dest_files=["res://.godot/imported/alertness.png-4c50fde862706ef21ffa9318c7dab2d9.ctex"]
+source_file="res://resources/gfx/gear/helmets/heavy_iron/heavy_iron_helm_down.png"
+dest_files=["res://.godot/imported/heavy_iron_helm_down.png-993fb62469bba897610404aff443ba90.ctex"]
 
 [params]
 
