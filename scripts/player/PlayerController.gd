@@ -240,7 +240,10 @@ func _try_attack() -> void:
 	var hit_enemies_at := func(tile: Vector2i) -> bool:
 		var hit := false
 		for enemy in get_tree().get_nodes_in_group("antagonist"):
-			if _to_tile(enemy.global_position) == tile:
+			# A big enemy (a 2x2 boss) is hit on any tile of its body, not only its top-left one.
+			var enemy_tile := _to_tile(enemy.global_position)
+			var enemy_size: int = enemy.get_meta("footprint", 1)
+			if tile.x >= enemy_tile.x and tile.x < enemy_tile.x + enemy_size and tile.y >= enemy_tile.y and tile.y < enemy_tile.y + enemy_size:
 				# Enemies are host-owned (EnemySpawning.spawn_one) -- route
 				# through NetworkSync so the host actually applies it and
 				# tells every peer, instead of mutating this client's own

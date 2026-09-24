@@ -21,6 +21,13 @@ var _wander_timer := 0.0
 var _target: Node2D = null
 var _last_state: EnemySenses.State = EnemySenses.State.PATROL
 var _size_px: float = 16.0
+## Tiles per side (json "size_tiles"): 1 normally, 2 for a boss like the minotaur.
+var size_tiles := 1
+## json "boss": true. Bosses get privileges over their allies: they walk through
+## them (GridMover) and the allies step out of the way (_yield_to_boss).
+var is_boss := false
+## Every living boss, so an ally can ask "am I in a boss's way" without scanning the group.
+static var bosses: Array[EnemyController] = []
 var _base_move_time := 0.2
 var _light_map: LightMap = null
 
@@ -138,7 +145,14 @@ func set_enemy_type(enemy_id: String) -> void:
 	var data := JsonOnloading.load_dict(ENEMY_TYPES_DIR + enemy_id + ".json")
 	stats.load_from_data(data)
 	$AnimatedSprite2D.sprite_frames = SpriteFramesLoader.build(data["sprite_frames"])
-	_size_px = data.get("size_tiles", 1) * grid_mover.tile_size
+	size_tiles = int(data.get("size_tiles", 1))
+	is_boss = bool(data.get("boss", false))
+	_size_px = size_tiles * grid_mover.tile_size
+	grid_mover.footprint = size_tiles
+	set_meta("is_boss", is_boss)
+	if is_boss and not bosses.has(self):
+		bosses.append(self)
+	$AnimatedSprite2D.position = Vector2(_size_px, _size_px) / 2.0
 	# The scene's shape resource is shared by every enemy, so each one needs its own
 	# copy or the last enemy spawned resizes them all (a boss would shrink to 1 tile).
 	var shape := RectangleShape2D.new()
@@ -195,6 +209,7 @@ func _ready() -> void:
 		set_enemy_type(default_enemy_type)
 	_home_position = global_position
 	stats.died.connect(queue_free)
+	tree_exiting.connect(func(): bosses.erase(self))
 	# Which doors this enemy may open depends on its "doors" field (see set_enemy_type).
 	grid_mover.open_predicate = func(door: DoorRegistry.Door) -> bool:
 		return _can_open_doors and (door.transparent or _last_state != EnemySenses.State.PATROL)
@@ -211,6 +226,9 @@ func _process(delta: float) -> void:
 func _process_inner(delta: float) -> void:
 	if not is_multiplayer_authority():
 		animator.animate_from_position(delta, global_position)
+		return
+	# Boss privilege: an ally standing in a boss's way steps aside before anything else.
+	if not bosses.is_empty() and not is_boss and not grid_mover.is_moving and _yield_to_boss():
 		return
 	# Aggro validity runs BEFORE the idle-skip / boxed-in early returns below so
 	# a waiting enemy still notices a dead, ghost or freed target.
@@ -447,6 +465,8 @@ func _try_pursue_step(target: Node2D, full_speed: bool) -> void:
 		# this exact same blocked step.
 		if not grid_mover.is_tile_occupied(origin_cell + flow_step):
 			_try_move(Vector2(flow_step), full_speed)
+		else:
+			_try_detour_step(target, origin_cell, target_cell, full_speed)
 		return
 
 	var local_target := target_cell
@@ -459,7 +479,7 @@ func _try_pursue_step(target: Node2D, full_speed: bool) -> void:
 	if not LineOfSight.clear(origin_cell, local_target, grid_mover.is_tile_blocked):
 		_try_pathfind_step(origin_cell, local_target, full_speed)
 		return
-	_try_direct_step(origin_cell, local_target, full_speed)
+	_try_direct_step(origin_cell, local_target, full_speed, target)
 
 ## Melee enemies near their target fan out around it instead of queueing
 ## single file. FlowField.get_distances gives each tile's walking distance to
@@ -477,7 +497,8 @@ var _slide_ready_msec := 0
 var _prev_cell := Vector2i.ZERO
 
 func _try_surround_step(target: Node2D, origin_cell: Vector2i, target_cell: Vector2i, full_speed: bool) -> bool:
-	if _attack_range != 1 or _cheb(target_cell - origin_cell) > SURROUND_RADIUS:
+	# The fan-out is built for 1x1 bodies; a big one just walks straight at its target.
+	if size_tiles > 1 or _attack_range != 1 or _cheb(target_cell - origin_cell) > SURROUND_RADIUS:
 		return false
 	var target_id := target.get_instance_id()
 	var distances := FlowField.get_distances(target_id, target_cell, grid_mover.is_tile_blocked)
@@ -535,6 +556,88 @@ func _try_surround_step(target: Node2D, origin_cell: Vector2i, target_cell: Vect
 		_prev_cell = origin_cell
 	return true
 
+## The step toward the target is only blocked by another creature (a ranged enemy
+## standing and shooting, a big body in a corridor mouth): take a free neighbouring
+## tile that keeps us about as close instead of waiting behind it. Uses the same
+## flow-field distances as the surround step, allows one tile of sidestep, never
+## steps straight back to the tile it just left (no ping-pong), and skips hazard
+## terrain. Returns true if it moved.
+var _detour_prev := Vector2i.ZERO
+
+func _try_detour_step(target: Node2D, origin_cell: Vector2i, target_cell: Vector2i, full_speed: bool) -> bool:
+	var distances := FlowField.get_distances(target.get_instance_id(), target_cell, grid_mover.is_tile_blocked)
+	if not distances.has(origin_cell):
+		return false
+	var here: int = distances[origin_cell]
+	var best_step := Vector2i.ZERO
+	var best_score := 1 << 30
+	for direction in MOVE_DIRECTIONS:
+		var step := Vector2i(direction)
+		var next_cell := origin_cell + step
+		if next_cell == _detour_prev or not distances.has(next_cell) or distances[next_cell] > here + 1:
+			continue
+		if grid_mover.is_tile_blocked(next_cell) or grid_mover.is_tile_occupied(next_cell):
+			continue
+		if grid_mover.tile_cost(next_cell) > HAZARD_COST and grid_mover.tile_cost(origin_cell) <= HAZARD_COST:
+			continue
+		if not is_boss and not bosses.is_empty() and _in_boss_zone(next_cell):
+			continue
+		var score: int = int(distances[next_cell]) * 2 + ((get_instance_id() + step.x + step.y * 2) & 1)
+		if score < best_score:
+			best_score = score
+			best_step = step
+	if best_step == Vector2i.ZERO:
+		return false
+	if _try_move(Vector2(best_step), full_speed):
+		_detour_prev = origin_cell
+		return true
+	return false
+
+## The tiles a boss claims: its own body, plus the body's next step when it is
+## heading for a target. Allies keep out of it and step out when caught inside.
+func boss_zone() -> Rect2i:
+	var top_left := _to_tile(global_position)
+	var body := Vector2i(size_tiles, size_tiles)
+	var zone := Rect2i(top_left, body)
+	if _target != null:
+		zone = zone.merge(Rect2i(top_left + Vector2i(grid_mover.facing_direction.round()), body))
+	return zone
+
+func _in_boss_zone(tile: Vector2i) -> bool:
+	for boss in bosses:
+		if is_instance_valid(boss) and boss != self and boss.boss_zone().has_point(tile):
+			return true
+	return false
+
+## Boss privilege, ally side: caught inside a boss's zone, step to a free tile
+## outside it (or, when none is next to us, the free neighbour farthest from the
+## boss). Returns true if it moved, so the rest of this tick is skipped and the
+## normal AI cannot walk straight back in.
+func _yield_to_boss() -> bool:
+	var my_tile := _to_tile(global_position)
+	for boss in bosses:
+		if not is_instance_valid(boss) or boss == self:
+			continue
+		var zone := boss.boss_zone()
+		if not zone.has_point(my_tile):
+			continue
+		var centre := Vector2(zone.position) + Vector2(zone.size) / 2.0
+		var best := Vector2.ZERO
+		var best_score := -1.0e9
+		for direction in MOVE_DIRECTIONS:
+			var next_cell := my_tile + Vector2i(direction)
+			if grid_mover.is_tile_blocked(next_cell) or grid_mover.is_tile_occupied(next_cell):
+				continue
+			var score := Vector2(next_cell).distance_to(centre) + (100.0 if not zone.has_point(next_cell) else 0.0)
+			if score > best_score:
+				best_score = score
+				best = direction
+		if best != Vector2.ZERO:
+			_wake_up()
+			# Move directly: _try_move refuses tiles inside a boss zone.
+			return grid_mover.move_one_tile(best, 1.0)
+	return false
+
 ## A melee enemy already touching its target that has another creature
 ## queued right behind it (one tile farther out) shuffles one tile sideways to
 ## a free tile that still touches the target, opening its spot for whoever's
@@ -586,7 +689,7 @@ func _cheb(offset: Vector2i) -> int:
 ## just recompute this exact same step and waste a search on a wall that was
 ## never the problem -- better to wait a frame and let whoever's in the way
 ## move first.
-func _try_direct_step(origin_cell: Vector2i, target_cell: Vector2i, full_speed: bool) -> void:
+func _try_direct_step(origin_cell: Vector2i, target_cell: Vector2i, full_speed: bool, target: Node2D = null) -> void:
 	var offset := target_cell - origin_cell
 	var primary := Vector2(signf(offset.x), 0.0) if absi(offset.x) >= absi(offset.y) else Vector2(0.0, signf(offset.y))
 	var secondary := Vector2(0.0, signf(offset.y)) if primary.x != 0.0 else Vector2(signf(offset.x), 0.0)
@@ -609,7 +712,9 @@ func _try_direct_step(origin_cell: Vector2i, target_cell: Vector2i, full_speed: 
 		return
 	if saw_wall:
 		_try_pathfind_step(origin_cell, target_cell, full_speed)
-	# else: only occupancy in the way -- wait, don't escalate
+	elif target != null and target_cell == _to_tile(target.global_position):
+		# Only creatures in the way: go around them instead of waiting behind them.
+		_try_detour_step(target, origin_cell, target_cell, full_speed)
 
 ## Tiles costing more than this (difficult 2.0, severe 5.0; rough 1.25 is fine)
 ## are not stepped onto blindly by _try_direct_step.
@@ -732,7 +837,9 @@ func _in_attack_range(target: Node2D) -> bool:
 	var origin_cell := _to_tile(global_position)
 	var target_cell := _to_tile(target.global_position)
 	var offset := target_cell - origin_cell
-	if absi(offset.x) > _attack_range or absi(offset.y) > _attack_range:
+	# A big body reaches from any tile of its footprint, not only its top-left one.
+	var reach_far := _attack_range + size_tiles - 1
+	if offset.x < -_attack_range or offset.x > reach_far or offset.y < -_attack_range or offset.y > reach_far:
 		return false
 	return LineOfSight.clear(origin_cell, target_cell, grid_mover.blocks_shot)
 
@@ -756,6 +863,8 @@ func _try_move(direction: Vector2, full_speed: bool = true) -> bool:
 	_debug_step_tile = target_tile
 	_debug_step_msec = Time.get_ticks_msec()
 	if grid_mover.is_tile_blocked(target_tile) or grid_mover.is_tile_occupied(target_tile):
+		return false
+	if not is_boss and not bosses.is_empty() and _in_boss_zone(target_tile):
 		return false
 	var moved := grid_mover.move_one_tile(direction, 1.0 if full_speed else INVESTIGATE_SPEED_SCALE)
 	if moved:

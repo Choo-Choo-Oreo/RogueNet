@@ -46,7 +46,7 @@ strong it is.
 | `wolf` | beast.canine | 10 | 3 Physical | none | |
 | `wolf_hellhound` | beast.canine, demon | 9 | 3 Physical | none | Meant to track by smell; smell is not built yet. |
 | `wraith` | undead.ghostly | 6 | 2 Perditio | phase | Passes through closed doors without opening them. Meant to see through walls at short range; not built yet. |
-| `minotaur` | beast | 60 | 6 Physical.Bludgeoning | open | Boss (`"boss": true`, first pass): picked through a boss room's `favored_antagonist` (same matching as `favored_enemy`). Slow (3 tiles/s). `size_tiles: 2` gives it a 32x32 hitbox and health bar; walls, doors and pathing still treat it as 1 tile until multi-tile movement is built (TODO B tier). Not in any biome table: spawn it with `"enemy": "minotaur"` on a boss room's spawn cell, or from the debug spawn tool. Art is a placeholder. |
+| `minotaur` | beast | 60 | 6 Physical.Bludgeoning | open | Boss (`"boss": true`, first pass): picked through a boss room's `favored_antagonist` (same matching as `favored_enemy`). Slow (3 tiles/s). `size_tiles: 2`: a 2x2 body (32x32 hitbox). Its position is its top-left tile; walls, doors, occupancy and pathing check all four tiles, so it does not fit through a 1-wide door or gap. First pass, untested. Not in any biome table: spawn it with `"enemy": "minotaur"` on a boss room's spawn cell, or from the debug spawn tool. Art is a placeholder. |
 
 Attack types are damage type ids from `game/damage_types.json`. `doors` is
 `none` (cannot open doors), `open` (can open them), or `phase` (passes through

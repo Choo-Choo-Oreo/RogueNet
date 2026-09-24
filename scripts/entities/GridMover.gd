@@ -18,6 +18,25 @@ extends Node
 var is_moving := false
 var facing_direction := Vector2.DOWN
 
+## Tiles per side of this mover's body: 1 = a normal creature, 2 = a 2x2 boss. The
+## body's position is its TOP-LEFT tile. is_tile_blocked and is_tile_occupied treat
+## the tile they are given as that top-left anchor, so pathfinding, flow fields and
+## every "can I step there" check work for a big body without knowing about size.
+var footprint := 1:
+	set(value):
+		footprint = maxi(value, 1)
+		var owner_body := get_parent()
+		if owner_body != null:
+			owner_body.set_meta("footprint", footprint)
+
+## Every tile a body of this size covers when its top-left tile is `anchor`.
+func _footprint_tiles(anchor: Vector2i) -> Array[Vector2i]:
+	var tiles: Array[Vector2i] = []
+	for y in footprint:
+		for x in footprint:
+			tiles.append(anchor + Vector2i(x, y))
+	return tiles
+
 var _floor_speed := {}
 
 func _ready() -> void:
@@ -97,6 +116,14 @@ func _is_ghost() -> bool:
 ## mover that can't open it -- one that can just walks into it (move_one_tile
 ## opens it), so paths and flow fields route straight through.
 func is_tile_blocked(tile: Vector2i) -> bool:
+	if footprint > 1:
+		for covered in _footprint_tiles(tile):
+			if _tile_blocked_single(covered):
+				return true
+		return false
+	return _tile_blocked_single(tile)
+
+func _tile_blocked_single(tile: Vector2i) -> bool:
 	if _is_blocked(Vector2(tile) * tile_size):
 		return true
 	var door := DoorRegistry.closed_door_at(tile)
@@ -144,9 +171,13 @@ func _tile_occupants(tile: Vector2i) -> Array:
 				if "stats" in body and body.stats != null and body.stats.is_ghost:
 					continue
 				var body_tile := Vector2i(floori(body.global_position.x / tile_size), floori(body.global_position.y / tile_size))
-				if not _occupancy_index.has(body_tile):
-					_occupancy_index[body_tile] = []
-				_occupancy_index[body_tile].append(body)
+				var body_size: int = body.get_meta("footprint", 1)
+				for y in body_size:
+					for x in body_size:
+						var covered := body_tile + Vector2i(x, y)
+						if not _occupancy_index.has(covered):
+							_occupancy_index[covered] = []
+						_occupancy_index[covered].append(body)
 	return _occupancy_index.get(tile, [])
 
 ## True if some other creature (any protagonist or antagonist besides this
@@ -155,11 +186,27 @@ func _tile_occupants(tile: Vector2i) -> Array:
 ## players (PlayerController.die()) are intangible and don't count, same as
 ## they already don't count as attack targets or collide with enemies.
 func is_tile_occupied(tile: Vector2i) -> bool:
+	if footprint > 1:
+		for covered in _footprint_tiles(tile):
+			if _tile_occupied_single(covered):
+				return true
+		return false
+	return _tile_occupied_single(tile)
+
+func _tile_occupied_single(tile: Vector2i) -> bool:
+	# Boss privilege: a boss walks through the antagonists that are not bosses
+	# (they step aside, see EnemyController._yield_to_boss). Players still block it.
+	var is_boss: bool = _body.get_meta("is_boss", false)
 	for body in _tile_occupants(tile):
-		if body != _body:
-			return true
+		if body == _body:
+			continue
+		if is_boss and body.is_in_group("antagonist") and not body.get_meta("is_boss", false):
+			continue
+		return true
 	var holder = _reserved.get(tile)
-	return holder != null and is_instance_valid(holder) and holder != _body
+	if holder == null or not is_instance_valid(holder) or holder == _body:
+		return false
+	return not (is_boss and holder.is_in_group("antagonist") and not holder.get_meta("is_boss", false))
 
 ## Destination tiles of steps already in progress (tile -> the body stepping
 ## onto it). A body only counts as standing on a tile once its position floors
@@ -187,10 +234,14 @@ func _is_blocked(target_global: Vector2) -> bool:
 func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> bool:
 	var origin_global: Vector2 = _body.global_position
 	var target_global := origin_global + direction * tile_size
-	if _is_blocked(target_global):
+	var target_tile := Vector2i(floori(target_global.x / tile_size), floori(target_global.y / tile_size))
+	if footprint > 1:
+		for covered in _footprint_tiles(target_tile):
+			if _is_blocked(Vector2(covered) * tile_size):
+				return false
+	elif _is_blocked(target_global):
 		return false
 	var is_ghost := _is_ghost()
-	var target_tile := Vector2i(floori(target_global.x / tile_size), floori(target_global.y / tile_size))
 	# A door is a thin line, not a tile. Trying to cross that line while the door
 	# is closed (or still swinging) opens it (if this mover may) but doesn't step
 	# this call. Stepping ONTO a door cell from the front is fine and just starts
@@ -198,22 +249,38 @@ func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> bool:
 	# Ghosts and door-phasing enemies drift through closed doors.
 	if not _ignores_doors():
 		var origin_tile := Vector2i(floori(origin_global.x / tile_size), floori(origin_global.y / tile_size))
-		var seam := DoorRegistry.crossing_door(origin_tile, target_tile)
-		if seam != null and DoorRegistry.is_blocking(seam):
-			if _can_open(seam):
-				NetworkSync.open_door(seam.id)
-			return false
-		var onto := DoorRegistry.closed_door_at(target_tile)
-		if onto != null:
-			if not _can_open(onto):
+		# A big body enters a whole row or column of new tiles at once: every one of
+		# them is checked, each against the tile it steps in from.
+		var entered: Array[Vector2i] = [target_tile]
+		var came_from: Array[Vector2i] = [origin_tile]
+		if footprint > 1:
+			entered.clear()
+			came_from.clear()
+			var already := _footprint_tiles(origin_tile)
+			var step := Vector2i(direction.round())
+			for covered in _footprint_tiles(target_tile):
+				if not already.has(covered):
+					entered.append(covered)
+					came_from.append(covered - step)
+		for i in entered.size():
+			var seam := DoorRegistry.crossing_door(came_from[i], entered[i])
+			if seam != null and DoorRegistry.is_blocking(seam):
+				if _can_open(seam):
+					NetworkSync.open_door(seam.id)
 				return false
-			NetworkSync.open_door(onto.id)
+			var onto := DoorRegistry.closed_door_at(entered[i])
+			if onto != null:
+				if not _can_open(onto):
+					return false
+				NetworkSync.open_door(onto.id)
 	if not is_ghost and is_tile_occupied(target_tile):
 		return false
 	facing_direction = direction
 	is_moving = true
+	var reserved_tiles: Array[Vector2i] = _footprint_tiles(target_tile)
 	if not is_ghost:
-		_reserved[target_tile] = _body
+		for covered in reserved_tiles:
+			_reserved[covered] = _body
 
 	# Terrain speed is decided by whichever tile has the majority of the body
 	# on it, not the destination tile the instant the step starts -- so the
@@ -231,6 +298,7 @@ func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> bool:
 	tween.tween_property(_body, "global_position", target_global, half_time / target_speed)
 	tween.finished.connect(func():
 		is_moving = false
-		if _reserved.get(target_tile) == _body:
-			_reserved.erase(target_tile))
+		for covered in reserved_tiles:
+			if _reserved.get(covered) == _body:
+				_reserved.erase(covered))
 	return true
