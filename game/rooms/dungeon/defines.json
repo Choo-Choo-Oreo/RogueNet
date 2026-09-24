@@ -4,8 +4,10 @@
 		"max": 30
 	},
 	"tag_weights": {
+		"corridor": 0.8,
 		"maze": 0.6,
-		"corridor": 0.6
+		"killzone": 0.5,
+		"peaceful": 0.7
 	},
 	"monsters": {
 		"rat": 3,
@@ -15,5 +17,5 @@
 		"wraith": 2
 	},
 	"music": "res://resources/sfx/music/Groovy.mp3",
-	"default_door": "wood"
+	"default_door": "none"
 }

@@ -3,13 +3,14 @@
 	"connectors": [
 		{
 			"a": {
-				"x": 4,
+				"x": 5,
 				"y": 0
 			},
 			"b": {
-				"x": 5,
+				"x": 6,
 				"y": 0
-			}
+			},
+			"door": "wood"
 		},
 		{
 			"a": {
@@ -19,27 +20,19 @@
 			"b": {
 				"x": 0,
 				"y": 5
-			}
+			},
+			"door": "wood"
 		},
 		{
 			"a": {
-				"x": 8,
+				"x": 11,
 				"y": 4
 			},
 			"b": {
-				"x": 8,
+				"x": 11,
 				"y": 5
-			}
-		},
-		{
-			"a": {
-				"x": 4,
-				"y": 8
 			},
-			"b": {
-				"x": 5,
-				"y": 8
-			}
+			"door": "wood"
 		}
 	],
 	"floor": [
@@ -49,7 +42,10 @@
 			null,
 			null,
 			null,
-			"floor_smooth_stone",
+			null,
+			null,
+			null,
+			null,
 			null,
 			null,
 			null
@@ -63,60 +59,36 @@
 			"floor_smooth_stone",
 			"floor_smooth_stone",
 			"floor_smooth_stone",
-			null
-		],
-		[
-			null,
 			"floor_smooth_stone",
-			null,
-			null,
-			null,
-			null,
-			null,
+			"floor_smooth_stone",
 			"floor_smooth_stone",
 			null
 		],
 		[
 			null,
 			"floor_smooth_stone",
-			null,
-			null,
-			null,
-			null,
-			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
 			"floor_smooth_stone",
 			null
 		],
 		[
 			null,
 			"floor_smooth_stone",
-			null,
-			null,
-			null,
-			null,
-			null,
-			"floor_smooth_stone",
-			null
-		],
-		[
 			"floor_smooth_stone",
 			"floor_smooth_stone",
 			null,
-			null,
-			null,
-			null,
-			null,
 			"floor_smooth_stone",
-			"floor_smooth_stone"
-		],
-		[
-			null,
 			"floor_smooth_stone",
 			null,
-			null,
-			null,
-			null,
-			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
 			"floor_smooth_stone",
 			null
 		],
@@ -129,6 +101,65 @@
 			"floor_smooth_stone",
 			"floor_smooth_stone",
 			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
 			null
 		],
 		[
@@ -137,61 +168,48 @@
 			null,
 			null,
 			null,
-			"floor_smooth_stone",
+			null,
+			null,
+			null,
+			null,
 			null,
 			null,
 			null
 		]
 	],
 	"format": 2,
-	"height": 9,
-	"id": "Dungeon_Maze_Ring_9x9",
-	"objects": [
-		{
-			"position": {
-				"x": 24.0,
-				"y": 24.0
-			},
-			"rotation": 0.0,
-			"type": "torch"
-		},
-		{
-			"position": {
-				"x": 120.0,
-				"y": 24.0
-			},
-			"rotation": 0.0,
-			"type": "torch"
-		},
-		{
-			"position": {
-				"x": 24.0,
-				"y": 120.0
-			},
-			"rotation": 0.0,
-			"type": "torch"
-		},
-		{
-			"position": {
-				"x": 120.0,
-				"y": 120.0
-			},
-			"rotation": 0.0,
-			"type": "torch"
-		}
-	],
+	"height": 10,
+	"id": "Dungeon_Combat_Hall_12x10",
+	"objects": [],
 	"role": "normal",
 	"spawn_cells": [
 		{
 			"position": {
-				"x": 7,
+				"x": 2,
+				"y": 2
+			}
+		},
+		{
+			"position": {
+				"x": 9,
+				"y": 2
+			}
+		},
+		{
+			"position": {
+				"x": 2,
+				"y": 7
+			}
+		},
+		{
+			"position": {
+				"x": 9,
 				"y": 7
 			}
 		}
 	],
 	"tags": [
-		"maze",
-		"dungeon"
+		"combat"
 	],
 	"walls": [
 		[
@@ -199,8 +217,11 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
+			"wall_cobble_brick",
 			null,
 			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick"
@@ -214,60 +235,78 @@
 			null,
 			null,
 			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
 			null,
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
+			null,
 			null,
 			"wall_cobble_brick"
 		],
 		[
 			"wall_cobble_brick",
 			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
 			"wall_cobble_brick",
-			"wall_smooth_stone",
-			"wall_smooth_stone",
-			"wall_smooth_stone",
+			null,
+			null,
+			null,
 			"wall_cobble_brick",
+			null,
+			null,
+			"wall_cobble_brick",
+			null,
+			null,
 			null,
 			"wall_cobble_brick"
 		],
 		[
 			null,
 			null,
-			"wall_cobble_brick",
-			"wall_smooth_stone",
-			"wall_smooth_stone",
-			"wall_smooth_stone",
-			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
 			null,
 			null
 		],
 		[
 			null,
 			null,
-			"wall_cobble_brick",
-			"wall_smooth_stone",
-			"wall_smooth_stone",
-			"wall_smooth_stone",
-			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
 			null,
 			null
 		],
 		[
 			"wall_cobble_brick",
 			null,
+			null,
+			null,
 			"wall_cobble_brick",
+			null,
+			null,
 			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
+			null,
+			null,
 			null,
 			"wall_cobble_brick"
 		],
@@ -280,6 +319,23 @@
 			null,
 			null,
 			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
 			"wall_cobble_brick"
 		],
 		[
@@ -287,12 +343,15 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
-			null,
-			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick"
 		]
 	],
-	"width": 9
+	"width": 12
 }

@@ -3,33 +3,47 @@
 	"connectors": [
 		{
 			"a": {
-				"x": 5,
-				"y": 0
-			},
-			"b": {
 				"x": 6,
 				"y": 0
-			}
+			},
+			"b": {
+				"x": 7,
+				"y": 0
+			},
+			"door": "wood"
 		},
 		{
 			"a": {
-				"x": 0,
-				"y": 5
+				"x": 6,
+				"y": 13
 			},
 			"b": {
+				"x": 7,
+				"y": 13
+			},
+			"door": "wood"
+		},
+		{
+			"a": {
 				"x": 0,
 				"y": 6
-			}
+			},
+			"b": {
+				"x": 0,
+				"y": 7
+			},
+			"door": "wood"
 		},
 		{
 			"a": {
-				"x": 10,
-				"y": 7
+				"x": 13,
+				"y": 6
 			},
 			"b": {
-				"x": 10,
-				"y": 8
-			}
+				"x": 13,
+				"y": 7
+			},
+			"door": "wood"
 		}
 	],
 	"floor": [
@@ -40,7 +54,10 @@
 			null,
 			null,
 			null,
-			"floor_smooth_stone",
+			null,
+			null,
+			null,
+			null,
 			null,
 			null,
 			null,
@@ -57,70 +74,8 @@
 			"floor_smooth_stone",
 			"floor_smooth_stone",
 			"floor_smooth_stone",
-			null
-		],
-		[
-			null,
-			"floor_smooth_stone",
-			null,
-			null,
-			null,
-			"floor_smooth_stone",
-			null,
-			"floor_smooth_stone",
-			null,
-			"floor_smooth_stone",
-			null
-		],
-		[
-			null,
-			"floor_smooth_stone",
-			null,
 			"floor_smooth_stone",
 			"floor_smooth_stone",
-			"floor_smooth_stone",
-			null,
-			"floor_smooth_stone",
-			null,
-			"floor_smooth_stone",
-			null
-		],
-		[
-			null,
-			"floor_smooth_stone",
-			null,
-			"floor_smooth_stone",
-			null,
-			null,
-			null,
-			"floor_smooth_stone",
-			null,
-			"floor_smooth_stone",
-			null
-		],
-		[
-			null,
-			"floor_smooth_stone",
-			null,
-			"floor_smooth_stone",
-			"floor_smooth_stone",
-			"floor_smooth_stone",
-			"floor_smooth_stone",
-			"floor_smooth_stone",
-			null,
-			"floor_smooth_stone",
-			null
-		],
-		[
-			"floor_smooth_stone",
-			"floor_smooth_stone",
-			null,
-			null,
-			null,
-			null,
-			null,
-			"floor_smooth_stone",
-			null,
 			"floor_smooth_stone",
 			null
 		],
@@ -131,39 +86,179 @@
 			"floor_smooth_stone",
 			"floor_smooth_stone",
 			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
 			null,
 			"floor_smooth_stone",
+			"floor_smooth_stone",
 			null,
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null,
+			null,
+			"floor_smooth_stone",
 			"floor_smooth_stone",
 			null
 		],
 		[
 			null,
 			"floor_smooth_stone",
-			null,
-			null,
-			null,
 			"floor_smooth_stone",
 			null,
-			"floor_smooth_stone",
-			null,
-			"floor_smooth_stone",
-			"floor_smooth_stone"
-		],
-		[
 			null,
 			"floor_smooth_stone",
 			"floor_smooth_stone",
 			"floor_smooth_stone",
-			null,
-			"floor_smooth_stone",
-			"floor_smooth_stone",
 			"floor_smooth_stone",
 			null,
+			null,
+			"floor_smooth_stone",
 			"floor_smooth_stone",
 			null
 		],
 		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null,
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null,
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null,
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null,
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			null,
+			null,
 			null,
 			null,
 			null,
@@ -178,27 +273,50 @@
 		]
 	],
 	"format": 2,
-	"height": 11,
-	"id": "Dungeon_Maze_Labyrinth_11x11",
+	"height": 14,
+	"id": "Dungeon_Combat_Pillars_14x14",
 	"objects": [],
 	"role": "normal",
 	"spawn_cells": [
 		{
 			"position": {
-				"x": 5,
-				"y": 9
+				"x": 6,
+				"y": 2
 			}
 		},
 		{
 			"position": {
-				"x": 3,
-				"y": 9
+				"x": 7,
+				"y": 2
+			}
+		},
+		{
+			"position": {
+				"x": 2,
+				"y": 6
+			}
+		},
+		{
+			"position": {
+				"x": 11,
+				"y": 6
+			}
+		},
+		{
+			"position": {
+				"x": 6,
+				"y": 11
+			}
+		},
+		{
+			"position": {
+				"x": 7,
+				"y": 11
 			}
 		}
 	],
 	"tags": [
-		"maze",
-		"dungeon"
+		"combat"
 	],
 	"walls": [
 		[
@@ -207,8 +325,11 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
+			"wall_cobble_brick",
 			null,
 			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
@@ -225,70 +346,8 @@
 			null,
 			null,
 			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick",
 			null,
 			null,
-			null,
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			null,
-			null,
-			"wall_cobble_brick",
-			null,
-			null,
-			null,
-			null,
-			null,
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			null,
-			null,
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick",
 			null,
 			"wall_cobble_brick"
 		],
@@ -299,35 +358,172 @@
 			null,
 			null,
 			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
 			"wall_cobble_brick",
 			null,
+			null,
 			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
 			null,
 			null
 		],
 		[
 			"wall_cobble_brick",
 			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
 			"wall_cobble_brick",
+			null,
+			null,
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			null,
-			"wall_cobble_brick",
+			null,
+			null,
 			null,
 			"wall_cobble_brick",
+			"wall_cobble_brick",
 			null,
-			null
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			null,
+			"wall_cobble_brick"
 		],
 		[
 			"wall_cobble_brick",
 			null,
 			null,
 			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
 			"wall_cobble_brick",
 			null,
 			null,
 			null,
-			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
 			null,
 			"wall_cobble_brick"
 		],
@@ -337,6 +533,9 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
+			"wall_cobble_brick",
+			null,
+			null,
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
@@ -345,5 +544,5 @@
 			"wall_cobble_brick"
 		]
 	],
-	"width": 11
+	"width": 14
 }

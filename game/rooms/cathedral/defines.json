@@ -12,5 +12,5 @@
 		"hamster_demonic": 1
 	},
 	"music": "res://resources/sfx/music/Groovy.mp3",
-	"default_door": "iron"
+	"default_door": "wood_fold"
 }

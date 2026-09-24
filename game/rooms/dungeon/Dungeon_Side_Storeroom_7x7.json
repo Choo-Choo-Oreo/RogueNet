@@ -3,23 +3,14 @@
 	"connectors": [
 		{
 			"a": {
-				"x": 1,
+				"x": 3,
 				"y": 6
 			},
 			"b": {
-				"x": 2,
-				"y": 6
-			}
-		},
-		{
-			"a": {
-				"x": 6,
+				"x": 3,
 				"y": 6
 			},
-			"b": {
-				"x": 7,
-				"y": 6
-			}
+			"door": "wood"
 		}
 	],
 	"floor": [
@@ -30,8 +21,15 @@
 			null,
 			null,
 			null,
+			null
+		],
+		[
 			null,
+			"floor_smooth_stone",
 			null,
+			"floor_smooth_stone",
+			null,
+			"floor_smooth_stone",
 			null
 		],
 		[
@@ -41,6 +39,13 @@
 			"floor_smooth_stone",
 			"floor_smooth_stone",
 			"floor_smooth_stone",
+			null
+		],
+		[
+			null,
+			"floor_smooth_stone",
+			"floor_smooth_stone",
+			"floor_smooth_stone",
 			"floor_smooth_stone",
 			"floor_smooth_stone",
 			null
@@ -48,33 +53,9 @@
 		[
 			null,
 			"floor_smooth_stone",
-			null,
-			null,
-			null,
-			null,
-			null,
 			"floor_smooth_stone",
-			null
-		],
-		[
-			null,
 			"floor_smooth_stone",
-			null,
-			null,
-			null,
-			null,
-			null,
 			"floor_smooth_stone",
-			null
-		],
-		[
-			null,
-			"floor_smooth_stone",
-			null,
-			null,
-			null,
-			null,
-			null,
 			"floor_smooth_stone",
 			null
 		],
@@ -82,9 +63,7 @@
 			null,
 			"floor_smooth_stone",
 			"floor_smooth_stone",
-			null,
-			null,
-			null,
+			"floor_smooth_stone",
 			"floor_smooth_stone",
 			"floor_smooth_stone",
 			null
@@ -92,40 +71,28 @@
 		[
 			null,
 			null,
-			"floor_smooth_stone",
 			null,
 			null,
 			null,
-			"floor_smooth_stone",
 			null,
 			null
 		]
 	],
 	"format": 2,
 	"height": 7,
-	"id": "Dungeon_Maze_Uturn_9x7",
-	"objects": [
-		{
-			"position": {
-				"x": 72.0,
-				"y": 24.0
-			},
-			"rotation": 0.0,
-			"type": "torch"
-		}
-	],
+	"id": "Dungeon_Side_Storeroom_7x7",
+	"objects": [],
 	"role": "normal",
 	"spawn_cells": [
 		{
 			"position": {
-				"x": 4,
-				"y": 1
+				"x": 3,
+				"y": 3
 			}
 		}
 	],
 	"tags": [
-		"maze",
-		"dungeon"
+		"combat"
 	],
 	"walls": [
 		[
@@ -135,8 +102,15 @@
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
+			"wall_cobble_brick"
+		],
+		[
 			"wall_cobble_brick",
+			null,
 			"wall_cobble_brick",
+			null,
+			"wall_cobble_brick",
+			null,
 			"wall_cobble_brick"
 		],
 		[
@@ -146,50 +120,13 @@
 			null,
 			null,
 			null,
-			null,
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick",
-			"wall_smooth_stone",
-			"wall_smooth_stone",
-			"wall_smooth_stone",
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick"
-		],
-		[
-			"wall_cobble_brick",
-			null,
-			"wall_cobble_brick",
-			"wall_smooth_stone",
-			"wall_smooth_stone",
-			"wall_smooth_stone",
-			"wall_cobble_brick",
-			null,
 			"wall_cobble_brick"
 		],
 		[
 			"wall_cobble_brick",
 			null,
 			null,
-			"wall_cobble_brick",
-			"wall_cobble_brick",
-			"wall_cobble_brick",
+			null,
 			null,
 			null,
 			"wall_cobble_brick"
@@ -198,13 +135,29 @@
 			"wall_cobble_brick",
 			null,
 			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
+			"wall_cobble_brick",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_cobble_brick"
+		],
+		[
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			"wall_cobble_brick",
 			null,
-			null,
+			"wall_cobble_brick",
+			"wall_cobble_brick",
 			"wall_cobble_brick"
 		]
 	],
-	"width": 9
+	"width": 7
 }
