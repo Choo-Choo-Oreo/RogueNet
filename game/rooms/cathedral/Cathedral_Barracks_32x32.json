@@ -25,7 +25,7 @@
 		}
 	],
 	"favored_enemy": {
-		"tag": "undead.skeleton",
+		"tag": "demon",
 		"weight": 3
 	},
 	"floor": [

@@ -71,7 +71,12 @@ torches and 2 chests, and has no spawns.
 - `room_count` 25 to 40. That's roughly 18,000 to 28,000 room tiles a dive.
 - `tag_weights` are the dungeon's: `corridor` 0.8, `maze` 0.6, `killzone`
   0.5, `peaceful` 0.7.
-- `monsters` are skeleton archer 3 and demonic hamster 1.
+- `monsters` lean devilish: hellhound 3, demonic hamster 3, skeleton archer 1
+  and wraith 1. About three in four enemies are demons (the two enemies
+  tagged `demon`).
+- `Cathedral_Barracks_32x32` favours `demon` (weight 3), where the dungeon's
+  barracks favours `undead.skeleton`. The script swaps any favoured enemy
+  to `demon`, so re-running it keeps this.
 - `default_door` is `wood_fold`. TODO.md notes this was a temporary switch
   from `iron` for door testing.
 
