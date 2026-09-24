@@ -1,0 +1,7 @@
+{
+	"name": "Poison vial amulet",
+	"slot": "neck",
+	"set": "assassin",
+	"art": "res://resources/gfx/gear/amulets/assassin/PoisonVialAmulet",
+	"icon": "res://resources/gfx/ui/icons/items/poison_vial_amulet.png"
+}

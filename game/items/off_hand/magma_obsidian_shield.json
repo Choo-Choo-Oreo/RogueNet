@@ -1,0 +1,7 @@
+{
+	"name": "Obsidian shield",
+	"slot": "off_hand",
+	"set": "magma",
+	"art": "res://resources/gfx/gear/off_hand/magma/MagmaObsidianShield",
+	"icon": "res://resources/gfx/ui/icons/items/magma_obsidian_shield.png"
+}

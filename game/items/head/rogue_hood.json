@@ -1,0 +1,7 @@
+{
+	"name": "Rogue hood",
+	"slot": "head",
+	"set": "rogue",
+	"art": "res://resources/gfx/gear/helmets/rogue/RogueHood",
+	"icon": "res://resources/gfx/ui/icons/items/rogue_hood.png"
+}

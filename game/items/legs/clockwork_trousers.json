@@ -1,0 +1,7 @@
+{
+	"name": "Tinker's trousers",
+	"slot": "legs",
+	"set": "clockwork",
+	"art": "res://resources/gfx/gear/legs/clockwork/ClockworkTrousers",
+	"icon": "res://resources/gfx/ui/icons/items/clockwork_trousers.png"
+}

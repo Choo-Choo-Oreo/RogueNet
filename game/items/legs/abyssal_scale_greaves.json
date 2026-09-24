@@ -1,0 +1,7 @@
+{
+	"name": "Abyssal greaves",
+	"slot": "legs",
+	"set": "abyssal",
+	"art": "res://resources/gfx/gear/legs/abyssal/AbyssalScaleGreaves",
+	"icon": "res://resources/gfx/ui/icons/items/abyssal_scale_greaves.png"
+}

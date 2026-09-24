@@ -1,0 +1,7 @@
+{
+	"name": "Rogue bracers",
+	"slot": "gloves",
+	"set": "rogue",
+	"art": "res://resources/gfx/gear/gloves/rogue/RogueBracers",
+	"icon": "res://resources/gfx/ui/icons/items/rogue_bracers.png"
+}

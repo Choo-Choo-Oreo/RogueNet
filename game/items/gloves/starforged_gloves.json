@@ -1,0 +1,7 @@
+{
+	"name": "Starforged gloves",
+	"slot": "gloves",
+	"set": "starforged",
+	"art": "res://resources/gfx/gear/gloves/starforged/StarforgedGloves",
+	"icon": "res://resources/gfx/ui/icons/items/starforged_gloves.png"
+}

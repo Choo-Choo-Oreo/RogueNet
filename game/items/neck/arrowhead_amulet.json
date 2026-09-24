@@ -1,0 +1,7 @@
+{
+	"name": "Arrowhead amulet",
+	"slot": "neck",
+	"set": "rogue",
+	"art": "res://resources/gfx/gear/amulets/rogue/ArrowheadAmulet",
+	"icon": "res://resources/gfx/ui/icons/items/arrowhead_amulet.png"
+}

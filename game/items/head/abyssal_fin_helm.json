@@ -1,0 +1,7 @@
+{
+	"name": "Fin helm",
+	"slot": "head",
+	"set": "abyssal",
+	"art": "res://resources/gfx/gear/helmets/abyssal/AbyssalFinHelm",
+	"icon": "res://resources/gfx/ui/icons/items/abyssal_fin_helm.png"
+}

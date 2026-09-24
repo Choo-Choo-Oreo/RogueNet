@@ -1,0 +1,7 @@
+{
+	"name": "Magma cuirass",
+	"slot": "chest",
+	"set": "magma",
+	"art": "res://resources/gfx/gear/chest/magma/MagmaCuirass",
+	"icon": "res://resources/gfx/ui/icons/items/magma_cuirass.png"
+}

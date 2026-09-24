@@ -1,0 +1,7 @@
+{
+	"name": "Hamster helm",
+	"slot": "head",
+	"set": "hamster",
+	"art": "res://resources/gfx/gear/helmets/hamster/HamsterHelm",
+	"icon": "res://resources/gfx/ui/icons/items/hamster_helm.png"
+}

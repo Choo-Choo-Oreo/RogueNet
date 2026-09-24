@@ -1,0 +1,7 @@
+{
+	"name": "Frost gauntlets",
+	"slot": "gloves",
+	"set": "frost",
+	"art": "res://resources/gfx/gear/gloves/frost/FrostGauntlets",
+	"icon": "res://resources/gfx/ui/icons/items/frost_gauntlets.png"
+}

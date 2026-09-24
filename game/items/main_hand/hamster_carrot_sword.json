@@ -1,0 +1,7 @@
+{
+	"name": "Carrot sword",
+	"slot": "main_hand",
+	"set": "hamster",
+	"art": "res://resources/gfx/gear/main_hand/hamster/HamsterCarrotSword",
+	"icon": "res://resources/gfx/ui/icons/items/hamster_carrot_sword.png"
+}

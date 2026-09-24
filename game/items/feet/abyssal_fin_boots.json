@@ -1,0 +1,7 @@
+{
+	"name": "Fin boots",
+	"slot": "feet",
+	"set": "abyssal",
+	"art": "res://resources/gfx/gear/feet/abyssal/AbyssalFinBoots",
+	"icon": "res://resources/gfx/ui/icons/items/abyssal_fin_boots.png"
+}

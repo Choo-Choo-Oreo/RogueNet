@@ -1,0 +1,7 @@
+{
+	"name": "Icicle spear",
+	"slot": "main_hand",
+	"set": "frost",
+	"art": "res://resources/gfx/gear/main_hand/frost/FrostIcicleSpear",
+	"icon": "res://resources/gfx/ui/icons/items/frost_icicle_spear.png"
+}

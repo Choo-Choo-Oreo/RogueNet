@@ -1,0 +1,7 @@
+{
+	"name": "Crown of ice",
+	"slot": "head",
+	"set": "frost",
+	"art": "res://resources/gfx/gear/helmets/frost/FrostCrown",
+	"icon": "res://resources/gfx/ui/icons/items/frost_crown.png"
+}

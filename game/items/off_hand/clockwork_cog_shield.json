@@ -1,0 +1,7 @@
+{
+	"name": "Cog shield",
+	"slot": "off_hand",
+	"set": "clockwork",
+	"art": "res://resources/gfx/gear/off_hand/clockwork/ClockworkCogShield",
+	"icon": "res://resources/gfx/ui/icons/items/clockwork_cog_shield.png"
+}

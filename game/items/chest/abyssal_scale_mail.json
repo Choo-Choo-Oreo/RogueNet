@@ -1,0 +1,7 @@
+{
+	"name": "Abyssal scale mail",
+	"slot": "chest",
+	"set": "abyssal",
+	"art": "res://resources/gfx/gear/chest/abyssal/AbyssalScaleMail",
+	"icon": "res://resources/gfx/ui/icons/items/abyssal_scale_mail.png"
+}

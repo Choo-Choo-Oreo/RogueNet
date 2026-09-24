@@ -1,0 +1,7 @@
+{
+	"name": "Lava blade",
+	"slot": "main_hand",
+	"set": "magma",
+	"art": "res://resources/gfx/gear/main_hand/magma/MagmaLavaBlade",
+	"icon": "res://resources/gfx/ui/icons/items/magma_lava_blade.png"
+}

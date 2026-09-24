@@ -1,0 +1,7 @@
+{
+	"name": "Rag hand wraps",
+	"slot": "gloves",
+	"set": "scrapper",
+	"art": "res://resources/gfx/gear/gloves/scrapper/ScrapperRagWraps",
+	"icon": "res://resources/gfx/ui/icons/items/scrapper_rag_wraps.png"
+}

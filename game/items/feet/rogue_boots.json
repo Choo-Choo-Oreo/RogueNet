@@ -1,0 +1,7 @@
+{
+	"name": "Rogue boots",
+	"slot": "feet",
+	"set": "rogue",
+	"art": "res://resources/gfx/gear/feet/rogue/RogueBoots",
+	"icon": "res://resources/gfx/ui/icons/items/rogue_boots.png"
+}

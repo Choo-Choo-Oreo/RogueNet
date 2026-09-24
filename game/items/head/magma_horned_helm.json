@@ -1,0 +1,7 @@
+{
+	"name": "Magma horned helm",
+	"slot": "head",
+	"set": "magma",
+	"art": "res://resources/gfx/gear/helmets/magma/MagmaHornedHelm",
+	"icon": "res://resources/gfx/ui/icons/items/magma_horned_helm.png"
+}

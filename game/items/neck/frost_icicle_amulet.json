@@ -1,0 +1,7 @@
+{
+	"name": "Icicle amulet",
+	"slot": "neck",
+	"set": "frost",
+	"art": "res://resources/gfx/gear/amulets/frost/FrostIcicleAmulet",
+	"icon": "res://resources/gfx/ui/icons/items/frost_icicle_amulet.png"
+}

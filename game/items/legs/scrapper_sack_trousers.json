@@ -1,0 +1,7 @@
+{
+	"name": "Sackcloth trousers",
+	"slot": "legs",
+	"set": "scrapper",
+	"art": "res://resources/gfx/gear/legs/scrapper/ScrapperSackTrousers",
+	"icon": "res://resources/gfx/ui/icons/items/scrapper_sack_trousers.png"
+}

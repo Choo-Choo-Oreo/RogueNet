@@ -1,0 +1,7 @@
+{
+	"name": "Starforged robe",
+	"slot": "chest",
+	"set": "starforged",
+	"art": "res://resources/gfx/gear/chest/starforged/StarforgedRobe",
+	"icon": "res://resources/gfx/ui/icons/items/starforged_robe.png"
+}

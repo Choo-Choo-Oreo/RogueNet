@@ -1,0 +1,7 @@
+{
+	"name": "Starforged skirt",
+	"slot": "legs",
+	"set": "starforged",
+	"art": "res://resources/gfx/gear/legs/starforged/StarforgedSkirt",
+	"icon": "res://resources/gfx/ui/icons/items/starforged_skirt.png"
+}

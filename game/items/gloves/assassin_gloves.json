@@ -1,0 +1,7 @@
+{
+	"name": "Assassin gloves",
+	"slot": "gloves",
+	"set": "assassin",
+	"art": "res://resources/gfx/gear/gloves/assassin/AssassinGloves",
+	"icon": "res://resources/gfx/ui/icons/items/assassin_gloves.png"
+}

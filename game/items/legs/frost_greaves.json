@@ -1,0 +1,7 @@
+{
+	"name": "Frost greaves",
+	"slot": "legs",
+	"set": "frost",
+	"art": "res://resources/gfx/gear/legs/frost/FrostGreaves",
+	"icon": "res://resources/gfx/ui/icons/items/frost_greaves.png"
+}

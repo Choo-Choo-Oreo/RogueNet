@@ -1,0 +1,7 @@
+{
+	"name": "Plank shield",
+	"slot": "off_hand",
+	"set": "scrapper",
+	"art": "res://resources/gfx/gear/off_hand/scrapper/ScrapperPlankShield",
+	"icon": "res://resources/gfx/ui/icons/items/scrapper_plank_shield.png"
+}

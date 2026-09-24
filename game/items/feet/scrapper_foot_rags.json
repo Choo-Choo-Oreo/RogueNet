@@ -1,0 +1,7 @@
+{
+	"name": "Foot rags",
+	"slot": "feet",
+	"set": "scrapper",
+	"art": "res://resources/gfx/gear/feet/scrapper/ScrapperFootRags",
+	"icon": "res://resources/gfx/ui/icons/items/scrapper_foot_rags.png"
+}

@@ -1,0 +1,7 @@
+{
+	"name": "Starforged staff",
+	"slot": "main_hand",
+	"set": "starforged",
+	"art": "res://resources/gfx/gear/main_hand/starforged/StarforgedStaff",
+	"icon": "res://resources/gfx/ui/icons/items/starforged_staff.png"
+}

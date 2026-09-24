@@ -1,0 +1,7 @@
+{
+	"name": "Rogue jerkin",
+	"slot": "chest",
+	"set": "rogue",
+	"art": "res://resources/gfx/gear/chest/rogue/RogueJerkin",
+	"icon": "res://resources/gfx/ui/icons/items/rogue_jerkin.png"
+}

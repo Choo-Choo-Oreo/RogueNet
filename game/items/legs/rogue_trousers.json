@@ -1,0 +1,7 @@
+{
+	"name": "Rogue trousers",
+	"slot": "legs",
+	"set": "rogue",
+	"art": "res://resources/gfx/gear/legs/rogue/RogueTrousers",
+	"icon": "res://resources/gfx/ui/icons/items/rogue_trousers.png"
+}

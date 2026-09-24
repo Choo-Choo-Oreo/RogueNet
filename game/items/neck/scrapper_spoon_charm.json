@@ -1,0 +1,7 @@
+{
+	"name": "Bent spoon charm",
+	"slot": "neck",
+	"set": "scrapper",
+	"art": "res://resources/gfx/gear/amulets/scrapper/ScrapperSpoonCharm",
+	"icon": "res://resources/gfx/ui/icons/items/scrapper_spoon_charm.png"
+}

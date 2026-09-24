@@ -1,0 +1,7 @@
+{
+	"name": "Magma gauntlets",
+	"slot": "gloves",
+	"set": "magma",
+	"art": "res://resources/gfx/gear/gloves/magma/MagmaGauntlets",
+	"icon": "res://resources/gfx/ui/icons/items/magma_gauntlets.png"
+}

@@ -1,0 +1,7 @@
+{
+	"name": "Bark gloves",
+	"slot": "gloves",
+	"set": "sporecaller",
+	"art": "res://resources/gfx/gear/gloves/sporecaller/SporecallerBarkGloves",
+	"icon": "res://resources/gfx/ui/icons/items/sporecaller_bark_gloves.png"
+}

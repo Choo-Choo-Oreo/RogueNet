@@ -1,0 +1,7 @@
+{
+	"name": "Webbed gloves",
+	"slot": "gloves",
+	"set": "abyssal",
+	"art": "res://resources/gfx/gear/gloves/abyssal/AbyssalWebbedGloves",
+	"icon": "res://resources/gfx/ui/icons/items/abyssal_webbed_gloves.png"
+}

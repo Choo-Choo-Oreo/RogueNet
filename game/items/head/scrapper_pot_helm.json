@@ -1,0 +1,7 @@
+{
+	"name": "Dented pot helm",
+	"slot": "head",
+	"set": "scrapper",
+	"art": "res://resources/gfx/gear/helmets/scrapper/ScrapperPotHelm",
+	"icon": "res://resources/gfx/ui/icons/items/scrapper_pot_helm.png"
+}

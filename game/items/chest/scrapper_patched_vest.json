@@ -1,0 +1,7 @@
+{
+	"name": "Patched vest",
+	"slot": "chest",
+	"set": "scrapper",
+	"art": "res://resources/gfx/gear/chest/scrapper/ScrapperPatchedVest",
+	"icon": "res://resources/gfx/ui/icons/items/scrapper_patched_vest.png"
+}

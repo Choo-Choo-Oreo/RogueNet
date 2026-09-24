@@ -1,0 +1,7 @@
+{
+	"name": "Crescent moon",
+	"slot": "off_hand",
+	"set": "starforged",
+	"art": "res://resources/gfx/gear/off_hand/starforged/StarforgedMoon",
+	"icon": "res://resources/gfx/ui/icons/items/starforged_moon.png"
+}

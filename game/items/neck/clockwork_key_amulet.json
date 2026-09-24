@@ -1,0 +1,7 @@
+{
+	"name": "Brass key amulet",
+	"slot": "neck",
+	"set": "clockwork",
+	"art": "res://resources/gfx/gear/amulets/clockwork/ClockworkKeyAmulet",
+	"icon": "res://resources/gfx/ui/icons/items/clockwork_key_amulet.png"
+}

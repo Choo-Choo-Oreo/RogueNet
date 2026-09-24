@@ -1,0 +1,7 @@
+{
+	"name": "Magma greaves",
+	"slot": "legs",
+	"set": "magma",
+	"art": "res://resources/gfx/gear/legs/magma/MagmaGreaves",
+	"icon": "res://resources/gfx/ui/icons/items/magma_greaves.png"
+}

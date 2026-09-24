@@ -1,0 +1,7 @@
+{
+	"name": "Starforged slippers",
+	"slot": "feet",
+	"set": "starforged",
+	"art": "res://resources/gfx/gear/feet/starforged/StarforgedSlippers",
+	"icon": "res://resources/gfx/ui/icons/items/starforged_slippers.png"
+}

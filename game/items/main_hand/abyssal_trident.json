@@ -1,0 +1,7 @@
+{
+	"name": "Abyssal trident",
+	"slot": "main_hand",
+	"set": "abyssal",
+	"art": "res://resources/gfx/gear/main_hand/abyssal/AbyssalTrident",
+	"icon": "res://resources/gfx/ui/icons/items/abyssal_trident.png"
+}

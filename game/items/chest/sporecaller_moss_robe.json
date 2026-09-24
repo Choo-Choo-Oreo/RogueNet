@@ -1,0 +1,7 @@
+{
+	"name": "Moss robe",
+	"slot": "chest",
+	"set": "sporecaller",
+	"art": "res://resources/gfx/gear/chest/sporecaller/SporecallerMossRobe",
+	"icon": "res://resources/gfx/ui/icons/items/sporecaller_moss_robe.png"
+}

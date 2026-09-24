@@ -1,0 +1,7 @@
+{
+	"name": "Hamster boots",
+	"slot": "feet",
+	"set": "hamster",
+	"art": "res://resources/gfx/gear/feet/hamster/HamsterBoots",
+	"icon": "res://resources/gfx/ui/icons/items/hamster_boots.png"
+}

@@ -1,0 +1,7 @@
+{
+	"name": "Seed charm",
+	"slot": "neck",
+	"set": "sporecaller",
+	"art": "res://resources/gfx/gear/amulets/sporecaller/SporecallerSeedCharm",
+	"icon": "res://resources/gfx/ui/icons/items/sporecaller_seed_charm.png"
+}

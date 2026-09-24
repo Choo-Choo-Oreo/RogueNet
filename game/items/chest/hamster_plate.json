@@ -1,0 +1,7 @@
+{
+	"name": "Hamster plate",
+	"slot": "chest",
+	"set": "hamster",
+	"art": "res://resources/gfx/gear/chest/hamster/HamsterPlate",
+	"icon": "res://resources/gfx/ui/icons/items/hamster_plate.png"
+}

@@ -1,0 +1,7 @@
+{
+	"name": "Goggle cap",
+	"slot": "head",
+	"set": "clockwork",
+	"art": "res://resources/gfx/gear/helmets/clockwork/ClockworkGoggleCap",
+	"icon": "res://resources/gfx/ui/icons/items/clockwork_goggle_cap.png"
+}

@@ -1,0 +1,7 @@
+{
+	"name": "Hamster paws",
+	"slot": "gloves",
+	"set": "hamster",
+	"art": "res://resources/gfx/gear/gloves/hamster/HamsterPaws",
+	"icon": "res://resources/gfx/ui/icons/items/hamster_paws.png"
+}

@@ -1,0 +1,7 @@
+{
+	"name": "Ember amulet",
+	"slot": "neck",
+	"set": "magma",
+	"art": "res://resources/gfx/gear/amulets/magma/MagmaEmberAmulet",
+	"icon": "res://resources/gfx/ui/icons/items/magma_ember_amulet.png"
+}

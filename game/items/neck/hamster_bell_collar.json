@@ -1,0 +1,7 @@
+{
+	"name": "Bell collar",
+	"slot": "neck",
+	"set": "hamster",
+	"art": "res://resources/gfx/gear/amulets/hamster/HamsterBellCollar",
+	"icon": "res://resources/gfx/ui/icons/items/hamster_bell_collar.png"
+}

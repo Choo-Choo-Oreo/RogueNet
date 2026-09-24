@@ -1,0 +1,7 @@
+{
+	"name": "Tinker's apron",
+	"slot": "chest",
+	"set": "clockwork",
+	"art": "res://resources/gfx/gear/chest/clockwork/ClockworkApron",
+	"icon": "res://resources/gfx/ui/icons/items/clockwork_apron.png"
+}

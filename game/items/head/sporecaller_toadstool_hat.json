@@ -1,0 +1,7 @@
+{
+	"name": "Toadstool hat",
+	"slot": "head",
+	"set": "sporecaller",
+	"art": "res://resources/gfx/gear/helmets/sporecaller/SporecallerToadstoolHat",
+	"icon": "res://resources/gfx/ui/icons/items/sporecaller_toadstool_hat.png"
+}

@@ -1,0 +1,7 @@
+{
+	"name": "Magma sabatons",
+	"slot": "feet",
+	"set": "magma",
+	"art": "res://resources/gfx/gear/feet/magma/MagmaSabatons",
+	"icon": "res://resources/gfx/ui/icons/items/magma_sabatons.png"
+}

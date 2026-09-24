@@ -1,0 +1,7 @@
+{
+	"name": "Pearl amulet",
+	"slot": "neck",
+	"set": "abyssal",
+	"art": "res://resources/gfx/gear/amulets/abyssal/AbyssalPearlAmulet",
+	"icon": "res://resources/gfx/ui/icons/items/abyssal_pearl_amulet.png"
+}

@@ -1,0 +1,7 @@
+{
+	"name": "Assassin tabi",
+	"slot": "feet",
+	"set": "assassin",
+	"art": "res://resources/gfx/gear/feet/assassin/AssassinTabi",
+	"icon": "res://resources/gfx/ui/icons/items/assassin_tabi.png"
+}

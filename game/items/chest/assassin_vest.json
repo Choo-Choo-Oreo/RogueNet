@@ -1,0 +1,7 @@
+{
+	"name": "Assassin vest",
+	"slot": "chest",
+	"set": "assassin",
+	"art": "res://resources/gfx/gear/chest/assassin/AssassinVest",
+	"icon": "res://resources/gfx/ui/icons/items/assassin_vest.png"
+}

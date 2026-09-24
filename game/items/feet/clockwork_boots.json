@@ -1,0 +1,7 @@
+{
+	"name": "Tinker's boots",
+	"slot": "feet",
+	"set": "clockwork",
+	"art": "res://resources/gfx/gear/feet/clockwork/ClockworkBoots",
+	"icon": "res://resources/gfx/ui/icons/items/clockwork_boots.png"
+}

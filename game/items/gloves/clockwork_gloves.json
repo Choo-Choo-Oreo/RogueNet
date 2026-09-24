@@ -1,0 +1,7 @@
+{
+	"name": "Clockwork gloves",
+	"slot": "gloves",
+	"set": "clockwork",
+	"art": "res://resources/gfx/gear/gloves/clockwork/ClockworkGloves",
+	"icon": "res://resources/gfx/ui/icons/items/clockwork_gloves.png"
+}

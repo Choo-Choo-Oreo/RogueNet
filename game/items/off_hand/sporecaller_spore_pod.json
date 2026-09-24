@@ -1,0 +1,7 @@
+{
+	"name": "Spore pod",
+	"slot": "off_hand",
+	"set": "sporecaller",
+	"art": "res://resources/gfx/gear/off_hand/sporecaller/SporecallerSporePod",
+	"icon": "res://resources/gfx/ui/icons/items/sporecaller_spore_pod.png"
+}

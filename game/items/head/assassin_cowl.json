@@ -1,0 +1,7 @@
+{
+	"name": "Assassin cowl",
+	"slot": "head",
+	"set": "assassin",
+	"art": "res://resources/gfx/gear/helmets/assassin/AssassinCowl",
+	"icon": "res://resources/gfx/ui/icons/items/assassin_cowl.png"
+}

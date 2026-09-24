@@ -1,0 +1,7 @@
+{
+	"name": "Nail club",
+	"slot": "main_hand",
+	"set": "scrapper",
+	"art": "res://resources/gfx/gear/main_hand/scrapper/ScrapperNailClub",
+	"icon": "res://resources/gfx/ui/icons/items/scrapper_nail_club.png"
+}

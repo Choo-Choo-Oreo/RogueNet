@@ -1,0 +1,7 @@
+{
+	"name": "Root wraps",
+	"slot": "feet",
+	"set": "sporecaller",
+	"art": "res://resources/gfx/gear/feet/sporecaller/SporecallerRootWraps",
+	"icon": "res://resources/gfx/ui/icons/items/sporecaller_root_wraps.png"
+}

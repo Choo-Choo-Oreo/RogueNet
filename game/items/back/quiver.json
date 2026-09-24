@@ -1,0 +1,7 @@
+{
+	"name": "Quiver",
+	"slot": "back",
+	"set": "rogue",
+	"art": "res://resources/gfx/gear/back/quiver/Quiver",
+	"icon": "res://resources/gfx/ui/icons/items/quiver.png"
+}

@@ -1,0 +1,7 @@
+{
+	"name": "Big wrench",
+	"slot": "main_hand",
+	"set": "clockwork",
+	"art": "res://resources/gfx/gear/main_hand/clockwork/ClockworkWrench",
+	"icon": "res://resources/gfx/ui/icons/items/clockwork_wrench.png"
+}

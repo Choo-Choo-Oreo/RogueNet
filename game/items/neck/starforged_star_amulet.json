@@ -1,0 +1,7 @@
+{
+	"name": "Fallen star amulet",
+	"slot": "neck",
+	"set": "starforged",
+	"art": "res://resources/gfx/gear/amulets/starforged/StarforgedStarAmulet",
+	"icon": "res://resources/gfx/ui/icons/items/starforged_star_amulet.png"
+}

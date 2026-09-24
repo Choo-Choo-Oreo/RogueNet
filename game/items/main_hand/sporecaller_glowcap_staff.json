@@ -1,0 +1,7 @@
+{
+	"name": "Glowcap staff",
+	"slot": "main_hand",
+	"set": "sporecaller",
+	"art": "res://resources/gfx/gear/main_hand/sporecaller/SporecallerGlowcapStaff",
+	"icon": "res://resources/gfx/ui/icons/items/sporecaller_glowcap_staff.png"
+}

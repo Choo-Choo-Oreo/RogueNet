@@ -1,0 +1,7 @@
+{
+	"name": "Frost fur boots",
+	"slot": "feet",
+	"set": "frost",
+	"art": "res://resources/gfx/gear/feet/frost/FrostFurBoots",
+	"icon": "res://resources/gfx/ui/icons/items/frost_fur_boots.png"
+}
