@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cfy1q3bn10qq"
-path="res://.godot/imported/walking_south+east.png-cbf37d2b30e0254087b07ee62cee65a4.ctex"
+uid="uid://dq6w74spkv5tg"
+path="res://.godot/imported/Human-Down.png-fbac89242474234a4e889fa285dbd222.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/players/player.protagonist/Human/walking_south+east.png"
-dest_files=["res://.godot/imported/walking_south+east.png-cbf37d2b30e0254087b07ee62cee65a4.ctex"]
+source_file="res://resources/gfx/players/player.protagonist/human/Human-Down.png"
+dest_files=["res://.godot/imported/Human-Down.png-fbac89242474234a4e889fa285dbd222.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dwd1jvu17dmau"
-path="res://.godot/imported/walking_north+east.png-8e0975ee191f2a2982e9cf3dda3e29a8.ctex"
+uid="uid://ccs5ixojvmfrh"
+path="res://.godot/imported/HeavyIronHelm-Down.png-993fb62469bba897610404aff443ba90.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/players/player.protagonist/Human/walking_north+east.png"
-dest_files=["res://.godot/imported/walking_north+east.png-8e0975ee191f2a2982e9cf3dda3e29a8.ctex"]
+source_file="res://resources/gfx/gear/helmets/heavy_iron/HeavyIronHelm-Down.png"
+dest_files=["res://.godot/imported/HeavyIronHelm-Down.png-993fb62469bba897610404aff443ba90.ctex"]
 
 [params]
 

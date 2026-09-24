@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ccs5ixojvmfrh"
-path="res://.godot/imported/heavy_iron_helm_down.png-993fb62469bba897610404aff443ba90.ctex"
+uid="uid://dwd1jvu17dmau"
+path="res://.godot/imported/Human-UpRight.png-8e0975ee191f2a2982e9cf3dda3e29a8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/gear/helmets/heavy_iron/heavy_iron_helm_down.png"
-dest_files=["res://.godot/imported/heavy_iron_helm_down.png-993fb62469bba897610404aff443ba90.ctex"]
+source_file="res://resources/gfx/players/player.protagonist/human/Human-UpRight.png"
+dest_files=["res://.godot/imported/Human-UpRight.png-8e0975ee191f2a2982e9cf3dda3e29a8.ctex"]
 
 [params]
 
