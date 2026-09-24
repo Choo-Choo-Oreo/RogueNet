@@ -73,7 +73,7 @@ from the openings.
 | Side pocket | 1 | 2 |
 | Entrance, trail, path, peaceful | none | |
 
-The 74 rooms have 234 spawn cells between them. That's about the dungeon's
+The 76 rooms have 234 spawn cells between them. That's about the dungeon's
 density, not flesh's.
 
 ## Roles and tags
@@ -105,14 +105,15 @@ density, not flesh's.
 
 ## Current piece set (2026-09-24)
 
-74 rooms: each landmark below, plus `<Landmark>_Overgrown`. Sizes are in
+76 rooms: each landmark below, plus `<Landmark>_Overgrown`. Sizes are in
 the file names (grid size = inside + 2).
 
 - **Entrance:** Trailhead, Forest Edge.
 - **Trails, 3 wide:** Trail, Trail Bend, Trail Fork, Stream Ford (a
   stream crosses it; Overgrown has two), Log Bridge (planks over water),
   Switchback.
-- **Paths, 1 wide:** Deer Track, Root Tunnel, Bramble Squeeze.
+- **Paths, 1 wide:** Deer Track, Deer Track Bend (a turn that loops around
+  the room), Root Tunnel, Bramble Squeeze.
 - **Landmarks (combat):**
   - Glade, Pond, Marsh, Beaver Dam (timber dam holding back a pond).
   - Fallen Giant (fallen timber trunks with a gap to climb through; Overgrown has two, crossed).
