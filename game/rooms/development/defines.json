@@ -1,0 +1,6 @@
+{
+	"room_count": { "min": 1, "max": 1 },
+	"default_door": "none",
+	"tag_weights": {},
+	"monsters": {}
+}

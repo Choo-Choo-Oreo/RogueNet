@@ -5,8 +5,9 @@ checked against the files, nothing run. Background, terms and sources live in
 the sister file `AUTOMATED_TESTING_RESEARCH.md`. Mark items here as they land
 and update the date.
 
-Last updated: 2026-09-24. **Nothing is built yet**: no test framework, no
-`test/` folder, no `.github/` folder.
+Last updated: 2026-09-24. GUT 9.7.1 is installed (`addons/gut/`), `test/` exists
+with one example test file (7 tests, all pass, run 2026-09-24 on Godot 4.7.2 mono) and `test/README.md` as the
+how-to. No `.github/` folder yet.
 
 Status key: [ ] todo, [x] done, [~] built / needs verification, [-] on hold
 
@@ -31,11 +32,11 @@ original list.
 ---
 
 ## Decisions needed before starting
-- [ ] **Pick a framework.** GUT (Risk + Team: pure GDScript, simplest for
+- [x] **Pick a framework: GUT** (Orea, 2026-09-24). Original note: GUT (Risk + Team: pure GDScript, simplest for
   beginners) or gdUnit4 (Cost: 4.7 support on the main branch, an official
   GitHub Action with JUnit reports, scene runner and C# ready). Choose one,
   never both. If GUT, take it from the `godot_4_7` branch (GUT 9.7.1).
-- [ ] **Where tests live.** A `test/` folder at the repo root is the usual
+- [x] **Where tests live: `test/`** (Orea said yes, 2026-09-24). A `test/` folder at the repo root is the usual
   convention. Creating it needs Orea's go-ahead.
 - [ ] **Script changes need a per-change yes.** Seedable RNG, the test-mode
   guard and similar fixes touch `scripts/` or `singletons/`.
@@ -46,9 +47,9 @@ original list.
 
 ## S tier: foundation (do first)
 
-- [ ] **Install the chosen framework** (small, owner: tech lead). One vendored
+- [~] **Install the chosen framework** (done 2026-09-24: `addons/gut/`, `.gutconfig.json`; plugin not enabled in project.godot, the command line does not need it) (small, owner: tech lead). One vendored
   `addons/` folder plus a config file. Votes: Risk S · Cost S · Team S.
-- [ ] ✚ **How-to page plus one fully commented example test** (small, owner:
+- [~] ✚ **How-to page plus one fully commented example test** (`test/README.md`, `test/unit/test_action_shapes.gd`, 7 tests, pass) (small, owner:
   tech lead). A one-page "how to write and run a test" guide and an example
   to copy. Team: "without this, a mostly beginner team won't adopt tests."
   Good first example: the `Vector2i(pos / tile_size)` vs `floori()`
@@ -179,7 +180,7 @@ original list.
   (medium, owner: tech lead). The host spawns, damage applies once, doors
   change state. `MinionSpawning.gd:33` already acts as host when there is no
   peer. Only the host side can be tested. Votes: Risk B · Cost B · Team B.
-- [ ] **Headless soak run with BodySweep-style asserts** (medium, owner: tech
+- [~] **Headless soak run with BodySweep-style asserts** (first version 2026-09-24: `test/sim/dev_sim.gd`, `run_sim.bat`; runs the development biome per cell, no game-code changes needed; it does not use the seedable RNG yet, dungeon layout is fixed by the entrance-role hub) (medium, owner: tech
   lead; needs the seedable RNG, and `BodySweep.gd` committed, since it is
   untracked today). Run a dungeon with enemies for N minutes at
   `--fixed-fps`, and **fail** instead of logging. Run it nightly or by hand,
@@ -190,7 +191,7 @@ original list.
   and `DirAccess` work inside an exported `.pck`, which `TODO.md` already
   flags as untested. Votes: Risk **A** · Cost C (preset, export templates,
   about 1 GB of downloads) · Team B.
-- [ ] **Local `run_tests` script** (small, owner: tech lead). A `.bat` or
+- [~] **Local `run_tests` script** (`run_tests.bat` written; uses the gitignored Godot copy in `.godot-local/`) (small, owner: tech lead). A `.bat` or
   `.sh` wrapper, **not** a blocking git hook: hooks are fragile on Windows
   and only Orea commits. Votes: Risk B · Cost B · Team B.
 - [ ] ✚ **Orphan/leak check in the scene smoke** (small, owner: any

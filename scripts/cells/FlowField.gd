@@ -18,7 +18,7 @@ extends RefCounted
 
 const RADIUS := 20
 
-# target instance id -> {"target_cell": Vector2i, "grid": StepCache, plus each
+# key (target instance id, and the body size in tiles: see MinionController._flow_key) -> {"target_cell": Vector2i, "grid": StepCache, plus each
 # map once something has asked for it (_field_for): "directions" (flyers),
 # "terrain_directions" (walkers) and "distances" (get_distances). A directions
 # map sends a reachable cell to the Vector2i step that moves 1 tile closer to

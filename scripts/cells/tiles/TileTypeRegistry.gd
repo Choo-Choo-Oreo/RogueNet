@@ -11,7 +11,11 @@ func _init() -> void:
 		return
 	var data := JsonOnloading.load_dict(REGISTRY_PATH)
 	ids = data.get("ids", {})
-	next_id = data.get("next_id", 0)
+	# JSON numbers load as floats, and a float key never matches an int one in a Dictionary,
+	# so anything that looks a tile up by the id a TileMapLayer reports (an int) would miss.
+	for tile_name in ids:
+		ids[tile_name] = int(ids[tile_name])
+	next_id = int(data.get("next_id", 0))
 
 func get_id(tile_name: String) -> int:
 	return ids.get(tile_name, -1)

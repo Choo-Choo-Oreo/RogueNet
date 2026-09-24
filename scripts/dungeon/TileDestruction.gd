@@ -11,8 +11,8 @@ extends RefCounted
 ##            all peers end up with the same map. NetworkSync.destroy_tiles ties the
 ##            two together.
 ##
-## Only the two data layers (WallData / FloorData) are touched: the renderers redraw
-## when a layer changes, and movement, sight and light read the layers live. What is
+## Only the two data layers (WallData / FloorData) are touched (apply() then tells the renderers
+## to redraw); movement, sight and light read the layers live. What is
 ## cached (shared flow fields, the light's blocked-tile cache) is invalidated in apply().
 ##
 ## A change is {"cell": Vector2i, "wall": String, "floor": String}: tile NAMES, not ids.
@@ -141,6 +141,14 @@ static func apply(changes: Array, scene: Node) -> void:
 			wall_data.erase_cell(cell)
 		else:
 			wall_data.set_cell(cell, _registry.get_id(change["wall"]), Vector2i.ZERO)
+	# The layers' `changed` signal does not fire for set_cell / erase_cell while playing, so the
+	# renderers would keep drawing the old walls (bodies walk through "solid" rock). Ask them.
+	var tiles := scene.find_child("TileInitialize", true, false)
+	if tiles != null:
+		var cells: Array = []
+		for change: Dictionary in changes:
+			cells.append(change["cell"])
+		tiles.refresh_cells(cells)
 	last_applied_msec = Time.get_ticks_msec()
 	# Shared flow fields were flooded around the old walls; the light re-floods when the
 	# door version moves (LightMap polls it), the same way it does for a door opening.

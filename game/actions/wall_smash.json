@@ -1,6 +1,6 @@
 {
 	"verb": "destroy_tiles",
-	"range_tiles": 6,
+	"range_tiles": 10,
 	"needs_sight": false,
 	"only_through_walls": true,
 	"interval": 6.0,

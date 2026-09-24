@@ -83,6 +83,24 @@ func refresh():
 			for x in range(used_rect.position.x - 1, used_rect.end.x):
 				_refresh_cell(Vector2i(x, y))
 
+## Redraws only what `cells` (data-layer cells that changed) can affect: each display quad touches
+## the four cells around its corner, so a changed cell alters four quads. The layer's `changed`
+## signal does not fire for runtime set_cell, so whoever changes cells calls this (TileDestruction).
+func refresh_cells(cells: Array) -> void:
+	if not is_instance_valid(display_layer) or display_layer.tile_set == null:
+		return
+	var touched := {}
+	for cell: Vector2i in cells:
+		for offset in [Vector2i(0, 0), Vector2i(-1, 0), Vector2i(0, -1), Vector2i(-1, -1)]:
+			touched[cell + offset] = true
+	for pos: Vector2i in touched:
+		for k in 4:
+			var quad := pos * 2 + Vector2i(k & 1, k >> 1)
+			display_layer.erase_cell(quad)
+			if overlay_layer:
+				overlay_layer.erase_cell(quad)
+		_refresh_cell(pos)
+
 func _refresh_cell(pos: Vector2i) -> void:
 	var ids: Array[int] = [
 		_cell_id(pos),

@@ -1,0 +1,895 @@
+{
+ "hub": "Development_Hub_298x39",
+ "width": 298,
+ "height": 39,
+ "cells": [
+  {
+   "name": "minion_rat",
+   "door": {
+    "x": 5,
+    "y": 16
+   },
+   "entry": {
+    "x": 5,
+    "y": 14
+   },
+   "rect": {
+    "x": 1,
+    "y": 10,
+    "w": 11,
+    "h": 7
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 0,
+   "what": "rat alone in a plain room.",
+   "try": "Open the door, then walk up to it, away from it and round it.",
+   "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
+  },
+  {
+   "name": "minion_rat_toothless",
+   "door": {
+    "x": 16,
+    "y": 16
+   },
+   "entry": {
+    "x": 16,
+    "y": 14
+   },
+   "rect": {
+    "x": 12,
+    "y": 10,
+    "w": 11,
+    "h": 7
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 2,
+   "what": "rat_toothless alone in a plain room.",
+   "try": "Open the door, then walk up to it, away from it and round it.",
+   "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
+  },
+  {
+   "name": "minion_bat_echo",
+   "door": {
+    "x": 27,
+    "y": 16
+   },
+   "entry": {
+    "x": 27,
+    "y": 14
+   },
+   "rect": {
+    "x": 23,
+    "y": 10,
+    "w": 11,
+    "h": 7
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 4,
+   "what": "bat_echo alone in a plain room.",
+   "try": "Open the door, then walk up to it, away from it and round it.",
+   "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
+  },
+  {
+   "name": "minion_hamster_flying",
+   "door": {
+    "x": 38,
+    "y": 16
+   },
+   "entry": {
+    "x": 38,
+    "y": 14
+   },
+   "rect": {
+    "x": 34,
+    "y": 10,
+    "w": 11,
+    "h": 7
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 6,
+   "what": "hamster_flying alone in a plain room.",
+   "try": "Open the door, then walk up to it, away from it and round it.",
+   "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
+  },
+  {
+   "name": "minion_leech",
+   "door": {
+    "x": 49,
+    "y": 16
+   },
+   "entry": {
+    "x": 49,
+    "y": 14
+   },
+   "rect": {
+    "x": 45,
+    "y": 10,
+    "w": 11,
+    "h": 7
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 8,
+   "what": "leech alone in a plain room.",
+   "try": "Open the door, then walk up to it, away from it and round it.",
+   "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
+  },
+  {
+   "name": "minion_wolf",
+   "door": {
+    "x": 60,
+    "y": 16
+   },
+   "entry": {
+    "x": 60,
+    "y": 14
+   },
+   "rect": {
+    "x": 56,
+    "y": 10,
+    "w": 11,
+    "h": 7
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 10,
+   "what": "wolf alone in a plain room.",
+   "try": "Open the door, then walk up to it, away from it and round it.",
+   "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
+  },
+  {
+   "name": "minion_skeleton_archer",
+   "door": {
+    "x": 71,
+    "y": 16
+   },
+   "entry": {
+    "x": 71,
+    "y": 14
+   },
+   "rect": {
+    "x": 67,
+    "y": 10,
+    "w": 11,
+    "h": 7
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 12,
+   "what": "skeleton_archer alone in a plain room.",
+   "try": "Open the door, then walk up to it, away from it and round it.",
+   "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
+  },
+  {
+   "name": "minion_minotaur",
+   "door": {
+    "x": 83,
+    "y": 16
+   },
+   "entry": {
+    "x": 83,
+    "y": 14
+   },
+   "rect": {
+    "x": 78,
+    "y": 8,
+    "w": 13,
+    "h": 9
+   },
+   "reach": [
+    "big"
+   ],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 14,
+   "what": "minotaur alone in a plain room.",
+   "try": "Open the door, then walk up to it, away from it and round it.",
+   "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
+  },
+  {
+   "name": "bug1_no_room_for_boss",
+   "door": {
+    "x": 93,
+    "y": 16
+   },
+   "entry": {
+    "x": 93,
+    "y": 14
+   },
+   "rect": {
+    "x": 91,
+    "y": 2,
+    "w": 27,
+    "h": 15
+   },
+   "reach": [],
+   "may_skip": true,
+   "zone_changes_max": -1,
+   "index": 16,
+   "what": "The Minotaur is pinned in a sealed 1-wide corridor with no 2x2 spot nearby.",
+   "try": "Just look inside; nothing should be there.",
+   "look": "A Minotaur exists here (it must be skipped). The debug log (F4) should say \"No room for a 2x2\"."
+  },
+  {
+   "name": "bug2_one_wide_gap",
+   "door": {
+    "x": 130,
+    "y": 16
+   },
+   "entry": {
+    "x": 130,
+    "y": 14
+   },
+   "rect": {
+    "x": 118,
+    "y": 8,
+    "w": 17,
+    "h": 9
+   },
+   "reach": [
+    "big",
+    "rat"
+   ],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 19,
+   "what": "The same, but the gap is 1 wide, so the Minotaur cannot fit.",
+   "try": "Stand past the gap, in line with it, and press Enter.",
+   "look": "The Minotaur cannot fit the gap, so it should smash the wall (even with a straight line through the gap) and both reach you. It parks in front of the gap instead."
+  },
+  {
+   "name": "bug3_smash_plain",
+   "door": {
+    "x": 147,
+    "y": 16
+   },
+   "entry": {
+    "x": 147,
+    "y": 14
+   },
+   "rect": {
+    "x": 135,
+    "y": 10,
+    "w": 17,
+    "h": 7
+   },
+   "reach": [
+    "big"
+   ],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 21,
+   "what": "The Minotaur behind a solid wall with no way round.",
+   "try": "Stand on the far side and wait.",
+   "look": "It should break the wall and reach you. It gives up, or walks through the wall without breaking it."
+  },
+  {
+   "name": "bug3_smash_pillar",
+   "door": {
+    "x": 164,
+    "y": 16
+   },
+   "entry": {
+    "x": 164,
+    "y": 14
+   },
+   "rect": {
+    "x": 152,
+    "y": 8,
+    "w": 17,
+    "h": 9
+   },
+   "reach": [
+    "big"
+   ],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 23,
+   "what": "The Minotaur among pillars, with a way round.",
+   "try": "Stand behind the pillars.",
+   "look": "It should walk round or smash through, and never stand inside a pillar."
+  },
+  {
+   "name": "bug4_open_archer",
+   "door": {
+    "x": 181,
+    "y": 16
+   },
+   "entry": {
+    "x": 181,
+    "y": 14
+   },
+   "rect": {
+    "x": 169,
+    "y": 8,
+    "w": 17,
+    "h": 9
+   },
+   "reach": [
+    "rat"
+   ],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 25,
+   "what": "An archer among rats in the open.",
+   "try": "Stand at the far side.",
+   "look": "The archer holds back and shoots while the rats run past it."
+  },
+  {
+   "name": "manual_boss_chase_arena",
+   "door": {
+    "x": 199,
+    "y": 16
+   },
+   "entry": {
+    "x": 199,
+    "y": 14
+   },
+   "rect": {
+    "x": 186,
+    "y": 0,
+    "w": 29,
+    "h": 17
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 27,
+   "what": "A pillared arena with the Minotaur and its crowd.",
+   "try": "Run circles round the pillars so they chase you.",
+   "look": "Bug 5: rats jittering near the Minotaur. Archers should hold back and shoot. Anything standing in a wall."
+  },
+  {
+   "name": "manual_minotaur_corners",
+   "door": {
+    "x": 237,
+    "y": 16
+   },
+   "entry": {
+    "x": 237,
+    "y": 14
+   },
+   "rect": {
+    "x": 215,
+    "y": 6,
+    "w": 25,
+    "h": 11
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 29,
+   "what": "Pillars with 1-wide gaps (Minotaur cannot use them) and open bands (2+).",
+   "try": "Run the Minotaur through the pillars, changing side often.",
+   "look": "The Minotaur standing in a wall or clipping a corner. (Screenshot it and note the tile from F4.)"
+  },
+  {
+   "name": "terrain_lava",
+   "door": {
+    "x": 252,
+    "y": 16
+   },
+   "entry": {
+    "x": 252,
+    "y": 14
+   },
+   "rect": {
+    "x": 240,
+    "y": 9,
+    "w": 17,
+    "h": 8
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 31,
+   "what": "A lava band with a stone way round.",
+   "try": "Stand across the band.",
+   "look": "Walkers must route round; flyers may cross. Anything walking through lava."
+  },
+  {
+   "name": "terrain_acid",
+   "door": {
+    "x": 269,
+    "y": 16
+   },
+   "entry": {
+    "x": 269,
+    "y": 14
+   },
+   "rect": {
+    "x": 257,
+    "y": 9,
+    "w": 17,
+    "h": 8
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 33,
+   "what": "An acid band with a stone way round.",
+   "try": "Stand across the band.",
+   "look": "Known: walkers currently DO walk on acid (it will become a damaging tile later, like water). Note anything else odd."
+  },
+  {
+   "name": "swarm_rats",
+   "door": {
+    "x": 284,
+    "y": 16
+   },
+   "entry": {
+    "x": 284,
+    "y": 14
+   },
+   "rect": {
+    "x": 274,
+    "y": 2,
+    "w": 23,
+    "h": 15
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 35,
+   "what": "About 60 rats in one room.",
+   "try": "Open the door and fight or run.",
+   "look": "Frame rate (F4 shows it) dropping badly, or rats stuck in a pile."
+  },
+  {
+   "name": "minion_rat_blind",
+   "door": {
+    "x": 5,
+    "y": 22
+   },
+   "entry": {
+    "x": 5,
+    "y": 24
+   },
+   "rect": {
+    "x": 1,
+    "y": 22,
+    "w": 11,
+    "h": 7
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 1,
+   "what": "rat_blind alone in a plain room.",
+   "try": "Open the door, then walk up to it, away from it and round it.",
+   "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
+  },
+  {
+   "name": "minion_bat",
+   "door": {
+    "x": 16,
+    "y": 22
+   },
+   "entry": {
+    "x": 16,
+    "y": 24
+   },
+   "rect": {
+    "x": 12,
+    "y": 22,
+    "w": 11,
+    "h": 7
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 3,
+   "what": "bat alone in a plain room.",
+   "try": "Open the door, then walk up to it, away from it and round it.",
+   "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
+  },
+  {
+   "name": "minion_hamster",
+   "door": {
+    "x": 27,
+    "y": 22
+   },
+   "entry": {
+    "x": 27,
+    "y": 24
+   },
+   "rect": {
+    "x": 23,
+    "y": 22,
+    "w": 11,
+    "h": 7
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 5,
+   "what": "hamster alone in a plain room.",
+   "try": "Open the door, then walk up to it, away from it and round it.",
+   "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
+  },
+  {
+   "name": "minion_hamster_demonic",
+   "door": {
+    "x": 38,
+    "y": 22
+   },
+   "entry": {
+    "x": 38,
+    "y": 24
+   },
+   "rect": {
+    "x": 34,
+    "y": 22,
+    "w": 11,
+    "h": 7
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 7,
+   "what": "hamster_demonic alone in a plain room.",
+   "try": "Open the door, then walk up to it, away from it and round it.",
+   "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
+  },
+  {
+   "name": "minion_leech_flesh",
+   "door": {
+    "x": 49,
+    "y": 22
+   },
+   "entry": {
+    "x": 49,
+    "y": 24
+   },
+   "rect": {
+    "x": 45,
+    "y": 22,
+    "w": 11,
+    "h": 7
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 9,
+   "what": "leech_flesh alone in a plain room.",
+   "try": "Open the door, then walk up to it, away from it and round it.",
+   "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
+  },
+  {
+   "name": "minion_wolf_hellhound",
+   "door": {
+    "x": 60,
+    "y": 22
+   },
+   "entry": {
+    "x": 60,
+    "y": 24
+   },
+   "rect": {
+    "x": 56,
+    "y": 22,
+    "w": 11,
+    "h": 7
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 11,
+   "what": "wolf_hellhound alone in a plain room.",
+   "try": "Open the door, then walk up to it, away from it and round it.",
+   "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
+  },
+  {
+   "name": "minion_wraith",
+   "door": {
+    "x": 71,
+    "y": 22
+   },
+   "entry": {
+    "x": 71,
+    "y": 24
+   },
+   "rect": {
+    "x": 67,
+    "y": 22,
+    "w": 11,
+    "h": 7
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 13,
+   "what": "wraith alone in a plain room.",
+   "try": "Open the door, then walk up to it, away from it and round it.",
+   "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
+  },
+  {
+   "name": "bug1_spawn_fit",
+   "door": {
+    "x": 83,
+    "y": 22
+   },
+   "entry": {
+    "x": 83,
+    "y": 24
+   },
+   "rect": {
+    "x": 78,
+    "y": 22,
+    "w": 13,
+    "h": 9
+   },
+   "reach": [
+    "rat"
+   ],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 15,
+   "what": "The Minotaur is pinned in a 1-wide nook it cannot stand in, and a rat sits beside a hole in the floor.",
+   "try": "Let them come for you.",
+   "look": "The Minotaur is moved to a free 2x2 spot, never left inside a wall. The rat never walks on the hole."
+  },
+  {
+   "name": "bug1_hole_band",
+   "door": {
+    "x": 98,
+    "y": 22
+   },
+   "entry": {
+    "x": 98,
+    "y": 24
+   },
+   "rect": {
+    "x": 91,
+    "y": 22,
+    "w": 17,
+    "h": 13
+   },
+   "reach": [
+    "rat"
+   ],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 17,
+   "what": "A chasm across the room with a bridge at one side and a rat on each side.",
+   "try": "Stand opposite a rat and watch it cross.",
+   "look": "A rat walking on the holes instead of using the bridge."
+  },
+  {
+   "name": "bug2_two_wide_gap",
+   "door": {
+    "x": 120,
+    "y": 22
+   },
+   "entry": {
+    "x": 120,
+    "y": 24
+   },
+   "rect": {
+    "x": 108,
+    "y": 22,
+    "w": 17,
+    "h": 9
+   },
+   "reach": [
+    "big",
+    "rat"
+   ],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 18,
+   "what": "A rat and the Minotaur chase you through a 2-wide gap.",
+   "try": "Stand past the gap and wait.",
+   "look": "Either one stopping at the gap and never coming through."
+  },
+  {
+   "name": "bug6_boss_blocks_gap",
+   "door": {
+    "x": 137,
+    "y": 22
+   },
+   "entry": {
+    "x": 137,
+    "y": 24
+   },
+   "rect": {
+    "x": 125,
+    "y": 22,
+    "w": 17,
+    "h": 9
+   },
+   "reach": [
+    "rat"
+   ],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 20,
+   "what": "An unbreakable wall with a 1-wide gap. The Minotaur stands right in front of the gap (it cannot fit through), rats behind it.",
+   "try": "Stand on the far side of the wall, in line with the gap, and press Enter.",
+   "look": "The Minotaur should step back and hold while the rats squeeze through the gap to you. It stays parked in front of the gap, or the rats jam behind it."
+  },
+  {
+   "name": "bug3_smash_door",
+   "door": {
+    "x": 154,
+    "y": 22
+   },
+   "entry": {
+    "x": 154,
+    "y": 24
+   },
+   "rect": {
+    "x": 142,
+    "y": 22,
+    "w": 17,
+    "h": 7
+   },
+   "reach": [
+    "big"
+   ],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 22,
+   "what": "The Minotaur behind a closed door.",
+   "try": "Stand on the far side.",
+   "look": "It should smash the door (or open it) and reach you."
+  },
+  {
+   "name": "bug4_corridor_archer",
+   "door": {
+    "x": 173,
+    "y": 22
+   },
+   "entry": {
+    "x": 173,
+    "y": 24
+   },
+   "rect": {
+    "x": 159,
+    "y": 22,
+    "w": 19,
+    "h": 9
+   },
+   "reach": [
+    "rat"
+   ],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 24,
+   "what": "An archer with rats queued behind it in a 1-wide corridor.",
+   "try": "Stand at the far end.",
+   "look": "The archer and the rats should trade places until the rats reach you. Someone stuck, or a swap that looks like a jump."
+  },
+  {
+   "name": "bug5_boss_crowd",
+   "door": {
+    "x": 185,
+    "y": 22
+   },
+   "entry": {
+    "x": 185,
+    "y": 24
+   },
+   "rect": {
+    "x": 178,
+    "y": 22,
+    "w": 17,
+    "h": 11
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": 2,
+   "index": 26,
+   "what": "The Minotaur idling among rats.",
+   "try": "Watch from the door without waking it, then step in.",
+   "look": "Rats jittering in and out of the Minotaur's way while it stands or turns."
+  },
+  {
+   "name": "manual_corridor_swap",
+   "door": {
+    "x": 220,
+    "y": 22
+   },
+   "entry": {
+    "x": 220,
+    "y": 24
+   },
+   "rect": {
+    "x": 195,
+    "y": 22,
+    "w": 29,
+    "h": 9
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 28,
+   "what": "A long 1-wide corridor: an archer with four rats behind it.",
+   "try": "Enter from the far end.",
+   "look": "Bug 4: the archer and rats should walk past each other. Say if the swap reads badly."
+  },
+  {
+   "name": "manual_smash_or_walk",
+   "door": {
+    "x": 242,
+    "y": 22
+   },
+   "entry": {
+    "x": 242,
+    "y": 24
+   },
+   "rect": {
+    "x": 224,
+    "y": 22,
+    "w": 22,
+    "h": 11
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 30,
+   "what": "A thick wall with a long way round along the bottom.",
+   "try": "Stand on the far side of the wall, then walk around it once.",
+   "look": "Decide what it should do: walk round, smash, or both. Right now it walks to the wall, loses its target and never smashes."
+  },
+  {
+   "name": "terrain_water",
+   "door": {
+    "x": 258,
+    "y": 22
+   },
+   "entry": {
+    "x": 258,
+    "y": 24
+   },
+   "rect": {
+    "x": 246,
+    "y": 22,
+    "w": 17,
+    "h": 8
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 32,
+   "what": "A water band with a stone way round.",
+   "try": "Stand across the band.",
+   "look": "Walkers must route round; flyers may cross. Anything wading through."
+  },
+  {
+   "name": "doors_widths",
+   "door": {
+    "x": 270,
+    "y": 22
+   },
+   "entry": {
+    "x": 270,
+    "y": 24
+   },
+   "rect": {
+    "x": 263,
+    "y": 22,
+    "w": 17,
+    "h": 9
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "index": 34,
+   "what": "Minotaur, archer, rat and wraith behind 1, 2 and 3 wide wooden doors.",
+   "try": "Open each door and step back.",
+   "look": "The Minotaur cannot use the 1-wide door; everyone else should get out of theirs."
+  }
+ ]
+}
