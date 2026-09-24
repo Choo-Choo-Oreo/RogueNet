@@ -13,10 +13,5 @@
 		"rat_blind": 1
 	},
 	"music": "res://resources/sfx/music/Groovy.mp3",
-	"doors": {
-		"density": 0.5,
-		"types": [
-			"wood"
-		]
-	}
+	"default_door": "wood"
 }

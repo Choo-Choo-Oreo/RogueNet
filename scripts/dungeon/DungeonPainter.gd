@@ -30,7 +30,7 @@ func _ready() -> void:
 ## joints, DoorRegistry holds the state, DoorManager draws them.
 func _place_doors(rooms: Dictionary, placements: Array, defines: Dictionary) -> void:
 	DoorRegistry.clear()
-	for door in DoorPlacer.place(rooms, placements, defines, NetworkSync.dungeon_seed):
+	for door in DoorPlacer.place(rooms, placements, defines):
 		DoorRegistry.register(door)
 	var manager := DoorManager.new()
 	manager.name = "Doors"

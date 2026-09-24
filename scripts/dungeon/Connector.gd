@@ -7,8 +7,9 @@ extends RefCounted
 ## a and b are both INCLUDED in the run, a is always the smaller coordinate
 ## (top / left end), and a == b is the old single-cell connector. `free` (optional,
 ## default false) is reserved for "may join a connector of any width".
-## Doors are NOT part of this: whether a door gets placed in an opening is a
-## separate decision (see CONNECTORS_TRACKER.md).
+## `door` (optional) says what this opening wants: a door type from game/doors/
+## ("wood", "iron", ...), "none" (never a door), or "any" (the default, whatever
+## the other side wants, else the biome's default_door). See DoorPlacer.
 ##
 ## Format 1 stored {"position": {"x","y"}}; upgrade_room() converts that in
 ## memory on load, so old files keep working until they are re-saved.
@@ -22,19 +23,21 @@ const SOUTH := 1
 const EAST := 2
 const WEST := 3
 
-static func make(from_cell: Vector2i, to_cell: Vector2i, free: bool = false) -> Dictionary:
+static func make(from_cell: Vector2i, to_cell: Vector2i, free: bool = false, door: String = "") -> Dictionary:
 	var lo := Vector2i(mini(from_cell.x, to_cell.x), mini(from_cell.y, to_cell.y))
 	var hi := Vector2i(maxi(from_cell.x, to_cell.x), maxi(from_cell.y, to_cell.y))
 	var result := {"a": {"x": lo.x, "y": lo.y}, "b": {"x": hi.x, "y": hi.y}}
 	if free:
 		result["free"] = true
+	if door != "" and door != "any":
+		result["door"] = door
 	return result
 
 ## Format 1 {"position"} -> format 2 {"a","b"}; a format 2 connector is just
 ## re-normalised (a <= b). Returns a new dictionary.
 static func upgrade(c: Dictionary) -> Dictionary:
 	if c.has("a") and c.has("b"):
-		return make(_vec(c["a"]), _vec(c["b"]), c.get("free", false))
+		return make(_vec(c["a"]), _vec(c["b"]), c.get("free", false), c.get("door", ""))
 	var p := _vec(c.get("position", {}))
 	return make(p, p)
 
@@ -51,6 +54,11 @@ static func a(c: Dictionary) -> Vector2i:
 
 static func b(c: Dictionary) -> Vector2i:
 	return _vec(c["b"])
+
+## "any" when the connector does not say.
+static func door(c: Dictionary) -> String:
+	var value: String = c.get("door", "")
+	return "any" if value == "" else value
 
 static func is_free(c: Dictionary) -> bool:
 	return c.get("free", false)

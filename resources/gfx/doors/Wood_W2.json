@@ -1,0 +1,43 @@
+{
+	"style": "Wood",
+	"widths": [
+		2,
+		2
+	],
+	"texture": "Wood_W2.png",
+	"normal_texture": "Wood_W2_Normal.png",
+	"frame_size": [
+		16,
+		32
+	],
+	"frames": 8,
+	"animation": "closed -> open, left to right (play backwards to close)",
+	"anchor": "rows 16..31 are the piece's own doorway cell; rows 0..15 overlap the cell to the NORTH (doors draw over the wall there). Draw the frame with its top-left at (cell.x*16, cell.y*16-16), region 16x32 at (frame*16, atlas_y).",
+	"projection": "wall height: 8px face + top strip shifted up 8px, same as the wall tiles; closed slab sits on the seam between the two doorway cells",
+	"usage": {
+		"horizontal doorway (gap in a north/south wall)": "paint on the SOUTH cell of each column, the north cell stays floor. width 1: h_single. width N, column i: i==0 h_end_left, i==N-1 h_end_right, else h_middle_left when i < N/2 otherwise h_middle_right.",
+		"vertical doorway (gap in an east/west wall)": "each doorway row gets a *_left piece on the WEST cell and the matching *_right piece on the EAST cell. height 1: v_single. height N, row i: i==0 v_end_top, i==N-1 v_end_bottom, else v_middle_top when i < N/2 otherwise v_middle_bottom."
+	},
+	"split": "each 16x32 frame is two 16x16 tiles: rows 0..15 draw on the cell NORTH of the doorway cell (over the wall), rows 16..31 on the doorway cell itself.",
+	"pieces": {
+		"h_end_left": {
+			"atlas_y": 0
+		},
+		"h_end_right": {
+			"atlas_y": 32
+		},
+		"v_end_top_left": {
+			"atlas_y": 64
+		},
+		"v_end_top_right": {
+			"atlas_y": 96
+		},
+		"v_end_bottom_left": {
+			"atlas_y": 128
+		},
+		"v_end_bottom_right": {
+			"atlas_y": 160
+		}
+	},
+	"note": "the 2-high vertical door is one dedicated door: v_end_top_* and v_end_bottom_* are the top and bottom halves of one 32x48 render. Closed it is 32px tall, open 40px (rows 8..47 of the door: 8 over the wall face above, 32 of doorway), never anything under the doorway."
+}

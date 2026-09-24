@@ -176,14 +176,23 @@ func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> bool:
 		return false
 	var is_ghost := _is_ghost()
 	var target_tile := Vector2i(floori(target_global.x / tile_size), floori(target_global.y / tile_size))
-	# Walking into a closed door opens it (if this mover may) but doesn't step
-	# this call -- the door is passable once the state change comes back.
+	# A door is a thin line, not a tile. Trying to cross that line while the door
+	# is closed (or still swinging) opens it (if this mover may) but doesn't step
+	# this call. Stepping ONTO a door cell from the front is fine and just starts
+	# it opening, so you can stand in the doorway while it swings.
 	# Ghosts and door-phasing enemies drift through closed doors.
-	var door := DoorRegistry.closed_door_at(target_tile)
-	if door != null and not _ignores_doors():
-		if _can_open(door):
-			NetworkSync.open_door(door.id)
-		return false
+	if not _ignores_doors():
+		var origin_tile := Vector2i(floori(origin_global.x / tile_size), floori(origin_global.y / tile_size))
+		var seam := DoorRegistry.crossing_door(origin_tile, target_tile)
+		if seam != null and DoorRegistry.is_blocking(seam):
+			if _can_open(seam):
+				NetworkSync.open_door(seam.id)
+			return false
+		var onto := DoorRegistry.closed_door_at(target_tile)
+		if onto != null:
+			if not _can_open(onto):
+				return false
+			NetworkSync.open_door(onto.id)
 	if not is_ghost and is_tile_occupied(target_tile):
 		return false
 	facing_direction = direction

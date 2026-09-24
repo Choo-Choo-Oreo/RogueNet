@@ -50,7 +50,7 @@ const OBJECT_MARKER_TEXTURES := {
 	"torch": "res://resources/gfx/objects/Tortch.png",
 	"chest": "res://resources/gfx/objects/Chest_Wood.png",
 }
-const CONNECTOR_TEXTURE_PATH := "res://resources/gfx/doors/door_wood.png"
+const CONNECTOR_TEXTURE_PATH := "res://resources/gfx/doors/Wood_W1.png"
 const PLAYER_SPAWNER_TEXTURE_PATH := "res://resources/gfx/players/player.protagonist/knight/Knight-Down.png"
 const PLAYER_CONTROLLER_SCENE_PATH := "res://scenes/player/PlayerController.tscn"
 const ENEMY_TYPE_NAMES := ["mouse"]
@@ -2571,7 +2571,7 @@ func _serialize_connectors() -> Array:
 	var result := []
 	for connector in connectors:
 		var pos: Vector2i = connector["position"]
-		result.append(Connector.make(pos, connector.get("b", pos), connector.get("free", false)))
+		result.append(Connector.make(pos, connector.get("b", pos), connector.get("free", false), connector.get("door", "")))
 	return result
 
 func _show_export_status(message: String) -> void:

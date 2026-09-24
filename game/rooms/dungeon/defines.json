@@ -15,12 +15,5 @@
 		"wraith": 2
 	},
 	"music": "res://resources/sfx/music/Groovy.mp3",
-	"doors": {
-		"density": 1.0,
-		"types": [
-			"wood",
-			"iron",
-			"iron_sink"
-		]
-	}
+	"default_door": "wood"
 }

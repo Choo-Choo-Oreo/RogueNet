@@ -145,17 +145,34 @@ Notes:
   `spawn_cells`. Weights are relative, not percentages — they just need to
   be consistent within one table.
 - `music` — path to the biome's background track.
-- `doors` (optional) — `{ "density": 0..1, "types": ["wood", "iron"] }`. Each
-  open joint between two rooms rolls `density` for a door; the type is picked
-  from `types` among those whose width range fits the joint. No `doors` key =
-  no doors in that biome.
+- `default_door` (optional) — a door type name (`"wood"`) or `"none"`; missing
+  means `"none"`. It is what a joint gets when neither connector asks for
+  anything specific (see below). A type that is too narrow for a joint is
+  replaced by the first (by name) that fits, with a warning in the log.
+
+A room connector may carry a `"door"` key: a door type (`"wood"`), `"none"`, or
+`"any"` (the default, so it can be left out). The two connectors of a joint
+resolve like this:
+
+- a specific type always gets its door; if both sides ask for a type, the room
+  being entered (the deeper one) wins
+- otherwise `"none"` on either side means no door
+- `"any"` + `"any"` uses the biome's `default_door`
+
+E.g. a hallway's connectors stay `"none"`/`"any"` and the barracks entrance says
+`"door": "wood"`: hallway-to-hallway joints stay open, the barracks gets a wood
+door. (There is no editor field for it yet; add the key by hand in the room
+JSON. DungeonMaker keeps it when re-saving.)
 
 ### Doors — `game/doors/<type>.json`
 
 ```json
 {
 	"name": "wood",
-	"art": "res://resources/gfx/doors/Wood",
+	"art": {
+		"1": "res://resources/gfx/doors/Wood_W1.json",
+		"2": "res://resources/gfx/doors/Wood_W2.json"
+	},
 	"transparent": false,
 	"min_width": 1,
 	"max_width": 2,
@@ -170,8 +187,9 @@ Notes:
   only while investigating or pursuing) or `"phase"` (passes through closed
   doors without opening them).
 - `open_seconds` — how long the swing / slide takes.
-- `min_width` / `max_width` — joint widths (in tiles) this door type can fill.
-- `art` — style prefix of the door art: `<prefix>_<Width>.json` describes the atlas `<prefix>_<Width>.png` for a door of that width (rows per piece, `atlas_y`), with `<prefix>_<Width>_Normal.png` beside it. Names are `<Style>_<Width>`, CamelCase style, plain digit width, e.g. `Wood_2`.
+- `passable_at` — how far through that swing (0..1) the door can be walked through; until then it still blocks walking and shots (not sight or light), for monsters too. `0.5` for wood (swings clear early), `1.0` for bars that have to lift fully. Default `1.0`.
+- `min_width` / `max_width` — joint widths (in tiles) this door type can fill (`2`/`2` for a fixed-width door, `1`/`5` for a full set).
+- `art` — the atlas manifest(s) for this door: one path when a single atlas covers every width the type allows (`Iron_W1-5.json`), or a map of width to path when each width has its own (`"1": Wood_W1.json`, `"2": Wood_W2.json`). Each manifest names its atlas `<Style>_W<n>.png` or `<Style>_W<min>-<max>.png`, the `_Normal.png` beside it, the `widths` it covers, and the piece rows with `atlas_y`. Names: CamelCase style, `W` plus the width or width range, `_Normal` last.
 - Players open a door by walking into it. It closes again a couple of
   seconds after everyone has moved away. Open/closed state is host-owned.
 

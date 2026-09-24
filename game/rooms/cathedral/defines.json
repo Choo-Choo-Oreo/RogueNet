@@ -12,11 +12,5 @@
 		"hamster_demonic": 1
 	},
 	"music": "res://resources/sfx/music/Groovy.mp3",
-	"doors": {
-		"density": 1.0,
-		"types": [
-			"iron",
-			"iron_sink"
-		]
-	}
+	"default_door": "iron"
 }

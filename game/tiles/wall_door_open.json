@@ -1,6 +1,6 @@
 {
 	"tile_name": "wall_door_open",
-	"atlas_texture": "res://resources/gfx/doors/door_wood.png",
+	"atlas_texture": "res://resources/gfx/doors/Wood_W1.png",
 	"sort_order": 100,
 	"category": "wall",
 	"shape": "static",

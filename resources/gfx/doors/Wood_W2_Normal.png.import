@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bips8japjdf0s"
-path="res://.godot/imported/door_iron.png-960adb57e2388aea0beb974a440c2cae.ctex"
+uid="uid://c81f7w4tybou5"
+path="res://.godot/imported/Wood_W2_Normal.png-4b47cf0994b92955b9bd50bfe54dd0ad.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/doors/door_iron.png"
-dest_files=["res://.godot/imported/door_iron.png-960adb57e2388aea0beb974a440c2cae.ctex"]
+source_file="res://resources/gfx/doors/Wood_W2_Normal.png"
+dest_files=["res://.godot/imported/Wood_W2_Normal.png-4b47cf0994b92955b9bd50bfe54dd0ad.ctex"]
 
 [params]
 

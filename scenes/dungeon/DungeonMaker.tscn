@@ -12,7 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://bdh3k1pjwhi31" path="res://resources/gfx/tileset/floor_wood_planks.png" id="11_o85wv"]
 [ext_resource type="Texture2D" uid="uid://dqhpq8s0o1kqr" path="res://resources/gfx/tileset/wall_cobble_brick.png" id="12_mse36"]
 [ext_resource type="Script" uid="uid://kwiwirkys8xp" path="res://scripts/cells/tiles/StaticTileRender.gd" id="13_b6gtq"]
-[ext_resource type="Texture2D" path="res://resources/gfx/doors/door_wood.png" id="14_hvud5"]
+[ext_resource type="Texture2D" path="res://resources/gfx/doors/Wood_W1.png" id="14_hvud5"]
 [ext_resource type="Texture2D" uid="uid://cgplkwatxa2fv" path="res://resources/gfx/tileset/wall_smooth_stone.png" id="15_jjsgu"]
 [ext_resource type="Script" path="res://scripts/dungeon/DungeonMakerOverlay.gd" id="16_ovrly"]
 [ext_resource type="Script" path="res://scripts/dungeon/RoomBrowserSourceList.gd" id="17_rbsrc"]

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://br61pnljgf8m1"
-path="res://.godot/imported/door_iron_sink_normal.png-013fb69778f9f9cb481877a884644fe0.ctex"
+uid="uid://fdst5p1c757e"
+path="res://.godot/imported/Wood_W1.png-9859f46c869676f2b371a2971d2281d7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/doors/door_iron_sink_normal.png"
-dest_files=["res://.godot/imported/door_iron_sink_normal.png-013fb69778f9f9cb481877a884644fe0.ctex"]
+source_file="res://resources/gfx/doors/Wood_W1.png"
+dest_files=["res://.godot/imported/Wood_W1.png-9859f46c869676f2b371a2971d2281d7.ctex"]
 
 [params]
 

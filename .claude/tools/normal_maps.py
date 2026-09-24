@@ -15,7 +15,7 @@ Atlas layout: animation frames run left to right (Aseprite's horizontal strip), 
 top to bottom, each a 64x64 set. Any image size works because everything is done per tile.
 Every method works per 16x16 tile (or 8x8 quarter for bevel) so nothing leaks between tiles.
 """
-import math, sys
+import math, os, re, sys
 from PIL import Image
 
 ROOT = "C:/Users/Orea/Documents/Project-Godot/RogueNet/"
@@ -186,7 +186,7 @@ def bevel(src, tops, reach=3.0, blur_passes=2, strength=6.0):
     return res
 
 def door(src, tops, tilt=0.25, bump=2.0):
-    """Door pieces are 16x32 (own cell + the cell north of it) with no black wall top: the
+    """Door atlases (<Style>_W<Width>.png, 16x32 pieces = own cell + the cell north of it) with no black wall top: the
     `tops` colours are the leaf's flat top strip, every other opaque pixel is a face that leans
     toward the viewer by `tilt` and takes brightness bumps from the art, per 16x16 tile."""
     W, H = src.size; px = src.load()
@@ -241,13 +241,14 @@ MATERIALS = {
     "floor_water":       (palette, dict(heights=WATER, strength=3.0)),
     "floor_lava":        (plain, {}),   # emits its own light, so no shading from the player's
     "floor_acid":        (palette, dict(heights=ACID, strength=3.0)),
-    "door_wood":         (door, dict(tops=WOOD_TOPS, bump=2.5)),
-    "door_iron":         (door, dict(tops=IRON_TOPS, bump=2.0)),
-    "door_iron_sink":    (door, dict(tops=IRON_TOPS, bump=2.0)),
+    "Wood":              (door, dict(tops=WOOD_TOPS, bump=2.5)),
+    "Iron":              (door, dict(tops=IRON_TOPS, bump=2.0)),
+    "IronSink":          (door, dict(tops=IRON_TOPS, bump=2.0)),
 }
 
-# Materials that don't live in the tileset folder.
-FOLDERS = {"door_wood": DOORS, "door_iron": DOORS, "door_iron_sink": DOORS}
+# Materials that don't live in the tileset folder. Doors are one atlas per width,
+# <Style>_W<Width>.png or <Style>_W<Min>-<Max>.png -> same name + _Normal.png.
+FOLDERS = {"Wood": DOORS, "Iron": DOORS, "IronSink": DOORS}
 
 # The dirt and grass PNGs in the game were made with different settings than these defaults
 # (about 1400-1600 pixels differ), so a plain rebuild leaves them alone. Name them to rebuild.
@@ -256,9 +257,17 @@ SKIP_BY_DEFAULT = {"floor_dirt", "floor_grass"}
 def build(name, out_dir=None):
     method, kw = MATERIALS[name]
     folder = FOLDERS.get(name, ART)
-    src = Image.open(folder + name + ".png").convert("RGBA")
-    method(src, **kw).save((out_dir or folder) + name + "_normal.png")
-    print("ok", name, src.size)
+    if folder == DOORS:
+        targets = [f[:-4] for f in sorted(os.listdir(folder)) if re.fullmatch(name + r"_W\d+(-\d+)?\.png", f)]
+        suffix = "_Normal"
+    else:
+        targets, suffix = [name], "_normal"
+    for t in targets:
+        if not os.path.exists(folder + t + ".png"):
+            continue
+        src = Image.open(folder + t + ".png").convert("RGBA")
+        method(src, **kw).save((out_dir or folder) + t + suffix + ".png")
+        print("ok", t, src.size)
 
 if __name__ == "__main__":
     args = sys.argv[1:]; out = None
