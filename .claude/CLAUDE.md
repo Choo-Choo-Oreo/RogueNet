@@ -66,9 +66,14 @@ See [README.md](../README.md) for the data-driven content formats
   not a team-wide commitment.
 - Build command: _(fill in once established)_
 - Test command: _(fill in once established)_
-- Networking: _(note here once the multiplayer/lobby approach is decided —
-  earlier prototype used a downloaded Steam-lobby/ENet template that
-  wasn't hand-written, so don't assume it's well-understood by the team)_
+- Networking: Steam lobby through `SteamMultiplayerPeer` (GodotSteam), with
+  the host as peer 1 running a listen server; singleplayer uses
+  `OfflineMultiplayerPeer`. There is no ENet code. Enemy spawning, AI, damage
+  and doors are host-authoritative (see `singletons/NetworkSync.gd`). The
+  lobby/Steam layer came from a downloaded template rather than being
+  hand-written, so don't assume the team understands it well. Still
+  undecided: a dedicated server (Steam has no headless peer), a persistent
+  town, and late join -- see `TODO.md` and `TOWN_PERSISTENCE_RESEARCH.md`.
 
 ## Known team context
 @.claude/memory/team-context.md

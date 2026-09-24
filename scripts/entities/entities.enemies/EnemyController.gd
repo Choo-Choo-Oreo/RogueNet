@@ -88,8 +88,8 @@ const PATHFIND_RADIUS_MAX := 24
 ## reach this tier at all) and the per-enemy path cache (an enemy that does
 ## reach it mostly reuses its last solve instead of re-asking every frame)
 ## both landed -- real solves-per-frame dropped a lot, so a higher cap for
-## the ones that still happen is cheap. Tune by testing with PerfMonitor.gd
-## in the development biome.
+## the ones that still happen is cheap. Tune by testing with the F4 debug
+## menu's time-usage readout in a heavy biome (cathedral).
 const MAX_PATHFINDS_PER_FRAME := 32
 static var _pathfind_budget_frame: int = -1
 static var _pathfind_budget_used: int = 0

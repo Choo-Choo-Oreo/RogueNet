@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://74eukggc5d7t"
-path="res://.godot/imported/Grave_7E4D3A.png-903ac36940cfc0e258a14001fe083894.ctex"
+uid="uid://bvmjcq25a4qlm"
+path="res://.godot/imported/Grave_8B4513.png-94f1a90df87c8dd15dceda37b8ec45b7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/objects/graves/Grave_7E4D3A.png"
-dest_files=["res://.godot/imported/Grave_7E4D3A.png-903ac36940cfc0e258a14001fe083894.ctex"]
+source_file="res://resources/gfx/objects/objects.graves/Grave_8B4513.png"
+dest_files=["res://.godot/imported/Grave_8B4513.png-94f1a90df87c8dd15dceda37b8ec45b7.ctex"]
 
 [params]
 
