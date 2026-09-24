@@ -1103,13 +1103,48 @@ func _flip_room(horizontal: bool) -> void:
 			var src_y: int = y if horizontal else height - 1 - y
 			new_floor[y][x] = floor_names[src_y][src_x]
 			new_walls[y][x] = walls_names[src_y][src_x]
+	var old_connectors := connectors.duplicate(true)
+	var new_connectors := _flipped_connectors(horizontal)
 	_restore_grids(new_floor, new_walls)
+	_set_connectors(new_connectors)
 	_push_undo(
-		func(): _restore_grids(old_floor, old_walls),
-		func(): _restore_grids(new_floor, new_walls)
+		func():
+			_restore_grids(old_floor, old_walls)
+			_set_connectors(old_connectors),
+		func():
+			_restore_grids(new_floor, new_walls)
+			_set_connectors(new_connectors)
 	)
-	_show_export_status("Flipped tiles %s (objects/connectors unchanged)" % ("horizontally" if horizontal else "vertically"))
+	_show_export_status("Flipped tiles and connectors %s (objects unchanged)" % ("horizontally" if horizontal else "vertically"))
 	queue_redraw()
+
+## The connectors mirrored across the room, ends re-sorted so "position" stays
+## the first (top-left) cell of the run; free / door ride along unchanged.
+func _flipped_connectors(horizontal: bool) -> Array:
+	var result: Array = []
+	for connector in connectors:
+		var start: Vector2i = connector["position"]
+		var end: Vector2i = connector.get("b", start)
+		var flipped_start := Vector2i(width - 1 - start.x, start.y) if horizontal else Vector2i(start.x, height - 1 - start.y)
+		var flipped_end := Vector2i(width - 1 - end.x, end.y) if horizontal else Vector2i(end.x, height - 1 - end.y)
+		var copy: Dictionary = connector.duplicate()
+		copy["position"] = Vector2i(mini(flipped_start.x, flipped_end.x), mini(flipped_start.y, flipped_end.y))
+		var far := Vector2i(maxi(flipped_start.x, flipped_end.x), maxi(flipped_start.y, flipped_end.y))
+		if far != copy["position"]:
+			copy["b"] = far
+		else:
+			copy.erase("b")
+		result.append(copy)
+	return result
+
+## Replaces every connector (data, list rows and markers) with `new_list`.
+func _set_connectors(new_list: Array) -> void:
+	_clear_connectors()
+	for connector in new_list:
+		_insert_connector(connector["position"], connectors.size())
+		for key in connector:
+			if key != "position":
+				connectors[connectors.size() - 1][key] = connector[key]
 
 func _restore_grids(new_floor: Array, new_walls: Array) -> void:
 	floor_names = new_floor.duplicate(true)
@@ -2408,6 +2443,9 @@ func _load_room_data(data: Dictionary) -> void:
 			connectors[connectors.size() - 1]["b"] = Connector.b(conn)
 		if Connector.is_free(conn):
 			connectors[connectors.size() - 1]["free"] = true
+		# Carried along like "b" and "free", or re-saving a room drops its door type.
+		if Connector.door(conn) != "":
+			connectors[connectors.size() - 1]["door"] = Connector.door(conn)
 
 	_update_camera_bounds()
 	camera.position = WORLD_OFFSET + Vector2(width, height) * TILE_SIZE / 2.0

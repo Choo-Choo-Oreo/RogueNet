@@ -198,10 +198,11 @@ JSON. DungeonMaker keeps it when re-saving.)
 - A new tile still needs a matching entry added to `game/tile_registry.json`
   to actually be usable from room JSON.
 - Tile art (and normal maps) live under `resources/gfx/tileset/`. Tileset
-  art is capped at 6 colors per tile (the black wall-top strip doesn't
-  count toward that) — regenerate normal maps after any wall/floor art
-  edit.
+  art is capped at 8 colors per tile (the black wall-top strip doesn't
+  count toward that; older tiles were made under a 6-color cap) —
+  regenerate normal maps after any wall/floor art edit.
 - Naming is subject-first: `wall_forest_dense`, not `wall_dense_forest`.
+- Wall/floor pairs share one 6-colour palette (`wall_smooth_cave` + `floor_smooth_cave`, added 2026-09-24: water-worn cave rock, a smooth sibling of `wall_rough_cave`; the wall reuses the rough cave's autotile mask, the floor reuses the dirt floor's rounded mask so both blend the same way).
 
 ## Tech stack
 

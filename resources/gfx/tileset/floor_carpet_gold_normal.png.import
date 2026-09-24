@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://s3453eiuuf8u"
-path="res://.godot/imported/wall_marble.png-3cceece0dcbcd2820d2d5c4e7f4530e2.ctex"
+uid="uid://dwundelacb40f"
+path="res://.godot/imported/floor_carpet_gold_normal.png-93456213e4bb048e684043457313782a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/tileset/wall_marble.png"
-dest_files=["res://.godot/imported/wall_marble.png-3cceece0dcbcd2820d2d5c4e7f4530e2.ctex"]
+source_file="res://resources/gfx/tileset/floor_carpet_gold_normal.png"
+dest_files=["res://.godot/imported/floor_carpet_gold_normal.png-93456213e4bb048e684043457313782a.ctex"]
 
 [params]
 

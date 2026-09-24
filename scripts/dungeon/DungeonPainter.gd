@@ -18,7 +18,7 @@ func _ready() -> void:
 	DebugState.placements = placements
 	FlowField.clear()
 	SurroundSectors.clear()
-	_paint(rooms, placements, floor_data, wall_data, registry)
+	_paint(rooms, placements, floor_data, wall_data, registry, defines)
 	_place_doors(rooms, placements, defines)
 	MusicManager.play_for_biome(defines)
 	# LightMap is a later sibling in Dungeon.tscn -- its own _ready() (which
@@ -91,7 +91,7 @@ func _warn_bad_spawn_cells(rooms: Dictionary, placements: Array) -> Dictionary:
 				p.room_id, local, world, problem, data_wall, data_floor, p.locked_connectors.has(local), overlaps])
 	return bad_cells
 
-func _paint(rooms: Dictionary, placements: Array, floor_data: TileMapLayer, wall_data: TileMapLayer, registry: TileTypeRegistry) -> void:
+func _paint(rooms: Dictionary, placements: Array, floor_data: TileMapLayer, wall_data: TileMapLayer, registry: TileTypeRegistry, defines: Dictionary = {}) -> void:
 	for p in placements:
 		var room: Dictionary = rooms[p.room_id]
 		var locked := {}
@@ -100,7 +100,11 @@ func _paint(rooms: Dictionary, placements: Array, floor_data: TileMapLayer, wall
 		var suppressed := {}
 		for local_pos in p.suppressed_connectors:
 			suppressed[local_pos] = true
-		var sealed_tile := DungeonAssembler.dominant_wall_tile(room)
+		# The biome's own cap for unused connectors (defines.json "seal_tile"), else
+		# the room's most common wall.
+		var sealed_tile: String = defines.get("seal_tile", "")
+		if sealed_tile == "" or registry.get_id(sealed_tile) < 0:
+			sealed_tile = DungeonAssembler.dominant_wall_tile(room)
 		# Every cell of every connector run -> its connector, so a run wider than
 		# one cell is opened / sealed cell by cell instead of by its first cell.
 		var connector_of := {}

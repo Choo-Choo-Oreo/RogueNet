@@ -40,50 +40,59 @@ Status key: [ ] todo, [x] done, [~] built / needs playtest, [-] on hold
 
 ## S tier -- do first
 
-- [~] Endpoint schema `{a:{x,y}, b:{x,y}}`, inclusive, normalized (A <= B), both on ONE edge, corners rejected; width-1 = A equals B. New Connector helper: cells(), dir, width (agent 1)
-- [~] Explicit side derived from the endpoints (removes the corner ambiguity in `_connector_dir`) (agent 1)
-- [~] Rotation / flip transform both endpoints then re-normalize; spawn cells stop sharing the connector rotate function; unit-check all 4 rotations against old width-1 output (agents 1, 2)
-- [~] Validator with clear errors, shared by loader, editor and a check script (not on an edge, corner, out of bounds, overlapping runs) (agent 1)
-- [~] Migration: one-shot converter turns every `{position}` into `{a, b}` (merging adjacent wall_door cells into runs later); loader keeps accepting the legacy form with a warning; `format` bumped to 2 with an upgrader (agent 1)
-- [~] One width-matching helper `_match_runs(run_from, run_cand, mode)` used by `_try_place` and `_fit_room_at` (agent 2)
-- [~] `free` flag on a connector (join any width) vs exact-match; legacy connectors default to exact so old seeds behave the same (Orea + agent 2)
-- [~] Free-mode alignment order: center first, then start, end, random -- fixed order from the seeded rng so seeds stay deterministic (agent 2)
-- [~] Painter seals / opens every cell of a run, not one cell (agent 2)
-- [~] Doors decoupled from walls: a `DoorPlacer` pass after assembly outputs door records (cell, orient, type, state, id); connectors stay geometry only (agent 3)
-- [ ] Unused-connector sealing becomes its own step with a per-biome cap tile (wall, foliage, flesh...); a used connector with no door stays plain open floor (agent 3)
-- [~] Doors on/off: `defines.json` `doors: {density, types}` per biome (0 = none), overridable by room tag and per-connector `door` field ("none" / "auto" / type) (Orea + agent 3)
-- [~] Door state is host-authoritative with a tiny sync (request -> host validates -> broadcast), full door list in the dungeon snapshot for late joiners (agent 3)
-- [~] Door blocking through a runtime DoorRegistry (cell -> door state) asked by GridMover / LightMap, not painted tiles or physics bodies (agent 3)
+- [x] Endpoint schema `{a:{x,y}, b:{x,y}}`, inclusive, normalized (A <= B), both on ONE edge, corners rejected; width-1 = A equals B. New Connector helper: cells(), dir, width (agent 1) -- checked in code 2026-09-24 (`Connector.make/cells/width`); all 383 room files parse: 871 connectors, 0 problems
+- [x] Explicit side derived from the endpoints (removes the corner ambiguity in `_connector_dir`) (agent 1) -- checked in code 2026-09-24 (`Connector.dir`)
+- [x] Rotation / flip transform both endpoints then re-normalize; spawn cells stop sharing the connector rotate function; unit-check all 4 rotations against old width-1 output (agents 1, 2) -- rotation confirmed (`Connector.rotate`, `rotate_room`; the sim reproduces all 4 turns). The editor Flip still leaves connectors alone: still open, see A tier
+- [x] Validator with clear errors, shared by loader, editor and a check script (not on an edge, corner, out of bounds, overlapping runs) (agent 1) -- checked in code 2026-09-24 (`Connector.validate`, run on every room load; a script check of all 383 rooms found 0 problems)
+- [x] Migration: one-shot converter turns every `{position}` into `{a, b}` (merging adjacent wall_door cells into runs later); loader keeps accepting the legacy form with a warning; `format` bumped to 2 with an upgrader (agent 1) -- all 383 rooms are format 2, 0 legacy connectors; the format-1 loader shim is still there
+- [x] One width-matching helper `_match_runs(run_from, run_cand, mode)` used by `_try_place` and `_fit_room_at` (agent 2) -- built as `_join_shifts` + `_joint_cells`, used by `_try_place` and `_fit_room_at` (a different name from the plan)
+- [x] `free` flag on a connector (join any width) vs exact-match; legacy connectors default to exact so old seeds behave the same (Orea + agent 2) -- 555 of 871 connectors are free; cathedral and dungeon stay exact by choice
+- [x] Free-mode alignment order: center first, then start, end, random -- fixed order from the seeded rng so seeds stay deterministic (agent 2) -- centre, start, end, no rng; the generator sim reproduces it
+- [x] Painter seals / opens every cell of a run, not one cell (agent 2) -- `DungeonPainter` opens joint cells and seals the rest per cell, locked runs whole
+- [x] Doors decoupled from walls: a `DoorPlacer` pass after assembly outputs door records (cell, orient, type, state, id); connectors stay geometry only (agent 3) -- `DoorPlacer` + `DoorRegistry` + `DoorManager`; playtested by Orea 2026-09-23/24
+- [x] Unused-connector sealing becomes its own step with a per-biome cap tile (wall, foliage, flesh...); a used connector with no door stays plain open floor (agent 3) -- still open: the painter seals with the room's own `dominant_wall_tile`; there is no per-biome cap tile. The only S item left -- built 2026-09-24: `defines.json` `seal_tile` (optional) caps unused / unmatched runs, falling back to the room's `dominant_wall_tile`. No biome sets it yet: which cap tile each biome wants (e.g. forest foliage) is Orea's art call. Not run in Godot
+- [x] Doors on/off: `defines.json` `doors: {density, types}` per biome (0 = none), overridable by room tag and per-connector `door` field ("none" / "auto" / type) (Orea + agent 3) -- changed: `defines.json` now has a `default_door` ("none" or a type) instead of `doors: {density, types}`, plus the per-connector `door` field (745 connectors set)
+- [x] Door state is host-authoritative with a tiny sync (request -> host validates -> broadcast), full door list in the dungeon snapshot for late joiners (agent 3) -- `request_door_open` -> `set_door` -> `receive_door_state`; the full-list snapshot for late joiners is not needed yet (joins are refused once a mission starts)
+- [x] Door blocking through a runtime DoorRegistry (cell -> door state) asked by GridMover / LightMap, not painted tiles or physics bodies (agent 3) -- asked by `GridMover` and `LightMap`
 
 ## A tier
 
-- [~] Leftover cells of the wider side default to wall; optional per-connector "open remainder" later (agent 2)
-- [ ] Reserve the whole joint strip in `occupied` so later rooms can't misalign (agent 2)
-- [ ] RoomGraph edges carry the joint cells (and door type); next_waypoint returns the nearest joint cell instead of always the centre (agent 2)
-- [ ] Seed-drift guard: `connection_mode` (free / exact) in defines plus a candidate-order salt so old seeds still reproduce in exact mode (agent 2)
-- [ ] Door types: archway (no block), wooden, locked / key, one `DoorDef` table in JSON (agent 3)
-- [ ] Vision hook: closed doors block light and line of sight; door change marks the light / FOV region dirty (agent 3)
-- [ ] Enemy pathing: closed unlocked doors passable with small cost, enemies open them on contact (host only); locked doors count as walls, flow field rebuilt on lock changes; RoomGraph edges avoid locked doors (agent 3)
-- [ ] DungeonMaker: two-click endpoint tool (click A, click B, snaps to the clicked edge), run bars in the list, drag ends, hover, flip transforms connectors; undo stores the whole connector (agent 1)
-- [ ] Stable door ids derived from the dungeon seed so clients and host agree without shipping coordinates (agent 3)
+- [x] Leftover cells of the wider side default to wall; optional per-connector "open remainder" later (agent 2) -- the painter seals cells outside the joint; the optional "open remainder" stays a later idea
+- [-] Reserve the whole joint strip in `occupied` so later rooms can't misalign (agent 2) -- moot: the two rooms sit directly adjacent and both rects are already in `occupied`, so nothing can land in the joint
+- [x] RoomGraph edges carry the joint cells (and door type); next_waypoint returns the nearest joint cell instead of always the centre (agent 2) -- built 2026-09-24: `Placement.joint_world` (all joint cells on the child's side), edges carry `cells`, `next_waypoint` returns the joint cell nearest the caller (door type not carried; no locked doors yet). Not run in Godot
+- [-] Seed-drift guard: `connection_mode` (free / exact) in defines plus a candidate-order salt so old seeds still reproduce in exact mode (agent 2) -- dropped: every room file was rewritten, so old seeds already differ
+- [~] Door types: archway (no block), wooden, locked / key, one `DoorDef` table in JSON (agent 3) -- the `DoorDef` table is `game/doors/*.json` (wood, wood_fold, iron, iron_sink, dungeon; `none` = archway); locked / key is not built (needs items)
+- [x] Vision hook: closed doors block light and line of sight; door change marks the light / FOV region dirty (agent 3) -- closed solid doors block light and sight (`LightMap._is_blocked` asks `DoorRegistry.blocks_sight`)
+- [~] Enemy pathing: closed unlocked doors passable with small cost, enemies open them on contact (host only); locked doors count as walls, flow field rebuilt on lock changes; RoomGraph edges avoid locked doors (agent 3) -- enemy JSON `doors: none | open | phase` and the door-open predicate work, and a door change clears the FlowField; there are no locked doors, so avoiding them in `RoomGraph` is not needed yet
+- [~] DungeonMaker: two-click endpoint tool (click A, click B, snaps to the clicked edge), run bars in the list, drag ends, hover, flip transforms connectors; undo stores the whole connector (agent 1) -- flip now mirrors connectors (`_flipped_connectors`, undoable; not run in Godot). Still open: two-click endpoint tool, run bars, drag ends, `door` field. Bigger UI piece, needs scene changes
+- [x] Stable door ids derived from the dungeon seed so clients and host agree without shipping coordinates (agent 3) -- ids are list positions from a deterministic `DoorPlacer`, identical on every peer
 
 ## B tier
 
-- [ ] Secret doors (render as wall until found), boss gate (locks on room entry, unlocks when cleared), "cracked open" see-through-but-blocked state (bars / portcullis) (agent 3)
-- [ ] Door as its own node (Door.tscn) ONLY as a visual layer over the registry, for open / close animation (agent 3 -- pure node-physics version rejected)
-- [ ] Best-fit offset search (score every offset) instead of centre-first (agent 2)
-- [ ] Objects pass: real in-game instances, rotate with the room, tile snapping decision (Orea, separate from connectors)
+- [-] Secret doors (render as wall until found), boss gate (locks on room entry, unlocks when cleared), "cracked open" see-through-but-blocked state (bars / portcullis) (agent 3) -- on hold
+- [x] Door as its own node (Door.tscn) ONLY as a visual layer over the registry, for open / close animation (agent 3 -- pure node-physics version rejected) -- in effect built: `DoorManager` draws sprites over the registry, the registry stays the source of truth
+- [-] Best-fit offset search (score every offset) instead of centre-first (agent 2) -- on hold; the fixed centre / start / end order is enough
+- [-] Objects pass: real in-game instances, rotate with the room, tile snapping decision (Orea, separate from connectors) -- moved to OBJECTS_ROUTES_TRACKER.md
 
 ## C tier -- later / needs other systems
 
-- [ ] One-way doors (agent 3)
-- [ ] Flare / funnel tiles for wide-to-narrow joints (agent 2)
-- [ ] 2x2 boss clearance: per-edge `joint_width`, boss route requires width >= 2 (ties to the multi-tile item in SURROUND_AI_TRACKER.md) (agent 2)
+- [-] One-way doors (agent 3) -- on hold
+- [-] Flare / funnel tiles for wide-to-narrow joints (agent 2) -- on hold
+- [-] 2x2 boss clearance: per-edge `joint_width`, boss route requires width >= 2 (ties to the multi-tile item in SURROUND_AI_TRACKER.md) (agent 2) -- on hold; ties to the multi-tile item in SURROUND_AI_TRACKER.md
 
 ## D / F tier -- not recommended
 
-- [ ] Auto-widening 1-wide runs by carving into the neighbor wall: edits room data, breaks signature dedupe, can hit spawn cells (agent 2, D)
-- [ ] Doors as pure physics nodes with their own collision next to the grid: two blocking systems can disagree (agent 3, D)
+- [-] Auto-widening 1-wide runs by carving into the neighbor wall: edits room data, breaks signature dedupe, can hit spawn cells (agent 2, D) -- not recommended, stays out
+- [-] Doors as pure physics nodes with their own collision next to the grid: two blocking systems can disagree (agent 3, D) -- not recommended, stays out
+
+## Confirmed 2026-09-24
+
+Read against the code and a script check of every room file (not by running the game):
+- All 383 room files are format 2 with 871 connectors: 0 problems (each run is on one edge, not a corner, in bounds, normalised, no overlaps). 586 are wider than 1, 555 are free, 745 carry a `door`.
+- The whole S tier is confirmed except one item: a per-biome cap tile for unused connectors.
+- Found and fixed: DungeonMaker's loader dropped each connector's `door` field, so saving any room from the editor would have stripped its door types. It now carries `door` along like `b` and `free`. Not run in Godot.
+- Still open in A tier: reserve the whole joint strip in `occupied`, RoomGraph edges using the joint cells (`door_cell` is the middle joint cell), a `connection_mode` seed-drift guard (probably moot: every room file was rewritten, so old seeds already differ), and the editor tools (two-click endpoint tool, flip transforming connectors, and a field for a connector's `door`).
+- B, C and D tiers are on hold ([-]) unless noted.
 
 ## Step 1 built 2026-09-23 (format only, needs a load / generate test)
 

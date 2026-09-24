@@ -223,6 +223,9 @@ class Placement:
 	## layout itself.
 	var parent_index: int = -1
 	var door_cell: Vector2i = Vector2i.ZERO
+	## Every world cell of the joint on this room's side (door_cell is the middle
+	## one), so RoomGraph can aim at the nearest opening of a wide joint.
+	var joint_world: Array[Vector2i] = []
 	## Connector anchor (local first cell) -> the LOCAL cells of that connector
 	## that actually join another room. A connector with no entry is treated as
 	## joined along its whole length; cells of a wider connector outside its
@@ -429,6 +432,7 @@ static func _try_place(rooms: Dictionary, candidate_ids: Array, entry: Dictionar
 				placement.joint_cells[local_pos] = joint["cand"]
 				from_placement.joint_cells[entry["local_pos"]] = joint["from"]
 				placement.door_cell = from_placement.offset + _middle_cell(joint["from"]) + step
+				placement.joint_world = _world_joint(from_placement.offset, joint["from"], step)
 				placements.append(placement)
 				occupied.append(rect)
 				_queue_connectors(cand, placements.size() - 1, open_connectors, local_pos)
@@ -472,6 +476,7 @@ static func _fit_room_at(rooms: Dictionary, room_id: String, from_placement: Pla
 			placement.joint_cells[cand_local] = joint["cand"]
 			from_placement.joint_cells[local_pos] = joint["from"]
 			placement.door_cell = from_placement.offset + _middle_cell(joint["from"]) + step
+			placement.joint_world = _world_joint(from_placement.offset, joint["from"], step)
 			placements.append(placement)
 			occupied.append(rect)
 			var extra: Array = []
@@ -524,6 +529,12 @@ static func _joint_cells(from_run: Dictionary, cand_run: Dictionary, shift: int,
 		from_cells.append(Connector.a(from_run) + axis * i)
 		cand_cells.append(Connector.a(cand_run) + axis * (i - shift))
 	return {"from": from_cells, "cand": cand_cells}
+
+static func _world_joint(offset: Vector2i, from_cells: Array, step: Vector2i) -> Array[Vector2i]:
+	var world: Array[Vector2i] = []
+	for c in from_cells:
+		world.append(offset + c + step)
+	return world
 
 static func _middle_cell(cells: Array) -> Vector2i:
 	return cells[floori(cells.size() / 2.0)]

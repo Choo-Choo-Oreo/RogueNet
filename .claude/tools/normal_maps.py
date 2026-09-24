@@ -234,11 +234,13 @@ MATERIALS = {
     "wall_cobble_brick": (wall, dict(bump=4.0, tilt=0.25, bevel=1.2)),
     "wall_wood_plank":   (wall, dict(bump=2.5, tilt=0.25, bevel=1.2)),
     "wall_rough_cave":   (wall, dict(bump=3.0, tilt=0.25, bevel=1.2)),
+    "wall_smooth_cave":  (wall, dict(bump=1.2, tilt=0.25, bevel=1.2)),
     "wall_flesh":        (palette, dict(heights=FLESH, base="wall", bump=0.0, tilt=0.25, bevel=1.2)),
     "floor_dirt":        (luminance_floor, {}),
     "floor_grass":       (luminance_floor, {}),
     "floor_flesh":       (palette, dict(heights=FLESH)),
     "floor_smooth_stone": (bevel, dict(tops=STONE_TOPS)),
+    "floor_smooth_cave": (luminance_floor, dict(strength=3.0)),   # flat worn pads: gentle bumps from the art's brightness
     "floor_water":       (palette, dict(heights=WATER, strength=3.0)),
     "floor_lava":        (plain, {}),   # emits its own light, so no shading from the player's
     "floor_acid":        (palette, dict(heights=ACID, strength=3.0)),
@@ -269,6 +271,8 @@ def _wall_tops(tile):
 
 
 for _set, _tile in FRAME_SETS.items():
+    if not os.path.exists(ART + _tile + ".png"):
+        continue                                   # wall tile gone (wall_marble was removed 2026-09-24): no frame material
     MATERIALS[_set] = (door, dict(tops=_wall_tops(_tile), bump=1.5))
     FOLDERS[_set] = BOSS
 

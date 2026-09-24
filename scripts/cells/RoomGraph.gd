@@ -14,7 +14,8 @@ extends RefCounted
 ## change (e.g. a loop-back corridor) adds a second edge between two rooms.
 
 var _room_rects: Array[Rect2i] = []
-# _adjacency[i] is this room's neighbors: [{"to": int, "door": Vector2i}, ...]
+# _adjacency[i] is this room's neighbors:
+# [{"to": int, "door": Vector2i (middle), "cells": Array[Vector2i] (whole joint)}, ...]
 var _adjacency: Array = []
 
 ## Set by DungeonPainter._ready() once a dungeon's rooms are placed; null
@@ -31,8 +32,8 @@ static func build(rooms: Dictionary, placements: Array) -> void:
 		var p = placements[i]
 		if p.parent_index < 0:
 			continue
-		graph._adjacency[i].append({"to": p.parent_index, "door": p.door_cell})
-		graph._adjacency[p.parent_index].append({"to": i, "door": p.door_cell})
+		graph._adjacency[i].append({"to": p.parent_index, "door": p.door_cell, "cells": p.joint_world})
+		graph._adjacency[p.parent_index].append({"to": i, "door": p.door_cell, "cells": p.joint_world})
 	current = graph
 
 func _room_at(cell: Vector2i) -> int:
@@ -65,11 +66,20 @@ func next_waypoint(from_cell: Vector2i, to_cell: Vector2i) -> Vector2i:
 			if came_from.has(next_room):
 				continue
 			came_from[next_room] = room
-			came_via_door[next_room] = edge["door"]
+			came_via_door[next_room] = edge
 			queue.append(next_room)
 	if not came_from.has(to_room):
 		return Vector2i.ZERO
 	var step_room: int = to_room
 	while came_from[step_room] != from_room:
 		step_room = came_from[step_room]
-	return came_via_door[step_room]
+	# Head for the joint cell closest to us, not always the middle one.
+	var edge: Dictionary = came_via_door[step_room]
+	var best: Vector2i = edge["door"]
+	var best_dist := INF
+	for cell in edge["cells"]:
+		var d := Vector2(cell - from_cell).length_squared()
+		if d < best_dist:
+			best_dist = d
+			best = cell
+	return best
