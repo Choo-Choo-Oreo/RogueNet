@@ -207,3 +207,19 @@ load.
 - Folder and file-name rules
 - The list of skin tones
 - The color limit per sprite
+
+---
+
+## 8. Videos worth watching
+
+- [Colorize from Grayscale! (Pixel Art Tips)](https://www.youtube.com/watch?v=_b2E2UJR5dE)
+  Drawing in grayscale first, then adding color.
+- [Infinite Pixel Art Colors with THIS Trick!](https://www.youtube.com/shorts/odvks9jqkKo)
+  Recoloring sprites in code so players can customize their character.
+- [Moonborn Modular Pixel Art Workflow](https://www.youtube.com/watch?v=P2x7t5OTFgg)
+  Building a character out of separate, swappable parts.
+- [How to make modular 2d game sprites (live stream)](https://www.youtube.com/watch?v=h_XwcKFC-Qs)
+  A longer walkthrough of modular sprites in Krita.
+- [Hue Shifting in Pixel Art](https://www.youtube.com/watch?v=PNtMAxYaGyg)
+  Why shading often shifts hue, not just brightness. Tinting can't do this,
+  which is why recolored parts can look a bit flatter.
