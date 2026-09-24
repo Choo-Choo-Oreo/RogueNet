@@ -1,0 +1,84 @@
+{
+	"note": "Boss door emblems: one small raised sign per damage type, drawn on the boss door's lintel so the player knows what the boss hits with before opening. Front view for horizontal doors, side view (edge-on, popping out of both faces of the 3px lintel bar) for vertical doors. Static: one frame each, stays when the door opens. Draw after the door's overlay layer, full opacity. 8 colours each, ramped from the damage type's own hit effect.",
+	"frame_size": [
+		12,
+		12
+	],
+	"frames": {
+		"front": [
+			0,
+			0
+		],
+		"side": [
+			12,
+			0
+		]
+	},
+	"placement": {
+		"front": "horizontal door of width W: draw the front frame at (x + W*8 - 6, y + 6), where (x, y) is where the door's first piece (h_end_left) is drawn = (cell.x*16, cell.y*16 - own_cell_row). Centred across the lintel; its lit top overlaps the lintel's top strip.",
+		"side": "vertical door of height N: draw the side frame at (x + 10, y + 14 + N*8), where (x, y) is where the first *_left piece (v_end_top_left) is drawn. Columns 4..6 of the frame are left empty for the lintel bar (the _left piece's columns 14..15 and the _right piece's column 0), centred along the bar."
+	},
+	"lookup": "Use the boss's attack damage type id from game/damage_types.json. If it has no entry, drop the last .segment and try again (Physical.Slashing -> Physical). Enemy JSON sometimes names only the last segment (\"Perditio\"): match that against the last segment of the keys.",
+	"emblems": {
+		"Physical": {
+			"texture": "Physical_Emblem.png",
+			"normal_texture": "Physical_Emblem_Normal.png"
+		},
+		"Arcana": {
+			"texture": "Arcana_Emblem.png",
+			"normal_texture": "Arcana_Emblem_Normal.png"
+		},
+		"Necrotic": {
+			"texture": "Necrotic_Emblem.png",
+			"normal_texture": "Necrotic_Emblem_Normal.png"
+		},
+		"Arcana.Ordo": {
+			"texture": "Ordo_Emblem.png",
+			"normal_texture": "Ordo_Emblem_Normal.png"
+		},
+		"Arcana.Ordo.Frigid": {
+			"texture": "Frigid_Emblem.png",
+			"normal_texture": "Frigid_Emblem_Normal.png"
+		},
+		"Arcana.Ordo.Solum": {
+			"texture": "Solum_Emblem.png",
+			"normal_texture": "Solum_Emblem_Normal.png"
+		},
+		"Arcana.Ordo.Plenum": {
+			"texture": "Plenum_Emblem.png",
+			"normal_texture": "Plenum_Emblem_Normal.png"
+		},
+		"Arcana.Entropia": {
+			"texture": "Entropia_Emblem.png",
+			"normal_texture": "Entropia_Emblem_Normal.png"
+		},
+		"Arcana.Entropia.Zeal": {
+			"texture": "Zeal_Emblem.png",
+			"normal_texture": "Zeal_Emblem_Normal.png"
+		},
+		"Arcana.Entropia.Fluentia": {
+			"texture": "Fluentia_Emblem.png",
+			"normal_texture": "Fluentia_Emblem_Normal.png"
+		},
+		"Arcana.Entropia.Inanis": {
+			"texture": "Inanis_Emblem.png",
+			"normal_texture": "Inanis_Emblem_Normal.png"
+		},
+		"Necrotic.Perditio": {
+			"texture": "Perditio_Emblem.png",
+			"normal_texture": "Perditio_Emblem_Normal.png"
+		},
+		"Necrotic.Perditio.Torpor": {
+			"texture": "Torpor_Emblem.png",
+			"normal_texture": "Torpor_Emblem_Normal.png"
+		},
+		"Necrotic.Perditio.Virulentia": {
+			"texture": "Virulentia_Emblem.png",
+			"normal_texture": "Virulentia_Emblem_Normal.png"
+		},
+		"Necrotic.Perditio.Ruina": {
+			"texture": "Ruina_Emblem.png",
+			"normal_texture": "Ruina_Emblem_Normal.png"
+		}
+	}
+}
