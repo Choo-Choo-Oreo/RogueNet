@@ -76,7 +76,7 @@ to be packed, so spawn cells are laid by floor area, not by hand:
 | Boss | 10 | 8 |
 | Entrance, peaceful | none | |
 
-The 82 rooms have 869 spawn cells between them. The two peaceful organs and
+The 84 rooms have 871 spawn cells between them. The two peaceful organs and
 the entrances are the only rooms with none.
 
 ## Roles and tags
@@ -107,7 +107,7 @@ the entrances are the only rooms with none.
 
 ## Current piece set (2026-09-24)
 
-82 rooms: each organ below, plus `<Organ>_Mutant`. Sizes are in the file
+84 rooms: each organ below, plus `<Organ>_Mutant`. Sizes are in the file
 names (grid size = inside + 2).
 
 - **Entrance:** Mouth (teeth, stone tongue), Nasal Cavity (septum, two
@@ -118,7 +118,7 @@ names (grid size = inside + 2).
   Esophagus (mutant splits and rejoins), Trachea, Larynx (vocal folds pinch
   it to a 1-tile slit; mutant has two), Tonsils, Colon (U; mutant is a W),
   Aorta.
-- **Vessels and nerves, 1 wide:** Vein, Vein Bend, Vein Fork, Artery, Capillaries,
+- **Vessels and nerves, 1 wide:** Vein, Vein Short, Vein Bend, Vein Fork, Artery, Capillaries,
   Spinal Cord.
 - **Combat:** Lungs (mutant has three), Stomach (mutant has four chambers,
   like a cow), Pancreas, Spleen (mutant has satellite spleens), Skin, Muscle,

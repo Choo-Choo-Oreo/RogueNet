@@ -138,7 +138,7 @@ Lower weight means less often, but never impossible.
 
 ## Current piece set (2026-09-24)
 
-40 rooms. The sizes below are the grid size.
+43 rooms. The sizes below are the grid size.
 
 - **Entrance:** Entrance 12×12 (four wide doors), Entrance Wings 12×12 (wide
   doors north and south, plus two narrow doors each on the west and east
@@ -148,7 +148,7 @@ Lower weight means less often, but never impossible.
   Junction T 8×8, Crossroads 10×10.
 - **Narrow links:** Corridor Tap 4×9 (wide corridor, one narrow side door),
   Corridor TapTwin 4×9 (two narrow side doors), Passage Narrow 3×7, Passage
-  Bend 5×5, Passage Fork 5×5.
+  Bend 5×5, Passage Fork 5×5, Passage Cross 5×5.
 - **Combat:** Hall 12×10, Pillars 14×14, Divide 14×10, Ring 14×14, Cross
   14×14, Gallery 8×16, Octagon 12×12.
 - **Kill zone:** Killzone 10×14 (12 spawns).

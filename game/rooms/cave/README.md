@@ -72,7 +72,7 @@ the forest's wolf packs, to fit bats.
 | Side pocket | 1 | 2 |
 | Entrance, passage, crawlway, peaceful | none | |
 
-The 74 rooms have 306 spawn cells between them.
+The 76 rooms have 306 spawn cells between them.
 
 ## Roles and tags
 
@@ -98,13 +98,13 @@ The 74 rooms have 306 spawn cells between them.
   - `killzone` 0.5
   - `peaceful` 0.7
 
-  The old maze boost of 1.5 is gone. Only 8 of the 74 rooms are mazes now.
+  The old maze boost of 1.5 is gone. Only 8 of the 76 rooms are mazes now.
 - `monsters` and `music` are unchanged: bat 3, blind rat 2, wolf 1, and
   Groovy.
 
 ## Current piece set (2026-09-24)
 
-74 rooms: each formation below, plus `<Formation>_Deep`. Sizes are in the
+76 rooms: each formation below, plus `<Formation>_Deep`. Sizes are in the
 file names (grid size = inside + 2).
 
 - **Entrance:** Cave Mouth (moss where daylight gets in), Sinkhole (a moss
@@ -112,7 +112,7 @@ file names (grid size = inside + 2).
 - **Passages, 3 wide:** Tunnel, Tunnel Bend, Tunnel Fork, Lava Tube
   (smooth floor with lava along one wall; Deep has lava along both),
   Underground Stream, Rift (a zigzag crack).
-- **Crawlways, 1 wide:** Crawlway, Squeeze, Crawlway Bend (a turn that loops
+- **Crawlways, 1 wide:** Crawlway, Crawlway Short, Squeeze, Crawlway Bend (a turn that loops
   around the room), Keyhole.
 - **Formations (combat):**
   - Stalactite Hall (lone stalagmites), Column Hall (flowstone columns).

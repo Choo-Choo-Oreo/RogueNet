@@ -103,7 +103,7 @@ Anything not listed counts as 1.0.
 
 ## Current piece set (2026-09-24)
 
-65 rooms. The sizes below are the grid size.
+66 rooms. The sizes below are the grid size.
 
 - **Entrance:** Lift 13×13 (four wide doors), Cage 13×13 (wide north and
   south doors, narrow west and east doors). The generator picks one at
@@ -114,7 +114,7 @@ Anything not listed counts as 1.0.
   forks into two side by side), Crossover 11×13 (two parallel shafts joined
   in the middle), Roundabout 13×13 (a loop round a rock, four doors).
 - **Narrow links:** Shaft Tap 5×11 (one narrow side door), Shaft TapTwin 5×11
-  (two narrow side doors), Crawlway 3×9, Crawl Bend 5×5, Crawl Fork 5×5.
+  (two narrow side doors), Crawlway 3×9, Crawl Bend 5×5, Crawl Fork 5×5, Crawl Cross 5×5.
 - **Working rooms:** Ore Gallery 15×11, Timber Hall 13×13, Loading Bay 15×11,
   Switchyard 13×13, Collapsed Tunnel 11×11, Stope 15×15, Pillar Works 15×15.
 - **Kill zone:** Killzone Chute 11×17 (12 spawns).

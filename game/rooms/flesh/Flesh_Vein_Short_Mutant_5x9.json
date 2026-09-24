@@ -1,0 +1,177 @@
+{
+	"biome": "flesh",
+	"connectors": [
+		{
+			"a": {
+				"x": 2,
+				"y": 0
+			},
+			"b": {
+				"x": 2,
+				"y": 0
+			},
+			"door": "iron",
+			"free": true
+		},
+		{
+			"a": {
+				"x": 2,
+				"y": 8
+			},
+			"b": {
+				"x": 2,
+				"y": 8
+			},
+			"door": "iron",
+			"free": true
+		}
+	],
+	"base_floor": "floor_flesh",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_flesh",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			"floor_flesh",
+			"floor_flesh",
+			"floor_flesh",
+			null
+		],
+		[
+			null,
+			null,
+			"floor_flesh",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_flesh",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_flesh",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"format": 2,
+	"height": 9,
+	"id": "Flesh_Vein_Short_Mutant_5x9",
+	"objects": [],
+	"role": "corridor",
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 3,
+				"y": 4
+			}
+		}
+	],
+	"tags": [
+		"corridor"
+	],
+	"walls": [
+		[
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			null,
+			null,
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			null,
+			null,
+			null,
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			"wall_flesh"
+		],
+		[
+			"wall_flesh",
+			"wall_flesh",
+			null,
+			"wall_flesh",
+			"wall_flesh"
+		]
+	],
+	"width": 5
+}

@@ -21,8 +21,8 @@ from on its own:
 That was the starting set. `dungeon/` and `mine/` were redesigned on
 2026-09-24 and now have much larger sets: two entrances, two bosses, several
 treasure rooms and 8 or 24 mazes. `flesh/` was redesigned the same day as
-82 rooms, one per organ plus a mutant of each, `forest/` as 76 rooms,
-one per landmark plus an Overgrown variant, and `cave/` as 74 rooms, one per
+84 rooms, one per organ plus a mutant of each, `forest/` as 78 rooms,
+one per landmark plus an Overgrown variant, and `cave/` as 76 rooms, one per
 formation plus a Deep variant. Each folder's own `README.md`
 lists every piece.
 
