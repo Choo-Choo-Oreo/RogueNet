@@ -1,0 +1,7 @@
+{
+	"name": "Stick bow",
+	"slot": "main_hand",
+	"set": "poacher",
+	"art": "res://resources/gfx/gear/main_hand/poacher/PoacherShortbow",
+	"icon": "res://resources/gfx/ui/icons/items/poacher_shortbow.png"
+}

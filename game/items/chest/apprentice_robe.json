@@ -1,0 +1,7 @@
+{
+	"name": "Homespun robe",
+	"slot": "chest",
+	"set": "apprentice",
+	"art": "res://resources/gfx/gear/chest/apprentice/ApprenticeRobe",
+	"icon": "res://resources/gfx/ui/icons/items/apprentice_robe.png"
+}

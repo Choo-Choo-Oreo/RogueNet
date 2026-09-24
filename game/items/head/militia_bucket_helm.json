@@ -1,0 +1,7 @@
+{
+	"name": "Bucket helm",
+	"slot": "head",
+	"set": "militia",
+	"art": "res://resources/gfx/gear/helmets/militia/MilitiaBucketHelm",
+	"icon": "res://resources/gfx/ui/icons/items/militia_bucket_helm.png"
+}

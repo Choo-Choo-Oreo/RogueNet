@@ -1,0 +1,7 @@
+{
+	"name": "Fur cap",
+	"slot": "head",
+	"set": "poacher",
+	"art": "res://resources/gfx/gear/helmets/poacher/PoacherFurCap",
+	"icon": "res://resources/gfx/ui/icons/items/poacher_fur_cap.png"
+}

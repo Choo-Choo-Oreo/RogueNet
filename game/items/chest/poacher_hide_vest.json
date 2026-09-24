@@ -1,0 +1,7 @@
+{
+	"name": "Hide vest",
+	"slot": "chest",
+	"set": "poacher",
+	"art": "res://resources/gfx/gear/chest/poacher/PoacherHideVest",
+	"icon": "res://resources/gfx/ui/icons/items/poacher_hide_vest.png"
+}

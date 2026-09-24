@@ -1,0 +1,7 @@
+{
+	"name": "Torch",
+	"slot": "off_hand",
+	"set": "poacher",
+	"art": "res://resources/gfx/gear/off_hand/poacher/PoacherTorch",
+	"icon": "res://resources/gfx/ui/icons/items/poacher_torch.png"
+}

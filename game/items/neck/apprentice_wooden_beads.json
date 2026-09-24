@@ -1,0 +1,7 @@
+{
+	"name": "Wooden beads",
+	"slot": "neck",
+	"set": "apprentice",
+	"art": "res://resources/gfx/gear/amulets/apprentice/ApprenticeWoodenBeads",
+	"icon": "res://resources/gfx/ui/icons/items/apprentice_wooden_beads.png"
+}

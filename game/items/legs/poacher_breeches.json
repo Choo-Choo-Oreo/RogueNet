@@ -1,0 +1,7 @@
+{
+	"name": "Poacher's breeches",
+	"slot": "legs",
+	"set": "poacher",
+	"art": "res://resources/gfx/gear/legs/poacher/PoacherBreeches",
+	"icon": "res://resources/gfx/ui/icons/items/poacher_breeches.png"
+}

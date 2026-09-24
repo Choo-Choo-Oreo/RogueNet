@@ -1,0 +1,7 @@
+{
+	"name": "Lucky coin",
+	"slot": "neck",
+	"set": "cutpurse",
+	"art": "res://resources/gfx/gear/amulets/cutpurse/CutpurseLuckyCoin",
+	"icon": "res://resources/gfx/ui/icons/items/cutpurse_lucky_coin.png"
+}

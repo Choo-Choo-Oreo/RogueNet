@@ -1,0 +1,7 @@
+{
+	"name": "Militia gambeson",
+	"slot": "chest",
+	"set": "militia",
+	"art": "res://resources/gfx/gear/chest/militia/MilitiaGambeson",
+	"icon": "res://resources/gfx/ui/icons/items/militia_gambeson.png"
+}

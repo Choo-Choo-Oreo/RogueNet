@@ -1,0 +1,7 @@
+{
+	"name": "Floppy hat",
+	"slot": "head",
+	"set": "apprentice",
+	"art": "res://resources/gfx/gear/helmets/apprentice/ApprenticeFloppyHat",
+	"icon": "res://resources/gfx/ui/icons/items/apprentice_floppy_hat.png"
+}

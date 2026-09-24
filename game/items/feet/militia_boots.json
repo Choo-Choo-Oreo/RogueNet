@@ -1,0 +1,7 @@
+{
+	"name": "Worn boots",
+	"slot": "feet",
+	"set": "militia",
+	"art": "res://resources/gfx/gear/feet/militia/MilitiaBoots",
+	"icon": "res://resources/gfx/ui/icons/items/militia_boots.png"
+}

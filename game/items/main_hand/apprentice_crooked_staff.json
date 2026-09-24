@@ -1,0 +1,7 @@
+{
+	"name": "Crooked staff",
+	"slot": "main_hand",
+	"set": "apprentice",
+	"art": "res://resources/gfx/gear/main_hand/apprentice/ApprenticeCrookedStaff",
+	"icon": "res://resources/gfx/ui/icons/items/apprentice_crooked_staff.png"
+}

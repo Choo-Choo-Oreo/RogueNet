@@ -1,0 +1,7 @@
+{
+	"name": "Poacher's gloves",
+	"slot": "gloves",
+	"set": "poacher",
+	"art": "res://resources/gfx/gear/gloves/poacher/PoacherLeatherGloves",
+	"icon": "res://resources/gfx/ui/icons/items/poacher_leather_gloves.png"
+}

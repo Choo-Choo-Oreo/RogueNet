@@ -1,0 +1,7 @@
+{
+	"name": "Rabbit's foot",
+	"slot": "neck",
+	"set": "poacher",
+	"art": "res://resources/gfx/gear/amulets/poacher/PoacherRabbitFoot",
+	"icon": "res://resources/gfx/ui/icons/items/poacher_rabbit_foot.png"
+}

@@ -1,0 +1,7 @@
+{
+	"name": "Holey shoes",
+	"slot": "feet",
+	"set": "cutpurse",
+	"art": "res://resources/gfx/gear/feet/cutpurse/CutpurseHoleyShoes",
+	"icon": "res://resources/gfx/ui/icons/items/cutpurse_holey_shoes.png"
+}

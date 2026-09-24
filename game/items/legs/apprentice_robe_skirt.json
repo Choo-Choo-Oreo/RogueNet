@@ -1,0 +1,7 @@
+{
+	"name": "Homespun skirt",
+	"slot": "legs",
+	"set": "apprentice",
+	"art": "res://resources/gfx/gear/legs/apprentice/ApprenticeRobeSkirt",
+	"icon": "res://resources/gfx/ui/icons/items/apprentice_robe_skirt.png"
+}

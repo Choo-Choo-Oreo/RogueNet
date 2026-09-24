@@ -1,0 +1,7 @@
+{
+	"name": "Leather mitts",
+	"slot": "gloves",
+	"set": "militia",
+	"art": "res://resources/gfx/gear/gloves/militia/MilitiaMitts",
+	"icon": "res://resources/gfx/ui/icons/items/militia_mitts.png"
+}

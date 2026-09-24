@@ -1,0 +1,7 @@
+{
+	"name": "Wooden shield",
+	"slot": "off_hand",
+	"set": "militia",
+	"art": "res://resources/gfx/gear/off_hand/militia/MilitiaWoodenShield",
+	"icon": "res://resources/gfx/ui/icons/items/militia_wooden_shield.png"
+}

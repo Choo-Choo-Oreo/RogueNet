@@ -1,0 +1,7 @@
+{
+	"name": "Patched breeches",
+	"slot": "legs",
+	"set": "cutpurse",
+	"art": "res://resources/gfx/gear/legs/cutpurse/CutpursePatchedBreeches",
+	"icon": "res://resources/gfx/ui/icons/items/cutpurse_patched_breeches.png"
+}

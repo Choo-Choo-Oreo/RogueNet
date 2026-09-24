@@ -1,0 +1,7 @@
+{
+	"name": "Cloth wraps",
+	"slot": "gloves",
+	"set": "apprentice",
+	"art": "res://resources/gfx/gear/gloves/apprentice/ApprenticeWraps",
+	"icon": "res://resources/gfx/ui/icons/items/apprentice_wraps.png"
+}

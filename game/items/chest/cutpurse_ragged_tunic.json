@@ -1,0 +1,7 @@
+{
+	"name": "Ragged tunic",
+	"slot": "chest",
+	"set": "cutpurse",
+	"art": "res://resources/gfx/gear/chest/cutpurse/CutpurseRaggedTunic",
+	"icon": "res://resources/gfx/ui/icons/items/cutpurse_ragged_tunic.png"
+}

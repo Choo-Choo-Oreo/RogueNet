@@ -1,0 +1,7 @@
+{
+	"name": "Chipped knife",
+	"slot": "main_hand",
+	"set": "cutpurse",
+	"art": "res://resources/gfx/gear/main_hand/cutpurse/CutpurseChippedKnife",
+	"icon": "res://resources/gfx/ui/icons/items/cutpurse_chipped_knife.png"
+}

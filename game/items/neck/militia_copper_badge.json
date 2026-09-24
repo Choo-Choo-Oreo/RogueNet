@@ -1,0 +1,7 @@
+{
+	"name": "Copper badge",
+	"slot": "neck",
+	"set": "militia",
+	"art": "res://resources/gfx/gear/amulets/militia/MilitiaCopperBadge",
+	"icon": "res://resources/gfx/ui/icons/items/militia_copper_badge.png"
+}

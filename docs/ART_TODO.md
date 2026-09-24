@@ -282,6 +282,13 @@ Frames are 16x16, in strips. What exists:
   - **Hamster Guard:** `HamsterHelm`, `HamsterPlate`, `HamsterPaws`, `HamsterGreaves`, `HamsterBoots`, `HamsterCarrotSword`, `HamsterSeedShield`, `HamsterBellCollar`
 
   Storage sorts these after the first four sets by slot, not grouped by set, until they're added to `SET_ORDER` in `ItemDatabase.gd` (a code change, Orea). Scrapper isn't the starting gear; that's a code decision too
+- [~] Four cheap starter sets, 2026-09-24 (made by Claude at Foxy's request, waiting on Foxy's review). One per starting play style, same build as the sets above and all in the game with item JSON and icons. Helmets and held items are drawn new; body pieces reuse the shapes of the first four sets in cloth and leather colours. The floppy hat droops to the side instead of going up, so it fits under the frame's top row
+  - **Militia (sword and shield):** `MilitiaBucketHelm`, `MilitiaGambeson`, `MilitiaMitts`, `MilitiaTrousers`, `MilitiaBoots`, `MilitiaRustySword`, `MilitiaWoodenShield`, `MilitiaCopperBadge`
+  - **Poacher (bow):** `PoacherFurCap`, `PoacherHideVest`, `PoacherLeatherGloves`, `PoacherBreeches`, `PoacherTurnshoes`, `PoacherShortbow`, `PoacherTorch` (off hand), `PoacherRabbitFoot`
+  - **Apprentice (magic):** `ApprenticeFloppyHat`, `ApprenticeRobe`, `ApprenticeWraps`, `ApprenticeRobeSkirt`, `ApprenticeSandals`, `ApprenticeCrookedStaff`, `ApprenticeTatteredBook` (off hand), `ApprenticeWoodenBeads`
+  - **Cutpurse (knife):** `CutpurseBandana`, `CutpurseRaggedTunic`, `CutpurseFingerlessGloves`, `CutpursePatchedBreeches`, `CutpurseHoleyShoes`, `CutpurseChippedKnife`, `CutpurseBrokenBottle` (off hand), `CutpurseLuckyCoin`
+
+  Like the eight sets above, these aren't grouped in storage until they're in `SET_ORDER`, and they aren't the starting gear (both code, Orea)
 - [✗] Tall hats (wizard hat, mitre) don't fit: the Human's head touches the top row of the frame **(decide first:** taller frames are a code change, Orea)
 - [✗] `Human-Down.aseprite` and `Human-DownRight.aseprite` differ from their PNGs by a few pixels. The PNGs match the Default Man in the gear templates, so decide which version is right
 - [✗] More classes **(decide first)**. Don't draw new classes until Orea confirms what they are.

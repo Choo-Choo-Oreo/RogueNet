@@ -1,0 +1,7 @@
+{
+	"name": "Wool trousers",
+	"slot": "legs",
+	"set": "militia",
+	"art": "res://resources/gfx/gear/legs/militia/MilitiaTrousers",
+	"icon": "res://resources/gfx/ui/icons/items/militia_trousers.png"
+}

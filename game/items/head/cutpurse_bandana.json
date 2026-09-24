@@ -1,0 +1,7 @@
+{
+	"name": "Bandana",
+	"slot": "head",
+	"set": "cutpurse",
+	"art": "res://resources/gfx/gear/helmets/cutpurse/CutpurseBandana",
+	"icon": "res://resources/gfx/ui/icons/items/cutpurse_bandana.png"
+}

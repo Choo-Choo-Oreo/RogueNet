@@ -1,0 +1,7 @@
+{
+	"name": "Sandals",
+	"slot": "feet",
+	"set": "apprentice",
+	"art": "res://resources/gfx/gear/feet/apprentice/ApprenticeSandals",
+	"icon": "res://resources/gfx/ui/icons/items/apprentice_sandals.png"
+}

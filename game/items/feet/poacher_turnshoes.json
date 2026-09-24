@@ -1,0 +1,7 @@
+{
+	"name": "Turnshoes",
+	"slot": "feet",
+	"set": "poacher",
+	"art": "res://resources/gfx/gear/feet/poacher/PoacherTurnshoes",
+	"icon": "res://resources/gfx/ui/icons/items/poacher_turnshoes.png"
+}

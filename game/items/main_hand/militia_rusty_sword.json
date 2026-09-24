@@ -1,0 +1,7 @@
+{
+	"name": "Rusty sword",
+	"slot": "main_hand",
+	"set": "militia",
+	"art": "res://resources/gfx/gear/main_hand/militia/MilitiaRustySword",
+	"icon": "res://resources/gfx/ui/icons/items/militia_rusty_sword.png"
+}

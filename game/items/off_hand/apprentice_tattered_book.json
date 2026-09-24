@@ -1,0 +1,7 @@
+{
+	"name": "Tattered spellbook",
+	"slot": "off_hand",
+	"set": "apprentice",
+	"art": "res://resources/gfx/gear/off_hand/apprentice/ApprenticeTatteredBook",
+	"icon": "res://resources/gfx/ui/icons/items/apprentice_tattered_book.png"
+}
