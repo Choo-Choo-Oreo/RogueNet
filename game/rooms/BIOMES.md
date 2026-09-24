@@ -36,11 +36,13 @@ lists every piece.
 
 ## `cathedral/` is a stress test, not a designed biome
 
-Added 2026-09-21 to see how generation and rendering hold up at size. It is
-the original 20 `dungeon/` rooms (before the 2026-09-24 redesign) with their interiors scaled 3x or 4x (outer wall
-still 1 thick, doors still 1 wide), plus `Cathedral_Boss_Nave_100x100`, which
-is the Dungeon Maker's maximum size. A dive here is about 25,000 room tiles
-inside a roughly 240 x 256 tile box. Because it is a folder in `game/rooms/`,
+Added 2026-09-21 to see how generation and rendering hold up at size.
+Rebuilt 2026-09-24: it is now the current 43 `dungeon/` rooms with their
+interiors scaled 3x (outer wall still 1 thick, doors 3 or 5 wide), redecorated
+with carpets, pillars and pews, plus `Cathedral_Boss_Nave_100x100`, which is
+the Dungeon Maker's maximum size. Rooms average about 700 tiles (flesh: about
+250), so a 25-40 room dive is roughly 18,000-28,000 room tiles, the biggest
+biome again. See `cathedral/README.md`. Because it is a folder in `game/rooms/`,
 `pick_biome()` will choose it like any other biome. Add it to
 `IGNORED_FOLDERS` in `DungeonAssembler.gd` when the test is over.
 
