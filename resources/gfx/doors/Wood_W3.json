@@ -1,11 +1,11 @@
 {
-	"style": "Iron",
+	"style": "Wood",
 	"widths": [
-		1,
-		5
+		3,
+		3
 	],
-	"texture": "Iron_W1-5.png",
-	"normal_texture": "Iron_W1-5_Normal.png",
+	"texture": "Wood_W3.png",
+	"normal_texture": "Wood_W3_Normal.png",
 	"frame_size": [
 		16,
 		32
@@ -21,25 +21,25 @@
 	},
 	"split": "each 16x32 frame is 2 16x16 tiles, the last one on the doorway cell itself, the ones above it on the cells NORTH of it (over the wall).",
 	"pieces": {
-		"h_single": {
+		"h_end_left": {
 			"atlas_y": 0
 		},
-		"v_single_left": {
+		"h_middle_left": {
 			"atlas_y": 32
 		},
-		"v_single_right": {
+		"h_end_right": {
 			"atlas_y": 64
 		},
-		"h_end_left": {
+		"v_end_top_left": {
 			"atlas_y": 96
 		},
-		"h_end_right": {
+		"v_end_top_right": {
 			"atlas_y": 128
 		},
-		"v_end_top_left": {
+		"v_middle_top_left": {
 			"atlas_y": 160
 		},
-		"v_end_top_right": {
+		"v_middle_top_right": {
 			"atlas_y": 192
 		},
 		"v_end_bottom_left": {
@@ -47,33 +47,7 @@
 		},
 		"v_end_bottom_right": {
 			"atlas_y": 256
-		},
-		"h_middle_left": {
-			"atlas_y": 288
-		},
-		"v_middle_top_left": {
-			"atlas_y": 320
-		},
-		"v_middle_top_right": {
-			"atlas_y": 352
-		},
-		"h_middle_right": {
-			"atlas_y": 384
-		},
-		"v_middle_bottom_left": {
-			"atlas_y": 416
-		},
-		"v_middle_bottom_right": {
-			"atlas_y": 448
-		},
-		"h_middle_left_2": {
-			"atlas_y": 480
-		},
-		"v_middle_top_2_left": {
-			"atlas_y": 512
-		},
-		"v_middle_top_2_right": {
-			"atlas_y": 544
 		}
-	}
+	},
+	"note": "dedicated 3-wide double door (two leaves of 24px), rendered whole and cut into these cells; every piece is unique to this width. Horizontal: open leaves lie along the jambs, rows 0..31 of the frame (inside the doorway). Vertical: closed slab rows 8..63, open leaves lie on the wall face above (rows 8..18, columns 1..24) and, cut, on the doorway's last 3 rows; nothing under the doorway."
 }

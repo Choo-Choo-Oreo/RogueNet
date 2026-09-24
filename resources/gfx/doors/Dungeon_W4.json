@@ -1,0 +1,68 @@
+{
+	"style": "Dungeon",
+	"widths": [
+		4,
+		4
+	],
+	"texture": "Dungeon_W4.png",
+	"normal_texture": "Dungeon_W4_Normal.png",
+	"frame_size": [
+		16,
+		48
+	],
+	"own_cell_row": 32,
+	"frames": 16,
+	"animation": "closed -> open, left to right (play backwards to close)",
+	"anchor": "the LAST 16 rows of a frame (rows 32..47, own_cell_row..) are the piece's own doorway cell; every row above overlaps the cells to the NORTH (doors draw over the wall there). Draw the frame with its top-left at (cell.x*16, cell.y*16 - own_cell_row), region 16x48 (frame_size) at (frame*16, atlas_y).",
+	"projection": "wall height: 8px face + top strip shifted up 8px, same as the wall tiles; closed slab sits on the seam between the two doorway cells",
+	"usage": {
+		"horizontal doorway (gap in a north/south wall)": "paint on the SOUTH cell of each column, the north cell stays floor. width 1: h_single. width N, column i: i==0 h_end_left, i==N-1 h_end_right, else h_middle_left when i < N/2 otherwise h_middle_right.",
+		"vertical doorway (gap in an east/west wall)": "each doorway row gets a *_left piece on the WEST cell and the matching *_right piece on the EAST cell. height 1: v_single. height N, row i: i==0 v_end_top, i==N-1 v_end_bottom, else v_middle_top when i < N/2 otherwise v_middle_bottom."
+	},
+	"split": "each 16x48 frame is 3 16x16 tiles, the last one on the doorway cell itself, the ones above it on the cells NORTH of it (over the wall) and one cell further north.",
+	"pieces": {
+		"h_end_left": {
+			"atlas_y": 0
+		},
+		"h_middle_left": {
+			"atlas_y": 48
+		},
+		"h_middle_right": {
+			"atlas_y": 96
+		},
+		"h_end_right": {
+			"atlas_y": 144
+		},
+		"v_end_top_left": {
+			"atlas_y": 192
+		},
+		"v_end_top_right": {
+			"atlas_y": 240
+		},
+		"v_middle_top_left": {
+			"atlas_y": 288
+		},
+		"v_middle_top_right": {
+			"atlas_y": 336
+		},
+		"v_middle_bottom_left": {
+			"atlas_y": 384
+		},
+		"v_middle_bottom_right": {
+			"atlas_y": 432
+		},
+		"v_end_bottom_left": {
+			"atlas_y": 480
+		},
+		"v_end_bottom_right": {
+			"atlas_y": 528
+		}
+	},
+	"note": "PLACEHOLDER boss-room door, 4 wide: two flat-coloured leaves (west/north red, east/south blue) 16px tall between stone posts and a lintel 24px tall, so it stands three wall heights high and the frame reaches one cell north of the doorway. Frames are 16x48: rows 32..47 own cell, 16..31 the cell north, 0..15 one more cell north. The leaves slide apart into the posts over 16 frames; nothing is ever drawn under the doorway. The lintel lives in the overlay atlas (see overlay).",
+	"overlay": {
+		"texture": "Dungeon_W4_Overlay.png",
+		"frames": 1,
+		"alpha": 0.5019607843137255,
+		"note": "the lintel, drawn ABOVE creatures so they walk under it; 50% alpha is baked into the pixels. Same rows / atlas_y / frame_size / own_cell_row as the door atlas, one frame (it never moves); vertical rows hold the lintel edge-on, a 3px bar along the seam from post to post."
+	}
+}
