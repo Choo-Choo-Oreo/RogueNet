@@ -20,14 +20,16 @@ from on its own:
 
 That was the starting set. `dungeon/` and `mine/` were redesigned on
 2026-09-24 and now have much larger sets: two entrances, two bosses, several
-treasure rooms and 8 or 24 mazes. Their own `README.md` lists every piece.
+treasure rooms and 8 or 24 mazes. `flesh/` was redesigned the same day as
+80 rooms, one per organ plus a mutant of each. Each folder's own `README.md`
+lists every piece.
 
 | Folder | Walls | Floors | Idea |
 |---|---|---|---|
 | `dungeon/` | `wall_cobble_brick` | smooth stone | Built masonry. 2-wide corridors and open rooms, with small side rooms off 1-wide doors. |
 | `cave/` | `wall_rough_cave` | dirt, grass patches | Thick irregular walls, few straight edges. |
 | `mine/` | `wall_rough_cave` rock with `wall_wood_plank` timber supports | dirt, wood plank walkways | A mine shaft. Plank tracks run door to door. Timber frames doorways and props up long tunnels. Includes `Mine_Cabin_Cavern_17x13`, a big cavern with a cabin in the middle. |
-| `flesh/` | `wall_flesh` | flesh, smooth stone | Flesh floor slows movement, so stone strips act as fast lanes. |
+| `flesh/` | `wall_flesh` | flesh, smooth stone, acid | Inside a body: one room per organ, plus a mutant of each (extra lobes, doubled parts). Lopsided, never symmetric. Flesh floor slows movement, so stone strips act as fast lanes. Very dense with enemies. |
 
 ## `cathedral/` is a stress test, not a designed biome
 

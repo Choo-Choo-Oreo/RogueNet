@@ -17,6 +17,9 @@ static var no_clip := false
 static var see_all := false
 ## Enemies never notice the local player (tools tab, singleplayer only).
 static var unseen := false
+## Camera leaves the player and flies on the move keys; the player stands still
+## (tools tab, singleplayer only).
+static var free_cam := false
 
 ## F5. Gates every option on the "debug" tab.
 static var debug_view := false
@@ -94,7 +97,7 @@ static func add_time(key: String, usec: int) -> void:
 
 ## A click that is meant for the menu or a debug tool must not also be an attack.
 static func blocks_attack() -> bool:
-	return click_tool != "" or mouse_over_menu
+	return click_tool != "" or mouse_over_menu or free_cam
 
 ## Index into `placements` of the room covering `tile`, or -1.
 static func room_index_at(tile: Vector2i) -> int:

@@ -129,8 +129,8 @@ A 3x3 closet with one 1-wide opening on the south edge:
   "width": 3, "height": 3, "role": "normal", "tags": ["peaceful"],
   "floor": [[null, null, null], [null, "floor_smooth_stone", null], [null, null, null]],
   "walls": [["wall_smooth_stone", "wall_smooth_stone", "wall_smooth_stone"],
-            ["wall_smooth_stone", null, "wall_smooth_stone"],
-            ["wall_smooth_stone", null, "wall_smooth_stone"]],
+			["wall_smooth_stone", null, "wall_smooth_stone"],
+			["wall_smooth_stone", null, "wall_smooth_stone"]],
   "connectors": [{ "a": {"x": 1, "y": 2}, "b": {"x": 1, "y": 2} }],
   "spawn_cells": [{ "position": {"x": 1, "y": 1} }],
   "objects": []

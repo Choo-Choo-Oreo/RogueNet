@@ -23,14 +23,14 @@ const SOUTH := 1
 const EAST := 2
 const WEST := 3
 
-static func make(from_cell: Vector2i, to_cell: Vector2i, free: bool = false, door: String = "") -> Dictionary:
+static func make(from_cell: Vector2i, to_cell: Vector2i, free: bool = false, door_type: String = "") -> Dictionary:
 	var lo := Vector2i(mini(from_cell.x, to_cell.x), mini(from_cell.y, to_cell.y))
 	var hi := Vector2i(maxi(from_cell.x, to_cell.x), maxi(from_cell.y, to_cell.y))
 	var result := {"a": {"x": lo.x, "y": lo.y}, "b": {"x": hi.x, "y": hi.y}}
 	if free:
 		result["free"] = true
-	if door != "" and door != "any":
-		result["door"] = door
+	if door_type != "" and door_type != "any":
+		result["door"] = door_type
 	return result
 
 ## Format 1 {"position"} -> format 2 {"a","b"}; a format 2 connector is just

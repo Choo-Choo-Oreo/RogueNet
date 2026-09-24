@@ -54,6 +54,7 @@ var _search: LineEdit
 var _option_checks := {}
 var _tabs: TabContainer
 var _tools_locked := false
+var _free_cam_check: CheckBox
 var _option_boxes: Array[CheckBox] = []
 var _option_scrolls: Array[ScrollContainer] = []
 var _shared_scroll := 0
@@ -141,6 +142,7 @@ func _build_panel() -> void:
 	_check(tools_box, "no-clip (walk through walls)", DebugState.no_clip, func(on): DebugState.no_clip = on)
 	_check(tools_box, "see-all (no darkness)", DebugState.see_all, func(on): DebugState.see_all = on)
 	_check(tools_box, "unseen (enemies cannot see you)", DebugState.unseen, func(on): DebugState.unseen = on)
+	_free_cam_check = _check(tools_box, "free-cam (camera detaches, you stand still)", DebugState.free_cam, func(on): DebugState.free_cam = on)
 	var types := OptionButton.new()
 	for file_name in DirAccess.get_files_at(ENEMY_DIR):
 		if file_name.ends_with(".json"):
@@ -355,6 +357,8 @@ func _update_tools_lock() -> void:
 		DebugState.no_clip = false
 		DebugState.see_all = false
 		DebugState.unseen = false
+		DebugState.free_cam = false
+		_free_cam_check.set_pressed_no_signal(false)
 		DebugState.click_tool = ""
 		DebugLog.add("tools locked (multiplayer)")
 
@@ -510,6 +514,7 @@ func _overlay_text() -> String:
 	if DebugState.no_clip: active.append("no clip")
 	if DebugState.see_all: active.append("see all")
 	if DebugState.unseen: active.append("unseen")
+	if DebugState.free_cam: active.append("free cam")
 	if not active.is_empty():
 		lines.append("Active: " + ", ".join(active))
 	return "\n".join(lines)

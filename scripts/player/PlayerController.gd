@@ -331,6 +331,10 @@ func _physics_process(_delta: float) -> void:
 		return
 	# Drop keys that are no longer down (a release can be missed, for example when focus is lost).
 	_held = _held.filter(func(action): return Input.is_action_pressed(action))
+	# Debug free cam: the move keys fly the camera instead, so stand still.
+	if DebugState.free_cam:
+		_held.clear()
+		return
 	if grid_mover.is_moving:
 		return
 	if not _held.is_empty():

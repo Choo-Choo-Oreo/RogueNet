@@ -8,7 +8,7 @@
 	"cognitive": 0,
 	"resistances": {},
 	"speed_tiles_per_second": 5.0,
-	"continuous_animation": true,
+	"flying": true,
 	"attack": {
 		"amount": 1,
 		"type": "Physical",
