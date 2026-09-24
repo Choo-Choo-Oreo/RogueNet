@@ -1,5 +1,6 @@
 {
 	"name": "Hamster sack",
 	"slot": "back",
-	"art": "res://resources/gfx/gear/back/hamster_sack/HamsterSack"
+	"art": "res://resources/gfx/gear/back/hamster_sack/HamsterSack",
+	"icon": "res://resources/gfx/ui/icons/items/hamster_sack.png"
 }

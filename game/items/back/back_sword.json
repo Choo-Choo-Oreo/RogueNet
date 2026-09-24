@@ -1,5 +1,6 @@
 {
 	"name": "Back sword",
 	"slot": "back",
-	"art": "res://resources/gfx/gear/back/back_sword/BackSword"
+	"art": "res://resources/gfx/gear/back/back_sword/BackSword",
+	"icon": "res://resources/gfx/ui/icons/items/back_sword.png"
 }

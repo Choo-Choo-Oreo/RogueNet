@@ -2,5 +2,6 @@
 	"name": "Arcane skirt",
 	"slot": "legs",
 	"set": "arcane",
-	"art": "res://resources/gfx/gear/legs/arcane/ArcaneSkirt"
+	"art": "res://resources/gfx/gear/legs/arcane/ArcaneSkirt",
+	"icon": "res://resources/gfx/ui/icons/items/arcane_skirt.png"
 }

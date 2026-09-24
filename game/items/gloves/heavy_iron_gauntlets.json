@@ -2,5 +2,6 @@
 	"name": "Heavy iron gauntlets",
 	"slot": "gloves",
 	"set": "heavy_iron",
-	"art": "res://resources/gfx/gear/gloves/heavy_iron/HeavyIronGauntlets"
+	"art": "res://resources/gfx/gear/gloves/heavy_iron/HeavyIronGauntlets",
+	"icon": "res://resources/gfx/ui/icons/items/heavy_iron_gauntlets.png"
 }

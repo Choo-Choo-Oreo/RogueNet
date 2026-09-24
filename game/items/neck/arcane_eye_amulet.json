@@ -2,5 +2,6 @@
 	"name": "Arcane eye amulet",
 	"slot": "neck",
 	"set": "arcane",
-	"art": "res://resources/gfx/gear/amulets/arcane/ArcaneEyeAmulet"
+	"art": "res://resources/gfx/gear/amulets/arcane/ArcaneEyeAmulet",
+	"icon": "res://resources/gfx/ui/icons/items/arcane_eye_amulet.png"
 }

@@ -2,5 +2,6 @@
 	"name": "Sun pendant amulet",
 	"slot": "neck",
 	"set": "cleric",
-	"art": "res://resources/gfx/gear/amulets/cleric/SunPendantAmulet"
+	"art": "res://resources/gfx/gear/amulets/cleric/SunPendantAmulet",
+	"icon": "res://resources/gfx/ui/icons/items/sun_pendant_amulet.png"
 }

@@ -2,5 +2,6 @@
 	"name": "Cleric vestment",
 	"slot": "chest",
 	"set": "cleric",
-	"art": "res://resources/gfx/gear/chest/cleric/ClericVestment"
+	"art": "res://resources/gfx/gear/chest/cleric/ClericVestment",
+	"icon": "res://resources/gfx/ui/icons/items/cleric_vestment.png"
 }

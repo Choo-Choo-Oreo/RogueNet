@@ -2,5 +2,6 @@
 	"name": "Arcane gloves",
 	"slot": "gloves",
 	"set": "arcane",
-	"art": "res://resources/gfx/gear/gloves/arcane/ArcaneGloves"
+	"art": "res://resources/gfx/gear/gloves/arcane/ArcaneGloves",
+	"icon": "res://resources/gfx/ui/icons/items/arcane_gloves.png"
 }

@@ -222,7 +222,8 @@ JSON. DungeonMaker keeps it when re-saving.)
   each direction is `DRAW_ORDER` in `scripts/items/ItemDatabase.gd`.
 - `set` — optional; storage lists items set by set (`heavy_iron`, `arcane`,
   `cleric`, `necromancer`, then everything else).
-- `icon` — optional 16x16 PNG for inventory slots. Without one, the slot
+- `icon` — optional 16x16 PNG for inventory slots, kept in
+  `resources/gfx/ui/icons/items/<item id>.png`. Without one, the slot
   shows the front view cropped to its pixels, which is too small to read for
   gloves and boots.
 - Items are cosmetic only for now (no stats, no rarity). The inventory lives

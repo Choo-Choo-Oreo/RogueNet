@@ -2,5 +2,6 @@
 	"name": "Arcane hood",
 	"slot": "head",
 	"set": "arcane",
-	"art": "res://resources/gfx/gear/helmets/arcane/ArcaneHood"
+	"art": "res://resources/gfx/gear/helmets/arcane/ArcaneHood",
+	"icon": "res://resources/gfx/ui/icons/items/arcane_hood.png"
 }

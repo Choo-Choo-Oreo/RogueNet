@@ -2,5 +2,6 @@
 	"name": "Cleric gloves",
 	"slot": "gloves",
 	"set": "cleric",
-	"art": "res://resources/gfx/gear/gloves/cleric/ClericGloves"
+	"art": "res://resources/gfx/gear/gloves/cleric/ClericGloves",
+	"icon": "res://resources/gfx/ui/icons/items/cleric_gloves.png"
 }

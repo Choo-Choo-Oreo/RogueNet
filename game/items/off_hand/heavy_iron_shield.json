@@ -2,5 +2,6 @@
 	"name": "Heavy iron shield",
 	"slot": "off_hand",
 	"set": "heavy_iron",
-	"art": "res://resources/gfx/gear/off_hand/heavy_iron/HeavyIronShield"
+	"art": "res://resources/gfx/gear/off_hand/heavy_iron/HeavyIronShield",
+	"icon": "res://resources/gfx/ui/icons/items/heavy_iron_shield.png"
 }

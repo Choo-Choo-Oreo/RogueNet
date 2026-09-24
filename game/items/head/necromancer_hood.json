@@ -2,5 +2,6 @@
 	"name": "Necromancer hood",
 	"slot": "head",
 	"set": "necromancer",
-	"art": "res://resources/gfx/gear/helmets/necromancer/NecromancerHood"
+	"art": "res://resources/gfx/gear/helmets/necromancer/NecromancerHood",
+	"icon": "res://resources/gfx/ui/icons/items/necromancer_hood.png"
 }

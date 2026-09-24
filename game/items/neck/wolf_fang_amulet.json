@@ -2,5 +2,6 @@
 	"name": "Wolf fang amulet",
 	"slot": "neck",
 	"set": "heavy_iron",
-	"art": "res://resources/gfx/gear/amulets/heavy_iron/WolfFangAmulet"
+	"art": "res://resources/gfx/gear/amulets/heavy_iron/WolfFangAmulet",
+	"icon": "res://resources/gfx/ui/icons/items/wolf_fang_amulet.png"
 }

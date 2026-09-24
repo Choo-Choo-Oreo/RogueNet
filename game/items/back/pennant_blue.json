@@ -1,5 +1,6 @@
 {
 	"name": "Blue pennant",
 	"slot": "back",
-	"art": "res://resources/gfx/gear/back/pennant/PennantBlue"
+	"art": "res://resources/gfx/gear/back/pennant/PennantBlue",
+	"icon": "res://resources/gfx/ui/icons/items/pennant_blue.png"
 }

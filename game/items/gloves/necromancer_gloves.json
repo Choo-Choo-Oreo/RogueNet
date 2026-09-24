@@ -2,5 +2,6 @@
 	"name": "Necromancer gloves",
 	"slot": "gloves",
 	"set": "necromancer",
-	"art": "res://resources/gfx/gear/gloves/necromancer/NecromancerGloves"
+	"art": "res://resources/gfx/gear/gloves/necromancer/NecromancerGloves",
+	"icon": "res://resources/gfx/ui/icons/items/necromancer_gloves.png"
 }

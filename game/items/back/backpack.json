@@ -1,5 +1,6 @@
 {
 	"name": "Backpack",
 	"slot": "back",
-	"art": "res://resources/gfx/gear/back/backpack/Backpack"
+	"art": "res://resources/gfx/gear/back/backpack/Backpack",
+	"icon": "res://resources/gfx/ui/icons/items/backpack.png"
 }

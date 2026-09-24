@@ -2,5 +2,6 @@
 	"name": "Arcane robe",
 	"slot": "chest",
 	"set": "arcane",
-	"art": "res://resources/gfx/gear/chest/arcane/ArcaneRobe"
+	"art": "res://resources/gfx/gear/chest/arcane/ArcaneRobe",
+	"icon": "res://resources/gfx/ui/icons/items/arcane_robe.png"
 }

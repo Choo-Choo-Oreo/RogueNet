@@ -2,5 +2,6 @@
 	"name": "Heavy iron sabatons",
 	"slot": "feet",
 	"set": "heavy_iron",
-	"art": "res://resources/gfx/gear/feet/heavy_iron/HeavyIronSabatons"
+	"art": "res://resources/gfx/gear/feet/heavy_iron/HeavyIronSabatons",
+	"icon": "res://resources/gfx/ui/icons/items/heavy_iron_sabatons.png"
 }
