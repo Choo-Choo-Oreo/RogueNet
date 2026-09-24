@@ -9,16 +9,7 @@
 	"resistances": {},
 	"speed_tiles_per_second": 5.0,
 	"flying": true,
-	"attack": {
-		"amount": 1,
-		"type": "Physical",
-		"interval": 1.0,
-		"effect": {
-			"texture": "res://resources/gfx/effects/effects.melee/physical.biting.png",
-			"frame_count": 10,
-			"speed": 20.0
-		}
-	},
+	"actions": ["bite"],
 	"sprite_frames": {
 		"frame_size": [16, 16],
 		"animations": {

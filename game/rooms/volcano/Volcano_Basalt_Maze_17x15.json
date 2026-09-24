@@ -325,21 +325,21 @@
 				"x": 8,
 				"y": 4
 			},
-			"enemy": "wolf_hellhound"
+			"minion": "wolf_hellhound"
 		},
 		{
 			"position": {
 				"x": 9,
 				"y": 4
 			},
-			"enemy": "wolf_hellhound"
+			"minion": "wolf_hellhound"
 		},
 		{
 			"position": {
 				"x": 11,
 				"y": 5
 			},
-			"enemy": "wolf_hellhound"
+			"minion": "wolf_hellhound"
 		},
 		{
 			"position": {

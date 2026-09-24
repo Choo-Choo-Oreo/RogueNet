@@ -9,10 +9,10 @@ nest. Every feature also comes in two variants:
 - **Collapsed:** the same room with part of the vault fallen in. Rubble heaps
   lie against the walls, with dirt spilled around them.
 
-Enemies come in **rat swarms**, with leeches in the water.
+Minions come in **rat swarms**, with leeches in the water.
 
 This file covers the sewer's own rules. For the full room file format
-(every key, connectors, `free`, per-connector `door`, `favored_enemy`),
+(every key, connectors, `free`, per-connector `door`, `favored_minion`),
 see [../README.md](../README.md). The dungeon's guide
 ([../dungeon/README.md](../dungeon/README.md)) explains how the generator
 places rooms, and all of that applies here too.
@@ -63,9 +63,9 @@ places rooms, and all of that applies here too.
 
 Every room sets `"base_floor": "floor_smooth_stone"`.
 
-## Enemies: rat swarms
+## Minions: rat swarms
 
-Every spawn cell spawns one enemy (unless the cell is lit: torches in the
+Every spawn cell spawns one minion (unless the cell is lit: torches in the
 Lamp Room, Maintenance Room and Smugglers Den keep spawns away). Spawn
 cells come in **swarms**: a dense clump of cells (each within 3 tiles of the
 swarm's centre, 2 apart). Swarms are spread apart (6+ tiles) and kept away
@@ -116,7 +116,7 @@ The 111 rooms have 512 spawn cells between them.
   - `maze` 0.6
   - `killzone` 0.5
   - `peaceful` 0.7
-- `monsters`: rat 3, blind rat 2, toothless rat 2, leech 1. Every enemy but the
+- `monsters`: rat 3, blind rat 2, toothless rat 2, leech 1. Every minion but the
   leech is a `beast.rodent`.
 - `music`: Groovy.
 
@@ -165,7 +165,7 @@ The 111 rooms have 512 spawn cells between them.
    cistern or treasure room, otherwise `"any"`. Always add `"free": true`.
 5. **Add swarms** using the table above.
 6. **Make the variants** if you want them: Flooded (water up one tile,
-   an acid slick, `favored_enemy` leech 5) and Collapsed (rubble off the
+   an acid slick, `favored_minion` leech 5) and Collapsed (rubble off the
    walls, dirt around it, nothing cut off).
 7. **Build it** in the room editor (`scenes/dungeon/DungeonMaker.tscn`) or
    by copying a similar room's JSON.

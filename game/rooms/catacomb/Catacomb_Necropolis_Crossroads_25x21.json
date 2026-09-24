@@ -637,14 +637,14 @@
 				"x": 3,
 				"y": 2
 			},
-			"enemy": "skeleton_archer"
+			"minion": "skeleton_archer"
 		},
 		{
 			"position": {
 				"x": 5,
 				"y": 2
 			},
-			"enemy": "skeleton_archer"
+			"minion": "skeleton_archer"
 		},
 		{
 			"position": {
@@ -657,21 +657,21 @@
 				"x": 7,
 				"y": 8
 			},
-			"enemy": "skeleton_archer"
+			"minion": "skeleton_archer"
 		},
 		{
 			"position": {
 				"x": 9,
 				"y": 8
 			},
-			"enemy": "skeleton_archer"
+			"minion": "skeleton_archer"
 		},
 		{
 			"position": {
 				"x": 11,
 				"y": 8
 			},
-			"enemy": "skeleton_archer"
+			"minion": "skeleton_archer"
 		},
 		{
 			"position": {
@@ -684,14 +684,14 @@
 				"x": 3,
 				"y": 18
 			},
-			"enemy": "skeleton_archer"
+			"minion": "skeleton_archer"
 		},
 		{
 			"position": {
 				"x": 5,
 				"y": 18
 			},
-			"enemy": "skeleton_archer"
+			"minion": "skeleton_archer"
 		},
 		{
 			"position": {

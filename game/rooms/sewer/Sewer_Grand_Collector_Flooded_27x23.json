@@ -50,7 +50,7 @@
 			"free": true
 		}
 	],
-	"favored_enemy": {
+	"favored_minion": {
 		"tag": "leech",
 		"weight": 5
 	},

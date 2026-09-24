@@ -4,11 +4,11 @@ Natural caves with no doors anywhere. Every room is a **formation**, a
 feature you could name: a stalactite hall, an underground lake, a magma
 pool, a geode. Every formation also comes **Deep**: the same place, bigger
 and further in, with a second pool, more columns or two geodes instead of
-one. Tunnels are tight and lumpy. Enemies come in **swarms**, mostly bats,
+one. Tunnels are tight and lumpy. Minions come in **swarms**, mostly bats,
 spread loosely through the bigger chambers.
 
 This file covers the cave's own rules. For the full room file format (every
-key, connectors, `free`, per-connector `door`, `favored_enemy`), see
+key, connectors, `free`, per-connector `door`, `favored_minion`), see
 [../README.md](../README.md). The dungeon's guide
 ([../dungeon/README.md](../dungeon/README.md)) explains how the generator
 places rooms, and all of that applies here too.
@@ -53,9 +53,9 @@ places rooms, and all of that applies here too.
 
 Every room sets `"base_floor": "floor_dirt"`.
 
-## Enemies: swarms
+## Minions: swarms
 
-Every spawn cell spawns one enemy (unless the cell is lit). In the cave,
+Every spawn cell spawns one minion (unless the cell is lit). In the cave,
 spawn cells come in **swarms**: a loose cluster of cells (each within 4
 tiles of the swarm's centre, 2 apart). Swarms are spread well apart (6+
 tiles) and kept away from the openings. They're bigger and looser than

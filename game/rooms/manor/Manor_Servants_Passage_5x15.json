@@ -26,7 +26,7 @@
 			"free": true
 		}
 	],
-	"favored_enemy": {
+	"favored_minion": {
 		"tag": "rat",
 		"weight": 3
 	},
@@ -149,7 +149,7 @@
 				"x": 2,
 				"y": 7
 			},
-			"enemy": "rat"
+			"minion": "rat"
 		}
 	],
 	"tags": [

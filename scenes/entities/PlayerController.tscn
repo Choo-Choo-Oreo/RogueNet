@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://djuwmio4x8p12"]
 
-[ext_resource type="Script" uid="uid://b8dk1dj5mllej" path="res://scripts/player/PlayerController.gd" id="1_etyb6"]
+[ext_resource type="Script" uid="uid://b8dk1dj5mllej" path="res://scripts/entities/entities.protagonist/player/PlayerController.gd" id="1_etyb6"]
 [ext_resource type="Script" uid="uid://tmoiodv062hv" path="res://scripts/entities/GridMover.gd" id="3_gridmv"]
 [ext_resource type="Script" uid="uid://cd6pygvdtxtny" path="res://scripts/entities/DirectionalAnimator.gd" id="4_diranim"]
 [ext_resource type="Script" uid="uid://df55xnjjg4yfy" path="res://scripts/entities/NetworkPositionRelay.gd" id="5_netrelay"]
-[ext_resource type="Script" uid="uid://cll6insxigr5c" path="res://scripts/entities/MouseFollowCamera.gd" id="6_mousecam"]
+[ext_resource type="Script" uid="uid://cll6insxigr5c" path="res://scripts/entities/entities.protagonist/player/MouseFollowCamera.gd" id="6_mousecam"]
 [ext_resource type="Script" uid="uid://038opyx3dij2" path="res://scripts/entities/EntityStats.gd" id="7_stats"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pctrl"]

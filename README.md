@@ -9,11 +9,11 @@ Code should behave in this repo.
 
 Most game content is data-driven JSON under `game/` (paired with art/audio
 under `resources/`), loaded at runtime — no script changes needed to add a
-new enemy, room, or tile. This section documents those formats.
+new minion, room, or tile. This section documents those formats.
 
-### Enemies — `game/entities/entities.antagonist/minions/<id>.json` (or `bosses/`)
+### Minions — `game/entities/entities.antagonist/minions/<id>.json` (or `bosses/`)
 
-The filename (minus `.json`) is the enemy's id, used everywhere else
+The filename (minus `.json`) is the minion's id, used everywhere else
 (biome `monsters` weights, etc). Example (`rat.json`):
 
 ```json
@@ -26,16 +26,7 @@ The filename (minus `.json`) is the enemy's id, used everywhere else
 	"cognitive": 0,
 	"resistances": {},
 	"speed_tiles_per_second": 6.0,
-	"attack": {
-		"amount": 1,
-		"type": "Physical",
-		"interval": 1.2,
-		"effect": {
-			"texture": "res://resources/gfx/effects/effects.melee/physical.biting.png",
-			"frame_count": 10,
-			"speed": 20.0
-		}
-	},
+	"actions": [{ "action": "bite", "interval": 1.2 }],
 	"sprite_frames": {
 		"frame_size": [16, 16],
 		"animations": {
@@ -51,31 +42,20 @@ The filename (minus `.json`) is the enemy's id, used everywhere else
 Notes:
 - `resistances` maps a damage type (see `game/damage_types.json`) to a
   multiplier; omit a type for no resistance.
-- `attack.type` must be one of the ids in `game/damage_types.json`.
-- Ranged attacks add `attack.range_tiles` and swap `attack.effect` for
-  `effect.projectile` (a texture path) plus `effect.attacker`/`effect.target`
-  wind-up/impact animations, each with an `anchor` of `"attacker"` or
-  `"target"`. See `skeleton_archer.json` for a full example.
-- `attacks` (optional) replaces `attack` with a list, for enemies with more than one:
-  `"attacks": [ {default attack}, {special}, ... ]`. The first entry is the default
-  and works exactly like `attack` (its `range_tiles` is how close the enemy walks).
-  Each later entry has its own `range_tiles`, `interval` (its own cooldown) and is used
-  while the enemy is chasing whenever it is ready and in range; it never changes how
-  the enemy walks. A special is either a plain hit (its own `amount`, `type`, `effect`)
-  or an `"ability"`. The one ability today is `"destroy_tiles"`: it breaks the walls in
-  its `"shape"` toward the target (`{"type": "line", "length": 3, "width": 2}` or
-  `{"type": "circle", "radius": 2}`), leaves the floor, and covers any void it exposes
-  with a neighbouring wall. Never breaks `barrier_*` tiles. `"needs_sight": false` lets
-  it fire through walls (default true); it only counts as used if something broke. `"only_through_walls": true` fires it
-  only while a wall is between the enemy and its target. See `minotaur.json`.
+- `actions` is what the creature can do: a list of action ids, each a file in
+  `game/actions/` (see its README). An entry is an id (`"bite"`) or an id with the numbers
+  that differ for this creature (`{ "action": "bite", "interval": 1.2 }`). The first is the
+  default attack (its `range_tiles` is how close the minion walks); later ones are used
+  while it is chasing, whenever ready and in range. The attack's own fields (damage type,
+  ranged effects, `destroy_tiles` shape) are described in `game/actions/README.md`.
 - `senses` (optional) overrides which detection senses are enabled, e.g.
   `"senses": { "hearing": false }`. Only `sight` and `touch` are actually
   implemented right now — `hearing`/`smell`/`taste` exist but always report
   no detection.
-- `flying` (optional, default `false`) — set `true` for enemies that fly
+- `flying` (optional, default `false`) — set `true` for minions that fly
   (bat, flying hamsters). Terrain (water, lava, rough ground) never slows
   them, their routes ignore terrain cost, and their idle animation never
-  freezes on a held frame (the wing-flap). Ground enemies slow down on
+  freezes on a held frame (the wing-flap). Ground minions slow down on
   terrain and route around slow ground when a detour is cheaper.
 - `tags` (optional) — what kind of creature it is (`["beast.rodent"]`).
   Rooms can favor a tag for spawns. The list of tags and what each means is
@@ -120,12 +100,12 @@ Example (`Dungeon_Brick_Arena_9x9.json`, trimmed):
 ```
 
 Every key (size, `role`, `tags`, `floor`/`walls`, `connectors` and their
-`door`, `spawn_cells`, `favored_enemy`, `objects`) is explained in
+`door`, `spawn_cells`, `favored_minion`, `objects`) is explained in
 `game/rooms/README.md` under "Room JSON reference". Tile size is 16px.
 
-A spawn cell may also name an exact enemy, `{ "position": {...}, "enemy": "rat" }`
+A spawn cell may also name an exact minion, `{ "position": {...}, "minion": "rat" }`
 (any id from `game/entities/entities.antagonist/`): that cell always spawns it
-instead of rolling the biome table. The Dungeon Maker's enemy spawner sets this.
+instead of rolling the biome table. The Dungeon Maker's minion spawner sets this.
 
 ### Biome config — `game/rooms/<biome>/defines.json`
 
@@ -142,7 +122,7 @@ instead of rolling the biome table. The Dungeon Maker's enemy spawner sets this.
 - `tag_weights` — multiplies selection odds for rooms carrying a given
   `tags` entry; a room can match more than one.
 - `monsters` — weighted random table (same shape as `tag_weights`, just for
-  enemy ids instead) consumed when rolling what spawns in each room's
+  minion ids instead) consumed when rolling what spawns in each room's
   `spawn_cells`. Weights are relative, not percentages — they just need to
   be consistent within one table.
 - `music` — path to the biome's background track.
@@ -186,7 +166,7 @@ JSON. DungeonMaker keeps it when re-saving.)
 
 - `transparent` — see-through (bars / grate): a closed one still blocks
   walking and shots but not sight or light.
-- Whether an enemy opens doors is its own `"doors"` field in its enemy json:
+- Whether a minion opens doors is its own `"doors"` field in its minion json:
   `"none"` (default, can't), `"open"` (see-through doors any time, solid ones
   only while investigating or pursuing) or `"phase"` (passes through closed
   doors without opening them).
@@ -232,7 +212,7 @@ JSON. DungeonMaker keeps it when re-saving.)
 ```
 
 - The file name is the item's id (`heavy_iron_longsword`), same rule as
-  enemies. The folder is only for tidiness; `slot` decides where it's worn.
+  minions. The folder is only for tidiness; `slot` decides where it's worn.
 - `slot` — one of `head`, `chest`, `gloves`, `legs`, `feet`, `neck`, `back`,
   `main_hand`, `off_hand`.
 - `art` — the worn sheets' path minus the `-<Direction>.png` ending. The game

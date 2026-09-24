@@ -4,13 +4,13 @@ A great house gone bad, and its library. Every room is a **named room** of
 the house: a dining hall, a ballroom, a study, a kitchen. Each has its own
 carpet colour, and its furniture is drawn as walls. Most rooms also come
 **Haunted**: the same room abandoned and wrong, with furniture overturned,
-carpet torn up and a wall or two broken through. Enemies come as a
+carpet torn up and a wall or two broken through. Minions come as a
 **haunting**: wraiths drifting through the rooms, rats nesting in the
 service rooms, bats roosting under the roof.
 
 This file covers the manor's own rules. For the full room file format
-(every key, connectors, `free`, per-connector `door`, `favored_enemy`,
-per-cell `enemy`), see [../README.md](../README.md). The dungeon's guide
+(every key, connectors, `free`, per-connector `door`, `favored_minion`,
+per-cell `minion`), see [../README.md](../README.md). The dungeon's guide
 ([../dungeon/README.md](../dungeon/README.md)) explains how the generator
 places rooms, and all of that applies here too.
 
@@ -72,21 +72,21 @@ places rooms, and all of that applies here too.
 
 Every room sets `"base_floor": "floor_wood_planks"`.
 
-## Enemies: the haunting
+## Minions: the haunting
 
-Every spawn cell spawns one enemy, unless the cell is lit (torches in the
+Every spawn cell spawns one minion, unless the cell is lit (torches in the
 foyer, the servants' entrance, the kitchen hearth, the chapel and the
 parlour keep spawns away). A room has two kinds of cell:
 
 - **Nests.** A pinned group, as far from the openings as it fits:
-  - Rats (`"enemy": "rat"`): a tight clump in the Kitchen, Wine Cellar,
+  - Rats (`"minion": "rat"`): a tight clump in the Kitchen, Wine Cellar,
     Pantry and Servants Quarters, and one rat in the Servants Passage and
     its Fork and Cross.
-  - Bats (`"enemy": "bat"`): a loose roost in the Attic, Bat Loft and
+  - Bats (`"minion": "bat"`): a loose roost in the Attic, Bat Loft and
     Portrait Gallery.
-- **Rolled cells.** Spread 4+ tiles apart, with no `enemy`, so they roll
+- **Rolled cells.** Spread 4+ tiles apart, with no `minion`, so they roll
   from the biome's `monsters` table (mostly wraiths), nudged by the room's
-  `favored_enemy`.
+  `favored_minion`.
 
 | Kind | Rolled cells |
 |---|---|
@@ -102,7 +102,7 @@ parlour keep spawns away). A room has two kinds of cell:
 Haunted rooms get 2 extra rolled cells. Nests are on top: 3 rats (4 in the
 Servants Quarters, 1 in a passage), 3 bats (5 in the Bat Loft).
 
-**Favoured enemies:**
+**Favoured minions:**
 
 - The rat-nest rooms favour `rat`, weight 3.
 - The bat-roost rooms favour `bat`, weight 3.
@@ -136,7 +136,7 @@ bats and 183 rolled from the table.
   - `killzone` 0.5
   - `peaceful` 0.7
 - `monsters`: wraith 3, rat 2, bat 1. The nests add more rats and bats on
-  top of the table. The manor will want its own enemies eventually.
+  top of the table. The manor will want its own minions eventually.
 - `music`: Groovy.
 
 ## Current piece set (2026-09-24)
@@ -188,7 +188,7 @@ Sizes are in the file names (grid size = inside + 2).
    for a 1-wide room, `"iron"` for a vault or boss, and `"any"` for a
    hallway or passage. Always add `"free": true`.
 6. **Add the spawns** using the table above. Give nest cells
-   `"enemy": "rat"` or `"enemy": "bat"`.
+   `"minion": "rat"` or `"minion": "bat"`.
 7. **Build it** in the room editor (`scenes/dungeon/DungeonMaker.tscn`) or
    by copying a similar room's JSON.
 8. **Load a manor dungeon** and watch the Godot output for

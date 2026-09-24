@@ -22,22 +22,22 @@ const OPTIONS := [
 	["show-coordinates", "Your tile and the mouse tile"],
 	["show-room-under-mouse", "Room under you and the mouse"],
 	["show-time-usage", "Process / physics time and node count"],
-	["show-enemy-counts", "Enemy counts by state"],
+	["show-minion-counts", "Minion counts by state"],
 	["show-session-info", "Players, network, seed, biome, doors"],
 	["show-room-outlines", "Room outlines"],
 	["show-room-ids", "Room ids, roles and depth"],
 	["show-connectors", "Connectors (green joined, red sealed)"],
 	["show-doors", "Doors"],
-	["show-enemy-state", "Enemy state and target"],
-	["show-enemy-routes", "Enemy routes"],
+	["show-minion-state", "Minion state and target"],
+	["show-minion-routes", "Minion routes"],
 	["show-tile-grid", "Tile grid (bright line every 8 tiles)"],
 	["show-mesh-grid", "Mesh (dual) grid, half a tile off the tile grid"],
 	["show-mesh-tiles", "Debug tile overlay on the mesh cells (50%)"],
 	["show-collision-rectangles", "What blocks you (red) / shots only (orange)"],
-	["show-active-enemies", "Enemies thinking (green) vs waiting (grey)"],
+	["show-active-minions", "Minions thinking (green) vs waiting (grey)"],
 	["show-vision", "Your lit cells (green near, red far)"],
 	["show-flow-field", "Flow field to you: tiles away + step direction"],
-	["show-system-time", "Time per system (enemy AI, light)"],
+	["show-system-time", "Time per system (minion AI, light)"],
 	["log-bodies-in-walls", "Log a creature on a wall / void / no-floor tile"],
 ]
 
@@ -141,20 +141,20 @@ func _build_panel() -> void:
 	_check(tools_box, "god-mode (can't be hurt)", DebugState.god_mode, func(on): _set_god(on))
 	_check(tools_box, "no-clip (walk through walls)", DebugState.no_clip, func(on): DebugState.no_clip = on)
 	_check(tools_box, "see-all (no darkness)", DebugState.see_all, func(on): DebugState.see_all = on)
-	_check(tools_box, "unseen (enemies cannot see you)", DebugState.unseen, func(on): DebugState.unseen = on)
+	_check(tools_box, "unseen (minions cannot see you)", DebugState.unseen, func(on): DebugState.unseen = on)
 	_free_cam_check = _check(tools_box, "free-cam (camera detaches, you stand still)", DebugState.free_cam, func(on): DebugState.free_cam = on)
 	var types := OptionButton.new()
-	for enemy_id: String in EnemyIndex.ids():
-		types.add_item(enemy_id)
+	for minion_id: String in MinionIndex.ids():
+		types.add_item(minion_id)
 	if types.item_count > 0:
 		if DebugState.spawn_type == "":
 			DebugState.spawn_type = types.get_item_text(0)
 		types.select(maxi(0, _index_of(types, DebugState.spawn_type)))
 	types.item_selected.connect(func(i): DebugState.spawn_type = types.get_item_text(i))
 	tools_box.add_child(types)
-	_button(tools_box, "Spawn enemy (then click the map)", func(): DebugState.click_tool = "spawn")
+	_button(tools_box, "Spawn minion (then click the map)", func(): DebugState.click_tool = "spawn")
 	_button(tools_box, "Teleport (then click the map)", func(): DebugState.click_tool = "teleport")
-	_button(tools_box, "Kill all enemies", _kill_all)
+	_button(tools_box, "Kill all minions", _kill_all)
 	_button(tools_box, "Open all doors", func(): _all_doors(true))
 	_button(tools_box, "Close all doors", func(): _all_doors(false))
 	_button(tools_box, "Heal me to full", _heal)
@@ -319,7 +319,7 @@ func _run_click_tool(tile: Vector2i) -> void:
 		"spawn":
 			if DebugState.spawn_type != "":
 				DebugLog.add("spawn %s at %s" % [DebugState.spawn_type, tile])
-				NetworkSync.debug_spawn_enemy(DebugState.spawn_type, tile)
+				NetworkSync.debug_spawn_minion(DebugState.spawn_type, tile)
 		"teleport":
 			var player := PlayerLookup.find_local(get_tree())
 			if player != null:
@@ -380,9 +380,9 @@ func _set_god(on: bool) -> void:
 	NetworkSync.set_god_mode(on)
 
 func _kill_all() -> void:
-	DebugLog.add("kill all enemies")
-	for enemy in get_tree().get_nodes_in_group("antagonist"):
-		NetworkSync.report_enemy_hit(int(str(enemy.name)), 9999, "")
+	DebugLog.add("kill all minions")
+	for minion in get_tree().get_nodes_in_group("antagonist"):
+		NetworkSync.report_minion_hit(int(str(minion.name)), 9999, "")
 
 func _all_doors(open: bool) -> void:
 	DebugLog.add("%s all doors" % ("open" if open else "close"))
@@ -439,7 +439,7 @@ func _save_capture() -> void:
 		file.store_line(line)
 	file.store_line("")
 	file.store_line("--- performance (one sample per second)")
-	file.store_line("seconds,fps,process_ms,physics_ms,nodes,enemies,players")
+	file.store_line("seconds,fps,process_ms,physics_ms,nodes,minions,players")
 	for row in _samples:
 		file.store_line(row)
 	file.close()
@@ -484,21 +484,21 @@ func _overlay_text() -> String:
 			Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0,
 			Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0,
 			Performance.get_monitor(Performance.OBJECT_NODE_COUNT)])
-	if DebugState.on("show-enemy-counts"):
+	if DebugState.on("show-minion-counts"):
 		var counts := [0, 0, 0]
-		var enemies := get_tree().get_nodes_in_group("antagonist")
-		for enemy in enemies:
-			if "_last_state" in enemy:
-				counts[clampi(int(enemy._last_state), 0, 2)] += 1
-		lines.append("Enemies %d   patrol %d   investigate %d   attack %d" % [enemies.size(), counts[0], counts[1], counts[2]])
-	if DebugState.on("show-active-enemies"):
+		var minions := get_tree().get_nodes_in_group("antagonist")
+		for minion in minions:
+			if "_last_state" in minion:
+				counts[clampi(int(minion._last_state), 0, 2)] += 1
+		lines.append("Minions %d   patrol %d   investigate %d   attack %d" % [minions.size(), counts[0], counts[1], counts[2]])
+	if DebugState.on("show-active-minions"):
 		var frame := Engine.get_process_frames()
 		var thinking := 0
 		var all := get_tree().get_nodes_in_group("antagonist")
-		for enemy in all:
-			if "_idle_until_frame" in enemy and enemy.is_multiplayer_authority() and not enemy._stuck and enemy._idle_until_frame <= frame:
+		for minion in all:
+			if "_idle_until_frame" in minion and minion.is_multiplayer_authority() and not minion._stuck and minion._idle_until_frame <= frame:
 				thinking += 1
-		lines.append("Enemies thinking %d   waiting %d" % [thinking, all.size() - thinking])
+		lines.append("Minions thinking %d   waiting %d" % [thinking, all.size() - thinking])
 	if DebugState.on("show-system-time"):
 		var parts: Array[String] = []
 		for key in DebugState.usage_ms:

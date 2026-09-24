@@ -372,21 +372,21 @@
 				"x": 6,
 				"y": 5
 			},
-			"enemy": "skeleton_archer"
+			"minion": "skeleton_archer"
 		},
 		{
 			"position": {
 				"x": 8,
 				"y": 5
 			},
-			"enemy": "skeleton_archer"
+			"minion": "skeleton_archer"
 		},
 		{
 			"position": {
 				"x": 10,
 				"y": 5
 			},
-			"enemy": "skeleton_archer"
+			"minion": "skeleton_archer"
 		},
 		{
 			"position": {

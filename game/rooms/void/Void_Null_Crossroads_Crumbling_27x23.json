@@ -731,35 +731,35 @@
 				"x": 3,
 				"y": 3
 			},
-			"enemy": "bat_echo"
+			"minion": "bat_echo"
 		},
 		{
 			"position": {
 				"x": 22,
 				"y": 3
 			},
-			"enemy": "wraith"
+			"minion": "wraith"
 		},
 		{
 			"position": {
 				"x": 24,
 				"y": 4
 			},
-			"enemy": "wraith"
+			"minion": "wraith"
 		},
 		{
 			"position": {
 				"x": 21,
 				"y": 5
 			},
-			"enemy": "wraith"
+			"minion": "wraith"
 		},
 		{
 			"position": {
 				"x": 23,
 				"y": 6
 			},
-			"enemy": "wraith"
+			"minion": "wraith"
 		},
 		{
 			"position": {
@@ -772,14 +772,14 @@
 				"x": 8,
 				"y": 8
 			},
-			"enemy": "bat_echo"
+			"minion": "bat_echo"
 		},
 		{
 			"position": {
 				"x": 17,
 				"y": 14
 			},
-			"enemy": "bat_echo"
+			"minion": "bat_echo"
 		},
 		{
 			"position": {
@@ -792,35 +792,35 @@
 				"x": 2,
 				"y": 18
 			},
-			"enemy": "wraith"
+			"minion": "wraith"
 		},
 		{
 			"position": {
 				"x": 4,
 				"y": 18
 			},
-			"enemy": "wraith"
+			"minion": "wraith"
 		},
 		{
 			"position": {
 				"x": 3,
 				"y": 19
 			},
-			"enemy": "wraith"
+			"minion": "wraith"
 		},
 		{
 			"position": {
 				"x": 5,
 				"y": 19
 			},
-			"enemy": "wraith"
+			"minion": "wraith"
 		},
 		{
 			"position": {
 				"x": 22,
 				"y": 20
 			},
-			"enemy": "bat_echo"
+			"minion": "bat_echo"
 		}
 	],
 	"tags": [

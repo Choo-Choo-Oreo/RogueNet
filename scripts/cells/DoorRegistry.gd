@@ -3,7 +3,7 @@ extends RefCounted
 
 ## Runtime door state for the current dungeon: every door DoorPlacer made, and
 ## which cells each one occupies. Doors are not painted tiles -- GridMover,
-## LightMap and the enemy sight checks ask this (cell -> door) instead, so a
+## LightMap and the minion sight checks ask this (cell -> door) instead, so a
 ## door can open and close without repainting anything.
 ##
 ## Door types (wood, iron, ...) are defined in game/doors/*.json; a Door keeps
@@ -54,7 +54,7 @@ static func clear() -> void:
 	_swinging.clear()
 	version += 1
 
-## Something about a door changed: light re-floods, and the shared enemy flow
+## Something about a door changed: light re-floods, and the shared minion flow
 ## fields (which treat a closed door as a wall for anything that cannot open
 ## it) are rebuilt so a door that just became passable is not remembered as a wall.
 static func _changed() -> void:

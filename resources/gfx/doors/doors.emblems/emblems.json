@@ -18,7 +18,7 @@
 		"front": "horizontal door of width W: draw the front frame at (x + W*8 - 6, y + 6), where (x, y) is where the door's first piece (h_end_left) is drawn = (cell.x*16, cell.y*16 - own_cell_row). Centred across the lintel; its lit top overlaps the lintel's top strip.",
 		"side": "vertical door of height N: draw the side frame at (x + 10, y + 14 + N*8), where (x, y) is where the first *_left piece (v_end_top_left) is drawn. Columns 4..6 of the frame are left empty for the lintel bar (the _left piece's columns 14..15 and the _right piece's column 0), centred along the bar."
 	},
-	"lookup": "Use the boss's attack damage type id from game/damage_types.json. If it has no entry, drop the last .segment and try again (Physical.Slashing -> Physical). Enemy JSON sometimes names only the last segment (\"Perditio\"): match that against the last segment of the keys.",
+	"lookup": "Use the boss's attack damage type id from game/damage_types.json. If it has no entry, drop the last .segment and try again (Physical.Slashing -> Physical). Minion JSON sometimes names only the last segment (\"Perditio\"): match that against the last segment of the keys.",
 	"emblems": {
 		"Physical": {
 			"texture": "Physical_Emblem.png",

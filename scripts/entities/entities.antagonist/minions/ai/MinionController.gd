@@ -1,4 +1,4 @@
-class_name EnemyController
+class_name MinionController
 extends CharacterBody2D
 
 ## Generic AI-driven body -- wanders its spawn point for now. Real behavior
@@ -7,27 +7,27 @@ extends CharacterBody2D
 @onready var grid_mover: GridMover = $GridMover
 @onready var animator: DirectionalAnimator = $DirectionalAnimator
 @onready var stats: EntityStats = $EntityStats
-@onready var senses: EnemySenses = $EnemySenses
+@onready var senses: MinionSenses = $MinionSenses
 
 @export var wander_radius_tiles: int = 3
 @export var wander_interval := 1.4
 
 ## Lets a hand-placed instance (or, later, a spawner) configure itself without
 ## an external script call. Empty means "leave unconfigured."
-@export var default_enemy_type: String = ""
+@export var default_minion_type: String = ""
 
 var _home_position: Vector2 = Vector2.ZERO
 var _wander_timer := 0.0
 var _target: Node2D = null
-var _last_state: EnemySenses.State = EnemySenses.State.PATROL
+var _last_state: MinionSenses.State = MinionSenses.State.PATROL
 var _size_px: float = 16.0
 ## Tiles per side (json "size_tiles"): 1 normally, 2 for a boss like the minotaur.
 var size_tiles := 1
-## True for an enemy whose json sits in a bosses/ folder (EnemyIndex.is_boss). Bosses get privileges over their allies: they walk through
+## True for a minion whose json sits in a bosses/ folder (MinionIndex.is_boss). Bosses get privileges over their allies: they walk through
 ## them (GridMover) and the allies step out of the way (_yield_to_boss).
 var is_boss := false
 ## Every living boss, so an ally can ask "am I in a boss's way" without scanning the group.
-static var bosses: Array[EnemyController] = []
+static var bosses: Array[MinionController] = []
 var _base_move_time := 0.2
 var _light_map: LightMap = null
 
@@ -35,14 +35,14 @@ var _light_map: LightMap = null
 ## occupied -- see _is_boxed_in() and its use in _process().
 var _stuck := false
 
-## Aggro / target lock (see AGGRO_AI_TRACKER.md). Once alerted, an enemy keeps
+## Aggro / target lock (see AGGRO_AI_TRACKER.md). Once alerted, a minion keeps
 ## the same player (_lock) instead of re-picking the nearest every tick. It is
 ## released when the alert window ends (senses decay back to Patrol), the
 ## target dies / becomes a ghost / is freed, the target sits UNREACHABLE by
 ## walls for UNREACHABLE_MSEC, or it is more than LEASH_TILES away. A player
 ## standing in the way for BLOCKED_MSEC becomes a temporary attack override
 ## (_override) that never touches _lock. A taunt (force_target) hard-locks for
-## its duration. All timers are msec -- waiting enemies skip frames. Untyped
+## its duration. All timers are msec -- waiting minions skip frames. Untyped
 ## vars on purpose: a freed node can't be assigned to a typed Node2D.
 const LEASH_TILES := 24
 const UNREACHABLE_MSEC := 4000
@@ -76,7 +76,7 @@ const INVESTIGATE_SPEED_SCALE := 0.5
 ## target (plus this margin for detours around walls), not a fixed number --
 ## the 10s sticky alert window means the target can easily run further than
 ## any fixed sight-range-based radius before the window expires, and a radius
-## too small to even see the target makes an enemy that's still "aggro'd"
+## too small to even see the target makes a minion that's still "aggro'd"
 ## just stand still, which looks identical to de-aggroing. Capped by
 ## PATHFIND_RADIUS_MAX so a target that's run very far doesn't blow up the
 ## per-frame search cost.
@@ -84,15 +84,15 @@ const PATHFIND_RADIUS_MARGIN := 4
 const PATHFIND_RADIUS_MAX := 24
 
 ## Pathfinding.full_path() rebuilds and solves a whole AStarGrid2D from
-## scratch -- fine for a handful of enemies, but with hundreds pursuing
+## scratch -- fine for a handful of minions, but with hundreds pursuing
 ## at once (the "development" stress room) it tanks the frame rate. This caps
-## how many enemies may actually call into it in a single frame; the rest
+## how many minions may actually call into it in a single frame; the rest
 ## just wait for their next _process() tick instead of piling more solves
-## onto an already-slow frame. Shared across every EnemyController via
-## `static` (Godot 4 script statics), reset the first time any enemy checks
+## onto an already-slow frame. Shared across every MinionController via
+## `static` (Godot 4 script statics), reset the first time any minion checks
 ## it on a new frame -- cheap on purpose, not meant to be perfectly fair
-## between enemies. Raised from 16 once FlowField (shared, most enemies never
-## reach this tier at all) and the per-enemy path cache (an enemy that does
+## between minions. Raised from 16 once FlowField (shared, most minions never
+## reach this tier at all) and the per-minion path cache (a minion that does
 ## reach it mostly reuses its last solve instead of re-asking every frame)
 ## both landed -- real solves-per-frame dropped a lot, so a higher cap for
 ## the ones that still happen is cheap. Tune by testing with the F4 debug
@@ -111,23 +111,19 @@ static func _consume_pathfind_budget() -> bool:
 	_pathfind_budget_used += 1
 	return true
 
-## The default attack: the first entry of json "attacks" (or the old single "attack").
-## It drives movement -- the enemy walks until THIS one is in range -- so all the
+## The default attack: the first of the json "actions".
+## It drives movement -- the minion walks until THIS one is in range -- so all the
 ## approach / surround / detour logic keys off _attack_range. Keys: amount, type,
 ## range_tiles, interval, effect.
 var _primary_attack: Dictionary = {}
 var _attack_interval: float = 1.0
 var _attack_range: int = 1
 var _attack_timer := 0.0
-## The other entries of "attacks". Each has its own range and cooldown and is used
-## while the enemy is engaging whenever it is ready and in range; none of them
-## changes how the enemy walks. Entries: {"attack", "range", "interval", "timer", "sight"}.
+## The other entries of "actions". Each has its own range and cooldown and is used
+## while the minion is engaging whenever it is ready and in range; none of them
+## changes how the minion walks. Entries: {"attack", "range", "interval", "timer", "sight"}.
 var _specials: Array[Dictionary] = []
-## Names an attack entry may give as "ability" (see _perform_special).
-const ABILITIES := ["destroy_tiles"]
-
 const ATTACK_EFFECT_SCENE := preload("res://scenes/entities/AttackEffect.tscn")
-const PROJECTILE_SCENE := preload("res://scenes/entities/ProjectileController.tscn")
 const ALERTNESS_DATA := {
 	"texture": "res://resources/gfx/effects/Alertness.png",
 	"frame_count": 3,
@@ -137,30 +133,30 @@ const ALERTNESS_HOLD_SECONDS := 3.0
 ## Alertness.png's 3 frames (left to right) are distinct static icons, not a
 ## sequence -- which one shows depends on the state just entered.
 const ALERTNESS_FRAME := {
-	EnemySenses.State.PATROL: 0,
-	EnemySenses.State.INVESTIGATE: 1,
-	EnemySenses.State.ATTACK: 2,
+	MinionSenses.State.PATROL: 0,
+	MinionSenses.State.INVESTIGATE: 1,
+	MinionSenses.State.ATTACK: 2,
 }
 
-## enemy_id is always exactly its JSON's filename; EnemyIndex finds the file in the enemy
-## folder or any subfolder, so a new enemy is really just a new JSON file dropped
+## minion_id is always exactly its JSON's filename; MinionIndex finds the file in the minion
+## folder or any subfolder, so a new minion is really just a new JSON file dropped
 ## there, nothing here needs to change.
 var _can_open_doors := false
 
-func set_enemy_type(enemy_id: String) -> void:
-	var data := EnemyIndex.load_data(enemy_id)
+func set_minion_type(minion_id: String) -> void:
+	var data := MinionIndex.load_data(minion_id)
 	stats.load_from_data(data)
 	$AnimatedSprite2D.sprite_frames = SpriteFramesLoader.build(data["sprite_frames"])
 	size_tiles = int(data.get("size_tiles", 1))
-	is_boss = EnemyIndex.is_boss(enemy_id)
+	is_boss = MinionIndex.is_boss(minion_id)
 	_size_px = size_tiles * grid_mover.tile_size
 	grid_mover.footprint = size_tiles
 	set_meta("is_boss", is_boss)
 	if is_boss and not bosses.has(self):
 		bosses.append(self)
 	$AnimatedSprite2D.position = Vector2(_size_px, _size_px) / 2.0
-	# The scene's shape resource is shared by every enemy, so each one needs its own
-	# copy or the last enemy spawned resizes them all (a boss would shrink to 1 tile).
+	# The scene's shape resource is shared by every minion, so each one needs its own
+	# copy or the last minion spawned resizes them all (a boss would shrink to 1 tile).
 	var shape := RectangleShape2D.new()
 	shape.size = Vector2(_size_px, _size_px)
 	$CollisionShape2D.shape = shape
@@ -179,21 +175,15 @@ func set_enemy_type(enemy_id: String) -> void:
 	# pre-set move_time (e.g. a hand-placed prefab with no JSON override).
 	var speed: float = data.get("speed_tiles_per_second", 1.0 / _base_move_time)
 	grid_mover.move_time = 1.0 / speed
-	# "attacks" is a list: the first is the default attack, the rest are specials.
-	# The older single "attack" object still works (a list of one).
-	var attacks: Array = data.get("attacks", [])
-	if attacks.is_empty() and data.has("attack"):
-		attacks = [data["attack"]]
+	# "actions" is a list of action ids (game/actions/): the first is the default attack,
+	# the rest are specials.
+	var attacks: Array = ActionIndex.resolve(data.get("actions", []))
 	_primary_attack = attacks[0] if not attacks.is_empty() else {}
 	_attack_interval = _primary_attack.get("interval", 1.0)
 	_attack_range = _primary_attack.get("range_tiles", 1)
 	_specials.clear()
 	for i in range(1, attacks.size()):
 		var extra: Dictionary = attacks[i]
-		var ability: String = extra.get("ability", "")
-		if ability != "" and not ABILITIES.has(ability):
-			push_warning("Enemy '%s' attack %d: unknown ability '%s', skipped" % [enemy_id, i, ability])
-			continue
 		var interval: float = extra.get("interval", 1.0)
 		_specials.append({
 			"attack": extra,
@@ -214,39 +204,39 @@ func take_damage(amount: int, type: String = "") -> void:
 	stats.take_damage(amount, type)
 	senses.note_hit()
 
-## Called by NetworkSync.receive_enemy_state on every peer that isn't this
-## enemy's authority (the host) -- the host told everyone where it is and
+## Called by NetworkSync.receive_minion_state on every peer that isn't this
+## minion's authority (the host) -- the host told everyone where it is and
 ## what state it's in, this just applies that locally instead of deciding
 ## anything itself.
 func receive_network_state(pos: Vector2, state: int) -> void:
 	global_position = pos
 	grid_mover.note_move("network")
-	var enemy_state := state as EnemySenses.State
-	if enemy_state != _last_state:
-		_show_alertness(enemy_state)
-	_last_state = enemy_state
+	var minion_state := state as MinionSenses.State
+	if minion_state != _last_state:
+		_show_alertness(minion_state)
+	_last_state = minion_state
 
 func _ready() -> void:
 	add_to_group("antagonist")
 	_base_move_time = grid_mover.move_time
 	_light_map = get_tree().current_scene.find_child("LightMap", true, false)
-	if default_enemy_type != "":
-		set_enemy_type(default_enemy_type)
+	if default_minion_type != "":
+		set_minion_type(default_minion_type)
 	_home_position = global_position
 	stats.died.connect(queue_free)
 	tree_exiting.connect(func(): bosses.erase(self))
-	# Which doors this enemy may open depends on its "doors" field (see set_enemy_type).
+	# Which doors this minion may open depends on its "doors" field (see set_minion_type).
 	grid_mover.open_predicate = func(door: DoorRegistry.Door) -> bool:
-		return _can_open_doors and (door.transparent or _last_state != EnemySenses.State.PATROL)
+		return _can_open_doors and (door.transparent or _last_state != MinionSenses.State.PATROL)
 
-## Enemies are always host-owned (see EnemySpawning.spawn_one) -- a client
+## Minions are always host-owned (see MinionSpawning.spawn_one) -- a client
 ## never runs AI for one, it only ever renders whatever position/state the
 ## host last relayed, the same split PlayerController uses for a remote peer's
 ## body (animate_from_position instead of reading local input).
 func _process(delta: float) -> void:
 	var started := Time.get_ticks_usec()
 	_process_inner(delta)
-	DebugState.add_time("enemy AI", Time.get_ticks_usec() - started)
+	DebugState.add_time("minion AI", Time.get_ticks_usec() - started)
 
 func _process_inner(delta: float) -> void:
 	if not is_multiplayer_authority():
@@ -256,7 +246,7 @@ func _process_inner(delta: float) -> void:
 	if not bosses.is_empty() and not is_boss and not grid_mover.is_moving and _yield_to_boss():
 		return
 	# Aggro validity runs BEFORE the idle-skip / boxed-in early returns below so
-	# a waiting enemy still notices a dead, ghost or freed target.
+	# a waiting minion still notices a dead, ghost or freed target.
 	var now := Time.get_ticks_msec()
 	if _lock != null and not _is_valid_target(_lock):
 		_lock = null
@@ -270,14 +260,14 @@ func _process_inner(delta: float) -> void:
 		_override_until_msec = now + OVERRIDE_MSEC
 		_blocked_since_msec = 0
 		_wake_up()
-	# A boxed-in enemy can't act on senses/targeting/attacking anyway (it has
+	# A boxed-in minion can't act on senses/targeting/attacking anyway (it has
 	# nowhere to go and, per _try_direct_step, isn't in attack range either --
 	# that case never sets _stuck), and it can only ever be freed by some
-	# OTHER body moving off a neighboring tile, not by anything this enemy's
+	# OTHER body moving off a neighboring tile, not by anything this minion's
 	# own full AI tick would decide. So skip straight to the cheap re-check
 	# instead of repeating the same doomed senses/relay/animate work every
 	# frame -- in the packed development stress room this is most of the 500+
-	# enemies most of the time.
+	# minions most of the time.
 	# Same idea for a rat that just failed to advance (waiting on a crowded
 	# tile): re-think a few frames later instead of every frame. The skipped
 	# time is carried into the next real tick so senses/attack timers still
@@ -304,24 +294,24 @@ func _process_inner(delta: float) -> void:
 	var lit := _target != null and _light_map != null and _light_map.is_tile_lit(_to_tile(global_position))
 	var state := senses.update(global_position, _target, grid_mover.blocks_sight, lit, delta)
 	if _override == null:
-		if state == EnemySenses.State.PATROL:
+		if state == MinionSenses.State.PATROL:
 			_lock = null
 		elif _lock == null and _target != null:
 			_lock = _target
 			_unreachable_since_msec = 0
 			_blocked_since_msec = 0
-	var is_engaging := state == EnemySenses.State.ATTACK
-	var is_tracking := is_engaging or state == EnemySenses.State.INVESTIGATE
+	var is_engaging := state == MinionSenses.State.ATTACK
+	var is_tracking := is_engaging or state == MinionSenses.State.INVESTIGATE
 	if state != _last_state:
 		_show_alertness(state)
 	_last_state = state
 	# Only tell peers when something they'd render changed (plus a slow
-	# heartbeat so a late joiner still gets a parked enemy's position).
+	# heartbeat so a late joiner still gets a parked minion's position).
 	if state != _relayed_state or global_position != _relayed_position or Time.get_ticks_msec() - _relayed_msec > RELAY_HEARTBEAT_MSEC:
 		_relayed_state = state
 		_relayed_position = global_position
 		_relayed_msec = Time.get_ticks_msec()
-		NetworkSync.relay_enemy_state(int(str(name)), global_position, state)
+		NetworkSync.relay_minion_state(int(str(name)), global_position, state)
 
 	var can_attack := is_engaging and _target and _in_attack_range(_target)
 	if grid_mover.is_moving:
@@ -343,7 +333,7 @@ func _process_inner(delta: float) -> void:
 	if grid_mover.is_moving:
 		return
 	# Chasing re-steps the instant the last move finishes -- as fast as this
-	# enemy's own move_time allows, same as a player holding a direction key.
+	# minion's own move_time allows, same as a player holding a direction key.
 	# Investigate closes in the same way but at half speed (see _try_move),
 	# and never attacks even if it ends up adjacent. Only idle wandering
 	# stays throttled by wander_interval.
@@ -390,116 +380,25 @@ func _try_specials(target: Node2D, delta: float) -> bool:
 		# wall-breaker does not chew the scenery while the way to the target is open.
 		if special["through_walls"] and LineOfSight.clear(_to_tile(global_position), _to_tile(target.global_position), grid_mover.blocks_shot):
 			continue
-		if _perform_special(target, special["attack"]):
+		if ActionRunner.perform(self, target.global_position, special["attack"]):
 			special["timer"] = special["interval"]
 			fired = true
 	return fired
-
-## Runs one special. No "ability" = a plain hit with this entry's own damage, type,
-## effect (so a second weapon is just another entry). Returns false when it had no
-## effect (nothing to break, ...), which leaves the cooldown unspent.
-func _perform_special(target: Node2D, attack: Dictionary) -> bool:
-	match str(attack.get("ability", "")):
-		"":
-			_perform_attack(target, attack)
-			return true
-		"destroy_tiles":
-			return _ability_destroy_tiles(target, attack)
-	return false
-
-## "destroy_tiles": breaks the walls inside the attack's "shape" (see AbilityShapes),
-## aimed at the target. Host-authoritative through NetworkSync.destroy_tiles; only
-## counts as used if something actually broke. An optional "effect" plays like a hit's.
-func _ability_destroy_tiles(target: Node2D, attack: Dictionary) -> bool:
-	var cells := AbilityShapes.cells(attack.get("shape", {}), _to_tile(global_position), size_tiles, _to_tile(target.global_position))
-	if NetworkSync.destroy_tiles(cells) == 0:
-		return false
-	animator.animate_facing(target.global_position - global_position)
-	var effect: Dictionary = attack.get("effect", {})
-	if not effect.is_empty():
-		NetworkSync.play_effect(
-			AttackEffect.effect_position(global_position, target.global_position, effect),
-			effect, target.global_position - global_position)
-	return true
 
 ## `attack` is one attack entry (amount, type, effect); empty = the default attack.
 func _perform_attack(target: Node2D, attack: Dictionary = {}) -> void:
 	if attack.is_empty():
 		attack = _primary_attack
-	var effect: Dictionary = attack.get("effect", {})
-	if effect.has("attacker") or effect.has("target"):
-		_perform_ranged_attack(target, attack)
-		return
-	# Enemy AI only ever runs on the host, so the host is always the source of
-	# this hit -- relay it rather than calling target.take_damage() directly,
-	# which would only ever update the host's own local copy of that player.
-	NetworkSync.relay_player_hit(int(str(target.name)), attack.get("amount", 0), attack.get("type", ""))
-	if effect.is_empty():
-		return
-	NetworkSync.play_effect(
-		AttackEffect.effect_position(global_position, target.global_position, effect),
-		effect, target.global_position - global_position)
+	ActionRunner.perform(self, target.global_position, attack)
 
-## Mirrors PlayerController's bow handling: an "attacker" shot effect plays
-## here (cosmetic), a projectile travels to the target if the data has one,
-## and only on arrival does the "target" hit effect play and damage land.
-## A magic attack (no "projectile") skips the travel and lands immediately.
-func _perform_ranged_attack(target: Node2D, attack: Dictionary) -> void:
-	var effect: Dictionary = attack.get("effect", {})
-	var amount: int = attack.get("amount", 0)
-	var type: String = attack.get("type", "")
-	var target_global: Vector2 = target.global_position
-	var direction := target_global - global_position
-	var attacker_data: Dictionary = effect.get("attacker", {})
-	if not attacker_data.is_empty():
-		NetworkSync.play_effect(
-			AttackEffect.effect_position(global_position, target_global, attacker_data),
-			attacker_data, direction)
-	var projectile_texture: String = effect.get("projectile", "")
-	if projectile_texture == "":
-		_land_ranged_hit(target, target_global, attack)
-		return
-	var projectile: ProjectileController = PROJECTILE_SCENE.instantiate()
-	get_tree().current_scene.add_child(projectile)
-	projectile.global_position = global_position + Vector2(_size_px / 2.0, _size_px / 2.0)
-	# The arrow hits the first living player whose tile it passes through, not
-	# whoever it was aimed at: stepping out of its way makes it miss, stepping
-	# into it gets you hit. Reaching the aimed tile with nobody there is a miss.
-	var hit_on_the_way := func(pos: Vector2) -> bool:
-		var tile := _to_tile(pos)
-		for player: PlayerController in get_tree().get_nodes_in_group("protagonist"):
-			if player.stats.is_ghost or _to_tile(player.global_position + Vector2(8, 8)) != tile:
-				continue
-			NetworkSync.relay_player_hit(int(str(player.name)), amount, type)
-			_play_ranged_target_effect(Vector2(tile) * grid_mover.tile_size, attack)
-			return true
-		return false
-	projectile.launch(projectile_texture, target_global + Vector2(8, 8), grid_mover.tile_size, func():
-		_play_ranged_target_effect(target_global, attack), grid_mover.is_position_blocked, hit_on_the_way)
-	NetworkSync.share_projectile(projectile_texture, projectile.global_position, target_global + Vector2(8, 8))
-
-func _land_ranged_hit(target: Node2D, target_global: Vector2, attack: Dictionary) -> void:
-	if not is_instance_valid(target):
-		return
-	NetworkSync.relay_player_hit(int(str(target.name)), attack.get("amount", 0), attack.get("type", ""))
-	_play_ranged_target_effect(target_global, attack)
-
-## The "target" impact animation on a tile (cosmetic only).
-func _play_ranged_target_effect(target_global: Vector2, attack: Dictionary) -> void:
-	var target_data: Dictionary = attack.get("effect", {}).get("target", {})
-	if not target_data.is_empty():
-		NetworkSync.play_effect(
-			AttackEffect.effect_position(global_position, target_global, target_data),
-			target_data, target_global - global_position)
-
-## One-shot icon above the enemy's head on any alert-state change -- which of
+## One-shot icon above the minion's head on any alert-state change -- which of
 ## Alertness.png's 3 frames shows depends on the state just entered (see
 ## ALERTNESS_FRAME): returning to Patrol, Investigate, or Attack. Held
 ## statically for ALERTNESS_HOLD_SECONDS rather than animated as a sequence.
-## Parented to the enemy itself (not current_scene, like the swing/hit
-## effects) so it tracks as the enemy keeps moving during the 3s hold instead
+## Parented to the minion itself (not current_scene, like the swing/hit
+## effects) so it tracks as the minion keeps moving during the 3s hold instead
 ## of staying pinned to wherever it spawned.
-func _show_alertness(state: EnemySenses.State) -> void:
+func _show_alertness(state: MinionSenses.State) -> void:
 	# Newest state wins: Investigate -> Attack in quick succession would
 	# otherwise leave both icons stacked on top of each other for 3 seconds.
 	if is_instance_valid(_alertness_icon):
@@ -518,13 +417,13 @@ var _alertness_icon: AttackEffect = null
 ## while merely Investigating (half speed, see _try_move).
 ##
 ## Tries three tiers in order, cheapest/most-shared first:
-## 1. FlowField -- shared across every enemy chasing this same target, so a
+## 1. FlowField -- shared across every minion chasing this same target, so a
 ##    whole crowd (the swarm room) pays for one BFS between them instead of
 ##    one search each. Only covers cells within FlowField.RADIUS of the
 ##    target, and only knows about walls, not occupancy (see FlowField.gd).
-## 2. LOS-clear direct stepping (_try_direct_step) or a real, per-enemy
+## 2. LOS-clear direct stepping (_try_direct_step) or a real, per-minion
 ##    cached search (_try_pathfind_step) toward the target -- or, if the
-##    target is farther than this enemy's own search can ever reach, toward
+##    target is farther than this minion's own search can ever reach, toward
 ##    the next room's door instead (RoomGraph.next_waypoint), so a
 ##    cross-dungeon chase advances room by room instead of just giving up.
 func _try_pursue_step(target: Node2D, full_speed: bool) -> void:
@@ -561,7 +460,7 @@ func _try_pursue_step(target: Node2D, full_speed: bool) -> void:
 		return
 	_try_direct_step(origin_cell, local_target, full_speed, target)
 
-## Melee enemies near their target fan out around it instead of queueing
+## Melee minions near their target fan out around it instead of queueing
 ## single file. FlowField.get_distances gives each tile's walking distance to
 ## the target -- tiles at the same distance form a "layer" (a square ring)
 ## around it, and there's no fixed cap on how many layers there are. Each
@@ -570,7 +469,7 @@ func _try_pursue_step(target: Node2D, full_speed: bool) -> void:
 ## none is free, sidestep to a free tile that has a free way forward of its
 ## own (never straight back to the tile it just left, which keeps two rats from
 ## trading places forever). Returns false (caller uses the normal chase) for
-## ranged enemies or ones too far / unreachable.
+## ranged minions or ones too far / unreachable.
 const SURROUND_RADIUS := 12
 const SLIDE_COOLDOWN_MSEC := 1500
 var _slide_ready_msec := 0
@@ -639,7 +538,7 @@ func _try_surround_step(target: Node2D, origin_cell: Vector2i, target_cell: Vect
 		_prev_cell = origin_cell
 	return true
 
-## The step toward the target is only blocked by another creature (a ranged enemy
+## The step toward the target is only blocked by another creature (a ranged minion
 ## standing and shooting, a big body in a corridor mouth): take a free neighbouring
 ## tile that keeps us about as close instead of waiting behind it. Uses the same
 ## flow-field distances as the surround step, allows one tile of sidestep, never
@@ -721,7 +620,7 @@ func _yield_to_boss() -> bool:
 			return grid_mover.move_one_tile(best, 1.0)
 	return false
 
-## A melee enemy already touching its target that has another creature
+## A melee minion already touching its target that has another creature
 ## queued right behind it (one tile farther out) shuffles one tile sideways to
 ## a free tile that still touches the target, opening its spot for whoever's
 ## waiting. Repeated down the line this rolls the crowd around the target
@@ -761,7 +660,7 @@ func _try_slide_step(target: Node2D) -> void:
 func _cheb(offset: Vector2i) -> int:
 	return maxi(absi(offset.x), absi(offset.y))
 
-## Wall-wise, can this enemy step from `origin_cell` to the neighbour `step`
+## Wall-wise, can this minion step from `origin_cell` to the neighbour `step`
 ## away? A straight step only needs that tile open; a diagonal also must not
 ## cut a wall corner or pass through a doorway (GridMover.can_step_diagonally).
 ## Occupancy is separate (grid_mover.is_tile_occupied).
@@ -832,7 +731,7 @@ func _terrain_cost() -> Callable:
 
 ## Real pathfinding step for when the direct approach can't work -- no clear
 ## line to the target, or a wall blocks both preferred directions and a
-## detour is actually needed. First tries to keep following this enemy's own
+## detour is actually needed. First tries to keep following this minion's own
 ## cached route (_next_cached_step) instead of re-solving an identical
 ## AStarGrid2D every frame for a target that's barely moved; only falls
 ## through to an actual solve (budget-gated, see MAX_PATHFINDS_PER_FRAME)
@@ -853,10 +752,10 @@ func _try_pathfind_step(origin_cell: Vector2i, target_cell: Vector2i, full_speed
 		return
 	_try_move(Vector2(step), full_speed)
 
-## Per-enemy path cache (technique 4/5 from the Factorio pathfinding
+## Per-minion path cache (technique 4/5 from the Factorio pathfinding
 ## research: reuse + negative caching), distinct from FlowField's shared
 ## per-target cache -- this is for the individual, often-distant search this
-## enemy alone needed (FlowField didn't cover the cell, or a wall forced a
+## minion alone needed (FlowField didn't cover the cell, or a wall forced a
 ## real detour). CACHED_PATH_TARGET_TOLERANCE lets the target drift a couple
 ## tiles without invalidating the route (a fleeing target rarely changes the
 ## right general direction over 1-2 tiles); anything past that, or a tile on
@@ -900,11 +799,11 @@ func _next_cached_step(origin_cell: Vector2i, target_cell: Vector2i) -> Vector2i
 		return Vector2i.ZERO
 	var step := next_cell - origin_cell
 	if _cheb(step) != 1:
-		# _try_pursue_step can hop this enemy over to _try_direct_step on a
+		# _try_pursue_step can hop this minion over to _try_direct_step on a
 		# frame where line of sight happens to open up, moving it somewhere
 		# the cached route never accounted for -- a stale route handed
 		# straight to _try_move here would multiply a multi-tile offset by
-		# tile_size and warp the enemy instead of taking one legal step, so
+		# tile_size and warp the minion instead of taking one legal step, so
 		# treat any non-adjacent mismatch as a cache miss rather than trust it.
 		_cached_path.clear()
 		return Vector2i.ZERO
@@ -944,7 +843,7 @@ func _to_tile(pos: Vector2) -> Vector2i:
 ## at the old adjacency-only behavior (range 1), ranged/magic attacks (from
 ## JSON's attack.range_tiles) can engage and stop pursuing further out.
 ## Also requires an unobstructed line to the target (same grid-walk SenseSight
-## uses for vision) -- a ranged enemy standing behind a wall is in range but
+## uses for vision) -- a ranged minion standing behind a wall is in range but
 ## not in sight, so this returns false and _try_pursue_step keeps closing in
 ## instead of shooting through the wall.
 func _in_attack_range(target: Node2D) -> bool:
@@ -995,7 +894,7 @@ func _try_move(direction: Vector2, full_speed: bool = true) -> bool:
 func _is_valid_target(target) -> bool:
 	return is_instance_valid(target) and not target.stats.is_ghost
 
-## Makes a waiting / boxed-in enemy run a full AI tick next frame.
+## Makes a waiting / boxed-in minion run a full AI tick next frame.
 func _wake_up() -> void:
 	_stuck = false
 	_idle_until_frame = 0
@@ -1029,10 +928,10 @@ func force_target(player: Node2D, seconds: float) -> void:
 	senses.note_hit()
 	_wake_up()
 
-## Called when this enemy just failed to advance. If a living non-target
+## Called when this minion just failed to advance. If a living non-target
 ## player is on an adjacent tile that is closer to the locked target than we
 ## are (i.e. standing in the way), start / keep the blocked timer; otherwise
-## clear it. Ranged enemies never count (they don't need to walk up).
+## clear it. Ranged minions never count (they don't need to walk up).
 func _note_blocked_by_player(now: int) -> void:
 	if _attack_range > 1 or _override != null or not is_instance_valid(_lock):
 		_blocked_since_msec = 0

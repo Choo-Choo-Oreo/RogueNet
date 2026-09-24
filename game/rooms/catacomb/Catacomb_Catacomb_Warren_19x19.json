@@ -469,14 +469,14 @@
 				"x": 12,
 				"y": 13
 			},
-			"enemy": "skeleton_archer"
+			"minion": "skeleton_archer"
 		},
 		{
 			"position": {
 				"x": 12,
 				"y": 15
 			},
-			"enemy": "skeleton_archer"
+			"minion": "skeleton_archer"
 		},
 		{
 			"position": {

@@ -9,14 +9,14 @@ are **the dungeon's own rooms**, made by a script instead of drawn by hand
 - **Reclaimed:** mostly forest. Grass almost everywhere, the walls half
   trees, more of them fallen in, water pooled in the low spots.
 
-Enemies are **the dungeon's and the forest's, mixed**: the dungeon's
+Minions are **the dungeon's and the forest's, mixed**: the dungeon's
 skeletons, wraiths and rats are still here, and the forest's wolves and
 bats have moved in. The further the forest has taken a room, the more it
 belongs to the beasts.
 
 This file covers the ruins' own rules. For the full room file format
-(every key, connectors, `free`, per-connector `door`, `favored_enemy`,
-per-cell `enemy`), see [../README.md](../README.md). The dungeon's guide
+(every key, connectors, `free`, per-connector `door`, `favored_minion`,
+per-cell `minion`), see [../README.md](../README.md). The dungeon's guide
 ([../dungeon/README.md](../dungeon/README.md)) explains how the generator
 places rooms and describes each room's shape, and all of that applies here
 too.
@@ -58,10 +58,10 @@ too.
 3. **Every connector is `"free": true`,** so any widths can join.
 4. **Nothing unreachable.** Every floor tile connects to the openings.
 
-## Enemies: dungeon and forest
+## Minions: dungeon and forest
 
-Every spawn cell spawns one enemy. The dungeon's own spawn cells and
-favoured enemies are not kept. The biome's `monsters` table mixes both
+Every spawn cell spawns one minion. The dungeon's own spawn cells and
+favoured minions are not kept. The biome's `monsters` table mixes both
 biomes: wolf 3, rat 2, skeleton archer 2, wraith 2, bat 1, blind rat 1,
 and a rare hellhound (0.5).
 
@@ -69,18 +69,18 @@ There are three kinds of cell:
 
 - **Packs.** Tight clumps (members within 3 tiles, 2 apart) out in the
   open, as far from the openings as they fit.
-  - In **Reclaimed** rooms they are wolf packs: `"enemy": "wolf"`.
-  - In **Overgrown** rooms they have no `enemy` and roll from the table,
+  - In **Reclaimed** rooms they are wolf packs: `"minion": "wolf"`.
+  - In **Overgrown** rooms they have no `minion` and roll from the table,
     one by one, so a pack there is a mixed band: more often skeletons
     and wraiths than wolves.
 - **Bats.** Single cells tucked into corners (3+ walls or trees round
-  them). Each has `"enemy": "bat"`.
-- **Rolled cells.** Spread out, with no `enemy`, so they roll from the
+  them). Each has `"minion": "bat"`.
+- **Rolled cells.** Spread out, with no `minion`, so they roll from the
   table.
 
-Each room with spawns tilts the table with `favored_enemy`:
+Each room with spawns tilts the table with `favored_minion`:
 
-| Stage | `favored_enemy` | Rolled cells come out roughly |
+| Stage | `favored_minion` | Rolled cells come out roughly |
 |---|---|---|
 | Overgrown | `undead`, weight 2 | half undead (skeleton archers, wraiths), half beasts |
 | Reclaimed | `beast`, weight 2 | four in five beasts (wolves, rats, bats, hellhounds) |
@@ -139,7 +139,7 @@ is to **make the dungeon room first**, then make its two stages from it:
    Reclaimed.
 3. **Add saplings** only where all 8 tiles round them are open.
 4. **Set the connectors** to `"door": "none"`, `"free": true`.
-5. **Add the spawns** using the table above, and set `favored_enemy`
+5. **Add the spawns** using the table above, and set `favored_minion`
    (`undead` for Overgrown, `beast` for Reclaimed, weight 2).
 6. **Load a ruins dungeon** and watch the Godot output for
    `Room '<id>': ...` warnings.

@@ -26,7 +26,7 @@
 			"free": true
 		}
 	],
-	"favored_enemy": {
+	"favored_minion": {
 		"tag": "bat",
 		"weight": 3
 	},
@@ -377,35 +377,35 @@
 				"x": 8,
 				"y": 12
 			},
-			"enemy": "bat"
+			"minion": "bat"
 		},
 		{
 			"position": {
 				"x": 10,
 				"y": 12
 			},
-			"enemy": "bat"
+			"minion": "bat"
 		},
 		{
 			"position": {
 				"x": 7,
 				"y": 13
 			},
-			"enemy": "bat"
+			"minion": "bat"
 		},
 		{
 			"position": {
 				"x": 9,
 				"y": 13
 			},
-			"enemy": "bat"
+			"minion": "bat"
 		},
 		{
 			"position": {
 				"x": 11,
 				"y": 13
 			},
-			"enemy": "bat"
+			"minion": "bat"
 		}
 	],
 	"tags": [

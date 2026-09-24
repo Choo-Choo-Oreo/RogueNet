@@ -1,7 +1,7 @@
 # Cathedral: the stress test
 
 The cathedral is not a hand-designed biome. It exists to push generation,
-rendering and enemy pathing harder than any other biome. It is the dungeon's
+rendering and minion pathing harder than any other biome. It is the dungeon's
 room set blown up to three times the size and dressed as a church: carpets,
 pillars and pews.
 
@@ -72,10 +72,10 @@ torches and 2 chests, and has no spawns.
 - `tag_weights` are the dungeon's: `corridor` 0.8, `maze` 0.6, `killzone`
   0.5, `peaceful` 0.7.
 - `monsters` lean devilish: hellhound 3, demonic hamster 3, skeleton archer 1
-  and wraith 1. About three in four enemies are demons (the two enemies
+  and wraith 1. About three in four minions are demons (the two minions
   tagged `demon`).
 - `Cathedral_Barracks_32x32` favours `demon` (weight 3), where the dungeon's
-  barracks favours `undead.skeleton`. The script swaps any favoured enemy
+  barracks favours `undead.skeleton`. The script swaps any favoured minion
   to `demon`, so re-running it keeps this.
 - `default_door` is `wood_fold`. TODO.md notes this was a temporary switch
   from `iron` for door testing.

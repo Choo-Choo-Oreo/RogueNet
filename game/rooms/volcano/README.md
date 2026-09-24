@@ -5,12 +5,12 @@ a place you could name: a lava river, a caldera, a cinder cone, a magma
 chamber. Most features also come **Erupting**: the same room with more lava.
 Every room with lava is a "find the stone path" puzzle: a path of cooled
 crust runs between the openings, and wading through the lava is the slow
-way. Enemies come as **demon packs**: hellhounds in tight packs on the
+way. Minions come as **demon packs**: hellhounds in tight packs on the
 ground, and demonic hamsters swarming over the lava.
 
 This file covers the volcano's own rules. For the full room file format
-(every key, connectors, `free`, per-connector `door`, `favored_enemy`,
-per-cell `enemy`), see [../README.md](../README.md). The dungeon's guide
+(every key, connectors, `free`, per-connector `door`, `favored_minion`,
+per-cell `minion`), see [../README.md](../README.md). The dungeon's guide
 ([../dungeon/README.md](../dungeon/README.md)) explains how the generator
 places rooms, and all of that applies here too.
 
@@ -51,18 +51,18 @@ places rooms, and all of that applies here too.
 
 Every room sets `"base_floor": "floor_dirt"`.
 
-## Enemies: demon packs
+## Minions: demon packs
 
-Every spawn cell spawns one enemy. There are three kinds of cell:
+Every spawn cell spawns one minion. There are three kinds of cell:
 
 - **Hellhound packs.** Tight clumps (cells next to each other) on ash or
   crust, as far from the openings as they fit. Each has
-  `"enemy": "wolf_hellhound"`.
+  `"minion": "wolf_hellhound"`.
 - **Hamster swarms.** Loose groups (cells 2 apart) over the lava. Each has
-  `"enemy": "hamster_demonic"`: a flyer is the only thing that belongs out
+  `"minion": "hamster_demonic"`: a flyer is the only thing that belongs out
   there. In a room with no lava, the swarm gathers on the ash instead.
 - **Rolled cells.** Single cells spread out on the ground, with no
-  `enemy`, so they roll from the biome's `monsters` table (the only way a
+  `minion`, so they roll from the biome's `monsters` table (the only way a
   bat shows up).
 
 | Kind | Packs | Pack size | Swarms | Swarm size | Rolled |
@@ -77,7 +77,7 @@ Every spawn cell spawns one enemy. There are three kinds of cell:
 | Side pocket | none | | none | | 2 |
 | Entrance, tunnel, vent, peaceful | none | | none | | none |
 
-No room sets `favored_enemy`. The 64 rooms have 311 spawn cells between
+No room sets `favored_minion`. The 64 rooms have 311 spawn cells between
 them: 156 hellhounds, 117 demonic hamsters and 38 rolled.
 
 ## Roles and tags
@@ -150,7 +150,7 @@ the room. Sizes are in the file names (grid size = inside + 2).
    each opening cell the floor tile just inside it.
 4. **Set the connectors:** `"door": "none"`, `"free": true`.
 5. **Add the spawns** using the table above. Give pack cells
-   `"enemy": "wolf_hellhound"` and swarm cells `"enemy": "hamster_demonic"`.
+   `"minion": "wolf_hellhound"` and swarm cells `"minion": "hamster_demonic"`.
 6. **Build it** in the room editor (`scenes/dungeon/DungeonMaker.tscn`) or
    by copying a similar room's JSON.
 7. **Load a volcano dungeon** and watch the Godot output for

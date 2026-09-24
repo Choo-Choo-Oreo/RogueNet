@@ -175,9 +175,9 @@ Global tuning defines (kept out of code):
 3. **v2:** enable adaptation with two trackers only (HP lost, lowest HP). Set anchors from logged data.
 4. **v3:** add resources and kill time only if the data shows they add signal.
 
-## 9b. Later: reuse enemy tags
+## 9b. Later: reuse minion tags
 
-Enemies now carry `tags` (`game/TAGS.md`) and rooms can set `favored_enemy`.
+Minions now carry `tags` (`game/TAGS.md`) and rooms can set `favored_minion`.
 Once player data exists, the same tags can steer scaling, for example
 weighting a whole family (`beast`, `undead`) up or down by band. Not built;
 a to-do for when the power rating is real.

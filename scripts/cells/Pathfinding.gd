@@ -6,8 +6,8 @@ extends RefCounted
 ## AStarGrid2D rather than a hand-rolled search. Bounded to a max_radius-tile
 ## region around `from` (not the whole dungeon) and rebuilt fresh each call
 ## -- walls don't move, but callers do, and a bounded region is cheap enough
-## to just re-scan rather than cache here (see EnemyController's own
-## per-enemy path cache, which caches the *result* of this across frames
+## to just re-scan rather than cache here (see MinionController's own
+## per-minion path cache, which caches the *result* of this across frames
 ## instead). Cell units and the blocked-check are the same shape as
 ## LineOfSight/LightFlood's, so callers can reuse whatever is_blocked they
 ## already have (e.g. GridMover.is_tile_blocked). Returns the full route

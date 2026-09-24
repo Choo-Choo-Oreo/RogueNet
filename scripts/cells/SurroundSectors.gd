@@ -1,9 +1,9 @@
 class_name SurroundSectors
 extends RefCounted
 
-## How many chasing enemies are currently in each of 16 pie slices around a
-## target, so an approaching enemy can pick the emptier side (see
-## EnemyController._try_surround_step). One pass over every enemy, redone at
+## How many chasing minions are currently in each of 16 pie slices around a
+## target, so an approaching minion can pick the emptier side (see
+## MinionController._try_surround_step). One pass over every minion, redone at
 ## most every REFRESH_FRAMES -- cheap, and exact counts don't matter, only
 ## which side is relatively crowded.
 
@@ -38,11 +38,11 @@ static func _refresh(tree: SceneTree, tile_size: int) -> void:
 	if players.is_empty():
 		return
 	var max_px := float(RADIUS_TILES * tile_size)
-	for enemy: Node2D in tree.get_nodes_in_group("antagonist"):
+	for minion: Node2D in tree.get_nodes_in_group("antagonist"):
 		var nearest: Node2D = players[0]
 		var nearest_dist := INF
 		for player in players:
-			var dist := enemy.global_position.distance_squared_to(player.global_position)
+			var dist := minion.global_position.distance_squared_to(player.global_position)
 			if dist < nearest_dist:
 				nearest = player
 				nearest_dist = dist
@@ -51,5 +51,5 @@ static func _refresh(tree: SceneTree, tile_size: int) -> void:
 		var counts: PackedInt32Array = _counts.get(nearest.get_instance_id(), PackedInt32Array())
 		if counts.is_empty():
 			counts.resize(SECTORS)
-		counts[sector_of(enemy.global_position - nearest.global_position)] += 1
+		counts[sector_of(minion.global_position - nearest.global_position)] += 1
 		_counts[nearest.get_instance_id()] = counts

@@ -397,84 +397,84 @@
 				"x": 7,
 				"y": 2
 			},
-			"enemy": "wolf_hellhound"
+			"minion": "wolf_hellhound"
 		},
 		{
 			"position": {
 				"x": 8,
 				"y": 3
 			},
-			"enemy": "wolf_hellhound"
+			"minion": "wolf_hellhound"
 		},
 		{
 			"position": {
 				"x": 7,
 				"y": 4
 			},
-			"enemy": "wolf_hellhound"
+			"minion": "wolf_hellhound"
 		},
 		{
 			"position": {
 				"x": 13,
 				"y": 4
 			},
-			"enemy": "wolf_hellhound"
+			"minion": "wolf_hellhound"
 		},
 		{
 			"position": {
 				"x": 14,
 				"y": 4
 			},
-			"enemy": "wolf_hellhound"
+			"minion": "wolf_hellhound"
 		},
 		{
 			"position": {
 				"x": 15,
 				"y": 4
 			},
-			"enemy": "wolf_hellhound"
+			"minion": "wolf_hellhound"
 		},
 		{
 			"position": {
 				"x": 7,
 				"y": 5
 			},
-			"enemy": "wolf_hellhound"
+			"minion": "wolf_hellhound"
 		},
 		{
 			"position": {
 				"x": 15,
 				"y": 5
 			},
-			"enemy": "wolf_hellhound"
+			"minion": "wolf_hellhound"
 		},
 		{
 			"position": {
 				"x": 9,
 				"y": 12
 			},
-			"enemy": "wolf_hellhound"
+			"minion": "wolf_hellhound"
 		},
 		{
 			"position": {
 				"x": 10,
 				"y": 12
 			},
-			"enemy": "wolf_hellhound"
+			"minion": "wolf_hellhound"
 		},
 		{
 			"position": {
 				"x": 9,
 				"y": 14
 			},
-			"enemy": "wolf_hellhound"
+			"minion": "wolf_hellhound"
 		},
 		{
 			"position": {
 				"x": 10,
 				"y": 14
 			},
-			"enemy": "wolf_hellhound"
+			"minion": "wolf_hellhound"
 		}
 	],
 	"tags": [

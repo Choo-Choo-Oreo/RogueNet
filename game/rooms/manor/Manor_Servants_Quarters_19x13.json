@@ -26,7 +26,7 @@
 			"free": true
 		}
 	],
-	"favored_enemy": {
+	"favored_minion": {
 		"tag": "rat",
 		"weight": 3
 	},
@@ -335,28 +335,28 @@
 				"x": 9,
 				"y": 10
 			},
-			"enemy": "rat"
+			"minion": "rat"
 		},
 		{
 			"position": {
 				"x": 8,
 				"y": 11
 			},
-			"enemy": "rat"
+			"minion": "rat"
 		},
 		{
 			"position": {
 				"x": 9,
 				"y": 11
 			},
-			"enemy": "rat"
+			"minion": "rat"
 		},
 		{
 			"position": {
 				"x": 10,
 				"y": 11
 			},
-			"enemy": "rat"
+			"minion": "rat"
 		}
 	],
 	"tags": [

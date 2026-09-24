@@ -8,14 +8,9 @@
 	"cognitive": 0,
 	"resistances": {},
 	"speed_tiles_per_second": 6.5,
-	"attack": {
-		"amount": 3,
-		"type": "Physical",
-		"interval": 1.0,
-		"effect": { "texture": "res://resources/gfx/effects/effects.melee/physical.biting.png", "frame_count": 10, "speed": 20.0 }
-	},
+	"actions": [{"action": "bite", "amount": 3}],
 	"senses": {
-		"_comment": "TODO senses: SenseSmell is a stub that never detects yet (scent-trail tracking not built). Until then this enemy only finds players via Sight and Touch. Flags here only toggle 'enabled' on the sense nodes.",
+		"_comment": "TODO senses: SenseSmell is a stub that never detects yet (scent-trail tracking not built). Until then this minion only finds players via Sight and Touch. Flags here only toggle 'enabled' on the sense nodes.",
 		"smell": true
 	},
 	"sprite_frames": {

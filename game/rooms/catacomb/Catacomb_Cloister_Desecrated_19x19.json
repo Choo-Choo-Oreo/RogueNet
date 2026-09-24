@@ -481,21 +481,21 @@
 				"x": 7,
 				"y": 9
 			},
-			"enemy": "skeleton_archer"
+			"minion": "skeleton_archer"
 		},
 		{
 			"position": {
 				"x": 9,
 				"y": 9
 			},
-			"enemy": "skeleton_archer"
+			"minion": "skeleton_archer"
 		},
 		{
 			"position": {
 				"x": 11,
 				"y": 9
 			},
-			"enemy": "skeleton_archer"
+			"minion": "skeleton_archer"
 		},
 		{
 			"position": {

@@ -3,7 +3,7 @@ extends Node
 
 ## Moves the parent node one tile at a time across the dungeon grid,
 ## respecting walls/doors and per-tile terrain speed. Shared by anything
-## that walks the dungeon tilemap -- players, antagonist, enemies.
+## that walks the dungeon tilemap -- players, antagonist, minions.
 
 @export var tile_size := 16
 @export var move_time := 0.2
@@ -56,7 +56,7 @@ func _build_floor_speeds() -> void:
 			_floor_speed[registry.get_id(tile.tile_name)] = tile.move_speed()
 
 ## True for a mover that flies: terrain never slows it, and its pathfinding
-## ignores terrain cost. Set from the enemy JSON's "flying" (EnemyController).
+## ignores terrain cost. Set from the minion JSON's "flying" (MinionController).
 var flies := false
 
 func _ignores_terrain() -> bool:
@@ -77,7 +77,7 @@ func _floor_source_at(target_global: Vector2) -> int:
 	return floor_data.get_cell_source_id(cell)
 
 ## Set by whatever owns this mover if it may only open SOME doors (an idle
-## enemy leaves solid doors shut). Called with the DoorRegistry.Door, returns
+## minion leaves solid doors shut). Called with the DoorRegistry.Door, returns
 ## true if this mover may open it. Unset = opens any door, like a player.
 var open_predicate := Callable()
 
@@ -151,7 +151,7 @@ func _tile_blocked_single(tile: Vector2i) -> bool:
 	return door != null and not _ignores_doors() and not _can_open(door)
 
 ## Walls, void and closed opaque doors: what stops SIGHT (LineOfSight,
-## enemy senses). Bars (transparent doors) let you see through.
+## minion senses). Bars (transparent doors) let you see through.
 func blocks_sight(tile: Vector2i) -> bool:
 	return _is_blocked(Vector2(tile) * tile_size) or DoorRegistry.blocks_sight(tile)
 
@@ -171,8 +171,8 @@ func is_position_blocked(global_pos: Vector2) -> bool:
 
 ## Shared per-frame index backing is_tile_occupied() -- rescanning every
 ## protagonist/antagonist on every single query was O(n) per call, and with
-## hundreds of enemies now calling this unthrottled every frame (see
-## EnemyController._try_direct_step, added once pathfinding itself got
+## hundreds of minions now calling this unthrottled every frame (see
+## MinionController._try_direct_step, added once pathfinding itself got
 ## throttled), that added up to O(n^2) per frame and became the new
 ## bottleneck. Building the tile -> occupants map once per frame instead
 ## (Godot 4 script statics, shared by every GridMover instance regardless of
@@ -205,7 +205,7 @@ func _tile_occupants(tile: Vector2i) -> Array:
 ## mover's own body) is currently standing on `tile` -- lets a mover refuse
 ## to step onto an already-occupied tile instead of stacking on it. Ghost
 ## players (PlayerController.die()) are intangible and don't count, same as
-## they already don't count as attack targets or collide with enemies.
+## they already don't count as attack targets or collide with minions.
 func is_tile_occupied(tile: Vector2i) -> bool:
 	if footprint > 1:
 		for covered in _footprint_tiles(tile):
@@ -216,7 +216,7 @@ func is_tile_occupied(tile: Vector2i) -> bool:
 
 func _tile_occupied_single(tile: Vector2i) -> bool:
 	# Boss privilege: a boss walks through the antagonists that are not bosses
-	# (they step aside, see EnemyController._yield_to_boss). Players still block it.
+	# (they step aside, see MinionController._yield_to_boss). Players still block it.
 	var is_boss: bool = _body.get_meta("is_boss", false)
 	for body in _tile_occupants(tile):
 		if body == _body:
@@ -264,7 +264,7 @@ func can_step_diagonally(origin_tile: Vector2i, step: Vector2i) -> bool:
 				return false
 	return true
 
-## speed_scale lets a caller slow this one step down (e.g. an enemy that's
+## speed_scale lets a caller slow this one step down (e.g. a minion that's
 ## investigating a noise rather than actively chasing, at half speed) without
 ## touching move_time itself, which stays the entity's normal baseline.
 ## `direction` is one of the 8 neighbouring tiles; a diagonal takes longer (it
@@ -291,7 +291,7 @@ func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> bool:
 	# is closed (or still swinging) opens it (if this mover may) but doesn't step
 	# this call. Stepping ONTO a door cell from the front is fine and just starts
 	# it opening, so you can stand in the doorway while it swings.
-	# Ghosts and door-phasing enemies drift through closed doors.
+	# Ghosts and door-phasing minions drift through closed doors.
 	if not _ignores_doors():
 		var origin_tile := Vector2i(floori(origin_global.x / tile_size), floori(origin_global.y / tile_size))
 		# A big body enters a whole row or column of new tiles at once: every one of

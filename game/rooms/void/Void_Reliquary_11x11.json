@@ -180,21 +180,21 @@
 				"x": 6,
 				"y": 2
 			},
-			"enemy": "wraith"
+			"minion": "wraith"
 		},
 		{
 			"position": {
 				"x": 3,
 				"y": 4
 			},
-			"enemy": "bat_echo"
+			"minion": "bat_echo"
 		},
 		{
 			"position": {
 				"x": 6,
 				"y": 5
 			},
-			"enemy": "wraith"
+			"minion": "wraith"
 		}
 	],
 	"tags": [

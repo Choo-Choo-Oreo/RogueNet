@@ -4,11 +4,11 @@ Old woods with no doors anywhere. Every room is a **landmark**, a place
 you could name: a pond, a fallen giant of a tree, a wolf den, a ring of
 standing stones. Every landmark also comes **Overgrown**: the same place,
 bigger and wilder, with a second pond, another fallen trunk or an extra
-ring of mushrooms. Enemies come in **packs**, mostly wolves, so a fight
-starts all at once rather than one enemy at a time.
+ring of mushrooms. Minions come in **packs**, mostly wolves, so a fight
+starts all at once rather than one minion at a time.
 
 This file covers the forest's own rules. For the full room file format
-(every key, connectors, `free`, per-connector `door`, `favored_enemy`),
+(every key, connectors, `free`, per-connector `door`, `favored_minion`),
 see [../README.md](../README.md). The dungeon's guide
 ([../dungeon/README.md](../dungeon/README.md)) explains how the generator
 places rooms, and all of that applies here too.
@@ -54,9 +54,9 @@ places rooms, and all of that applies here too.
 Every room sets `"base_floor": "floor_dirt"`, so the ground under trees and
 openings is dirt.
 
-## Enemies: packs
+## Minions: packs
 
-Every spawn cell spawns one enemy (unless the cell is lit). In the forest,
+Every spawn cell spawns one minion (unless the cell is lit). In the forest,
 spawn cells come in **packs**: a tight clump of cells (each within 3 tiles
 of the pack's centre, 2 apart) with packs spread far apart and kept away
 from the openings.
@@ -87,7 +87,7 @@ density, not flesh's.
 | Peaceful | `normal` | `peaceful` |
 | Maze | `normal` | `maze` |
 | Barracks | `normal` | `barracks` |
-| Leech Bog | `normal` | `combat`, `nest`, and `"favored_enemy": {"tag": "leech", "weight": 30}` |
+| Leech Bog | `normal` | `combat`, `nest`, and `"favored_minion": {"tag": "leech", "weight": 30}` |
 | Treasure | `normal` | `treasure` (guarded: has spawns) |
 | Boss | `boss` | `combat` |
 

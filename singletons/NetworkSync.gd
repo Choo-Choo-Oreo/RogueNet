@@ -453,83 +453,83 @@ func receive_return_to_town() -> void:
 	dive_members.clear()
 	get_tree().change_scene_to_file("res://scenes/ui/town/MainTown.tscn")
 
-# --- Enemies: host decides identity/position and tells everyone else,
+# --- Minions: host decides identity/position and tells everyone else,
 # same "one decider, everyone else is told" split as the dungeon seed above.
 
-func broadcast_enemy_spawns(spawns: Array) -> void:
+func broadcast_minion_spawns(spawns: Array) -> void:
 	if spawns.is_empty():
 		return
 	for peer_id in multiplayer.get_peers():
-		receive_spawn_enemies.rpc_id(peer_id, spawns)
+		receive_spawn_minions.rpc_id(peer_id, spawns)
 
 @rpc("authority", "reliable")
-func receive_spawn_enemies(spawns: Array) -> void:
+func receive_spawn_minions(spawns: Array) -> void:
 	var scene := get_tree().current_scene
 	if scene == null:
 		return
-	var enemies_root := scene.get_node_or_null("Enemies")
-	if enemies_root == null:
+	var minions_root := scene.get_node_or_null("Minions")
+	if minions_root == null:
 		return
 	for spawn in spawns:
-		if enemies_root.has_node(str(spawn["id"])):
+		if minions_root.has_node(str(spawn["id"])):
 			continue
-		EnemySpawning.spawn_one(spawn["id"], spawn["type"], spawn["tile"], enemies_root)
+		MinionSpawning.spawn_one(spawn["id"], spawn["type"], spawn["tile"], minions_root)
 
-# Host relays every frame it moves an owned enemy (unreliable, same as player
-# position) -- clients never run enemy AI at all, they only ever render
+# Host relays every frame it moves an owned minion (unreliable, same as player
+# position) -- clients never run minion AI at all, they only ever render
 # whatever the host last told them.
-func relay_enemy_state(enemy_id: int, pos: Vector2, state: int) -> void:
+func relay_minion_state(minion_id: int, pos: Vector2, state: int) -> void:
 	for peer_id in multiplayer.get_peers():
-		receive_enemy_state.rpc_id(peer_id, enemy_id, pos, state)
+		receive_minion_state.rpc_id(peer_id, minion_id, pos, state)
 
 @rpc("authority", "unreliable_ordered")
-func receive_enemy_state(enemy_id: int, pos: Vector2, state: int) -> void:
+func receive_minion_state(minion_id: int, pos: Vector2, state: int) -> void:
 	var scene := get_tree().current_scene
 	if scene == null:
 		return
-	var enemy := scene.get_node_or_null("Enemies/" + str(enemy_id))
-	if enemy and enemy.has_method("receive_network_state"):
-		enemy.receive_network_state(pos, state)
+	var minion := scene.get_node_or_null("Minions/" + str(minion_id))
+	if minion and minion.has_method("receive_network_state"):
+		minion.receive_network_state(pos, state)
 
 # A client's attack reports the hit to the host (only the host may ever
 # actually apply it); the host itself applies straight away. Either path
-# lands on _resolve_enemy_hit, which applies once and relays the same
+# lands on _resolve_minion_hit, which applies once and relays the same
 # amount/type to every peer so each one's own EntityStats independently
 # reaches the same health and fires its own died signal -- no separate
 # despawn message needed, every peer just queue_frees itself once its own
 # copy hits 0.
-func report_enemy_hit(enemy_id: int, amount: int, type: String) -> void:
+func report_minion_hit(minion_id: int, amount: int, type: String) -> void:
 	if multiplayer.multiplayer_peer == null or multiplayer.is_server():
-		_resolve_enemy_hit(enemy_id, amount, type)
+		_resolve_minion_hit(minion_id, amount, type)
 	else:
-		request_enemy_hit.rpc_id(1, enemy_id, amount, type)
+		request_minion_hit.rpc_id(1, minion_id, amount, type)
 
 @rpc("any_peer", "reliable")
-func request_enemy_hit(enemy_id: int, amount: int, type: String) -> void:
+func request_minion_hit(minion_id: int, amount: int, type: String) -> void:
 	if not multiplayer.is_server():
 		return
-	_resolve_enemy_hit(enemy_id, amount, type)
+	_resolve_minion_hit(minion_id, amount, type)
 
-func _resolve_enemy_hit(enemy_id: int, amount: int, type: String) -> void:
+func _resolve_minion_hit(minion_id: int, amount: int, type: String) -> void:
 	var scene := get_tree().current_scene
 	if scene:
-		var enemy := scene.get_node_or_null("Enemies/" + str(enemy_id))
-		if enemy and enemy.has_method("take_damage"):
-			enemy.take_damage(amount, type)
+		var minion := scene.get_node_or_null("Minions/" + str(minion_id))
+		if minion and minion.has_method("take_damage"):
+			minion.take_damage(amount, type)
 	for peer_id in multiplayer.get_peers():
-		receive_enemy_damage.rpc_id(peer_id, enemy_id, amount, type)
+		receive_minion_damage.rpc_id(peer_id, minion_id, amount, type)
 
 @rpc("authority", "reliable")
-func receive_enemy_damage(enemy_id: int, amount: int, type: String) -> void:
+func receive_minion_damage(minion_id: int, amount: int, type: String) -> void:
 	var scene := get_tree().current_scene
 	if scene == null:
 		return
-	var enemy := scene.get_node_or_null("Enemies/" + str(enemy_id))
-	if enemy and enemy.has_method("take_damage"):
-		enemy.take_damage(amount, type)
+	var minion := scene.get_node_or_null("Minions/" + str(minion_id))
+	if minion and minion.has_method("take_damage"):
+		minion.take_damage(amount, type)
 
 # Doors. Open/closed state is host-authoritative: anyone who bumps a door (a
-# player, or an enemy on the host) calls open_door; a client asks the host, the
+# player, or a minion on the host) calls open_door; a client asks the host, the
 # host applies it and tells everybody. Closing is the host's own timer
 # (DoorManager) through set_door. Door ids are positions in DoorRegistry.doors,
 # identical on every peer because the dungeon is built from the same seed.
@@ -597,23 +597,23 @@ func _apply_god_mode(player_id: int, on: bool) -> void:
 	if player != null and "debug_god" in player:
 		player.debug_god = on
 
-## Enemies are host-owned, so a client asks the host to place one.
-func debug_spawn_enemy(enemy_id: String, tile: Vector2i) -> void:
+## Minions are host-owned, so a client asks the host to place one.
+func debug_spawn_minion(minion_id: String, tile: Vector2i) -> void:
 	if multiplayer.multiplayer_peer == null or multiplayer.is_server():
-		_host_debug_spawn(enemy_id, tile)
+		_host_debug_spawn(minion_id, tile)
 	else:
-		request_debug_spawn.rpc_id(1, enemy_id, tile)
+		request_debug_spawn.rpc_id(1, minion_id, tile)
 
 @rpc("any_peer", "reliable")
-func request_debug_spawn(enemy_id: String, tile: Vector2i) -> void:
+func request_debug_spawn(minion_id: String, tile: Vector2i) -> void:
 	if multiplayer.is_server():
-		_host_debug_spawn(enemy_id, tile)
+		_host_debug_spawn(minion_id, tile)
 
-func _host_debug_spawn(enemy_id: String, tile: Vector2i) -> void:
+func _host_debug_spawn(minion_id: String, tile: Vector2i) -> void:
 	var scene := get_tree().current_scene
-	var enemies_root := scene.get_node_or_null("Enemies") if scene != null else null
-	if enemies_root != null:
-		EnemySpawning.spawn_debug(enemy_id, tile, enemies_root)
+	var minions_root := scene.get_node_or_null("Minions") if scene != null else null
+	if minions_root != null:
+		MinionSpawning.spawn_debug(minion_id, tile, minions_root)
 
 ## Opening works from anywhere (every door asks the host); closing is host only.
 func debug_all_doors(open: bool) -> void:
@@ -711,9 +711,9 @@ func _spawn_projectile_copy(texture_path: String, from: Vector2, to: Vector2) ->
 		blocked = local_player.grid_mover.is_position_blocked
 	projectile.launch(texture_path, to, 16.0, func(): pass, blocked)
 
-# Taunt ("Rawr", hotbar slot 4): enemy AI only runs on the host, so a client's
-# cast is just a request to the host, which forces the nearest enemies in
-# radius onto the caster. Clients need no reply -- they never run enemy AI.
+# Taunt ("Rawr", hotbar slot 4): minion AI only runs on the host, so a client's
+# cast is just a request to the host, which forces the nearest minions in
+# radius onto the caster. Clients need no reply -- they never run minion AI.
 func report_taunt(player_id: int, radius_tiles: float, duration: float, max_targets: int) -> void:
 	if multiplayer.multiplayer_peer == null or multiplayer.is_server():
 		_resolve_taunt(player_id, radius_tiles, duration, max_targets)
@@ -735,18 +735,18 @@ func _resolve_taunt(player_id: int, radius_tiles: float, duration: float, max_ta
 		return
 	var radius_px := radius_tiles * 16.0
 	var in_range: Array = []
-	for enemy in get_tree().get_nodes_in_group("antagonist"):
-		var dist: float = enemy.global_position.distance_to(player.global_position)
-		if dist <= radius_px and enemy.has_method("force_target"):
-			in_range.append([dist, enemy])
-	# Nearest first, capped so one cast can't yank hundreds of enemies at once.
+	for minion in get_tree().get_nodes_in_group("antagonist"):
+		var dist: float = minion.global_position.distance_to(player.global_position)
+		if dist <= radius_px and minion.has_method("force_target"):
+			in_range.append([dist, minion])
+	# Nearest first, capped so one cast can't yank hundreds of minions at once.
 	in_range.sort_custom(func(a, b): return a[0] < b[0])
 	for i in mini(in_range.size(), max_targets):
 		in_range[i][1].force_target(player, duration)
 
-# Enemy-on-player damage only ever originates on the host (only the host ever
-# runs enemy AI/attacks), so this is a straight broadcast, no any_peer report
-# step needed the way enemy hits have one.
+# Minion-on-player damage only ever originates on the host (only the host ever
+# runs minion AI/attacks), so this is a straight broadcast, no any_peer report
+# step needed the way minion hits have one.
 func relay_player_hit(player_id: int, amount: int, type: String) -> void:
 	receive_player_damage(player_id, amount, type)
 	for peer_id in multiplayer.get_peers():
@@ -761,7 +761,7 @@ func receive_player_damage(player_id: int, amount: int, type: String) -> void:
 	if player and player.has_method("take_damage"):
 		player.take_damage(amount, type)
 
-## Host only (an ability the host's AI fires, see EnemyController._ability_destroy_tiles).
+## Host only (an ability the host's AI fires, see MinionController._ability_destroy_tiles).
 ## Breaks the walls among `cells`: the host decides which fall and what shows under and
 ## around them (TileDestruction.plan), then every peer applies that same list -- no peer
 ## rolls its own dice, so the maps cannot drift apart. Returns how many cells changed

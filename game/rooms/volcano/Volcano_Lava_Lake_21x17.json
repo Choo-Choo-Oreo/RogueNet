@@ -431,35 +431,35 @@
 				"x": 10,
 				"y": 4
 			},
-			"enemy": "hamster_demonic"
+			"minion": "hamster_demonic"
 		},
 		{
 			"position": {
 				"x": 12,
 				"y": 4
 			},
-			"enemy": "hamster_demonic"
+			"minion": "hamster_demonic"
 		},
 		{
 			"position": {
 				"x": 13,
 				"y": 5
 			},
-			"enemy": "hamster_demonic"
+			"minion": "hamster_demonic"
 		},
 		{
 			"position": {
 				"x": 6,
 				"y": 12
 			},
-			"enemy": "wolf_hellhound"
+			"minion": "wolf_hellhound"
 		},
 		{
 			"position": {
 				"x": 6,
 				"y": 13
 			},
-			"enemy": "wolf_hellhound"
+			"minion": "wolf_hellhound"
 		},
 		{
 			"position": {
@@ -472,7 +472,7 @@
 				"x": 5,
 				"y": 14
 			},
-			"enemy": "wolf_hellhound"
+			"minion": "wolf_hellhound"
 		}
 	],
 	"tags": [

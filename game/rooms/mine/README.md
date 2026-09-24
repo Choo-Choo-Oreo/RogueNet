@@ -6,7 +6,7 @@ purpose. The maze comes from what the room is *for*, like ore galleries,
 sidings and supports, not from decoration.
 
 This file covers the mine's own rules. For the full room file format (every
-key, connectors, `free`, per-connector `door`, `favored_enemy`), see
+key, connectors, `free`, per-connector `door`, `favored_minion`), see
 [../README.md](../README.md). The dungeon's guide
 ([../dungeon/README.md](../dungeon/README.md)) explains how the generator
 places rooms, and all of that applies here too.

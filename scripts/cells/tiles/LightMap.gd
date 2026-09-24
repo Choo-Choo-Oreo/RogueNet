@@ -118,7 +118,7 @@ func _process_inner() -> void:
 	_update_others()
 
 ## True if any of this tile's four half-tile (CELL) cells are part of the
-## local player's currently-flooded vision. Used by enemy spawning to decide
+## local player's currently-flooded vision. Used by minion spawning to decide
 ## whether a spawn cell is still in view (skip it) or safe to roll into.
 func is_tile_lit(tile: Vector2i) -> bool:
 	for dy in 2:

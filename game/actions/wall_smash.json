@@ -1,0 +1,12 @@
+{
+	"verb": "destroy_tiles",
+	"range_tiles": 6,
+	"needs_sight": false,
+	"only_through_walls": true,
+	"interval": 6.0,
+	"shape": {
+		"type": "line",
+		"length": 3,
+		"width": 2
+	}
+}

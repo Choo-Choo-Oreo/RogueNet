@@ -6,7 +6,7 @@ extends Node
 ##
 ## Player-triggered: a player's TouchArea (see PlayerController.tscn) reports
 ## overlap here via notify_enter()/notify_exit() as it physically happens,
-## instead of this node sampling distance once per enemy poll tick (the old
+## instead of this node sampling distance once per minion poll tick (the old
 ## way -- a fast walk-by could slip between polls and never register).
 @export var enabled: bool = true
 

@@ -37,7 +37,7 @@
 			"type": "iron_sink"
 		}
 	],
-	"favored_enemy": {
+	"favored_minion": {
 		"tag": "leech",
 		"weight": 5
 	},

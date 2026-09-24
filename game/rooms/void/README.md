@@ -10,8 +10,8 @@ further in. The dead haunt the ruins: wraiths drift over the platforms, and
 echo bats cling to the very edge of the drop.
 
 This file covers the Void's own rules. For the full room file format (every
-key, connectors, `free`, per-connector `door`, `favored_enemy`,
-`antagonist_spawns`, per-cell `enemy`), see [../README.md](../README.md).
+key, connectors, `free`, per-connector `door`, `favored_minion`,
+`antagonist_spawns`, per-cell `minion`), see [../README.md](../README.md).
 The dungeon's guide ([../dungeon/README.md](../dungeon/README.md)) explains
 how the generator places rooms, and all of that applies here too.
 
@@ -25,7 +25,7 @@ how the generator places rooms, and all of that applies here too.
 | Ruined walls | `wall_cobble_brick` | Stubs of old masonry: the Null Gate's back wall, hall walls, the Fallen Tower, vault walls. |
 | Pillars and headstones | `wall_smooth_stone` | Posts on the bridge landings, colonnades, standing stones, the Headstone Field. |
 
-- **The abyss is real.** A void cell can't be walked into, and enemies
+- **The abyss is real.** A void cell can't be walked into, and minions
   route round it. It also blocks sight like a wall, so you can't see across
   a gap (for now).
 - **Rooms are islands.** There is no outer wall: the ring is abyss except
@@ -64,15 +64,15 @@ headstones.
 
 Every room sets `"base_floor": "floor_smooth_stone"`.
 
-## Enemies: the dead
+## Minions: the dead
 
-Every spawn cell spawns one enemy. There are three kinds of cell:
+Every spawn cell spawns one minion. There are three kinds of cell:
 
 - **Wraith packs.** Loose groups (cells 2 apart) on the platforms, as far
-  from the openings as they fit. Each has `"enemy": "wraith"`.
+  from the openings as they fit. Each has `"minion": "wraith"`.
 - **Echo bats.** Single cells on the very edge of the abyss, or tucked
-  against walls. Each has `"enemy": "bat_echo"`.
-- **Rolled cells.** Spread out, with no `enemy`, so they roll from the
+  against walls. Each has `"minion": "bat_echo"`.
+- **Rolled cells.** Spread out, with no `minion`, so they roll from the
   biome's `monsters` table.
 
 | Kind | Wraith packs | Pack size | Echo bats | Rolled |
@@ -94,7 +94,7 @@ throne in the Throne of Ruin. They set `"favored_antagonist": { "tag":
 only boss, so it still comes. When an undead boss is added, the Void will
 pick it.
 
-No room sets `favored_enemy`. The 69 rooms have 272 spawn cells between
+No room sets `favored_minion`. The 69 rooms have 272 spawn cells between
 them: 146 wraiths, 84 echo bats and 42 rolled.
 
 ## Roles and tags

@@ -203,7 +203,7 @@ to an identical checksum across machines.
   coordinates. That makes it the one part of RogueNet where a Factorio-style
   checksum really works.
 - **Enemy spawning and tile destruction are not reproducible today.**
-  `EnemySpawning.gd:35-36` and `:93-94` call `rng.randomize()` (a fresh random
+  `MinionSpawning.gd:35-36` and `:93-94` call `rng.randomize()` (a fresh random
   seed every time), and `TileDestruction.gd:105` and `:126` use the global
   `randi()`. A test can check *rules* about them ("no enemy spawns on a lit
   tile") but can't pin an exact outcome, and a failure found by a soak run
@@ -237,7 +237,7 @@ add-on in `addons/` (only `godotsteam`), and no `.csproj`.
 | File | Shape | Test idea |
 |---|---|---|
 | `scripts/dungeon/DungeonAssembler.gd` | `RefCounted`, static: `generate`, `generate_with_retry`, `rotate_room`, `with_rotations`, `load_rooms`, `load_defines`, `pick_biome`, `collect_*` | Invariants across seeds and biomes; rotation round-trip; golden on fixtures |
-| `scripts/cells/Pathfinding.gd`, `FlowField.gd`, `LineOfSight.gd`, `LightFlood.gd`, `AbilityShapes.gd`, `SurroundSectors.gd`, `RoomGraph.gd` | `RefCounted`, almost all static | Tiny hand-drawn ASCII grids: "path goes around this wall", "sight blocked here" |
+| `scripts/cells/Pathfinding.gd`, `FlowField.gd`, `LineOfSight.gd`, `LightFlood.gd`, `ActionShapes.gd`, `SurroundSectors.gd`, `RoomGraph.gd` | `RefCounted`, almost all static | Tiny hand-drawn ASCII grids: "path goes around this wall", "sight blocked here" |
 | `scripts/JsonOnloading.gd` | static `load_dict` | Loads every content JSON; malformed files fail |
 | `Connector.validate` (already called for every room in `_read_folder`) | returns a list of problems | Room validation already half exists: turn "problems printed" into "test fails" |
 
@@ -247,11 +247,11 @@ add-on in `addons/` (only `godotsteam`), and no `.csproj`.
 - `PlayerInventory.gd` (autoload): place / move / swap rules in the
   9 slots, the 21-cell bag and 48-cell storage.
 - Every `.tscn`: load, instance, free, no errors (about 19 scenes).
-- `EnemySpawning.gd:33` already "fails open (acts as host) when no peer is
+- `MinionSpawning.gd:33` already "fails open (acts as host) when no peer is
   assigned", so host-side spawning can be tested with no network at all.
 
 ### 7.3 Hard to test as written
-- `EnemySpawning.gd` and `TileDestruction.gd` randomness (section 6.3).
+- `MinionSpawning.gd` and `TileDestruction.gd` randomness (section 6.3).
 - `GridMover.gd` collision needs a tile map fixture and the shared occupancy
   index. It is high value (the bodies-in-walls bug class) but fiddly.
 - Anything in the Steam lobby layer (it came from a template the team
@@ -335,7 +335,7 @@ cheapest to most expensive.
 ## 9. Testing multiplayer: a ladder **(reasoning, grounded in the files)**
 From cheapest to most expensive:
 1. **No network at all.** Test the host-side code path directly, relying on
-   `EnemySpawning`'s fail-open behaviour. Most host-authority *logic* can be
+   `MinionSpawning`'s fail-open behaviour. Most host-authority *logic* can be
    checked here.
 2. **`OfflineMultiplayerPeer`.** The same peer singleplayer already uses, so
    `is_server()` is true and RPC-shaped code runs.
@@ -448,7 +448,7 @@ From Factorio (section 2.4) and the team-fit review:
 2. **Where tests live:** a `test/` folder at the repo root is the common
    convention for both frameworks. Creating it is a filesystem change and
    needs Orea's go-ahead.
-3. **Seedable RNG refactor** in `EnemySpawning` and `TileDestruction`. This is
+3. **Seedable RNG refactor** in `MinionSpawning` and `TileDestruction`. This is
    a script change, so it needs Orea's go-ahead.
 4. **CI: Linux or Windows runner**, and blocking vs reporting.
 5. Whether to fill the `Build command` and `Test command` lines in

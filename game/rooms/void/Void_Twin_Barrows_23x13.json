@@ -371,35 +371,35 @@
 				"x": 9,
 				"y": 3
 			},
-			"enemy": "wraith"
+			"minion": "wraith"
 		},
 		{
 			"position": {
 				"x": 10,
 				"y": 4
 			},
-			"enemy": "wraith"
+			"minion": "wraith"
 		},
 		{
 			"position": {
 				"x": 13,
 				"y": 5
 			},
-			"enemy": "wraith"
+			"minion": "wraith"
 		},
 		{
 			"position": {
 				"x": 7,
 				"y": 10
 			},
-			"enemy": "bat_echo"
+			"minion": "bat_echo"
 		},
 		{
 			"position": {
 				"x": 16,
 				"y": 10
 			},
-			"enemy": "bat_echo"
+			"minion": "bat_echo"
 		}
 	],
 	"tags": [

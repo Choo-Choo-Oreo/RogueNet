@@ -660,49 +660,49 @@
 				"x": 4,
 				"y": 4
 			},
-			"enemy": "rat_blind"
+			"minion": "rat_blind"
 		},
 		{
 			"position": {
 				"x": 5,
 				"y": 5
 			},
-			"enemy": "rat_blind"
+			"minion": "rat_blind"
 		},
 		{
 			"position": {
 				"x": 5,
 				"y": 6
 			},
-			"enemy": "rat_blind"
+			"minion": "rat_blind"
 		},
 		{
 			"position": {
 				"x": 16,
 				"y": 6
 			},
-			"enemy": "leech"
+			"minion": "leech"
 		},
 		{
 			"position": {
 				"x": 4,
 				"y": 7
 			},
-			"enemy": "rat_blind"
+			"minion": "rat_blind"
 		},
 		{
 			"position": {
 				"x": 18,
 				"y": 8
 			},
-			"enemy": "leech"
+			"minion": "leech"
 		},
 		{
 			"position": {
 				"x": 16,
 				"y": 10
 			},
-			"enemy": "leech"
+			"minion": "leech"
 		},
 		{
 			"position": {
@@ -715,49 +715,49 @@
 				"x": 6,
 				"y": 13
 			},
-			"enemy": "leech"
+			"minion": "leech"
 		},
 		{
 			"position": {
 				"x": 6,
 				"y": 15
 			},
-			"enemy": "leech"
+			"minion": "leech"
 		},
 		{
 			"position": {
 				"x": 5,
 				"y": 16
 			},
-			"enemy": "leech"
+			"minion": "leech"
 		},
 		{
 			"position": {
 				"x": 12,
 				"y": 20
 			},
-			"enemy": "rat_blind"
+			"minion": "rat_blind"
 		},
 		{
 			"position": {
 				"x": 13,
 				"y": 20
 			},
-			"enemy": "rat_blind"
+			"minion": "rat_blind"
 		},
 		{
 			"position": {
 				"x": 14,
 				"y": 21
 			},
-			"enemy": "rat_blind"
+			"minion": "rat_blind"
 		},
 		{
 			"position": {
 				"x": 16,
 				"y": 21
 			},
-			"enemy": "rat_blind"
+			"minion": "rat_blind"
 		}
 	],
 	"tags": [

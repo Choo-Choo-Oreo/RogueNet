@@ -2,7 +2,7 @@ class_name ItemDatabase
 extends RefCounted
 
 ## Every item in game/items/<slot>/<id>.json, loaded once. The filename (minus
-## .json) is the item's id, same rule as enemies. Items are only cosmetic gear
+## .json) is the item's id, same rule as minions. Items are only cosmetic gear
 ## for now: a name, the slot it goes in, an optional set, and "art", the path
 ## of its sheets minus the "-<Direction>.png" ending (see README.md).
 

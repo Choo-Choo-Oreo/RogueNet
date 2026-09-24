@@ -22,7 +22,7 @@
 			}
 		}
 	],
-	"favored_enemy": {
+	"favored_minion": {
 		"tag": "undead.skeleton",
 		"weight": 3
 	},

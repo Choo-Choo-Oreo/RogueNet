@@ -51,7 +51,7 @@ func set_equipment(worn: Dictionary) -> void:
 func _load_player_data() -> void:
 	var data := JsonOnloading.load_dict(PLAYER_DATA_PATH)
 	stats.load_from_data(data)
-	_attacks = data.get("attacks", [])
+	_attacks = ActionIndex.resolve(data.get("actions", []))
 
 func _current_attack() -> Dictionary:
 	return _attacks[active_slot] if active_slot < _attacks.size() else {}
@@ -75,7 +75,7 @@ func _on_died() -> void:
 	stats.is_ghost = true
 	if is_multiplayer_authority():
 		local_is_ghost = true
-	# Above every other entity (players/enemies sit at 1000), but below
+	# Above every other entity (players/minions sit at 1000), but below
 	# LightMap's own overlay sprites (2000/2001) so it doesn't fight lighting.
 	z_index = 1500
 	gear.hidden = true
@@ -83,11 +83,11 @@ func _on_died() -> void:
 	$AnimatedSprite2D.sprite_frames = SpriteFramesLoader.build(ghost_data["sprite_frames"])
 
 func _on_touch_area_body_entered(body: Node2D) -> void:
-	if not stats.is_ghost and body is EnemyController:
+	if not stats.is_ghost and body is MinionController:
 		body.senses.touch.notify_enter()
 
 func _on_touch_area_body_exited(body: Node2D) -> void:
-	if not stats.is_ghost and body is EnemyController:
+	if not stats.is_ghost and body is MinionController:
 		body.senses.touch.notify_exit()
 
 func _ready() -> void:
@@ -244,7 +244,7 @@ func _try_attack() -> void:
 	if _attack_blocked():
 		return
 	var attack: Dictionary = _current_attack()
-	if attack.get("kind", "") == "taunt":
+	if attack.get("verb", "") == "taunt":
 		_try_taunt(attack)
 		return
 	var amount: int = attack.get("amount", 0)
@@ -263,36 +263,10 @@ func _try_attack() -> void:
 		return
 	_attack_timer = attack.get("interval", 0.5)
 	var target_global := Vector2(target_tile) * grid_mover.tile_size
-	var effect_data: Dictionary = attack.get("effect", {})
-	# Hits every enemy standing on `tile`; true if there was one.
-	var hit_enemies_at := func(tile: Vector2i) -> bool:
-		var hit := false
-		for enemy in get_tree().get_nodes_in_group("antagonist"):
-			# A big enemy (a 2x2 boss) is hit on any tile of its body, not only its top-left one.
-			var enemy_tile := _to_tile(enemy.global_position)
-			var enemy_size: int = enemy.get_meta("footprint", 1)
-			if tile.x >= enemy_tile.x and tile.x < enemy_tile.x + enemy_size and tile.y >= enemy_tile.y and tile.y < enemy_tile.y + enemy_size:
-				# Enemies are host-owned (EnemySpawning.spawn_one) -- route
-				# through NetworkSync so the host actually applies it and
-				# tells every peer, instead of mutating this client's own
-				# possibly-non-authoritative copy directly.
-				NetworkSync.report_enemy_hit(int(str(enemy.name)), amount, attack.get("type", ""))
-				hit = true
-		return hit
-	var deal_damage := func():
-		hit_enemies_at.call(target_tile)
-	if effect_data.has("attacker") or effect_data.has("target"):
-		_play_bow_effect(effect_data, target_global, deal_damage, hit_enemies_at)
-		return
-	if not effect_data.is_empty():
-		NetworkSync.play_effect(
-			AttackEffect.effect_position(global_position, target_global, effect_data),
-			effect_data, target_global - global_position)
-	deal_damage.call()
+	ActionRunner.perform(self, target_global, attack)
 
-## Taunt slot ("kind": "taunt" in player.json): enemies within radius_tiles
-## (nearest max_targets of them) are forced onto this player for `duration`
-## seconds. Its own cooldown (`interval`) so it never locks out the attacks.
+## Taunt slot (an action whose verb is "taunt", see TauntVerb). Its own cooldown
+## (`interval`) so it never locks out the attacks.
 var _taunt_ready_msec := 0
 
 func _try_taunt(attack: Dictionary) -> void:
@@ -300,62 +274,7 @@ func _try_taunt(attack: Dictionary) -> void:
 	if _is_dead or now < _taunt_ready_msec:
 		return
 	_taunt_ready_msec = now + int(attack.get("interval", 12.0) * 1000.0)
-	NetworkSync.report_taunt(
-		int(str(name)),
-		attack.get("radius_tiles", 6.0),
-		attack.get("duration", 4.0),
-		attack.get("max_targets", 24))
-	var effect_data: Dictionary = attack.get("effect", {})
-	if not effect_data.is_empty():
-		NetworkSync.play_effect(
-			AttackEffect.effect_position(global_position, global_position, effect_data),
-			effect_data, Vector2.RIGHT)
-
-const PROJECTILE_SCENE := preload("res://scenes/entities/ProjectileController.tscn")
-
-## Bow-style attack: the "attacker" effect plays on the player as the shot
-## leaves (purely cosmetic), a real projectile (e.g. the arrow) flies from
-## their center to the target tile's center at a fixed speed, and only on
-## arrival does the "target" hit effect play and the damage land. The arrow
-## also hits the first enemy it passes on the way (hit_enemies_at), so anything
-## that steps into its path is struck instead of the arrow flying through.
-func _play_bow_effect(effect_data: Dictionary, target_global: Vector2, on_hit: Callable, hit_enemies_at: Callable) -> void:
-	var direction := target_global - global_position
-	var attacker_data: Dictionary = effect_data.get("attacker", {})
-	if not attacker_data.is_empty():
-		NetworkSync.play_effect(
-			AttackEffect.effect_position(global_position, target_global, attacker_data),
-			attacker_data, direction)
-	var projectile_texture: String = effect_data.get("projectile", "")
-	if projectile_texture == "":
-		_land_hit(effect_data, target_global, on_hit)
-		return
-	var projectile: ProjectileController = PROJECTILE_SCENE.instantiate()
-	get_tree().current_scene.add_child(projectile)
-	var center := Vector2(8, 8)
-	projectile.global_position = global_position + center
-	var hit_on_the_way := func(pos: Vector2) -> bool:
-		var tile := _to_tile(pos)
-		if not hit_enemies_at.call(tile):
-			return false
-		var target_data: Dictionary = effect_data.get("target", {})
-		if not target_data.is_empty():
-			var tile_global := Vector2(tile) * grid_mover.tile_size
-			NetworkSync.play_effect(
-				AttackEffect.effect_position(global_position, tile_global, target_data),
-				target_data, tile_global - global_position)
-		return true
-	projectile.launch(projectile_texture, target_global + center, grid_mover.tile_size, func():
-		_land_hit(effect_data, target_global, on_hit), grid_mover.is_position_blocked, hit_on_the_way)
-	NetworkSync.share_projectile(projectile_texture, global_position + center, target_global + center)
-
-func _land_hit(effect_data: Dictionary, target_global: Vector2, on_hit: Callable) -> void:
-	var target_data: Dictionary = effect_data.get("target", {})
-	if not target_data.is_empty():
-		NetworkSync.play_effect(
-			AttackEffect.effect_position(global_position, target_global, target_data),
-			target_data, target_global - global_position)
-	on_hit.call()
+	ActionRunner.perform(self, global_position, attack)
 
 func _physics_process(_delta: float) -> void:
 	if not is_multiplayer_authority():

@@ -1,10 +1,10 @@
 class_name SenseSight
 extends Node
 
-## A clear, unobstructed line of sight from the enemy to the target, within
+## A clear, unobstructed line of sight from the minion to the target, within
 ## range -- LineOfSight's grid walk. The other way the target gives itself
-## away (their real light touching this enemy's tile, even without a clear
-## line) is handled separately in EnemySenses, against the actual LightMap
+## away (their real light touching this minion's tile, even without a clear
+## line) is handled separately in MinionSenses, against the actual LightMap
 ## instead of an approximated radius here.
 @export var enabled: bool = true
 @export var range_tiles: float = 6.0

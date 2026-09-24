@@ -5,7 +5,7 @@ of wide, walkable corridors and open rooms. Small side rooms hang off the
 main path through 1-wide doors.
 
 This file covers the dungeon's own rules. For the full room file format (every
-key, connectors, `free`, per-connector `door`, `favored_enemy`), see
+key, connectors, `free`, per-connector `door`, `favored_minion`), see
 [../README.md](../README.md).
 
 ## How the generator uses your room

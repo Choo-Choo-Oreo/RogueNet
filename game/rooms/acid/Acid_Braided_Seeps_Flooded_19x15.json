@@ -355,7 +355,7 @@
 				"x": 3,
 				"y": 7
 			},
-			"enemy": "rat_blind"
+			"minion": "rat_blind"
 		},
 		{
 			"position": {
@@ -368,14 +368,14 @@
 				"x": 2,
 				"y": 9
 			},
-			"enemy": "rat_blind"
+			"minion": "rat_blind"
 		},
 		{
 			"position": {
 				"x": 3,
 				"y": 10
 			},
-			"enemy": "rat_blind"
+			"minion": "rat_blind"
 		}
 	],
 	"tags": [

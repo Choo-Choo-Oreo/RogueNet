@@ -27,6 +27,11 @@ static func effect_position(attacker_global: Vector2, target_global: Vector2, da
 		_:
 			return (attacker_global + target_global) / 2.0
 
+## Plays `data` for a caster, anchored between it and a spot (see effect_position) and shared
+## with every peer. `at_global` is the top-left pixel of the target tile.
+static func play_between(caster_global: Vector2, at_global: Vector2, data: Dictionary) -> void:
+	NetworkSync.play_effect(effect_position(caster_global, at_global, data), data, at_global - caster_global)
+
 ## direction points from attacker to target. The art is drawn attacking
 ## left-to-right (attacker on the left, swinging right), so that's the
 ## rotation/flip baseline: right needs neither, left is the same swing

@@ -5,12 +5,12 @@ could name: an acid lake, a dripping gallery, a corroded chasm, a moss
 garden. Most features also come **Flooded**: the same room with the acid
 risen. Every room with acid is a "find the dry path" puzzle: a path of dry
 stone runs between the openings, and wading through the acid is the slow
-way. Enemies are **vermin**: leeches lurking in the acid, and packs of
+way. Minions are **vermin**: leeches lurking in the acid, and packs of
 blind rats on the dry floor.
 
 This file covers the acid caverns' own rules. For the full room file format
-(every key, connectors, `free`, per-connector `door`, `favored_enemy`,
-per-cell `enemy`), see [../README.md](../README.md). The dungeon's guide
+(every key, connectors, `free`, per-connector `door`, `favored_minion`,
+per-cell `minion`), see [../README.md](../README.md). The dungeon's guide
 ([../dungeon/README.md](../dungeon/README.md)) explains how the generator
 places rooms, and all of that applies here too.
 
@@ -54,17 +54,17 @@ places rooms, and all of that applies here too.
 
 Every room sets `"base_floor": "floor_dirt"`.
 
-## Enemies: vermin
+## Minions: vermin
 
-Every spawn cell spawns one enemy. There are three kinds of cell:
+Every spawn cell spawns one minion. There are three kinds of cell:
 
 - **Leech groups.** Loose groups (cells 2 apart) in the acid, 3+ tiles from
-  the openings. Each has `"enemy": "leech"`.
+  the openings. Each has `"minion": "leech"`.
 - **Blind rat packs.** Tight clumps (cells next to each other) on dirt, moss
   or dry stone, as far from the openings as they fit. Each has
-  `"enemy": "rat_blind"`.
+  `"minion": "rat_blind"`.
 - **Rolled cells.** Single cells spread out on the dry floor, with no
-  `enemy`, so they roll from the biome's `monsters` table (the only way a
+  `minion`, so they roll from the biome's `monsters` table (the only way a
   bat shows up).
 
 | Kind | Rat packs | Pack size | Leech groups | Group size | Rolled |
@@ -79,7 +79,7 @@ Every spawn cell spawns one enemy. There are three kinds of cell:
 | Side pocket | none | | none | | 2 |
 | Entrance, passage, crawl, peaceful | none | | none | | none |
 
-No room sets `favored_enemy`. The 67 rooms have 302 spawn cells between
+No room sets `favored_minion`. The 67 rooms have 302 spawn cells between
 them: 150 blind rats, 108 leeches and 44 rolled.
 
 ## Roles and tags
@@ -155,7 +155,7 @@ whose name starts with "Acid" drops it from the file name, so Acid Lake is
    each opening cell the floor tile just inside it.
 4. **Set the connectors:** `"door": "none"`, `"free": true`.
 5. **Add the spawns** using the table above. Give leech cells
-   `"enemy": "leech"` (in the acid) and rat cells `"enemy": "rat_blind"`.
+   `"minion": "leech"` (in the acid) and rat cells `"minion": "rat_blind"`.
 6. **Build it** in the room editor (`scenes/dungeon/DungeonMaker.tscn`) or
    by copying a similar room's JSON.
 7. **Load an acid dungeon** and watch the Godot output for

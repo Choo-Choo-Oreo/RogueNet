@@ -1,7 +1,7 @@
-class_name EnemySenses
+class_name MinionSenses
 extends Node
 
-## Interprets the raw per-sense checks into one alert state for the enemy to
+## Interprets the raw per-sense checks into one alert state for the minion to
 ## act on. Touch and Sight (a direct, unobstructed detection) fire straight
 ## to Attack -- full pursuit speed, will engage once in range. Being lit by
 ## the target's actual light without a direct detection (e.g. round a corner
@@ -9,13 +9,13 @@ extends Node
 ## in on the target's location but won't attack even if it arrives adjacent;
 ## next tick's direct check is what promotes it to Attack. Hearing/Smell/
 ## Taste are still unbuilt stubs that always pass (never detect). See the
-## enemy senses design memory for the full planned behavior.
+## minion senses design memory for the full planned behavior.
 
 enum State { PATROL, INVESTIGATE, ATTACK }
 
 ## Once a sense actually fires, stay at that tier for this long even if every
 ## check fails on later ticks -- only reverts to Patrol if nothing re-fires
-## within the window. See the enemy senses design memory's "active window".
+## within the window. See the minion senses design memory's "active window".
 const ACTIVE_ALERT_SECONDS := 10.0
 
 @onready var sight: SenseSight = $SenseSight
@@ -28,7 +28,7 @@ var state: State = State.PATROL
 var _active_timer := 0.0
 var _active_tier: State = State.PATROL
 
-## Getting hit always means the enemy now knows roughly where its attacker
+## Getting hit always means the minion now knows roughly where its attacker
 ## is, even with no direct sense of them (e.g. shot from off-screen or from
 ## behind) -- forces Attack and (re)starts the same sticky window as a real
 ## detection. Simple fallback: it doesn't track who actually hit it, just
@@ -38,13 +38,13 @@ func note_hit() -> void:
 	_active_tier = State.ATTACK
 
 ## Gives up entirely (leash / unreachable target): drops the sticky window so
-## the enemy falls back to Patrol until a sense fires again.
+## the minion falls back to Patrol until a sense fires again.
 func forget() -> void:
 	_active_timer = 0.0
 	_active_tier = State.PATROL
 	state = State.PATROL
 
-## Per-enemy-type toggle, e.g. rat_blind's "senses": {"sight": false} JSON
+## Per-minion-type toggle, e.g. rat_blind's "senses": {"sight": false} JSON
 ## key -- keys match this node's own property names (touch/sight/hearing/
 ## smell/taste). A plain bool is shorthand for "enabled"; a dictionary (e.g.
 ## rat_toothless's "senses": {"sight": {"range_tiles": 20.0}}) instead sets
@@ -63,7 +63,7 @@ func apply_overrides(overrides: Dictionary) -> void:
 			sense.enabled = value
 
 ## origin/is_blocked describe the owning entity's position and tile-blocked
-## check (e.g. EnemyController's GridMover) -- kept as parameters rather
+## check (e.g. MinionController's GridMover) -- kept as parameters rather
 ## than a stored reference, same reasoning as the sense components use.
 ## lit is whether the target's real light (the same LightMap the local
 ## player's own vision uses, not an approximated radius) currently touches

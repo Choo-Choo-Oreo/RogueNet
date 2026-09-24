@@ -4,12 +4,12 @@ Burial galleries and crypts, the undead's own biome. Every room is a
 **feature**, a place you could name: an ossuary, a columbarium, a charnel
 pit, a family tomb. Every feature also comes **Desecrated**: the same room
 after graverobbers got in, with sarcophagi smashed, niches broken open and
-the tomb carpet torn up. Enemies come as **garrisons**: skeleton archers
+the tomb carpet torn up. Minions come as **garrisons**: skeleton archers
 standing in lines, with wraiths and the rest spread through the niches.
 
 This file covers the catacomb's own rules. For the full room file format
-(every key, connectors, `free`, per-connector `door`, `favored_enemy`,
-per-cell `enemy`), see [../README.md](../README.md). The dungeon's guide
+(every key, connectors, `free`, per-connector `door`, `favored_minion`,
+per-cell `minion`), see [../README.md](../README.md). The dungeon's guide
 ([../dungeon/README.md](../dungeon/README.md)) explains how the generator
 places rooms, and all of that applies here too.
 
@@ -50,18 +50,18 @@ places rooms, and all of that applies here too.
 
 Every room sets `"base_floor": "floor_smooth_stone"`.
 
-## Enemies: garrisons
+## Minions: garrisons
 
-Every spawn cell spawns one enemy, unless the cell is lit (torches in the
+Every spawn cell spawns one minion, unless the cell is lit (torches in the
 chapels, the stairs, the lodge and the Bone Chapel keep spawns away). A room
 has two kinds of cell:
 
 - **Archer lines.** Cells 2 apart in a straight row, as far from the
   openings as they fit: the end of a gallery, the back of a hall. Each has
-  `"enemy": "skeleton_archer"`, so an archer always stands there.
+  `"minion": "skeleton_archer"`, so an archer always stands there.
 - **Niche cells.** Spread thin (4+ tiles apart), in niches first. They have
-  no `enemy`, so they roll from the biome's `monsters` table, nudged by the
-  room's `favored_enemy`.
+  no `minion`, so they roll from the biome's `monsters` table, nudged by the
+  room's `favored_minion`.
 
 | Kind | Archer lines | Line length | Niche cells |
 |---|---|---|---|
@@ -77,7 +77,7 @@ has two kinds of cell:
 
 Desecrated rooms get 2 extra niche cells.
 
-**Favoured enemies:**
+**Favoured minions:**
 
 - Tombs favour `undead.ghostly` (wraiths), weight 3.
 - Barracks, the Ossuary and the Great Ossuary favour `undead.skeleton`,
@@ -160,7 +160,7 @@ file names (grid size = inside + 2).
 5. **Set the connectors.** Use `"door": "iron"` for a tomb, treasure or
    boss room, otherwise `"any"`. Always add `"free": true`.
 6. **Add the garrison** using the table above. Give archer-line cells
-   `"enemy": "skeleton_archer"`.
+   `"minion": "skeleton_archer"`.
 7. **Build it** in the room editor (`scenes/dungeon/DungeonMaker.tscn`) or
    by copying a similar room's JSON.
 8. **Load a catacomb dungeon** and watch the Godot output for

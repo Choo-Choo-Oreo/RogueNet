@@ -8,7 +8,8 @@ in the repo root and add it to `.gitignore`.
 
 ## What this project is
 - Multiplayer, procedurally-generated dungeon-crawler RPG with roguelite
-  elements: leveling, loot rarity, skill trees. **No crafting system.**
+  elements: leveling, loot rarity, skill trees. Crafting is wanted later,
+  once the basics are done; don't build it before then.
 - A "town" map serves as the menu-hub. No persistent always-on world —
   players queue up ("dive") solo or in a party into turn/action-based
   dungeon runs.
@@ -54,9 +55,30 @@ Claude build the game for them. Most of the team is new to programming.
   code"), point to the official docs:
   https://docs.godotengine.org/en/stable/getting_started/step_by_step/index.html
 
+## No duplication
+Duplicated code and duplicated data are a recurring problem here, and an LLM's
+default is to add a fix next to what exists instead of looking for it. Do the
+looking, every time:
+- **Before adding code or data, search for something that already does it**
+  and reuse or generalise it. Say what you found. One definition, referenced
+  by id; a user of it overrides only what differs.
+- **Do not store what can be derived** from something already stored (a flag
+  the folder already tells you, a `kind` the keys imply, a count you can take).
+- **Nothing is "for players" or "for minions" unless it truly differs.** Split
+  by team only where behaviour differs; shared logic goes in the shared parent
+  (see `docs/STRUCTURE.md`).
+- **When touching a feature, also look for the same logic or data elsewhere**
+  and report any copies, even ones outside the task; do not silently add a
+  third.
+
+## Folder layout
+The layout, the rules behind it and what is still to move are in
+[docs/STRUCTURE.md](../docs/STRUCTURE.md). Every folder under `game/` gets its own
+README (what its files do, the format, what can and cannot happen).
+
 ## Adding game content
 See [README.md](../README.md) for the data-driven content formats
-(enemies, rooms, biome config, tiles) — most new content goes in
+(minions, rooms, biome config, tiles, doors, items, actions) — most new content goes in
 `game/`/`resources/` as JSON + art, not code.
 
 ## Tech stack
@@ -68,7 +90,7 @@ See [README.md](../README.md) for the data-driven content formats
 - Test command: _(fill in once established)_
 - Networking: Steam lobby through `SteamMultiplayerPeer` (GodotSteam), with
   the host as peer 1 running a listen server; singleplayer uses
-  `OfflineMultiplayerPeer`. There is no ENet code. Enemy spawning, AI, damage
+  `OfflineMultiplayerPeer`. There is no ENet code. Minion spawning, AI, damage
   and doors are host-authoritative (see `singletons/NetworkSync.gd`). The
   lobby/Steam layer came from a downloaded template rather than being
   hand-written, so don't assume the team understands it well. Still

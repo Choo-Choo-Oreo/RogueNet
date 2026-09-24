@@ -6,7 +6,7 @@ extends RefCounted
 ## DungeonPainter._ready() -> RoomGraph.build()). A dungeon is usually 20-30
 ## rooms (DungeonAssembler.MIN/MAX_ROOM_COUNT), so this whole graph is tiny --
 ## the point isn't to search it fast, it's to let a distant chase (bigger than
-## EnemyController.PATHFIND_RADIUS_MAX, or PATHFIND_RADIUS_MAX-fed FlowField's
+## MinionController.PATHFIND_RADIUS_MAX, or PATHFIND_RADIUS_MAX-fed FlowField's
 ## own radius) aim at the next DOOR instead of either giving up or paying for
 ## a single huge tile-grid search across the whole dungeon. Generation only
 ## ever attaches a room to exactly one parent, so this graph is a tree; BFS

@@ -38,7 +38,7 @@
 			"free": true
 		}
 	],
-	"favored_enemy": {
+	"favored_minion": {
 		"tag": "undead",
 		"weight": 2
 	},
@@ -224,7 +224,7 @@
 				"x": 2,
 				"y": 2
 			},
-			"enemy": "bat"
+			"minion": "bat"
 		},
 		{
 			"position": {

@@ -24,7 +24,7 @@
 			"door": "none"
 		}
 	],
-	"favored_enemy": {
+	"favored_minion": {
 		"tag": "demon",
 		"weight": 3
 	},

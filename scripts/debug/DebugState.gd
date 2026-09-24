@@ -15,7 +15,7 @@ extends RefCounted
 static var god_mode := false
 static var no_clip := false
 static var see_all := false
-## Enemies never notice the local player (tools tab, singleplayer only).
+## Minions never notice the local player (tools tab, singleplayer only).
 static var unseen := false
 ## Camera leaves the player and flies on the move keys; the player stands still
 ## (tools tab, singleplayer only).
@@ -31,12 +31,12 @@ const DEFAULT_FLAGS := {
 	"debug:show-fps": true,
 	"debug:show-coordinates": true,
 	"debug:show-time-usage": true,
-	"debug:show-enemy-counts": true,
+	"debug:show-minion-counts": true,
 	"debug:show-session-info": true,
 	"debug:show-room-outlines": true,
 	"debug:show-room-ids": true,
 	"debug:show-doors": true,
-	"debug:show-enemy-state": true,
+	"debug:show-minion-state": true,
 }
 const SETTINGS_PATH := "user://debug_settings.cfg"
 

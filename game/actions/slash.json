@@ -1,0 +1,12 @@
+{
+	"verb": "hit",
+	"amount": 3,
+	"type": "Physical",
+	"interval": 0.5,
+	"target_mode": "melee",
+	"effect": {
+		"texture": "res://resources/gfx/effects/effects.melee/physical.slashing.png",
+		"frame_count": 8,
+		"speed": 16.0
+	}
+}

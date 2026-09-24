@@ -61,7 +61,7 @@
 	"favored_antagonist": {
 		"tag": "beast"
 	},
-	"favored_enemy": {
+	"favored_minion": {
 		"tag": "undead.skeleton",
 		"weight": 3
 	},
@@ -766,42 +766,42 @@
 				"x": 8,
 				"y": 10
 			},
-			"enemy": "skeleton_archer"
+			"minion": "skeleton_archer"
 		},
 		{
 			"position": {
 				"x": 10,
 				"y": 10
 			},
-			"enemy": "skeleton_archer"
+			"minion": "skeleton_archer"
 		},
 		{
 			"position": {
 				"x": 12,
 				"y": 10
 			},
-			"enemy": "skeleton_archer"
+			"minion": "skeleton_archer"
 		},
 		{
 			"position": {
 				"x": 12,
 				"y": 14
 			},
-			"enemy": "skeleton_archer"
+			"minion": "skeleton_archer"
 		},
 		{
 			"position": {
 				"x": 14,
 				"y": 14
 			},
-			"enemy": "skeleton_archer"
+			"minion": "skeleton_archer"
 		},
 		{
 			"position": {
 				"x": 16,
 				"y": 14
 			},
-			"enemy": "skeleton_archer"
+			"minion": "skeleton_archer"
 		},
 		{
 			"position": {

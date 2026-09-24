@@ -73,7 +73,7 @@ original list.
   readable by non-programmers). Every room in `game/rooms/<biome>/` (about
   960 files, 13 biomes plus `fallback/`) loads and passes
   `Connector.validate`. Required fields (`spawn_cells`, `base_floor`,
-  `favored_enemy`) survive DungeonMaker re-saves. Failure messages name the
+  `favored_minion`) survive DungeonMaker re-saves. Failure messages name the
   file and field in plain English. Reuse the DungeonMaker "Validate All"
   logic. Votes: Risk S · Cost A · Team S.
 - [ ] **Dungeon generation invariants, seeds × every biome** (medium, owner:
@@ -100,9 +100,9 @@ original list.
     `default_door`, and has at least one entrance and one boss room.
   - Also covers the emblems, tile registry and manifests.
   - Votes: Risk A · Cost A · Team A.
-- [ ] **Make EnemySpawning / TileDestruction randomness seedable** (small,
+- [ ] **Make MinionSpawning / TileDestruction randomness seedable** (small,
   owner: tech lead, **script change, needs a yes**). Pass a seeded RNG in
-  instead of calling `rng.randomize()` (`EnemySpawning.gd:35-36`, `:93-94`)
+  instead of calling `rng.randomize()` (`MinionSpawning.gd:35-36`, `:93-94`)
   or the global `randi()` (`TileDestruction.gd:105`, `:126`). This unlocks
   reproducible soak runs and destruction tests, and teaches "pass the RNG
   in." Votes: Risk A · Cost B (only needed once those tests exist) · Team A.
@@ -177,7 +177,7 @@ original list.
   `scripts/cells/*` helpers are mostly static. Votes: Team B (proposed).
 - [ ] **Host-authority logic with `OfflineMultiplayerPeer` or no peer**
   (medium, owner: tech lead). The host spawns, damage applies once, doors
-  change state. `EnemySpawning.gd:33` already acts as host when there is no
+  change state. `MinionSpawning.gd:33` already acts as host when there is no
   peer. Only the host side can be tested. Votes: Risk B · Cost B · Team B.
 - [ ] **Headless soak run with BodySweep-style asserts** (medium, owner: tech
   lead; needs the seedable RNG, and `BodySweep.gd` committed, since it is

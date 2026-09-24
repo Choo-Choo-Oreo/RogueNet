@@ -4,7 +4,7 @@ extends Node
 ## Picks the Front/Back/Side animation (plus the diagonal FrontRight/BackRight
 ## ones, when a sprite has them) from a movement direction, snapped to the
 ## nearest of 8 directions. Shared by anything with directional sprite animations --
-## players, antagonist, enemies. Two ways to drive it: animate_moving()/
+## players, antagonist, minions. Two ways to drive it: animate_moving()/
 ## animate_idle() when the caller already knows its own movement intent
 ## (the locally-controlled body), or animate_from_position() to infer
 ## facing from observed position changes (a remote peer's body).
@@ -18,9 +18,9 @@ var _anim_idle_time := 0.0
 const IDLE_TIMEOUT := 0.15
 const IDLE_DISTANCE := 0.5
 
-## Flying enemies (bat, hamster_flying, hamster_demonic) hover rather than
+## Flying minions (bat, hamster_flying, hamster_demonic) hover rather than
 ## stand, so their wings shouldn't ever freeze on a mid-flap frame the way a
-## grounded idle does -- set true by EnemyController from the enemy's JSON.
+## grounded idle does -- set true by MinionController from the minion's JSON.
 var continuous_animation: bool = false
 
 # Some characters (eg. the dwarf) have real, separately-drawn left/right art; others (eg. the
@@ -81,7 +81,7 @@ func animate_moving(direction: Vector2) -> void:
 
 ## Same direction picking as animate_moving(), but held on one frame instead
 ## of looping the walk cycle -- for facing a target while stationary (e.g. an
-## enemy that's stopped adjacent to its target). continuous_animation skips
+## minion that's stopped adjacent to its target). continuous_animation skips
 ## the hold, same reasoning as animate_idle().
 func animate_facing(direction: Vector2) -> void:
 	animate_moving(direction)

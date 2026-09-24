@@ -53,9 +53,9 @@ const OBJECT_MARKER_TEXTURES := {
 const CONNECTOR_TEXTURE_PATH := "res://resources/gfx/doors/Wood_W1.png"
 const PLAYER_SPAWNER_TEXTURE_PATH := "res://resources/gfx/entities/entities.protagonist/knight/Knight-Down.png"
 const PLAYER_CONTROLLER_SCENE_PATH := "res://scenes/entities/PlayerController.tscn"
-## "" = any enemy from the biome table; otherwise an id from game/entities/entities.antagonist/.
-const ENEMY_ANY_LABEL := "Any (biome table)"
-const ENEMY_SPAWNER_ICON_COLOR := Color(0.85, 0.25, 0.25)
+## "" = any minion from the biome table; otherwise an id from game/entities/entities.antagonist/.
+const MINION_ANY_LABEL := "Any (biome table)"
+const MINION_SPAWNER_ICON_COLOR := Color(0.85, 0.25, 0.25)
 const CAMERA_ZOOM_MIN := 0.25
 const CAMERA_ZOOM_MAX := 3.0
 const CAMERA_ZOOM_STEP := 0.9
@@ -139,7 +139,7 @@ const SPAWNER_MODE_COLOR := Color(0.85, 0.35, 0.85)
 @onready var spawners_list: ItemList = $UI/RightPanel/SpawnerSection/SpawnersList
 @onready var test_button: Button = $UI/TestButton
 @onready var spawner_settings_dialog: ConfirmationDialog = $SpawnerSettingsDialog
-@onready var enemy_type_option: OptionButton = $SpawnerSettingsDialog/SettingsVBox/EnemyTypeRow/EnemyTypeOption
+@onready var minion_type_option: OptionButton = $SpawnerSettingsDialog/SettingsVBox/MinionTypeRow/MinionTypeOption
 @onready var interval_spin_box: SpinBox = $SpawnerSettingsDialog/SettingsVBox/IntervalRow/IntervalSpinBox
 @onready var count_spin_box: SpinBox = $SpawnerSettingsDialog/SettingsVBox/CountRow/CountSpinBox
 @onready var test_hud: CanvasLayer = $TestHUD
@@ -210,7 +210,7 @@ var connectors: Array = []
 var connector_markers: Array[Node2D] = []
 ## First click of the two-click connector tool (a boundary cell), or null.
 var connector_run_start: Variant = null
-## Room keys the Maker has no control for (base_floor, favored_enemy): carried
+## Room keys the Maker has no control for (base_floor, favored_minion): carried
 ## from load to save, or re-saving a room silently drops them.
 var room_extras: Dictionary = {}
 ## Free-standing doors (the room's "doors" list): {"cell": Vector2i (first cell),
@@ -222,7 +222,7 @@ var door_orient_option: OptionButton
 var door_width_spin: SpinBox
 var door_type_option: OptionButton
 var free_doors_list: ItemList
-const ROOM_EXTRA_KEYS := ["base_floor", "favored_enemy", "favored_antagonist", "antagonist_spawns"]
+const ROOM_EXTRA_KEYS := ["base_floor", "favored_minion", "favored_antagonist", "antagonist_spawns"]
 ## Controls for the selected connector, built in code under ConnectorSection.
 var connector_free_check: CheckBox
 var connector_door_option: OptionButton
@@ -235,14 +235,14 @@ var has_player_spawner: bool = false
 var player_spawner_cell: Vector2i = Vector2i.ZERO
 var player_spawner_marker: Sprite2D = null
 
-var enemy_spawners: Array = []
-var enemy_spawner_markers: Array[Node2D] = []
+var minion_spawners: Array = []
+var minion_spawner_markers: Array[Node2D] = []
 var editing_spawner_index: int = -1
 
 var test_mode_active: bool = false
 var test_player: Node = null
 var test_spawn_timers: Array[Timer] = []
-var test_spawned_enemies: Array[Node] = []
+var test_spawned_minions: Array[Node] = []
 
 var camera_dragging: bool = false
 var camera_bounds_min: Vector2 = Vector2.ZERO
@@ -1282,7 +1282,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			elif event.keycode == KEY_R:
 				_restart_test()
 			elif event.keycode == KEY_K:
-				_kill_all_test_enemies()
+				_kill_all_test_minions()
 		return
 	if event is InputEventMouseMotion:
 		_update_hover()
@@ -1467,9 +1467,9 @@ func _delete_at_mouse() -> void:
 	if connector_index != -1:
 		_remove_connector_with_undo(connector_index)
 		return
-	var enemy_index := _find_enemy_spawner_at(cell)
-	if enemy_index != -1:
-		_remove_enemy_spawner_with_undo(enemy_index)
+	var minion_index := _find_minion_spawner_at(cell)
+	if minion_index != -1:
+		_remove_minion_spawner_with_undo(minion_index)
 		return
 	if has_player_spawner and player_spawner_cell == cell:
 		_clear_player_spawner_with_undo()
@@ -2464,15 +2464,15 @@ func _make_connector_marker(cell: Vector2i) -> Sprite2D:
 	marker.position = Vector2(cell.x * TILE_SIZE + TILE_SIZE / 2.0, cell.y * TILE_SIZE + TILE_SIZE / 2.0)
 	return marker
 
-## --- Spawners (player start / enemy spawners) ---
+## --- Spawners (player start / minion spawners) ---
 ## Session-only: not part of _build_export_data, matching the current
 ## room JSON format. A real runtime spawner system will be designed later.
 
 func _populate_spawner_palette() -> void:
 	_style_selection_highlight(spawner_palette_list, SPAWNER_MODE_COLOR)
 	spawner_palette_list.add_item("player_spawner", _make_player_spawner_icon())
-	spawner_palette_list.add_item("enemy_spawner", _make_enemy_spawner_icon())
-	spawner_palette_list.set_item_icon_modulate(1, ENEMY_SPAWNER_ICON_COLOR)
+	spawner_palette_list.add_item("minion_spawner", _make_minion_spawner_icon())
+	spawner_palette_list.set_item_icon_modulate(1, MINION_SPAWNER_ICON_COLOR)
 
 func _make_player_spawner_icon() -> Texture2D:
 	var atlas := AtlasTexture.new()
@@ -2480,11 +2480,11 @@ func _make_player_spawner_icon() -> Texture2D:
 	atlas.region = Rect2(0, 0, TILE_SIZE, TILE_SIZE)
 	return atlas
 
-## Generic placeholder marker/icon for enemy spawners. There's no concrete
-## enemy scene wired up yet (PlaceholderMouse was removed upstream in favor
-## of a shared EnemyController the team hasn't hooked up here), so this is
+## Generic placeholder marker/icon for minion spawners. There's no concrete
+## minion scene wired up yet (PlaceholderMouse was removed upstream in favor
+## of a shared MinionController the team hasn't hooked up here), so this is
 ## just a tinted square until that's decided.
-func _make_enemy_spawner_icon() -> Texture2D:
+func _make_minion_spawner_icon() -> Texture2D:
 	return preload("res://resources/gfx/placeholders/flat-color.png")
 
 func _cell_center_world(cell: Vector2i) -> Vector2:
@@ -2516,21 +2516,21 @@ func _handle_spawner_input(event: InputEvent) -> void:
 		return
 	if selected_spawner_type == "player_spawner":
 		_place_player_spawner_with_undo(cell)
-	elif selected_spawner_type == "enemy_spawner":
-		var index := _find_enemy_spawner_at(cell)
+	elif selected_spawner_type == "minion_spawner":
+		var index := _find_minion_spawner_at(cell)
 		if index != -1:
-			_remove_enemy_spawner_with_undo(index)
+			_remove_minion_spawner_with_undo(index)
 		else:
-			_add_enemy_spawner_with_undo(cell)
+			_add_minion_spawner_with_undo(cell)
 
-func _find_enemy_spawner_at(cell: Vector2i) -> int:
-	for i in range(enemy_spawners.size()):
-		if enemy_spawners[i]["cell"] == cell:
+func _find_minion_spawner_at(cell: Vector2i) -> int:
+	for i in range(minion_spawners.size()):
+		if minion_spawners[i]["cell"] == cell:
 			return i
 	return -1
 
 func _try_open_spawner_settings(cell: Vector2i) -> bool:
-	var index := _find_enemy_spawner_at(cell)
+	var index := _find_minion_spawner_at(cell)
 	if index == -1:
 		return false
 	_open_spawner_settings(index)
@@ -2578,70 +2578,70 @@ func _clear_player_spawner() -> void:
 	_refresh_spawners_list()
 	_update_test_button()
 
-func _add_enemy_spawner_with_undo(cell: Vector2i) -> void:
-	var index := enemy_spawners.size()
-	var data := {"cell": cell, "enemy_type": "", "spawn_interval": 2.0, "spawn_count": 3}
-	_insert_enemy_spawner(data, index)
+func _add_minion_spawner_with_undo(cell: Vector2i) -> void:
+	var index := minion_spawners.size()
+	var data := {"cell": cell, "minion_type": "", "spawn_interval": 2.0, "spawn_count": 3}
+	_insert_minion_spawner(data, index)
 	_push_undo(
-		func(): _remove_enemy_spawner(index),
-		func(): _insert_enemy_spawner(data.duplicate(), index)
+		func(): _remove_minion_spawner(index),
+		func(): _insert_minion_spawner(data.duplicate(), index)
 	)
 
-func _remove_enemy_spawner_with_undo(index: int) -> void:
-	var data: Dictionary = enemy_spawners[index].duplicate()
-	_remove_enemy_spawner(index)
+func _remove_minion_spawner_with_undo(index: int) -> void:
+	var data: Dictionary = minion_spawners[index].duplicate()
+	_remove_minion_spawner(index)
 	_push_undo(
-		func(): _insert_enemy_spawner(data.duplicate(), index),
-		func(): _remove_enemy_spawner(index)
+		func(): _insert_minion_spawner(data.duplicate(), index),
+		func(): _remove_minion_spawner(index)
 	)
 
-func _insert_enemy_spawner(data: Dictionary, index: int) -> void:
-	enemy_spawners.insert(index, data)
+func _insert_minion_spawner(data: Dictionary, index: int) -> void:
+	minion_spawners.insert(index, data)
 	var marker := Sprite2D.new()
-	marker.texture = _make_enemy_spawner_icon()
-	marker.modulate = ENEMY_SPAWNER_ICON_COLOR
+	marker.texture = _make_minion_spawner_icon()
+	marker.modulate = MINION_SPAWNER_ICON_COLOR
 	marker.scale = Vector2(0.5, 0.5)
 	marker.position = _cell_center_world(data["cell"])
 	spawners_layer.add_child(marker)
-	enemy_spawner_markers.insert(index, marker)
+	minion_spawner_markers.insert(index, marker)
 	_refresh_spawners_list()
 	_update_test_button()
 
-func _remove_enemy_spawner(index: int) -> void:
-	enemy_spawners.remove_at(index)
-	enemy_spawner_markers[index].queue_free()
-	enemy_spawner_markers.remove_at(index)
+func _remove_minion_spawner(index: int) -> void:
+	minion_spawners.remove_at(index)
+	minion_spawner_markers[index].queue_free()
+	minion_spawner_markers.remove_at(index)
 	_refresh_spawners_list()
 	_update_test_button()
 
 func _clear_spawners() -> void:
 	_clear_player_spawner()
-	for marker in enemy_spawner_markers:
+	for marker in minion_spawner_markers:
 		marker.queue_free()
-	enemy_spawners.clear()
-	enemy_spawner_markers.clear()
+	minion_spawners.clear()
+	minion_spawner_markers.clear()
 	_refresh_spawners_list()
 	_update_test_button()
 
 func _prune_invalid_spawners() -> void:
 	if has_player_spawner and not _cell_in_bounds(player_spawner_cell):
 		_clear_player_spawner()
-	var i := enemy_spawners.size() - 1
+	var i := minion_spawners.size() - 1
 	while i >= 0:
-		if not _cell_in_bounds(enemy_spawners[i]["cell"]):
-			_remove_enemy_spawner(i)
+		if not _cell_in_bounds(minion_spawners[i]["cell"]):
+			_remove_minion_spawner(i)
 		i -= 1
 
 func _refresh_spawners_list() -> void:
 	spawners_list.clear()
 	if has_player_spawner:
 		spawners_list.add_item("Player Spawner @ (%d, %d)" % [player_spawner_cell.x, player_spawner_cell.y])
-	for spawner in enemy_spawners:
+	for spawner in minion_spawners:
 		var cell: Vector2i = spawner["cell"]
-		var kind: String = spawner["enemy_type"] if spawner["enemy_type"] != "" else "any"
-		spawners_list.add_item("Enemy Spawner (%s) @ (%d, %d) — test: every %.1fs x%d" % [kind, cell.x, cell.y, spawner["spawn_interval"], spawner["spawn_count"]])
+		var kind: String = spawner["minion_type"] if spawner["minion_type"] != "" else "any"
+		spawners_list.add_item("Minion Spawner (%s) @ (%d, %d) — test: every %.1fs x%d" % [kind, cell.x, cell.y, spawner["spawn_interval"], spawner["spawn_count"]])
 
-func _spawners_list_index_to_enemy_index(list_index: int) -> int:
+func _spawners_list_index_to_minion_index(list_index: int) -> int:
 	var offset := 1 if has_player_spawner else 0
 	if list_index < offset:
 		return -1
@@ -2651,9 +2651,9 @@ func _on_edit_spawner_pressed() -> void:
 	var selected := spawners_list.get_selected_items()
 	if selected.is_empty():
 		return
-	var enemy_index := _spawners_list_index_to_enemy_index(selected[0])
-	if enemy_index != -1:
-		_open_spawner_settings(enemy_index)
+	var minion_index := _spawners_list_index_to_minion_index(selected[0])
+	if minion_index != -1:
+		_open_spawner_settings(minion_index)
 
 func _on_delete_spawner_pressed() -> void:
 	var selected := spawners_list.get_selected_items()
@@ -2663,35 +2663,35 @@ func _on_delete_spawner_pressed() -> void:
 	if has_player_spawner and index == 0:
 		_clear_player_spawner_with_undo()
 		return
-	var enemy_index := _spawners_list_index_to_enemy_index(index)
-	if enemy_index != -1:
-		_remove_enemy_spawner_with_undo(enemy_index)
+	var minion_index := _spawners_list_index_to_minion_index(index)
+	if minion_index != -1:
+		_remove_minion_spawner_with_undo(minion_index)
 
-## Every enemy id (its json filename) in the game's enemy folder and its subfolders, sorted.
-func _enemy_type_ids() -> Array:
-	return EnemyIndex.ids()
+## Every minion id (its json filename) in the game's minion folder and its subfolders, sorted.
+func _minion_type_ids() -> Array:
+	return MinionIndex.ids()
 
-func _open_spawner_settings(enemy_index: int) -> void:
-	editing_spawner_index = enemy_index
-	var data: Dictionary = enemy_spawners[enemy_index]
-	enemy_type_option.clear()
-	enemy_type_option.add_item(ENEMY_ANY_LABEL, 0)
-	var ids := _enemy_type_ids()
+func _open_spawner_settings(minion_index: int) -> void:
+	editing_spawner_index = minion_index
+	var data: Dictionary = minion_spawners[minion_index]
+	minion_type_option.clear()
+	minion_type_option.add_item(MINION_ANY_LABEL, 0)
+	var ids := _minion_type_ids()
 	for i in ids.size():
-		enemy_type_option.add_item(ids[i], i + 1)
-	enemy_type_option.select(ids.find(data["enemy_type"]) + 1)
+		minion_type_option.add_item(ids[i], i + 1)
+	minion_type_option.select(ids.find(data["minion_type"]) + 1)
 	interval_spin_box.value = data["spawn_interval"]
 	count_spin_box.value = data["spawn_count"]
 	spawner_settings_dialog.popup_centered()
 
 func _on_spawner_settings_confirmed() -> void:
-	if editing_spawner_index == -1 or editing_spawner_index >= enemy_spawners.size():
+	if editing_spawner_index == -1 or editing_spawner_index >= minion_spawners.size():
 		return
 	var index := editing_spawner_index
-	var old_data: Dictionary = enemy_spawners[index].duplicate()
+	var old_data: Dictionary = minion_spawners[index].duplicate()
 	var new_data := old_data.duplicate()
-	var picked := enemy_type_option.get_selected_id()
-	new_data["enemy_type"] = "" if picked == 0 else _enemy_type_ids()[picked - 1]
+	var picked := minion_type_option.get_selected_id()
+	new_data["minion_type"] = "" if picked == 0 else _minion_type_ids()[picked - 1]
 	new_data["spawn_interval"] = interval_spin_box.value
 	new_data["spawn_count"] = int(count_spin_box.value)
 	_apply_spawner_settings(index, new_data)
@@ -2701,7 +2701,7 @@ func _on_spawner_settings_confirmed() -> void:
 	)
 
 func _apply_spawner_settings(index: int, data: Dictionary) -> void:
-	enemy_spawners[index] = data.duplicate()
+	minion_spawners[index] = data.duplicate()
 	_refresh_spawners_list()
 
 func _on_spawner_header_toggled(pressed: bool) -> void:
@@ -2731,7 +2731,7 @@ func _start_test() -> void:
 	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
 	_spawn_test_entities()
 
-## Puts a fresh player + enemy spawner timers into the room. Used both to
+## Puts a fresh player + minion spawner timers into the room. Used both to
 ## enter Test mode and to restart it without leaving/re-entering.
 func _spawn_test_entities() -> void:
 	test_player = load(PLAYER_CONTROLLER_SCENE_PATH).instantiate()
@@ -2740,10 +2740,10 @@ func _spawn_test_entities() -> void:
 	add_child(test_player)
 	test_player.get_node("Camera2D").make_current()
 
-	for spawner in enemy_spawners:
-		_start_enemy_spawner_timer(spawner)
+	for spawner in minion_spawners:
+		_start_minion_spawner_timer(spawner)
 
-## Frees the test player, spawner timers, and any spawned enemies, but leaves
+## Frees the test player, spawner timers, and any spawned minions, but leaves
 ## the offline multiplayer peer and editor UI state untouched so a restart
 ## can immediately call _spawn_test_entities() again.
 func _teardown_test_entities() -> void:
@@ -2765,17 +2765,17 @@ func _teardown_test_entities() -> void:
 		if is_instance_valid(timer):
 			timer.queue_free()
 	test_spawn_timers.clear()
-	_kill_all_test_enemies()
+	_kill_all_test_minions()
 
-func _kill_all_test_enemies() -> void:
-	for enemy in test_spawned_enemies:
-		if is_instance_valid(enemy):
-			enemy.set_process(false)
-			enemy.queue_free()
-	test_spawned_enemies.clear()
+func _kill_all_test_minions() -> void:
+	for minion in test_spawned_minions:
+		if is_instance_valid(minion):
+			minion.set_process(false)
+			minion.queue_free()
+	test_spawned_minions.clear()
 
-func _on_kill_enemies_pressed() -> void:
-	_kill_all_test_enemies()
+func _on_kill_minions_pressed() -> void:
+	_kill_all_test_minions()
 
 func _on_restart_test_pressed() -> void:
 	_restart_test()
@@ -2789,7 +2789,7 @@ func _restart_test() -> void:
 func _cell_top_left(cell: Vector2i) -> Vector2:
 	return Vector2(cell.x * TILE_SIZE, cell.y * TILE_SIZE)
 
-func _start_enemy_spawner_timer(spawner: Dictionary) -> void:
+func _start_minion_spawner_timer(spawner: Dictionary) -> void:
 	var world_pos: Vector2 = WORLD_OFFSET + _cell_top_left(spawner["cell"])
 	var max_count: int = spawner["spawn_count"]
 	var spawned := [0]
@@ -2799,22 +2799,22 @@ func _start_enemy_spawner_timer(spawner: Dictionary) -> void:
 	test_spawn_timers.append(timer)
 	timer.timeout.connect(func():
 		spawned[0] += 1
-		_spawn_test_enemy(world_pos)
+		_spawn_test_minion(world_pos)
 		if spawned[0] >= max_count:
 			timer.stop()
 	)
 	timer.start()
 
-## No concrete enemy scene is wired up yet (see _make_enemy_spawner_icon) —
+## No concrete minion scene is wired up yet (see _make_minion_spawner_icon) —
 ## spawns a plain marker so spawn timing/count is still visible in Test mode.
-func _spawn_test_enemy(world_pos: Vector2) -> void:
-	var enemy := Sprite2D.new()
-	enemy.texture = _make_enemy_spawner_icon()
-	enemy.modulate = ENEMY_SPAWNER_ICON_COLOR
-	enemy.scale = Vector2(0.5, 0.5)
-	enemy.global_position = world_pos
-	add_child(enemy)
-	test_spawned_enemies.append(enemy)
+func _spawn_test_minion(world_pos: Vector2) -> void:
+	var minion := Sprite2D.new()
+	minion.texture = _make_minion_spawner_icon()
+	minion.modulate = MINION_SPAWNER_ICON_COLOR
+	minion.scale = Vector2(0.5, 0.5)
+	minion.global_position = world_pos
+	add_child(minion)
+	test_spawned_minions.append(minion)
 
 func _on_quit_test_pressed() -> void:
 	_stop_test()
@@ -2903,12 +2903,12 @@ func _load_room_data(data: Dictionary) -> void:
 
 	for spawn_data in data.get("spawn_cells", []):
 		var position_data: Dictionary = spawn_data.get("position", {})
-		_insert_enemy_spawner({
+		_insert_minion_spawner({
 			"cell": Vector2i(int(position_data.get("x", 0)), int(position_data.get("y", 0))),
-			"enemy_type": str(spawn_data.get("enemy", "")),
+			"minion_type": str(spawn_data.get("minion", "")),
 			"spawn_interval": 2.0,
 			"spawn_count": 3,
-		}, enemy_spawners.size())
+		}, minion_spawners.size())
 
 	for conn_data in data.get("connectors", []):
 		# Accepts format 1 ({"position"}) and format 2 ({"a", "b"}). "b", "free" and
@@ -3011,16 +3011,16 @@ func _build_export_data() -> Dictionary:
 		data["doors"] = _serialize_free_doors()
 	return data
 
-## The enemy spawners are the room's spawn_cells: each is a cell the dungeon
-## rolls an enemy for, or (when "enemy" is set) always spawns that exact enemy.
+## The minion spawners are the room's spawn_cells: each is a cell the dungeon
+## rolls a minion for, or (when "minion" is set) always spawns that exact minion.
 ## The test-mode interval / count are editor-only and not saved.
 func _serialize_spawn_cells() -> Array:
 	var result: Array = []
-	for spawner in enemy_spawners:
+	for spawner in minion_spawners:
 		var cell: Vector2i = spawner["cell"]
 		var entry := {"position": {"x": cell.x, "y": cell.y}}
-		if spawner.get("enemy_type", "") != "":
-			entry["enemy"] = spawner["enemy_type"]
+		if spawner.get("minion_type", "") != "":
+			entry["minion"] = spawner["minion_type"]
 		result.append(entry)
 	return result
 

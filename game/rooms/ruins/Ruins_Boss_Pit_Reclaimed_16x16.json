@@ -25,7 +25,7 @@
 	"favored_antagonist": {
 		"tag": "beast"
 	},
-	"favored_enemy": {
+	"favored_minion": {
 		"tag": "beast",
 		"weight": 2
 	},
@@ -331,7 +331,7 @@
 				"x": 5,
 				"y": 1
 			},
-			"enemy": "bat"
+			"minion": "bat"
 		},
 		{
 			"position": {
@@ -344,21 +344,21 @@
 				"x": 12,
 				"y": 3
 			},
-			"enemy": "wolf"
+			"minion": "wolf"
 		},
 		{
 			"position": {
 				"x": 11,
 				"y": 4
 			},
-			"enemy": "wolf"
+			"minion": "wolf"
 		},
 		{
 			"position": {
 				"x": 13,
 				"y": 4
 			},
-			"enemy": "wolf"
+			"minion": "wolf"
 		},
 		{
 			"position": {
@@ -371,21 +371,21 @@
 				"x": 12,
 				"y": 6
 			},
-			"enemy": "wolf"
+			"minion": "wolf"
 		},
 		{
 			"position": {
 				"x": 1,
 				"y": 8
 			},
-			"enemy": "wolf"
+			"minion": "wolf"
 		},
 		{
 			"position": {
 				"x": 3,
 				"y": 8
 			},
-			"enemy": "wolf"
+			"minion": "wolf"
 		},
 		{
 			"position": {
@@ -398,21 +398,21 @@
 				"x": 2,
 				"y": 10
 			},
-			"enemy": "wolf"
+			"minion": "wolf"
 		},
 		{
 			"position": {
 				"x": 1,
 				"y": 11
 			},
-			"enemy": "wolf"
+			"minion": "wolf"
 		},
 		{
 			"position": {
 				"x": 14,
 				"y": 11
 			},
-			"enemy": "bat"
+			"minion": "bat"
 		}
 	],
 	"tags": [

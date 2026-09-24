@@ -1,8 +1,11 @@
-# RogueNet folder structure (DRAFT 4, 2026-09-24)
+# RogueNet folder structure (2026-09-24)
 
-Folders only: the finished layout, with nothing left over from the old one. A proposal for
-where everything lives so new systems have an obvious home. **Nothing has been moved yet**,
-and a few decisions are still open (bottom of the page).
+Folders only: the finished layout, with nothing left over from the old one. A few folders in
+the tree are planned and do not exist yet (`game/biomes/`, `resources/sfx/entities/`, the
+boss and protagonist `ai/` folders). A proposal for
+where everything lives so new systems have an obvious home. Every step of the move order is done (see
+below); what is left is splitting the minion controller by team and driver, the last hit
+routing, and the open decisions at the bottom.
 
 ## Rules behind the layout
 
@@ -35,7 +38,7 @@ and a few decisions are still open (bottom of the page).
    replacing a node at runtime, because RPC paths must match on every peer.
 6. **Authority follows the driver, not the team.** A player-driven body is authoritative on
    its own peer; an AI-driven body is authoritative on the host. Targeting keys on team,
-   never on "is a player" or "is an enemy".
+   never on "is a player" or "is a minion".
 7. **Data describes, scripts execute.** Content is JSON in `game/`; a script only knows how
    to run a kind of thing.
 8. **Host authority for shared state.** Damage, tiles, spawns and doors are decided on the
@@ -187,7 +190,7 @@ that changes.
 **category** (melee, ranged, spell, skill) that decides how it is paid for: melee is free,
 ranged costs ammunition, spell costs magic (the magic system comes last), skill costs
 stamina. The category is a data field on the action, not a folder, so one projectile verb
-can be a bow shot (ammo), a wand shot (magic) or an enemy's free attack. The shapes an
+can be a bow shot (ammo), a wand shot (magic) or a minion's free attack. The shapes an
 action can cover (circle, line, later cone and ring) are one shared file at the root of this
 folder, since a shape is only math. Costs are not laid out yet: an area can carry a cost of
 its own, so where it belongs is undecided.
@@ -212,7 +215,7 @@ is the tile types and registry, the renderers, and the shaders they use, includi
 light map that draws the lighting onto the tiles. It focuses on placement and appearance,
 not on storing data; anything a cell has to remember belongs in `cells/` itself.
 
-**`scripts/dungeon/`** One dive: assembling and painting it, placing doors, enemy spawning,
+**`scripts/dungeon/`** One dive: assembling and painting it, placing doors, minion spawning (`MinionSpawning`),
 spawning the party into the dungeon (the player spawner, a small script with no RPC of its
 own), and the Maker tool.
 
@@ -223,7 +226,7 @@ game knowledge.
 
 **`game/entities/`** One JSON per creature, same format for both teams. Under
 `entities.antagonist`, `bosses/` holds the big ones and `minions/` the subordinate ones; the
-`boss` flag stays in the JSON either way.
+folder decides whether a creature is a boss; there is no `boss` field.
 
 **`game/actions/`** One JSON per action: its category, verb, range, shape, numbers. Two
 creatures using wall smash share one entry.
@@ -270,15 +273,13 @@ Found by a read-only scan of the code (three agents, 2026-09-24):
   only wall and void, while the light map and spawn fit also block cells with no floor. That
   is the leading suspect for the Minotaur and the player walking into walls (not confirmed).
   It belongs at the `entities` root behind one "can this body stand here" question.
-- **The player and enemy controllers are near-parallel copies**: the bow and projectile
-  flow, effect playing, damage handling and animation are written twice. Attack code lives
-  in the enemy controller; it belongs in `actions/` so players and bosses share it.
-- **Team-specific behaviour is mixed into the enemy controller** (boss yielding, surround,
-  boss privileges). Splitting it into the team and driver folders is its own step after
-  the moves.
+- ~~**The player and minion controllers were near-parallel copies**~~ CLOSED for attacks
+  (2026-09-24): the shot, hit, taunt and wall-smash code is now in `scripts/actions/verbs/`,
+  used by both. Movement and animation are still per controller.
+- **Team-specific behaviour is mixed into `MinionController`** (boss yielding, surround,
+  boss privileges), and bosses share it. Splitting it into the team and driver folders is
+  still to do.
 - **Flow fields are keyed by target only**; they need body size.
-- **Player content is split from creature content** (`scripts/player`, `scenes/player`,
-  `resources/gfx/players`), so creature systems get built twice.
 - **Damage effects are not defined yet:** neither the visuals nor the sounds for damage
   types, and creature sounds generally.
 - Status effects (burning, poison) have no home yet.
@@ -292,7 +293,7 @@ Found by a read-only scan of the code (three agents, 2026-09-24):
   is cell data and moves into `cells`. So does the door registry (doors are interactables a
   cell knows about: position, open or closed); placing doors during generation stays in
   `dungeon`. Other placed objects (graves, chests) follow the same rule once they exist.
-- **The network singleton finds bodies by node path** (`Player/<id>`, `Enemies/<id>`) and
+- **The network singleton finds bodies by node path** (`Player/<id>`, `Minions/<id>`) and
   the team groups double as "is a player". A player-driven antagonist needs an owner field
   (peer id) separate from the team, and bodies addressed by id. Undesigned.
 - **Position from a peer is trusted** with no wall check (see the to-do list).
@@ -303,23 +304,53 @@ Godot's editor rewrites `.tscn`, `.import` and `uid` references on a move, but n
 sprite paths inside JSON (about 121 of them) or path constants in scripts. Each step gets a
 playtest of a dive (host, join, spawn, fight, use an ability) before the next:
 
-1. Move the network scripts folder (the lobby menu and spawner).
-2. Move single files (the shapes file, the small helpers).
-3. Move `scenes/player`.
-4. Move the player art and data, with a script fixing the JSON sprite paths.
-5. Make enemy lookup recursive (an id-to-path index) with no moves yet.
-6. Move enemy data and art into `bosses/` and `minions/`.
-7. Split the controllers into the team and driver folders and pull the actions out (these
-   are refactors, not moves).
-8. Rename "enemy" to "minion" or "antagonist" last, as a scripted pass (about 600
-   script mentions, 1,074 `"enemy"` keys in room JSON).
+Steps 1 to 6 are DONE (2026-09-24, not yet playtested in Godot): lobby menu and spawner,
+single files, `scenes/entities/PlayerController.tscn`, player data and art under
+`entities.protagonist`, recursive `MinionIndex`, enemy data and art in `bosses/` and
+`minions/` (the boss is decided by the folder, the `"boss"` field is gone).
+
+1. ~~Move the network scripts folder (the lobby menu and spawner).~~
+2. ~~Move single files (the shapes file, the small helpers).~~
+3. ~~Move `scenes/player`.~~
+4. ~~Move the player art and data, with a script fixing the JSON sprite paths.~~
+5. ~~Make enemy lookup recursive (an id-to-path index) with no moves yet.~~
+6. ~~Move enemy data and art into `bosses/` and `minions/`.~~
+7a. ~~Move the two controllers into their team folders~~ DONE 2026-09-24: `PlayerController`
+    is in `entities.protagonist/player/`; `MinionController` is in
+    `entities.antagonist/minions/ai/` and still serves bosses too, until the boss and
+    minion behaviour is split. `scripts/player/` and `entities.enemies/` are gone.
+7b. ~~Sort the loose files~~ DONE 2026-09-24: `ProjectileController` in `entities.projectiles/`,
+    `AttackEffect` and `ActionShapes` (was `AbilityShapes`) in `scripts/actions/`,
+    `MouseFollowCamera` in `entities.protagonist/player/`, `MinionIndex` in
+    `entities.antagonist/`. The shared body scripts stay at the `entities` root.
+7c. Actions. DATA DONE 2026-09-24: `game/actions/` has one JSON per action (8 of them) with a
+    README; creatures list `"actions"` ids with per-creature overrides, resolved by
+    `ActionIndex`; the copied attack blocks are gone from 16 creature files (bite was in 10).
+    ALL VERB SLICES DONE 2026-09-24, in `scripts/actions/`: every action file has a `verb`
+    (`hit`, `projectile`, `destroy_tiles`, `taunt`); `ActionRunner` maps it to `verbs/HitVerb`,
+    `ProjectileVerb`, `DestroyTilesVerb`, `TauntVerb`; `verbs/TileHit` is the one "damage what
+    stands on this tile" (team from the caster's group, footprint-aware, ghosts skipped) and
+    `AttackEffect.play_between` the one way to show an effect. Players and minions both call
+    `ActionRunner`; the controllers keep only when and at what. NOT DONE: `TileHit._damage`
+    still picks the RPC by target team, and the player keeps a separate taunt cooldown.
+8. ~~Rename "enemy" to "minion"~~ DONE 2026-09-24 as one scripted pass over scripts, scenes,
+   singletons, game data and the root README (about 330 files): every `enemy`/`enemies`
+   became `minion`/`minions`, including the room JSON keys (`"minion"`, `"favored_minion"`)
+   and the file names (`MinionController`, `MinionIndex`, `MinionSenses`, `MinionSpawning`).
+   `docs/` history files were left with the old words. The boss uses `MinionController`
+   until the boss/minion behaviour is split.
+
+## Decisions (2026-09-24)
+
+1. **Rename "enemy" to "minion"** in code and data. DONE, as step 8.
+2. **"Actions", plural**, is the name (`scripts/actions/`, `game/actions/`). Godot's input-map
+   "action" is a different thing; the folder path keeps them apart.
+3. **Shaders stay on their own** in `resources/shaders/` for now.
+4. **One editor pass** for the remaining moves, not one family at a time.
+5. **Neutral tile query and body-id addressing** (see "Problems the layout does not solve"):
+   accepted, to be designed when the code needs it.
 
 ## Open decisions
 
-1. Rename "enemy" in code (step 8 above): with the moves, or last as its own pass.
-2. "Action" is also Godot's word for an input-map action; keep it, or use "abilities".
-3. Where shaders belong (`resources/shaders/` or under `gfx/`).
-4. One editor pass for all moves, or one family at a time with a playtest between.
-5. Where costs live, given an area can carry one.
-6. Where status effects live once they exist.
-7. The neutral tile query and the body-id addressing above.
+1. Where costs live, given an area can carry one.
+2. Where status effects live once they exist.

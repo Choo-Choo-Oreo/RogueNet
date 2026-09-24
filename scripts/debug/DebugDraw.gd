@@ -2,7 +2,7 @@ class_name DebugDraw
 extends Node2D
 
 ## World-space debug drawing, switched on and off by DebugState: room outlines
-## and ids, connectors, doors, enemy state / target lines and cached routes.
+## and ids, connectors, doors, minion state / target lines and cached routes.
 ## Sits above the light overlay so it can be read in the dark. Must be a child
 ## of the dungeon (world), NOT of a CanvasLayer -- a layer draws in screen space
 ## and would not follow the camera.
@@ -39,7 +39,7 @@ func _ready() -> void:
 	z_as_relative = false
 
 func _any_draw() -> bool:
-	for option in ["show-room-outlines", "show-room-ids", "show-connectors", "show-doors", "show-enemy-state", "show-enemy-routes", "show-tile-grid", "show-mesh-grid", "show-mesh-tiles", "show-collision-rectangles", "show-active-enemies", "show-vision", "show-flow-field"]:
+	for option in ["show-room-outlines", "show-room-ids", "show-connectors", "show-doors", "show-minion-state", "show-minion-routes", "show-tile-grid", "show-mesh-grid", "show-mesh-tiles", "show-collision-rectangles", "show-active-minions", "show-vision", "show-flow-field"]:
 		if DebugState.on(option):
 			return true
 	return false
@@ -63,7 +63,7 @@ func _draw() -> void:
 		_draw_flow_field()
 	if DebugState.on("show-collision-rectangles"):
 		_draw_collisions()
-	if DebugState.on("show-active-enemies"):
+	if DebugState.on("show-active-minions"):
 		_draw_activity()
 	if DebugState.on("show-room-outlines") or DebugState.on("show-room-ids"):
 		_draw_rooms()
@@ -71,8 +71,8 @@ func _draw() -> void:
 		_draw_connectors()
 	if DebugState.on("show-doors"):
 		_draw_doors()
-	if DebugState.on("show-enemy-state") or DebugState.on("show-enemy-routes"):
-		_draw_enemies()
+	if DebugState.on("show-minion-state") or DebugState.on("show-minion-routes"):
+		_draw_minions()
 
 ## The tiles currently on screen (plus one of margin).
 func _visible_tiles() -> Rect2i:
@@ -181,7 +181,7 @@ func _draw_vision() -> void:
 		var color := Color(0.3, 1.0, 0.4).lerp(Color(1.0, 0.3, 0.3), t)
 		draw_rect(Rect2(Vector2(cell) * LightMap.CELL, Vector2(LightMap.CELL, LightMap.CELL)), Color(color, 0.2), true)
 
-## The shared walking-distance field enemies follow toward the local player:
+## The shared walking-distance field minions follow toward the local player:
 ## the number is tiles to the player, the line points along the step they take.
 ## FlowField only builds each map once something asks for it, so either can be
 ## missing: the lines come from the walkers' (terrain-weighted) field when there
@@ -229,11 +229,11 @@ func _draw_collisions() -> void:
 ## in a few frames) or driven by the host.
 func _draw_activity() -> void:
 	var frame := Engine.get_process_frames()
-	for enemy in get_tree().get_nodes_in_group("antagonist"):
-		if not "_idle_until_frame" in enemy:
+	for minion in get_tree().get_nodes_in_group("antagonist"):
+		if not "_idle_until_frame" in minion:
 			continue
-		var thinking: bool = enemy.is_multiplayer_authority() and not enemy._stuck and enemy._idle_until_frame <= frame
-		var centre: Vector2 = enemy.global_position + Vector2(TILE, TILE) / 2.0
+		var thinking: bool = minion.is_multiplayer_authority() and not minion._stuck and minion._idle_until_frame <= frame
+		var centre: Vector2 = minion.global_position + Vector2(TILE, TILE) / 2.0
 		draw_circle(centre, 2.5, Color(0.3, 1.0, 0.4) if thinking else Color(0.6, 0.6, 0.6))
 
 func _draw_rooms() -> void:
@@ -278,28 +278,28 @@ func _draw_doors() -> void:
 		var text := "door %d %s%s %s" % [door.id, door.type, " (bars)" if door.transparent else "", "open" if door.is_open else "closed"]
 		_label(Vector2(first) * TILE + Vector2(0, -2), text, color)
 
-func _draw_enemies() -> void:
-	for enemy in get_tree().get_nodes_in_group("antagonist"):
-		if not "_last_state" in enemy:
+func _draw_minions() -> void:
+	for minion in get_tree().get_nodes_in_group("antagonist"):
+		if not "_last_state" in minion:
 			continue
-		var state := clampi(int(enemy._last_state), 0, 2)
+		var state := clampi(int(minion._last_state), 0, 2)
 		var color: Color = STATE_COLORS[state]
-		var centre: Vector2 = enemy.global_position + Vector2(TILE, TILE) / 2.0
-		if DebugState.on("show-enemy-state"):
+		var centre: Vector2 = minion.global_position + Vector2(TILE, TILE) / 2.0
+		if DebugState.on("show-minion-state"):
 			draw_arc(centre, 7.0, 0.0, TAU, 16, color, 1.0)
 			_label(centre + Vector2(-8, -9), STATE_NAMES[state], color)
-			var target = enemy._target
+			var target = minion._target
 			if state != 0 and is_instance_valid(target):
 				draw_line(centre, target.global_position + Vector2(TILE, TILE) / 2.0, Color(color, 0.7), 1.0)
-		if DebugState.on("show-enemy-routes"):
-			# The tile the enemy last tried to step onto (flow-field and direct
+		if DebugState.on("show-minion-routes"):
+			# The tile the minion last tried to step onto (flow-field and direct
 			# steps never fill _cached_path, so this is what shows them).
-			if Time.get_ticks_msec() - enemy._debug_step_msec < 400:
-				var step_rect := Rect2(Vector2(enemy._debug_step_tile) * TILE, Vector2(TILE, TILE))
+			if Time.get_ticks_msec() - minion._debug_step_msec < 400:
+				var step_rect := Rect2(Vector2(minion._debug_step_tile) * TILE, Vector2(TILE, TILE))
 				draw_rect(step_rect, Color(1.0, 0.9, 0.2, 0.3), true)
 				draw_line(centre, step_rect.get_center(), Color(1.0, 0.9, 0.2, 0.8), 1.0)
-			var path: Array = enemy._cached_path
-			var from: int = maxi(enemy._cached_path_index - 1, 0)
+			var path: Array = minion._cached_path
+			var from: int = maxi(minion._cached_path_index - 1, 0)
 			for i in range(from, path.size() - 1):
 				draw_line(Vector2(path[i]) * TILE + Vector2(8, 8), Vector2(path[i + 1]) * TILE + Vector2(8, 8), Color(1.0, 1.0, 1.0, 0.6), 1.0)
 

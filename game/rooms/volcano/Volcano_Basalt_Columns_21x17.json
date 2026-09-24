@@ -431,21 +431,21 @@
 				"x": 9,
 				"y": 1
 			},
-			"enemy": "wolf_hellhound"
+			"minion": "wolf_hellhound"
 		},
 		{
 			"position": {
 				"x": 7,
 				"y": 2
 			},
-			"enemy": "wolf_hellhound"
+			"minion": "wolf_hellhound"
 		},
 		{
 			"position": {
 				"x": 9,
 				"y": 4
 			},
-			"enemy": "wolf_hellhound"
+			"minion": "wolf_hellhound"
 		},
 		{
 			"position": {
@@ -458,21 +458,21 @@
 				"x": 7,
 				"y": 14
 			},
-			"enemy": "hamster_demonic"
+			"minion": "hamster_demonic"
 		},
 		{
 			"position": {
 				"x": 12,
 				"y": 14
 			},
-			"enemy": "hamster_demonic"
+			"minion": "hamster_demonic"
 		},
 		{
 			"position": {
 				"x": 10,
 				"y": 15
 			},
-			"enemy": "hamster_demonic"
+			"minion": "hamster_demonic"
 		}
 	],
 	"tags": [

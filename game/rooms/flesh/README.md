@@ -3,11 +3,11 @@
 Inside something alive, and something wrong with it. Every room is an organ,
 and every organ also comes as a **mutant**: the same organ with an extra lobe,
 a doubled part or a strange growth. Two hearts, a four-lobed brain, a womb with
-two horns. The place should feel big, knotted and crawling with enemies. It's
+two horns. The place should feel big, knotted and crawling with minions. It's
 meant to be a slog.
 
 This file covers flesh's own rules. For the full room file format (every
-key, connectors, `free`, per-connector `door`, `favored_enemy`), see
+key, connectors, `free`, per-connector `door`, `favored_minion`), see
 [../README.md](../README.md). The dungeon's guide
 ([../dungeon/README.md](../dungeon/README.md)) explains how the generator
 places rooms, and all of that applies here too.
@@ -57,9 +57,9 @@ and doorways is flesh, never stone or acid.
 - **3-wide connectors use `"any"`.** They take the other side's door, or
   stay open.
 
-## Enemies
+## Minions
 
-Every spawn cell spawns one enemy (unless the cell is lit). Flesh is meant
+Every spawn cell spawns one minion (unless the cell is lit). Flesh is meant
 to be packed, so spawn cells are laid by floor area, not by hand:
 
 | Kind | One spawn per | Minimum |
@@ -90,7 +90,7 @@ the entrances are the only rooms with none.
 | Peaceful | `normal` | `peaceful` |
 | Maze | `normal` | `maze` |
 | Barracks | `normal` | `barracks` |
-| Leech Pool | `normal` | `combat`, `nest`, and `"favored_enemy": {"tag": "leech_flesh", "weight": 30}` |
+| Leech Pool | `normal` | `combat`, `nest`, and `"favored_minion": {"tag": "leech_flesh", "weight": 30}` |
 | Treasure | `normal` | `treasure` (guarded: has spawns) |
 | Boss | `boss` | `combat` |
 

@@ -26,7 +26,7 @@ Status key: [ ] todo, [x] done, [~] built / needs playtest, [-] on hold
 ## S tier -- do first
 
 - [~] Target lock: while alerted, keep the same player; release when the alert window ends, the target dies / becomes a ghost / disconnects (freed node)
-- [~] Cheap validity check (freed node, ghost) placed BEFORE the idle-skip and _stuck early returns in EnemyController._process, so boxed-in / waiting enemies still notice a dead or ghost target (agent 2)
+- [~] Cheap validity check (freed node, ghost) placed BEFORE the idle-skip and _stuck early returns in MinionController._process, so boxed-in / waiting enemies still notice a dead or ghost target (agent 2)
 - [~] Taunt ("Rawr") in the empty 4th hotbar slot, host-side: enemies in radius switch to the caster for ~4s, alert window refreshed, caster stays their target after expiry (Orea + all 3)
 
 ## A tier
@@ -66,14 +66,14 @@ Status key: [ ] todo, [x] done, [~] built / needs playtest, [-] on hold
 
 ## Done this session (needs playtest)
 
-- [~] Alertness icon replaces the previous one instead of stacking (Investigate -> Attack no longer overlaps) -- EnemyController._show_alertness
+- [~] Alertness icon replaces the previous one instead of stacking (Investigate -> Attack no longer overlaps) -- MinionController._show_alertness
 - [~] Development biome now rolls all 14 enemy types at equal weight (game/rooms/development/defines.json), to stress-test the AI across speeds, ranged and flying
 
 ## Built 2026-09-23 (all [~] need playtest)
 
-EnemyController: _lock / _override / timers, force_target(); EnemySenses.forget(); NetworkSync.report_taunt; PlayerController._try_taunt; slot 4 in player.json (radius 6, 4s, 12s cooldown, cap 24). Flyers are cosmetic-only in this codebase (they path like walkers) so no flyer exemption was needed.
+MinionController: _lock / _override / timers, force_target(); MinionSenses.forget(); NetworkSync.report_taunt; PlayerController._try_taunt; slot 4 in player.json (radius 6, 4s, 12s cooldown, cap 24). Flyers are cosmetic-only in this codebase (they path like walkers) so no flyer exemption was needed.
 
 ## Background
 
-- Today: EnemyController._process re-picks _nearest_player() every tick; the 10s alert window (EnemySenses.ACTIVE_ALERT_SECONDS) belongs to the enemy, not to any player; note_hit() doesn't record who hit it.
+- Today: MinionController._process re-picks _nearest_player() every tick; the 10s alert window (MinionSenses.ACTIVE_ALERT_SECONDS) belongs to the enemy, not to any player; note_hit() doesn't record who hit it.
 - Hotbar: Sword, Bow, Magic, and an empty 4th slot -- planned test bed for the taunt.

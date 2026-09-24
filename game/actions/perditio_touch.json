@@ -1,0 +1,12 @@
+{
+	"verb": "hit",
+	"amount": 2,
+	"type": "Perditio",
+	"interval": 1.4,
+	"effect": {
+		"texture": "res://resources/gfx/effects/effects.necrotic/necrotic.perditio.png",
+		"frame_count": 8,
+		"speed": 16.0,
+		"anchor": "target"
+	}
+}

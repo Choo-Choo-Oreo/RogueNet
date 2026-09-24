@@ -2,9 +2,9 @@ class_name FlowField
 extends RefCounted
 
 ## Shared per-target step field: one flood from the target's tile
-## outward, reused by every enemy chasing that same target this frame,
+## outward, reused by every minion chasing that same target this frame,
 ## instead of each one solving its own from-scratch A* search (see
-## Pathfinding.gd, and EnemyController's MAX_PATHFINDS_PER_FRAME budget /
+## Pathfinding.gd, and MinionController's MAX_PATHFINDS_PER_FRAME budget /
 ## _try_direct_step bypass -- this is the third tier alongside them). A whole
 ## pursuing crowd shares one search: the swarm-room stress test is the
 ## textbook "many agents, one target" case flow fields are for.
@@ -13,7 +13,7 @@ extends RefCounted
 ## Pathfinding use) -- NOT occupancy, since occupancy changes every time any
 ## creature in the crowd moves and would make the shared field stale
 ## constantly. Callers still need their own occupancy check before actually
-## stepping onto the field's suggested tile (see EnemyController._try_
+## stepping onto the field's suggested tile (see MinionController._try_
 ## pursue_step), same reasoning _try_direct_step already documents.
 
 const RADIUS := 20
@@ -96,7 +96,7 @@ static func clear() -> void:
 ## Vector2i.ZERO if `from_cell` isn't reachable within RADIUS -- callers fall
 ## back to their own direct-step/pathfind handling in that case, same as
 ## Pathfinding.full_path returning an empty path for "no route found."
-## `target_id` is really any dictionary key -- EnemyController's surround
+## `target_id` is really any dictionary key -- MinionController's surround
 ## slots pass [target id, slot offset] so each slot gets its own field.
 ##
 ## `terrain_cost` (optional, tile -> float, 1.0 = normal ground) makes the

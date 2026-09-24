@@ -8,16 +8,7 @@
 	"cognitive": 0,
 	"resistances": {},
 	"speed_tiles_per_second": 6.0,
-	"attack": {
-		"amount": 3,
-		"type": "Physical",
-		"interval": 1.0,
-		"effect": {
-			"texture": "res://resources/gfx/effects/effects.melee/physical.biting.png",
-			"frame_count": 10,
-			"speed": 20.0
-		}
-	},
+	"actions": [{"action": "bite", "amount": 3}],
 	"sprite_frames": {
 		"frame_size": [16, 16],
 		"animations": {

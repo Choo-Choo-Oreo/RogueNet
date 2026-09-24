@@ -8,14 +8,9 @@
 	"cognitive": 0,
 	"resistances": {},
 	"speed_tiles_per_second": 2.5,
-	"attack": {
-		"amount": 1,
-		"type": "Physical",
-		"interval": 0.7,
-		"effect": { "texture": "res://resources/gfx/effects/effects.melee/physical.biting.png", "frame_count": 10, "speed": 20.0 }
-	},
+	"actions": [{"action": "bite", "interval": 0.7}],
 	"senses": {
-		"_comment": "TODO senses: meant to hunt by Taste and Touch only. SenseTaste is a stub that never detects yet, so with sight off this enemy is currently Touch-only (ambush on contact). Flags here only toggle 'enabled' on the sense nodes. Flesh variant is colored to hide against floor_flesh/wall_flesh.",
+		"_comment": "TODO senses: meant to hunt by Taste and Touch only. SenseTaste is a stub that never detects yet, so with sight off this minion is currently Touch-only (ambush on contact). Flags here only toggle 'enabled' on the sense nodes. Flesh variant is colored to hide against floor_flesh/wall_flesh.",
 		"sight": false,
 		"taste": true
 	},

@@ -8,14 +8,9 @@
 	"cognitive": 1,
 	"resistances": {},
 	"speed_tiles_per_second": 7.5,
-	"attack": {
-		"amount": 1,
-		"type": "Physical",
-		"interval": 0.9,
-		"effect": { "texture": "res://resources/gfx/effects/effects.melee/physical.biting.png", "frame_count": 10, "speed": 20.0 }
-	},
+	"actions": [{"action": "bite", "interval": 0.9}],
 	"senses": {
-		"_comment": "TODO senses: SenseHearing is a stub that never detects yet (sonar/noise tracking not built). With sight off this enemy is currently Touch-only. Re-check once Hearing is implemented. Flags here only toggle 'enabled' on the sense nodes.",
+		"_comment": "TODO senses: SenseHearing is a stub that never detects yet (sonar/noise tracking not built). With sight off this minion is currently Touch-only. Re-check once Hearing is implemented. Flags here only toggle 'enabled' on the sense nodes.",
 		"sight": false,
 		"hearing": true
 	},

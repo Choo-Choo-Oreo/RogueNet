@@ -1,0 +1,11 @@
+{
+	"verb": "hit",
+	"amount": 6,
+	"type": "Physical.Bludgeoning",
+	"interval": 1.5,
+	"effect": {
+		"texture": "res://resources/gfx/effects/effects.melee/physical.bludgeoning.png",
+		"frame_count": 8,
+		"speed": 20.0
+	}
+}

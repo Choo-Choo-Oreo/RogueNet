@@ -115,7 +115,7 @@ vehicles in B because objects unblock them.
 - [ ] Ceiling objects: `layer: ceiling`, alpha 0.35, z about 1800 (between actors and the darkness so it is lit like everything else); fade only when the local player stands inside its footprint or room (a1, a3)
 - [ ] Placed overlays use the same manifest with `layer: overlay` in the same `objects` array (tracks, decals); tile-bound overlays stay as they are (a1)
 - [ ] Biome `defines.json` `objects: {density, allow, deny}` with a `replace` map (flesh swaps torches for green bulbs) and a per-biome `routes` block (a1, a2)
-- [ ] Treasure rarity from room tags and depth, multiplying loot weights like `EnemySpawning._favored_weights` (a3)
+- [ ] Treasure rarity from room tags and depth, multiplying loot weights like `MinionSpawning._favored_weights` (a3)
 - [ ] Snapshot functions (`ObjectRegistry.snapshot()`, `DoorRegistry.snapshot()`) and a `receive_dungeon_state` RPC; unused until joins are allowed (a3, a2)
 - [ ] Chest open animation from a frame counter, like `DoorManager` (a3)
 - [ ] Cart end of line: buffer stop ejects riders on the last cell; capacity as a cart property; debug overlay for route cells and the hub (a2)

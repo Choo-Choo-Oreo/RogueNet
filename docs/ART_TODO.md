@@ -232,7 +232,7 @@ Frames are 16x16, in strips. What exists:
 | Knight | 4 frames | 4 | 8 | 8 | none | none | none | none |
 | Dwarf | 4 frames | 4 | 7 | 7 (placeholder, see below) | none | none | none | none |
 | Ghost | 4 frames | 4 | 4 | 4 | none | none | none | none |
-| Minotaur (antagonist, `player.antagonist`) | 4 frames | 4 | 4 | 4 | none | none | none | none |
+| Minotaur (antagonist boss, `entities.antagonist/bosses/minotaur`) | 4 frames | 4 | 4 | 4 | none | none | none | none |
 
 - [✓] Knight: walking west, 2026-09-22 (`Knight-Left.png`) — real art, confirmed by pixel diff to be an exact mirror of `Knight-Right.png`. Wired into `Knight.tres` as a proper `SideLeft` animation (was briefly using the flip trick instead, which Orea flagged as not actually hooked up correctly — fixed)
 - [✗] Dwarf: even out the frame count (east/west have 7, the knight has 8)
@@ -242,7 +242,7 @@ Frames are 16x16, in strips. What exists:
 - [✗] Attack, all four directions. Combat is real-time, so this is the one players see most.
 - [✗] Hurt flash or flinch
 - [✗] Death
-- [~] The current knight and dwarf are TEMPORARY (2026-09-24, Orea). A teammate is building a new `human` character with EIGHT-direction movement (walking north, north+east, east, south+east, south, and so on) in `resources/gfx/players/player.protagonist/human/`; the flipped directions come from the right-facing art. It comes with an equipment slot map (head, neck, chest, back, gloves, legs, feet, main hand, off hand) that says, per direction, which worn pieces draw over or behind the body and where a held item's grip pixel sits. Do not draw more frames for the old knight and dwarf until that lands. Later on 2026-09-24 the Knight and Dwarf were taken off the character list (Foxy's request, Orea's OK): the Human is the only playable character. Their art files are kept, and `DungeonMaker` still uses `Knight-Down.png` as the player spawn marker
+- [~] The current knight and dwarf are TEMPORARY (2026-09-24, Orea). A teammate is building a new `human` character with EIGHT-direction movement (walking north, north+east, east, south+east, south, and so on) in `resources/gfx/entities/entities.protagonist/human/`; the flipped directions come from the right-facing art. It comes with an equipment slot map (head, neck, chest, back, gloves, legs, feet, main hand, off hand) that says, per direction, which worn pieces draw over or behind the body and where a held item's grip pixel sits. Do not draw more frames for the old knight and dwarf until that lands. Later on 2026-09-24 the Knight and Dwarf were taken off the character list (Foxy's request, Orea's OK): the Human is the only playable character. Their art files are kept, and `DungeonMaker` still uses `Knight-Down.png` as the player spawn marker
 - [~] Human: walk cycles renamed to the `Name-Direction` pattern, 2026-09-24: `human/Human-Down/DownRight/Right/UpRight/Up` (`.png` + `.aseprite`). Left, Down-Left and Up-Left come from flipping the right-facing art. In-game since 2026-09-24 (not yet committed or reviewed): movement and `DirectionalAnimator` handle eight directions, and the Human's `FrontRight`/`BackRight` animations are used for diagonals (mirrored for left). Creatures with no diagonal art play their side animation when moving diagonally
 - [~] Gear layer: `gear/helmets/heavy_iron/HeavyIronHelm-Down/DownRight/Right/UpRight/Up` is done for all 5 directions (checked against the Human walk cycle, 2026-09-24). Gear sheets use the same `Name-Direction` pattern as the body so code can pair them up. Drawn in-game since 2026-09-24: whatever the player wears in the inventory is drawn over (or behind) the body, in the order of the slot map
 - [~] Example gear sets, 2026-09-24 (made by Claude, waiting on Foxy's review). Four sets, drawn on the Default Man for all 5 directions and all 4 walk frames. Each piece has a PNG plus an `.aseprite` copied from the HeavyIronHelm template (Default Man hidden, piece in its slot layer):
@@ -268,9 +268,9 @@ Frames are 16x16, in strips. What exists:
 - [✗] `Human-Down.aseprite` and `Human-DownRight.aseprite` differ from their PNGs by a few pixels. The PNGs match the Default Man in the gear templates, so decide which version is right
 - [✗] More classes **(decide first)**. Don't draw new classes until Orea confirms what they are.
 
-## 4. Enemies
+## 4. Minions and bosses
 
-Updated 2026-09-24: 14 enemy files in `game/entities/entities.enemies/` across 7 species, all
+Updated 2026-09-24: 14 minion files in `game/entities/entities.antagonist/minions/` across 7 species, all
 with four directions (Down, Up, Left, Right) and a walk cycle only: rat (plus blind and toothless), bat (plus echo),
 hamster (plus demonic and flying), leech (plus flesh), wolf (plus hellhound), skeleton archer and wraith.
 The rest of the roster isn't designed, so anything not listed is **(decide first)**. Orea does not draw

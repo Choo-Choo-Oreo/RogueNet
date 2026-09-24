@@ -67,7 +67,7 @@ func _check(body: Node2D) -> void:
 
 func _describe(body: Node2D, mover: GridMover, top_left: Vector2i, problem: String) -> String:
 	var label := str(body.name)
-	var kind = body.get("enemy_id")
+	var kind = body.get("minion_id")
 	if kind != null and str(kind) != "":
 		label += " (%s)" % kind
 	var now := Time.get_ticks_msec()

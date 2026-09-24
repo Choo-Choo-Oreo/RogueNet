@@ -24,7 +24,7 @@ func _ready() -> void:
 	# LightMap is a later sibling in Dungeon.tscn -- its own _ready() (which
 	# builds _local) hasn't run yet at this point in the frame, so defer
 	# until every node's _ready() this frame is done.
-	_spawn_enemies.call_deferred(rooms, placements, defines)
+	_spawn_minions.call_deferred(rooms, placements, defines)
 
 ## Doors are their own layer on top of the painted gaps: DoorPlacer picks the
 ## joints, DoorRegistry holds the state, DoorManager draws them.
@@ -39,19 +39,19 @@ func _place_doors(rooms: Dictionary, placements: Array, defines: Dictionary) -> 
 
 ## Nothing is lit yet this early, so every spawn cell in the dungeon counts
 ## as unseen and gets rolled -- exactly the "fill everything at generation
-## time" behavior EnemySpawning is meant to have at t=0.
-func _spawn_enemies(rooms: Dictionary, placements: Array, defines: Dictionary) -> void:
+## time" behavior MinionSpawning is meant to have at t=0.
+func _spawn_minions(rooms: Dictionary, placements: Array, defines: Dictionary) -> void:
 	var light_map: LightMap = get_tree().current_scene.find_child("LightMap", true, false)
-	var enemies_root := get_tree().current_scene.get_node_or_null("Enemies")
-	if light_map == null or enemies_root == null:
+	var minions_root := get_tree().current_scene.get_node_or_null("Minions")
+	if light_map == null or minions_root == null:
 		return
 	var bad_cells := _warn_bad_spawn_cells(rooms, placements)
 	var spawn_cells: Array[Vector2i] = []
 	for cell in DungeonAssembler.collect_spawn_cells(rooms, placements):
 		if not bad_cells.has(cell) and not DoorRegistry.is_door_cell(cell):
 			spawn_cells.append(cell)
-	EnemySpawning.spawn_antagonists(DungeonAssembler.collect_antagonist_spawns(rooms, placements), enemies_root)
-	EnemySpawning.spawn_in_unseen_cells(spawn_cells, defines.get("monsters", {}), light_map, enemies_root, DungeonAssembler.collect_spawn_favors(rooms, placements), DungeonAssembler.collect_spawn_enemies(rooms, placements))
+	MinionSpawning.spawn_antagonists(DungeonAssembler.collect_antagonist_spawns(rooms, placements), minions_root)
+	MinionSpawning.spawn_in_unseen_cells(spawn_cells, defines.get("monsters", {}), light_map, minions_root, DungeonAssembler.collect_spawn_favors(rooms, placements), DungeonAssembler.collect_spawn_minions(rooms, placements))
 
 ## Dev aid: checks each spawn cell against what was actually PAINTED (the same
 ## wall / void test GridMover uses), and names the room, its local cell, what

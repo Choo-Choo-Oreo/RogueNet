@@ -26,7 +26,7 @@
 			"free": true
 		}
 	],
-	"favored_enemy": {
+	"favored_minion": {
 		"tag": "beast",
 		"weight": 2
 	},
@@ -212,63 +212,63 @@
 				"x": 10,
 				"y": 2
 			},
-			"enemy": "bat"
+			"minion": "bat"
 		},
 		{
 			"position": {
 				"x": 3,
 				"y": 3
 			},
-			"enemy": "wolf"
+			"minion": "wolf"
 		},
 		{
 			"position": {
 				"x": 6,
 				"y": 4
 			},
-			"enemy": "wolf"
+			"minion": "wolf"
 		},
 		{
 			"position": {
 				"x": 4,
 				"y": 5
 			},
-			"enemy": "wolf"
+			"minion": "wolf"
 		},
 		{
 			"position": {
 				"x": 3,
 				"y": 6
 			},
-			"enemy": "wolf"
+			"minion": "wolf"
 		},
 		{
 			"position": {
 				"x": 7,
 				"y": 6
 			},
-			"enemy": "wolf"
+			"minion": "wolf"
 		},
 		{
 			"position": {
 				"x": 5,
 				"y": 8
 			},
-			"enemy": "wolf"
+			"minion": "wolf"
 		},
 		{
 			"position": {
 				"x": 4,
 				"y": 9
 			},
-			"enemy": "wolf"
+			"minion": "wolf"
 		},
 		{
 			"position": {
 				"x": 7,
 				"y": 9
 			},
-			"enemy": "wolf"
+			"minion": "wolf"
 		}
 	],
 	"tags": [

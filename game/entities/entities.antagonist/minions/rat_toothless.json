@@ -10,16 +10,7 @@
 	"senses": {
 		"sight": { "range_tiles": 24.0 }
 	},
-	"attack": {
-		"amount": 1,
-		"type": "Physical",
-		"interval": 5.0,
-		"effect": {
-			"texture": "res://resources/gfx/effects/effects.melee/physical.biting.png",
-			"frame_count": 10,
-			"speed": 20.0
-		}
-	},
+	"actions": [{"action": "bite", "interval": 5.0}],
 	"sprite_frames": {
 		"frame_size": [16, 16],
 		"animations": {

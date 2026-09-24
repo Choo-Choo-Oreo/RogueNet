@@ -1,9 +1,9 @@
-class_name AbilityShapes
+class_name ActionShapes
 extends RefCounted
 
 ## Which tiles an ability covers. Abilities describe their reach in JSON ("shape":
 ## {"type": "circle", "radius": 2}) and this turns that into world tiles, so a new
-## ability (or a new enemy using an old one) never needs shape code of its own.
+## ability (or a new minion using an old one) never needs shape code of its own.
 ##
 ##   circle  "radius" (tiles, may be fractional): every tile within that distance of
 ##           the body's edge, all the way around it. 1 = the four sides, 1.5 = the

@@ -26,7 +26,7 @@
 			"free": true
 		}
 	],
-	"favored_enemy": {
+	"favored_minion": {
 		"tag": "beast",
 		"weight": 2
 	},
@@ -184,21 +184,21 @@
 				"x": 9,
 				"y": 4
 			},
-			"enemy": "wolf"
+			"minion": "wolf"
 		},
 		{
 			"position": {
 				"x": 1,
 				"y": 5
 			},
-			"enemy": "bat"
+			"minion": "bat"
 		},
 		{
 			"position": {
 				"x": 10,
 				"y": 5
 			},
-			"enemy": "wolf"
+			"minion": "wolf"
 		}
 	],
 	"tags": [

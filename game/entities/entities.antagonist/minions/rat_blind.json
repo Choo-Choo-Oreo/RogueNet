@@ -7,16 +7,7 @@
 	"constitution": 0,
 	"cognitive": 0,
 	"resistances": {},
-	"attack": {
-		"amount": 1,
-		"type": "Physical",
-		"interval": 1.2,
-		"effect": {
-			"texture": "res://resources/gfx/effects/effects.melee/physical.biting.png",
-			"frame_count": 10,
-			"speed": 20.0
-		}
-	},
+	"actions": [{"action": "bite", "interval": 1.2}],
 	"senses": {
 		"sight": false
 	},

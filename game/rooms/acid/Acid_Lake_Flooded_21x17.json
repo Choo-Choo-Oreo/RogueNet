@@ -431,21 +431,21 @@
 				"x": 10,
 				"y": 4
 			},
-			"enemy": "leech"
+			"minion": "leech"
 		},
 		{
 			"position": {
 				"x": 12,
 				"y": 4
 			},
-			"enemy": "leech"
+			"minion": "leech"
 		},
 		{
 			"position": {
 				"x": 11,
 				"y": 6
 			},
-			"enemy": "leech"
+			"minion": "leech"
 		},
 		{
 			"position": {
@@ -458,21 +458,21 @@
 				"x": 7,
 				"y": 13
 			},
-			"enemy": "rat_blind"
+			"minion": "rat_blind"
 		},
 		{
 			"position": {
 				"x": 6,
 				"y": 14
 			},
-			"enemy": "rat_blind"
+			"minion": "rat_blind"
 		},
 		{
 			"position": {
 				"x": 9,
 				"y": 14
 			},
-			"enemy": "rat_blind"
+			"minion": "rat_blind"
 		}
 	],
 	"tags": [

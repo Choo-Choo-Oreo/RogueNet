@@ -299,7 +299,7 @@ tile_initialize = NodePath("../TileInitialize")
 [node name="Player" type="Node2D" parent="." unique_id=2019608533]
 script = ExtResource("2_playerspawner")
 
-[node name="Enemies" type="Node2D" parent="."]
+[node name="Minions" type="Node2D" parent="."]
 
 [node name="LightMap" type="Node2D" parent="." node_paths=PackedStringArray("tile_initialize", "player_root")]
 script = ExtResource("99_lightmap")
