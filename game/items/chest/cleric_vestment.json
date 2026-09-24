@@ -1,0 +1,6 @@
+{
+	"name": "Cleric vestment",
+	"slot": "chest",
+	"set": "cleric",
+	"art": "res://resources/gfx/gear/chest/cleric/ClericVestment"
+}

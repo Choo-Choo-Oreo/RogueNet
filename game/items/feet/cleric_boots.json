@@ -1,0 +1,6 @@
+{
+	"name": "Cleric boots",
+	"slot": "feet",
+	"set": "cleric",
+	"art": "res://resources/gfx/gear/feet/cleric/ClericBoots"
+}

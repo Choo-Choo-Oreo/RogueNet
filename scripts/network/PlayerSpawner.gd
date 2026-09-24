@@ -24,3 +24,4 @@ func _spawn_player(id: int) -> void:
 	add_child(player)
 	player.set_multiplayer_authority(id)
 	player.set_character(NetworkSync.peer_characters.get(id, ""))
+	player.set_equipment(NetworkSync.peer_equipment.get(id, {}))

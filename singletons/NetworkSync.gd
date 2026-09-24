@@ -54,6 +54,7 @@ func reset_session() -> void:
 	dive_members.clear()
 	peer_steam_ids.clear()
 	peer_names.clear()
+	peer_equipment.clear()
 	dungeon_seed = 0
 	dungeon_biome = ""
 
@@ -194,7 +195,7 @@ func receive_player_names(names: Dictionary) -> void:
 	if main_town and main_town.has_method("refresh_player_list"):
 		main_town.refresh_player_list()
 
-# peer_id -> "knight"/"dwarf", which sprite each player shows in the dungeon.
+# peer_id -> character id (only "human" today), which sprite each player shows in the dungeon.
 var peer_characters: Dictionary = {}
 
 @rpc("any_peer", "reliable")
@@ -224,6 +225,49 @@ func receive_player_characters(characters: Dictionary) -> void:
 		var player := player_root.get_node_or_null(str(peer_id))
 		if player and player.has_method("set_character"):
 			player.set_character(peer_characters[peer_id])
+
+# peer_id -> {slot: item id}, the gear each player wears (see PlayerInventory.worn()).
+# Same "tell the host, host tells everyone" route as peer_characters above.
+var peer_equipment: Dictionary = {}
+
+## Called by PlayerInventory whenever this machine's player changes what they wear.
+func share_equipment(worn: Dictionary) -> void:
+	if multiplayer.is_server():
+		_set_equipment(multiplayer.get_unique_id(), worn)
+	else:
+		report_player_equipment.rpc_id(1, worn)
+
+@rpc("any_peer", "reliable")
+func report_player_equipment(worn: Dictionary) -> void:
+	if not multiplayer.is_server():
+		return
+	_set_equipment(multiplayer.get_remote_sender_id(), worn)
+
+func _set_equipment(peer_id: int, worn: Dictionary) -> void:
+	# Only item ids for the slot they claim, so a bad message can't put a sword on someone's head.
+	var clean := {}
+	for slot in worn:
+		var item_id = worn[slot]
+		if item_id is String and ItemDatabase.item_slot(item_id) == slot:
+			clean[slot] = item_id
+	peer_equipment[peer_id] = clean
+	for other_id in multiplayer.get_peers():
+		receive_player_equipment.rpc_id(other_id, peer_equipment)
+	receive_player_equipment(peer_equipment)
+
+@rpc("authority", "reliable")
+func receive_player_equipment(equipment: Dictionary) -> void:
+	peer_equipment = equipment
+	var scene := get_tree().current_scene
+	if scene == null:
+		return
+	var player_root := scene.get_node_or_null("Player")
+	if player_root == null:
+		return
+	for peer_id in peer_equipment:
+		var player := player_root.get_node_or_null(str(peer_id))
+		if player and player.has_method("set_equipment"):
+			player.set_equipment(peer_equipment[peer_id])
 
 @rpc("any_peer", "reliable")
 func report_join_mission(mission_id: int, password: String) -> void:

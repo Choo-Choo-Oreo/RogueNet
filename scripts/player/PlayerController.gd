@@ -5,15 +5,17 @@ extends CharacterBody2D
 @onready var animator: DirectionalAnimator = $DirectionalAnimator
 @onready var stats: EntityStats = $EntityStats
 
-## Purely cosmetic -- which sprite_frames to wear. Knight/dwarf don't (yet)
+## The worn gear, drawn on top of (or behind) $AnimatedSprite2D. See set_equipment().
+var gear := GearLayers.new()
+
+## Purely cosmetic -- which sprite_frames to wear. Characters don't (yet)
 ## differ in stats or attack, so that data doesn't live in these files; see
-## PLAYER_DATA_PATH.
+## PLAYER_DATA_PATH. Only the Human is left: gear (GearLayers) is drawn to fit
+## its body, and the old knight and dwarf were temporary.
 const CHARACTERS := {
-	"knight": "res://resources/gfx/players/player.protagonist/knight/knight.json",
-	"dwarf": "res://resources/gfx/players/player.protagonist/dwarf/dwarf.json",
 	"human": "res://resources/gfx/players/player.protagonist/human/human.json",
 }
-const DEFAULT_CHARACTER := "knight"
+const DEFAULT_CHARACTER := "human"
 
 ## Stats/attack shared by every character skin.
 const PLAYER_DATA_PATH := "res://game/entities/entities.players/player.json"
@@ -41,6 +43,10 @@ static var local_is_ghost := false
 func set_character(character_id: String) -> void:
 	var data := JsonOnloading.load_dict(CHARACTERS.get(character_id, CHARACTERS[DEFAULT_CHARACTER]))
 	$AnimatedSprite2D.sprite_frames = SpriteFramesLoader.build(data["sprite_frames"])
+
+## worn: slot -> item id (NetworkSync.peer_equipment). Cosmetic only for now.
+func set_equipment(worn: Dictionary) -> void:
+	gear.set_equipment(worn)
 
 func _load_player_data() -> void:
 	var data := JsonOnloading.load_dict(PLAYER_DATA_PATH)
@@ -72,6 +78,7 @@ func _on_died() -> void:
 	# Above every other entity (players/enemies sit at 1000), but below
 	# LightMap's own overlay sprites (2000/2001) so it doesn't fight lighting.
 	z_index = 1500
+	gear.hidden = true
 	var ghost_data := JsonOnloading.load_dict(GHOST_DATA_PATH)
 	$AnimatedSprite2D.sprite_frames = SpriteFramesLoader.build(ghost_data["sprite_frames"])
 
@@ -88,6 +95,9 @@ func _ready() -> void:
 	if is_multiplayer_authority():
 		local_is_ghost = false
 	add_to_group("protagonist")
+	gear.name = "GearLayers"
+	add_child(gear)
+	gear.setup($AnimatedSprite2D)
 	_load_player_data()
 	stats.died.connect(_on_died)
 	$TileHoverHighlight.sprite_frames = SpriteFramesLoader.build({
@@ -218,8 +228,12 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		# Holding the button keeps swinging (see _process); a press that starts on
 		# the debug menu or a click tool never turns into a held attack.
-		_attack_held = not DebugState.blocks_attack()
+		_attack_held = not _attack_blocked()
 		_try_attack()
+
+## A click on a menu (the debug menu, the open inventory) is not an attack.
+func _attack_blocked() -> bool:
+	return DebugState.blocks_attack() or InventoryPanel.mouse_over_open_panel(get_viewport())
 
 ## Melee (target_mode "melee", the default) always hits one of the 8 tiles
 ## adjacent to the player -- whichever _melee_target_tile() picks for the
@@ -227,7 +241,7 @@ func _input(event: InputEvent) -> void:
 ## "ranged") can hit any tile clicked instead, effect anchored on the
 ## target -- see AttackEffect.effect_position().
 func _try_attack() -> void:
-	if DebugState.blocks_attack():
+	if _attack_blocked():
 		return
 	var attack: Dictionary = _current_attack()
 	if attack.get("kind", "") == "taunt":

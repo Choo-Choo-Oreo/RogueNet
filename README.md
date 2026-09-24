@@ -208,6 +208,35 @@ JSON. DungeonMaker keeps it when re-saving.)
 - Naming is subject-first: `wall_forest_dense`, not `wall_dense_forest`.
 - Wall/floor pairs share one 6-colour palette (`wall_smooth_cave` + `floor_smooth_cave`, added 2026-09-24: water-worn cave rock, a smooth sibling of `wall_rough_cave`; the wall reuses the rough cave's autotile mask, the floor reuses the dirt floor's rounded mask so both blend the same way).
 
+### Items — `game/items/<slot>/<id>.json`
+
+```json
+{
+	"name": "Heavy iron longsword",
+	"slot": "main_hand",
+	"set": "heavy_iron",
+	"art": "res://resources/gfx/gear/main_hand/heavy_iron/HeavyIronLongsword"
+}
+```
+
+- The file name is the item's id (`heavy_iron_longsword`), same rule as
+  enemies. The folder is only for tidiness; `slot` decides where it's worn.
+- `slot` — one of `head`, `chest`, `gloves`, `legs`, `feet`, `neck`, `back`,
+  `main_hand`, `off_hand`.
+- `art` — the worn sheets' path minus the `-<Direction>.png` ending. The game
+  adds `-Down`, `-DownRight`, `-Right`, `-UpRight` and `-Up`: 4 frames of
+  16x16 each, lined up with the Human's walk cycle. Left-facing views are the
+  right-facing art mirrored. Which slots draw over or behind the body for
+  each direction is `DRAW_ORDER` in `scripts/items/ItemDatabase.gd`.
+- `set` — optional; storage lists items set by set (`heavy_iron`, `arcane`,
+  `cleric`, `necromancer`, then everything else).
+- `icon` — optional 16x16 PNG for inventory slots. Without one, the slot
+  shows the front view cropped to its pixels, which is too small to read for
+  gloves and boots.
+- Items are cosmetic only for now (no stats, no rarity). The inventory lives
+  in `singletons/PlayerInventory.gd`, in memory only: it starts over on every
+  launch, with one of every item in the town storage.
+
 ## Tech stack
 
 - Godot Engine, .NET-enabled build (supports C#, but the team mostly works
