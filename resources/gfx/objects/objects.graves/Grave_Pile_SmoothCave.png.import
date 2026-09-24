@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bvmjcq25a4qlm"
-path="res://.godot/imported/Grave_8B4513.png-94f1a90df87c8dd15dceda37b8ec45b7.ctex"
+uid="uid://b2pnu11i6glko"
+path="res://.godot/imported/Grave_Pile_SmoothCave.png-211f4be91f50f87a2ce86b073d032499.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/objects/objects.graves/Grave_8B4513.png"
-dest_files=["res://.godot/imported/Grave_8B4513.png-94f1a90df87c8dd15dceda37b8ec45b7.ctex"]
+source_file="res://resources/gfx/objects/objects.graves/Grave_Pile_SmoothCave.png"
+dest_files=["res://.godot/imported/Grave_Pile_SmoothCave.png-211f4be91f50f87a2ce86b073d032499.ctex"]
 
 [params]
 

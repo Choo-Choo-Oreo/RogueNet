@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d06flh3xjdoo3"
-path="res://.godot/imported/Grave_D6B19A.png-e136c6b2d2cb82b7dd265eda8828cf13.ctex"
+uid="uid://d21ashi6hr1c4"
+path="res://.godot/imported/Grave_Pile_CarpetVerdigris.png-6bcfcb8f9621d384f35fae055abc8099.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/objects/objects.graves/Grave_D6B19A.png"
-dest_files=["res://.godot/imported/Grave_D6B19A.png-e136c6b2d2cb82b7dd265eda8828cf13.ctex"]
+source_file="res://resources/gfx/objects/objects.graves/Grave_Pile_CarpetVerdigris.png"
+dest_files=["res://.godot/imported/Grave_Pile_CarpetVerdigris.png-6bcfcb8f9621d384f35fae055abc8099.ctex"]
 
 [params]
 

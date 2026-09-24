@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dqxtqer4lk5mh"
-path="res://.godot/imported/Grave_C3B192.png-883acceb2731e23fb8480241719d89d6.ctex"
+uid="uid://cb6meinwjrj5e"
+path="res://.godot/imported/Grave_Teak.png-ee438c3047d9b916dc48aae447e39cf3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/objects/objects.graves/Grave_C3B192.png"
-dest_files=["res://.godot/imported/Grave_C3B192.png-883acceb2731e23fb8480241719d89d6.ctex"]
+source_file="res://resources/gfx/objects/objects.graves/Grave_Teak.png"
+dest_files=["res://.godot/imported/Grave_Teak.png-ee438c3047d9b916dc48aae447e39cf3.ctex"]
 
 [params]
 
