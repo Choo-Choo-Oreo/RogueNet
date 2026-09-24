@@ -14,6 +14,8 @@ func _ready() -> void:
 	var rooms := DungeonAssembler.load_rooms(biome)
 	var placements := DungeonAssembler.generate_with_retry(rooms, NetworkSync.dungeon_seed, defines)
 	RoomGraph.build(rooms, placements)
+	DebugState.rooms = rooms
+	DebugState.placements = placements
 	FlowField.clear()
 	SurroundSectors.clear()
 	_paint(rooms, placements, floor_data, wall_data, registry)

@@ -6,6 +6,7 @@ extends Control
 @onready var spinbox: SpinBox = $AudioTypeControl
 
 var audio_bus_id: int
+var _dragging := false
 
 func _ready():
 	audio_bus_id = AudioServer.get_bus_index(audio_bus_name)
@@ -16,6 +17,10 @@ func _ready():
 	slider.value_changed.connect(_on_value_changed)
 	spinbox.value_changed.connect(_on_value_changed)
 	spinbox.focus_exited.connect(_on_user_finished_input)
+	slider.drag_started.connect(func(): _dragging = true)
+	slider.drag_ended.connect(func(_changed):
+		_dragging = false
+		_on_user_finished_input())
 
 func _on_value_changed(value: float) -> void:
 	var db = linear_to_db(value)
@@ -23,6 +28,10 @@ func _on_value_changed(value: float) -> void:
 
 	slider.value = value
 	spinbox.value = value
+	# A typed value (Enter) or a keyboard step saves right away; a slider drag
+	# waits for the release so it does not rewrite the file every frame.
+	if not _dragging:
+		_on_user_finished_input()
 
 func _on_user_finished_input() -> void:
 	ConfigFileHandler.save_audio_setting(audio_bus_name + "_volume", slider.value)

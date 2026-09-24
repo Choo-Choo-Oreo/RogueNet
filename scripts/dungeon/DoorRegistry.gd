@@ -75,11 +75,6 @@ static func get_def(type: String) -> Dictionary:
 		_load_defs()
 	return _defs.get(type, {})
 
-static func all_defs() -> Dictionary:
-	if _defs.is_empty():
-		_load_defs()
-	return _defs
-
 static func _load_defs() -> void:
 	var dir := DirAccess.open(DEFS_DIR)
 	if dir == null:

@@ -171,7 +171,7 @@ Notes:
   doors without opening them).
 - `open_seconds` — how long the swing / slide takes.
 - `min_width` / `max_width` — joint widths (in tiles) this door type can fill.
-- `art` — the piece atlas description next to the door PNGs.
+- `art` — style prefix of the door art: `<prefix>_<Width>.json` describes the atlas `<prefix>_<Width>.png` for a door of that width (rows per piece, `atlas_y`), with `<prefix>_<Width>_Normal.png` beside it. Names are `<Style>_<Width>`, CamelCase style, plain digit width, e.g. `Wood_2`.
 - Players open a door by walking into it. It closes again a couple of
   seconds after everyone has moved away. Open/closed state is host-owned.
 
