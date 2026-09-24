@@ -175,6 +175,7 @@ script = ExtResource("1_dungeonroot")
 script = ExtResource("4_tileinit")
 
 [node name="FloorData" type="TileMapLayer" parent="TileInitialize" unique_id=2071969112]
+visible = false
 tile_set = SubResource("TileSet_57mhk")
 
 [node name="WallData" type="TileMapLayer" parent="TileInitialize" unique_id=245551276]
