@@ -77,6 +77,12 @@ MinionController: _lock / _override / timers, force_target(); MinionSenses.forge
 
 Investigate now walks to a marker (a spot), not the player: `Sound.gd` (host-side fan-out), `SenseHearing.hears`, `MinionSenses.hear` / `investigate_marker`, `MinionController.can_hear` / `hear_noise`. Only an Attack locks a target now (before, Investigate locked the nearest player too). Footsteps come from `GridMover.stepped` (PlayerController), rocks from `ThrowVerb`; `NetworkSync.report_noise` sends a client's noise to the host.
 
+## Pack and patrol built 2026-09-24 (needs playtest)
+
+Pack: creature JSON `"pack": "wolf"` (wolf, wolf_hellhound); `MinionController._alert_pack` runs when a minion steps up an alert level and calls packmates within `PACK_RADIUS_TILES` (16): Investigate shares the marker (`join_pack_investigation`), Attack shares the player (`join_pack_attack`); `last_trigger "pack"` stops the alarm chaining. Cells `pack_wolves_investigate` and `pack_wolves_attack`.
+
+Patrol: `_patrol_step` replaced the old jitter wander (whose radius check never passed because home was read while the minion was still at (0,0)). Random goals within 8 tiles of home, inside the room, half speed, 1.5-4 s rests, give up after 8 s; only while a player is in the same or an adjacent room (`RoomGraph.is_near_any`, re-checked every 0.5 s; otherwise it sleeps cheaply). Re-homes when an alert ends. Cell `patrol_wanders`; the other sim cells turn patrol off (`MinionController.patrol_enabled`) so walking creatures do not wander into the player's light. Not built: herd movement (a pack walking together), patrol routes between rooms.
+
 ## Background
 
 - Today: MinionController._process re-picks _nearest_player() every tick; the 10s alert window (MinionSenses.ACTIVE_ALERT_SECONDS) belongs to the enemy, not to any player; note_hit() doesn't record who hit it.

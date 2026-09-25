@@ -7,8 +7,6 @@ extends RefCounted
 ## of its sheets minus the "-<Direction>.png" ending (see README.md).
 
 const ITEMS_DIR := "res://game/items"
-## One <set>.json per set that has a full-set bonus (see game/sets/README.md).
-const SETS_DIR := "res://game/sets"
 
 ## The nine equipment slots, in the order the inventory shows them.
 const SLOTS: Array[String] = ["head", "chest", "gloves", "legs", "feet", "neck", "back", "main_hand", "off_hand"]
@@ -17,9 +15,6 @@ const SLOT_NAMES := {
 	"neck": "Neck", "back": "Back", "main_hand": "Main hand", "off_hand": "Off hand",
 }
 const SET_ORDER: Array[String] = ["heavy_iron", "arcane", "cleric", "necromancer"]
-## The slots a full set has to fill. Held items and the amulet don't count, so
-## any weapon can be used with a set's bonus.
-const FULL_SET_SLOTS: Array[String] = ["head", "chest", "gloves", "legs", "feet"]
 
 ## The body's animation name -> which gear sheet goes with it. Left-facing
 ## animations don't exist: the right-facing art is mirrored (flip_h), same as the body.
@@ -44,7 +39,6 @@ const DRAW_ORDER := {
 }
 
 static var _items: Dictionary = {}
-static var _sets: Dictionary = {}   # set id -> its game/sets JSON
 static var _loaded := false
 static var _sprite_frames: Dictionary = {}
 static var _icons: Dictionary = {}
@@ -66,9 +60,6 @@ static func _load() -> void:
 				push_error("ItemDatabase: %s has no valid slot" % file_name)
 				continue
 			_items[file_name.get_basename()] = data
-	for file_name in DirAccess.get_files_at(SETS_DIR):
-		if file_name.ends_with(".json"):
-			_sets[file_name.get_basename()] = JsonOnloading.load_dict(SETS_DIR + "/" + file_name)
 
 static func has_item(item_id: String) -> bool:
 	_load()
@@ -102,22 +93,6 @@ static func _sort_key(item_id: String) -> Array:
 	var item: Dictionary = _items[item_id]
 	var set_index := SET_ORDER.find(item.get("set", ""))
 	return [set_index if set_index >= 0 else SET_ORDER.size(), SLOTS.find(item["slot"]), item_id]
-
-## The set that fills every FULL_SET_SLOTS slot of worn (slot -> item id), or ""
-## when one is empty or they come from different sets.
-static func full_set(worn: Dictionary) -> String:
-	var set_id := ""
-	for slot in FULL_SET_SLOTS:
-		var item_set: String = get_item(worn.get(slot, "")).get("set", "")
-		if item_set == "" or (set_id != "" and item_set != set_id):
-			return ""
-		set_id = item_set
-	return set_id
-
-## What wearing the full set adds ({} for a set without a bonus).
-static func set_bonus(set_id: String) -> Dictionary:
-	_load()
-	return _sets.get(set_id, {}).get("bonus", {})
 
 static func sheet_path(item_id: String, sheet: String) -> String:
 	return "%s-%s.png" % [get_item(item_id).get("art", ""), sheet]

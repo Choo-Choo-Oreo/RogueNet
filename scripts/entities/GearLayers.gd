@@ -7,7 +7,6 @@ extends Node
 ## animation, frame and flip, so the gear walks exactly in step with the body.
 ## The z_index follows ItemDatabase.DRAW_ORDER for the way the body faces, which
 ## puts a cape or a shield behind the character when that's how it's drawn.
-## A full set's bonus effects (GearEffects) hang off the body the same way.
 
 ## Set when the player dies: the ghost skin uses the same animation names as the
 ## body, so the gear would otherwise float on the ghost.
@@ -16,7 +15,6 @@ var hidden := false
 var _body: AnimatedSprite2D
 var _layers: Dictionary = {}   # slot -> AnimatedSprite2D
 var _sheet := ""
-var _effects := GearEffects.new()
 
 func setup(body: AnimatedSprite2D) -> void:
 	_body = body
@@ -26,8 +24,6 @@ func setup(body: AnimatedSprite2D) -> void:
 		layer.visible = false
 		_body.add_child(layer)
 		_layers[slot] = layer
-	_effects.name = "GearEffects"
-	_body.add_child(_effects)
 
 ## worn: slot -> item id. Slots not in it are shown empty.
 func set_equipment(worn: Dictionary) -> void:
@@ -40,14 +36,12 @@ func set_equipment(worn: Dictionary) -> void:
 		else:
 			layer.sprite_frames = ItemDatabase.sprite_frames(item_id)
 			layer.visible = not hidden
-	_effects.set_equipment(worn)
 	_sheet = ""
 
 func _process(_delta: float) -> void:
 	if _body == null or _body.sprite_frames == null:
 		return
 	var sheet: String = ItemDatabase.ANIMATION_SHEETS.get(_body.animation, "")
-	_effects.set_active(sheet != "" and not hidden)
 	for slot in _layers:
 		var layer: AnimatedSprite2D = _layers[slot]
 		if layer.sprite_frames == null:

@@ -1,7 +1,0 @@
-{
-	"name": "Infernal greatsword",
-	"slot": "main_hand",
-	"set": "infernal",
-	"art": "res://resources/gfx/gear/main_hand/infernal/InfernalGreatsword",
-	"icon": "res://resources/gfx/ui/icons/items/infernal_greatsword.png"
-}

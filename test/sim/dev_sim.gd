@@ -20,7 +20,7 @@ const CELLS_FILE := "res://test/sim/dev_cells.json"
 const DEFAULT_CELLS := ["minion_minotaur", "bug1_spawn_fit", "bug1_no_room_for_boss", "bug1_hole_band",
 	"bug2_two_wide_gap", "bug2_one_wide_gap", "bug6_boss_blocks_gap", "bug3_smash_plain", "bug3_smash_door", "bug3_smash_pillar",
 	"bug4_corridor_archer", "bug4_open_archer", "bug5_boss_crowd", "terrain_lava", "terrain_water", "terrain_acid",
-	"hearing_rock_behind_wall", "hearing_range", "pack_wolves_investigate", "pack_wolves_attack"]
+	"hearing_rock_behind_wall", "hearing_range", "pack_wolves_investigate", "pack_wolves_attack", "patrol_wanders", "patrol_herd"]
 const SAMPLE_SECONDS := 0.25
 ## A creature that moved less than this (tiles) over STALL_SECONDS while the player was farther
 ## than STALL_MIN_DISTANCE is reported as stalled.
@@ -124,6 +124,7 @@ func _process(_delta: float) -> bool:
 func _begin_run() -> void:
 	_player = get_nodes_in_group("protagonist")[0]
 	_player.set("debug_god", true)
+	load("res://scripts/entities/entities.antagonist/minions/ai/MinionController.gd").patrol_enabled = not _cell.get("moves", {}).is_empty()
 	var tile_size: int = _player.grid_mover.tile_size
 	var rect: Dictionary = _cell["rect"]
 	var top_left := _world_tile(rect)
@@ -134,7 +135,7 @@ func _begin_run() -> void:
 	for m: Node2D in get_nodes_in_group("antagonist"):
 		var tile := Vector2i(floori(m.global_position.x / tile_size), floori(m.global_position.y / tile_size))
 		if area.has_point(tile):
-			_watch.append({"node": m, "id": _label(m, tile), "start": tile, "zone": null, "zone_changes": 0, "state": 0, "attack_msec": -1, "closest": 9999.0, "closest_noise": 9999.0,
+			_watch.append({"node": m, "id": _label(m, tile), "start": tile, "zone": null, "zone_changes": 0, "state": 0, "attack_msec": -1, "closest": 9999.0, "closest_noise": 9999.0, "farthest": 0.0,
 				"last_pos": m.global_position, "last_moved_msec": Time.get_ticks_msec(), "stalled": false, "bad": "", "waded": 0, "wade_first": ""})
 	_expected = 0
 	for s in _spawn_ids:
@@ -155,7 +156,7 @@ func _begin_run() -> void:
 			if str(w["id"]) == _cell["poke"]:
 				w["node"].senses.note_hit()
 				break
-	elif not _natural:
+	elif not _natural and not _cell.get("alone", false):
 		for w in _watch:
 			w["node"].force_target(_player, _seconds)
 	_started_msec = Time.get_ticks_msec()
@@ -300,6 +301,19 @@ func _finish() -> void:
 		for w in _watch:
 			if str(w["id"]) == id and int(w["state"]) < 2:
 				problems.append("%s never went to Attack though its pack did" % w["id"])
+	var together: Array = _cell.get("together", [])
+	if not together.is_empty():
+		var spots: Array[Vector2] = []
+		for w in _watch:
+			if str(w["id"]) == together[0] and is_instance_valid(w["node"]):
+				spots.append(w["node"].global_position)
+		var widest := 0.0
+		for a in spots:
+			for b in spots:
+				widest = maxf(widest, a.distance_to(b) / _player.grid_mover.tile_size)
+		print("  herd %s: widest gap %.1f tiles" % [together[0], widest])
+		if widest > float(together[1]):
+			problems.append("the %s herd ended %.1f tiles across; it should stay within %d" % [together[0], widest, int(together[1])])
 	for deaf in _cell.get("no_hear", []):
 		for w in _watch:
 			if str(w["id"]) == deaf and int(w["state"]) > 0:

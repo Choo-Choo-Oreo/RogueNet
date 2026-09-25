@@ -1,23 +1,18 @@
 class_name MinionController
 extends CharacterBody2D
 
-## Generic AI-driven body -- wanders its spawn point for now. Real behavior
-## (aggro, attacking) comes later once the antagonist/boss shape is settled.
+## Generic AI-driven body: patrols near where it stands while nobody is close, investigates
+## what its senses report, attacks what it has locked on to (see MinionSenses, AGGRO_AI_TRACKER.md).
 
 @onready var grid_mover: GridMover = $GridMover
 @onready var animator: DirectionalAnimator = $DirectionalAnimator
 @onready var stats: EntityStats = $EntityStats
 @onready var senses: MinionSenses = $MinionSenses
 
-@export var wander_radius_tiles: int = 3
-@export var wander_interval := 1.4
-
 ## Lets a hand-placed instance (or, later, a spawner) configure itself without
 ## an external script call. Empty means "leave unconfigured."
 @export var default_minion_type: String = ""
 
-var _home_position: Vector2 = Vector2.ZERO
-var _wander_timer := 0.0
 var _target: Node2D = null
 var _last_state: MinionSenses.State = MinionSenses.State.PATROL
 var _size_px: float = 16.0
@@ -226,7 +221,6 @@ func _ready() -> void:
 	_light_map = get_tree().current_scene.find_child("LightMap", true, false)
 	if default_minion_type != "":
 		set_minion_type(default_minion_type)
-	_home_position = global_position
 	stats.died.connect(queue_free)
 	tree_exiting.connect(func(): bosses.erase(self))
 	# Which doors this minion may open depends on its "doors" field (see set_minion_type).
@@ -346,8 +340,7 @@ func _process_inner(delta: float) -> void:
 	# Chasing re-steps the instant the last move finishes -- as fast as this
 	# minion's own move_time allows, same as a player holding a direction key.
 	# Investigate closes in the same way but at half speed (see _try_move),
-	# and never attacks even if it ends up adjacent. Only idle wandering
-	# stays throttled by wander_interval.
+	# and never attacks even if it ends up adjacent.
 	if is_tracking:
 		var reached_range := _in_attack_range(goal)
 		if not reached_range:
@@ -370,11 +363,7 @@ func _process_inner(delta: float) -> void:
 		elif is_engaging:
 			_try_slide_step(_target)
 		return
-	_wander_timer += delta
-	if _wander_timer < wander_interval:
-		return
-	_wander_timer = 0.0
-	_try_wander_step()
+	_patrol_step(now)
 	if not grid_mover.is_moving and _is_boxed_in():
 		_stuck = true
 
@@ -1161,9 +1150,118 @@ const MOVE_DIRECTIONS: Array[Vector2] = [
 	Vector2(1, 1), Vector2(1, -1), Vector2(-1, 1), Vector2(-1, -1),
 ]
 
-func _try_wander_step() -> void:
-	var direction: Vector2 = MOVE_DIRECTIONS.pick_random()
-	var target := global_position + direction * grid_mover.tile_size
-	if target.distance_to(_home_position) > wander_radius_tiles * grid_mover.tile_size:
+## Patrol: a minion that nobody is near stands still (and costs nothing). Once a player is in its
+## room or a room next to it, it walks between random spots within PATROL_RADIUS_TILES of where it
+## started, never leaving its room, at half speed, resting a few seconds at each. An alert ends
+## with a fresh "home" wherever it stands (_patrol_reset).
+const PATROL_RADIUS_TILES := 8
+const PATROL_MIN_TRAVEL_TILES := 2
+const PATROL_REST_MSEC_MIN := 1500
+const PATROL_REST_MSEC_MAX := 4000
+const PATROL_GIVE_UP_MSEC := 8000
+const PATROL_GATE_MSEC := 500
+const PATROL_SLEEP_FRAMES := 15
+## Off only in the headless sim (test/sim/dev_sim.gd), for cells that are not about patrol: a creature
+## walking around by itself would drift into the player's light and change what they measure.
+static var patrol_enabled := true
+var _patrol_home := Vector2i.ZERO
+var _patrol_has_home := false
+var _patrol_goal := Vector2i.ZERO
+var _patrol_has_goal := false
+var _patrol_goal_since_msec := 0
+var _patrol_rest_until_msec := 0
+## Herd: packmates (same `pack` id, see _alert_pack) patrol together. The one with the lowest
+## instance id nearby leads and picks goals as usual; the others pick spots within
+## PACK_SPREAD_TILES of the leader's goal and re-pick when it changes.
+const PACK_SPREAD_TILES := 3
+var _patrol_following := Vector2i.ZERO
+var _patrol_gate_msec := 0
+var _patrol_active := true
+
+func _patrol_reset() -> void:
+	_patrol_has_home = false
+	_patrol_has_goal = false
+
+## True when a living player is in this minion's room or one next to it (always true when the
+## dungeon has no room graph). Re-checked every PATROL_GATE_MSEC, not every frame.
+func _patrol_gate(now: int, origin_cell: Vector2i) -> bool:
+	if now - _patrol_gate_msec < PATROL_GATE_MSEC:
+		return _patrol_active
+	_patrol_gate_msec = now
+	if RoomGraph.current == null:
+		_patrol_active = true
+		return true
+	var player_cells: Array[Vector2i] = []
+	for player in get_tree().get_nodes_in_group("protagonist"):
+		if not player.stats.is_ghost:
+			player_cells.append(_to_tile(player.global_position))
+	_patrol_active = RoomGraph.current.is_near_any(origin_cell, player_cells)
+	return _patrol_active
+
+func _patrol_step(now: int) -> void:
+	if not patrol_enabled:
 		return
-	grid_mover.move_one_tile(direction)
+	var origin_cell := _to_tile(global_position)
+	if not _patrol_gate(now, origin_cell):
+		_patrol_has_goal = false
+		_idle_until_frame = Engine.get_process_frames() + PATROL_SLEEP_FRAMES + get_instance_id() % 4
+		return
+	if not _patrol_has_home:
+		_patrol_home = origin_cell
+		_patrol_has_home = true
+	if now < _patrol_rest_until_msec:
+		return
+	var leader := _pack_leader()
+	if leader != null and _patrol_has_goal and leader._patrol_has_goal and leader._patrol_goal != _patrol_following:
+		_patrol_has_goal = false
+	if _patrol_has_goal and (origin_cell == _patrol_goal or now - _patrol_goal_since_msec > PATROL_GIVE_UP_MSEC):
+		_patrol_has_goal = false
+		_patrol_rest_until_msec = now + randi_range(PATROL_REST_MSEC_MIN, PATROL_REST_MSEC_MAX)
+		return
+	if not _patrol_has_goal:
+		if not _pick_patrol_goal(origin_cell, leader):
+			_patrol_rest_until_msec = now + randi_range(PATROL_REST_MSEC_MIN, PATROL_REST_MSEC_MAX)
+			return
+		_patrol_goal_since_msec = now
+	_try_direct_step(origin_cell, _patrol_goal, false)
+
+## A random open spot in the patrol square (inside this room), a few tiles from here.
+func _pick_patrol_goal(origin_cell: Vector2i, leader: MinionController = null) -> bool:
+	var centre := _patrol_home
+	var radius := PATROL_RADIUS_TILES
+	if leader != null:
+		centre = leader._patrol_goal if leader._patrol_has_goal else _to_tile(leader.global_position)
+		radius = PACK_SPREAD_TILES
+		_patrol_following = centre
+	var area := Rect2i(centre - Vector2i.ONE * radius, Vector2i.ONE * (radius * 2 + 1))
+	if RoomGraph.current != null:
+		var room := RoomGraph.current.room_rect(centre)
+		if room.has_area():
+			area = area.intersection(room)
+	if not area.has_area():
+		return false
+	for attempt in 8:
+		var goal := area.position + Vector2i(randi() % area.size.x, randi() % area.size.y)
+		if (leader == null and _cheb(goal - origin_cell) < PATROL_MIN_TRAVEL_TILES) or grid_mover.is_tile_blocked(goal):
+			continue
+		if grid_mover.tile_cost(goal) > HAZARD_COST:
+			continue
+		_patrol_goal = goal
+		_patrol_has_goal = true
+		return true
+	return false
+
+## The packmate that leads this one's patrol: the lowest instance id among the unalerted packmates
+## within PACK_RADIUS_TILES, or null when this minion leads (or has no pack).
+func _pack_leader() -> MinionController:
+	if pack_id == "":
+		return null
+	var best: MinionController = null
+	var best_id := get_instance_id()
+	for other: Node in get_tree().get_nodes_in_group("antagonist"):
+		if other == self or not "pack_id" in other or other.pack_id != pack_id or other.senses.state != MinionSenses.State.PATROL:
+			continue
+		if other.get_instance_id() < best_id and _cheb(_to_tile(other.global_position) - _to_tile(global_position)) <= PACK_RADIUS_TILES:
+			best = other
+			best_id = other.get_instance_id()
+	return best
