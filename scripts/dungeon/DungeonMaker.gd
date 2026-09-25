@@ -1294,7 +1294,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func _update_hover() -> void:
 	hover_world_pos = get_global_mouse_position() - WORLD_OFFSET
 	hover_cell = _mouse_to_cell()
-	mouse_over_room = hover_cell.x >= 0 and hover_cell.x < width and hover_cell.y >= 0 and hover_cell.y < height
+	mouse_over_room = _cell_in_bounds(hover_cell)
 	queue_redraw()
 
 func _handle_shortcut(event: InputEventKey) -> bool:
@@ -1720,7 +1720,7 @@ func _copy_region(from_cell: Vector2i, to_cell: Vector2i) -> void:
 		var floor_row := []
 		var wall_row := []
 		for x in range(min_x, max_x + 1):
-			if x >= 0 and x < width and y >= 0 and y < height:
+			if _cell_in_bounds(Vector2i(x, y)):
 				floor_row.append(floor_names[y][x])
 				wall_row.append(walls_names[y][x])
 			else:
@@ -1738,7 +1738,7 @@ func _paste_clipboard() -> void:
 	for dy in range(clipboard_size.y):
 		for dx in range(clipboard_size.x):
 			var cell := hover_cell + Vector2i(dx, dy)
-			if cell.x < 0 or cell.x >= width or cell.y < 0 or cell.y >= height:
+			if not _cell_in_bounds(cell):
 				continue
 			var new_floor = clipboard_floor[dy][dx]
 			var new_wall = clipboard_walls[dy][dx]
@@ -1751,21 +1751,12 @@ func _paste_clipboard() -> void:
 			changes.append({"cell": cell, "old_floor": old_floor, "old_wall": old_wall, "new_floor": new_floor, "new_wall": new_wall})
 	if changes.is_empty():
 		return
-	_push_undo(
-		func():
-			for c in changes:
-				_apply_tile("floor", c["cell"], c["old_floor"])
-				_apply_tile("wall", c["cell"], c["old_wall"]),
-		func():
-			for c in changes:
-				_apply_tile("floor", c["cell"], c["new_floor"])
-				_apply_tile("wall", c["cell"], c["new_wall"])
-	)
+	_push_tile_undo(changes)
 	queue_redraw()
 
 func _eyedrop_at_mouse() -> void:
 	var cell := _mouse_to_cell()
-	if cell.x < 0 or cell.x >= width or cell.y < 0 or cell.y >= height:
+	if not _cell_in_bounds(cell):
 		return
 	var wall_name = walls_names[cell.y][cell.x]
 	var floor_name = floor_names[cell.y][cell.x]
@@ -1791,7 +1782,7 @@ func _select_palette_tile(layer: String, tile_name: String) -> void:
 
 func _paint_at_mouse() -> void:
 	var cell := _mouse_to_cell()
-	if cell.x < 0 or cell.x >= width or cell.y < 0 or cell.y >= height:
+	if not _cell_in_bounds(cell):
 		return
 	_apply_cells_with_undo(_brush_cells(cell))
 
@@ -1842,12 +1833,26 @@ func _fill_rect(from_cell: Vector2i, to_cell: Vector2i) -> void:
 			cells.append(Vector2i(x, y))
 	_apply_cells_with_undo(cells)
 
+## One undo step for tile changes already applied: each {"cell", "old_floor", "old_wall",
+## "new_floor", "new_wall"}.
+func _push_tile_undo(changes: Array) -> void:
+	_push_undo(
+		func():
+			for c in changes:
+				_apply_tile("floor", c["cell"], c["old_floor"])
+				_apply_tile("wall", c["cell"], c["old_wall"]),
+		func():
+			for c in changes:
+				_apply_tile("floor", c["cell"], c["new_floor"])
+				_apply_tile("wall", c["cell"], c["new_wall"])
+	)
+
 func _apply_cells_with_undo(cells: Array) -> void:
 	if not eraser_active and (selected_tile_name == "" or selected_layer == ""):
 		return
 	var changes := []
 	for cell in cells:
-		if cell.x < 0 or cell.x >= width or cell.y < 0 or cell.y >= height:
+		if not _cell_in_bounds(cell):
 			continue
 		var old_floor = floor_names[cell.y][cell.x]
 		var old_wall = walls_names[cell.y][cell.x]
@@ -1867,16 +1872,7 @@ func _apply_cells_with_undo(cells: Array) -> void:
 		changes.append({"cell": cell, "old_floor": old_floor, "old_wall": old_wall, "new_floor": new_floor, "new_wall": new_wall})
 	if changes.is_empty():
 		return
-	_push_undo(
-		func():
-			for c in changes:
-				_apply_tile("floor", c["cell"], c["old_floor"])
-				_apply_tile("wall", c["cell"], c["old_wall"]),
-		func():
-			for c in changes:
-				_apply_tile("floor", c["cell"], c["new_floor"])
-				_apply_tile("wall", c["cell"], c["new_wall"])
-	)
+	_push_tile_undo(changes)
 
 func _set_object_mode_active(active: bool) -> void:
 	object_mode_active = active
@@ -2377,7 +2373,7 @@ func _replace_connector(index: int, connector: Dictionary) -> void:
 	queue_redraw()
 
 func _is_boundary_cell(cell: Vector2i) -> bool:
-	if cell.x < 0 or cell.x >= width or cell.y < 0 or cell.y >= height:
+	if not _cell_in_bounds(cell):
 		return false
 	return cell.x == 0 or cell.x == width - 1 or cell.y == 0 or cell.y == height - 1
 

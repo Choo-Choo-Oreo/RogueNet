@@ -41,7 +41,7 @@ func _check(body: Node2D) -> void:
 	var mover = body.get("grid_mover")
 	if mover == null or body.is_queued_for_deletion():
 		return
-	if DebugState.no_clip and body.is_in_group("protagonist") and body.is_multiplayer_authority():
+	if mover.no_clip():
 		return
 	var tile_size: int = mover.tile_size
 	var top_left := Vector2i(floori(body.global_position.x / tile_size), floori(body.global_position.y / tile_size))

@@ -112,10 +112,10 @@ func _can_open(door: DoorRegistry.Door) -> bool:
 var phases_doors := false
 
 func _ignores_doors() -> bool:
-	return phases_doors or _is_ghost() or _no_clip()
+	return phases_doors or _is_ghost() or no_clip()
 
 ## Debug: this machine's own player ignores walls, void and doors.
-func _no_clip() -> bool:
+func no_clip() -> bool:
 	return DebugState.no_clip and _body.is_in_group("protagonist") and _body.is_multiplayer_authority()
 
 var _tween: Tween
@@ -187,7 +187,11 @@ func swap_step(direction: Vector2, partner: GridMover) -> bool:
 	return swapped
 
 func _is_ghost() -> bool:
-	return "stats" in _body and _body.stats != null and _body.stats.is_ghost
+	return is_ghost_body(_body)
+
+## A ghost walks through walls and bodies, and nothing is blocked by it.
+static func is_ghost_body(body: Node) -> bool:
+	return "stats" in body and body.stats != null and body.stats.is_ghost
 
 ## Tile-coordinate version of the same wall/void/door check, for grid
 ## algorithms (Pathfinding, FlowField) and step checks that work in cell units
@@ -256,7 +260,7 @@ static func occupants(tree: SceneTree, tile: Vector2i, size_px: int) -> Array:
 		_occupancy_index.clear()
 		for group in ["protagonist", "antagonist"]:
 			for body: Node2D in tree.get_nodes_in_group(group):
-				if "stats" in body and body.stats != null and body.stats.is_ghost:
+				if is_ghost_body(body):
 					continue
 				var body_tile := Vector2i(floori(body.global_position.x / size_px), floori(body.global_position.y / size_px))
 				var body_size: int = body.get_meta("footprint", 1)
@@ -306,7 +310,7 @@ func _tile_occupied_single(tile: Vector2i) -> bool:
 static var _reserved: Dictionary = {}  # Vector2i -> Node2D
 
 func _is_blocked(target_global: Vector2) -> bool:
-	if wall_data == null or _no_clip():
+	if wall_data == null or no_clip():
 		return false
 	return TileSolid.is_solid(wall_data, floor_data, wall_data.local_to_map(wall_data.to_local(target_global)))
 

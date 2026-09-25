@@ -1,0 +1,4 @@
+{
+	"note": "EXAMPLE, nothing reads this yet. Texture pixels per world unit for every PNG under resources/gfx: 1 = base art (16px per tile), 2 = a 32px texture pack. A texture pack ships its own copy with its own value. Only 1 and 2 are pixel perfect on every common screen. View size and UI layout are NOT set here: they are gameplay/UI, and a pack must never change them. Reasoning: docs/PIXEL_RESOLUTION_RESEARCH.md",
+	"texel_scale": 1
+}

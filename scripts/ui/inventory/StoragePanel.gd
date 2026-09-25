@@ -11,13 +11,7 @@ var _slots: Array[ItemSlot] = []
 var _count: Label
 
 func _ready() -> void:
-	var style := StyleBoxFlat.new()
-	style.bg_color = InventoryPanel.COLOR_PANEL
-	style.border_color = InventoryPanel.COLOR_PANEL_BORDER
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(4)
-	style.set_content_margin_all(14)
-	add_theme_stylebox_override("panel", style)
+	add_theme_stylebox_override("panel", InventoryPanel.frame_style())
 	_build()
 	InventoryPanel.block_clicks(self)
 	PlayerInventory.changed.connect(refresh)

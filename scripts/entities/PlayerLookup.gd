@@ -10,3 +10,7 @@ static func find_local(tree: SceneTree) -> Node2D:
 		if player.is_multiplayer_authority():
 			return player
 	return null
+
+## Every player that is not a ghost (the ones minions can target or be blocked by).
+static func living(tree: SceneTree) -> Array:
+	return tree.get_nodes_in_group("protagonist").filter(func(player): return not player.stats.is_ghost)

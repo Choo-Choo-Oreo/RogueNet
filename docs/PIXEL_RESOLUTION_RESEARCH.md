@@ -115,6 +115,13 @@ How it would be built in Godot:
   transform and would change. `DebugMenu` barely changes, except the
   teleport-to-mouse tool (~lines 314–333) needs screen → game image → world.
 
+Snapping rule (Orea, 2026-09-25): **UI things snap to the UI grid (640×360), game
+things snap to the game grid (320×180).** A draggable panel is UI, so it snaps to
+whole UI units and may sit half a game pixel off the map; that is accepted.
+Anything attached to the world (labels or bars over creatures, damage numbers)
+is game, so it follows the game grid. Save panel positions in UI units and
+clamp them on load (layout size changes with `aspect=expand`).
+
 Known consequences:
 - **Movement steps in whole art pixels** inside a 320×180 viewport (4 screen px per
   step at 720p), steppier than today. Standard fix: render the viewport 1 px larger

@@ -20,10 +20,6 @@ extends RefCounted
 
 ## Walls whose tile name starts with this are never destroyed (barrier_bedrock ...).
 const PROTECTED_PREFIX := "barrier_"
-const NEIGHBOURS_8: Array[Vector2i] = [
-	Vector2i(-1, -1), Vector2i(0, -1), Vector2i(1, -1), Vector2i(-1, 0),
-	Vector2i(1, 0), Vector2i(-1, 1), Vector2i(0, 1), Vector2i(1, 1),
-]
 
 static var _registry: TileTypeRegistry
 static var _names := {}       # tile id -> tile name
@@ -78,7 +74,7 @@ static func plan(cells: Array[Vector2i], scene: Node) -> Array:
 	# Void the holes expose gets covered by a copy of a surrounding wall.
 	var covered := {}
 	for cell in broken:
-		for offset in NEIGHBOURS_8:
+		for offset in FlowField.NEIGHBOR_STEPS:
 			var next: Vector2i = cell + offset
 			if broken.has(next) or covered.has(next) or wall_data.get_cell_source_id(next) != -1:
 				continue
@@ -93,7 +89,7 @@ static func plan(cells: Array[Vector2i], scene: Node) -> Array:
 ## A random ordinary floor tile next to `cell` that is open (no wall on it).
 static func _neighbour_floor(cell: Vector2i, wall_data: TileMapLayer, floor_data: TileMapLayer) -> String:
 	var options: Array[String] = []
-	for offset in NEIGHBOURS_8:
+	for offset in FlowField.NEIGHBOR_STEPS:
 		var next: Vector2i = cell + offset
 		if TileSolid.is_solid(wall_data, floor_data, next):
 			continue
@@ -108,7 +104,7 @@ static func _neighbour_floor(cell: Vector2i, wall_data: TileMapLayer, floor_data
 static func _cover_wall(cell: Vector2i, broken: Dictionary, wall_data: TileMapLayer) -> String:
 	var breakable: Array[String] = []
 	var protected_walls: Array[String] = []
-	for offset in NEIGHBOURS_8:
+	for offset in FlowField.NEIGHBOR_STEPS:
 		var next: Vector2i = cell + offset
 		if broken.has(next):
 			continue

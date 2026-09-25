@@ -186,6 +186,9 @@ Two decisions gate most of these (see "Decisions needed" below): what `power` me
 - [✓] DungeonMaker field for a connector's `door`: the Maker only round-trips the value, there is no control for it. `door` is now set on real rooms by hand or script: dungeon 32 of 43 rooms, mine 66 of 66, flesh 84 of 84 (1-wide `iron`, 3-wide `any`, all `free`), forest 78 of 78 and cave 76 of 76 (all `none`, all `free`), sewer 111 of 111 (`iron` on side rooms, treasure and cisterns, `any` elsewhere, all `free`), catacomb 80 of 80 (`iron` on tombs, treasure and boss, `any` elsewhere, all `free`), volcano 64 of 64 (all `none`, all `free`), manor 63 of 63 (`wood` on 1-wide rooms, `wood_fold` on 3-wide rooms, `iron` on strongroom and boss, `any` on hallways and passages, all `free`), ruins 86 of 86 (all `none`, all `free`), acid 67 of 67 (all `none`, all `free`), void 69 of 69 (all `none`, all `free`), cathedral 19 of 44 (copied from the dungeon: open doorways stay `none`, `any` stays `any`), none in fallback -- built 2026-09-24 (written, not run in Godot): the Maker now has a door dropdown and a free checkbox for the selected connector, plus a two-click run tool
 - [✓] `wood_fold` (3-5 wide) and `dungeon` (4-5 wide, placeholder boss door) door types, 2026-09-24; `DoorManager` reads `frame_size` and `own_cell_row` per art JSON so the 16x48 dungeon door works. Cathedral's `default_door` is TEMPORARILY `wood_fold` for testing (was `iron`); revert when done
 
+### Pixel perfect (2026-09-25: research only, nothing decided or built)
+The list lives in `resources/gfx/TODO.md`; reasoning in `docs/PIXEL_RESOLUTION_RESEARCH.md`.
+
 ## Gameplay
 - [✓] Flesh terrain tier (`terrain = 1` in `floor_flesh.tres`, code committed)
 - [✓] `DIFFICULT` and `SEVERE` tried on real floors (Orea confirmed 2026-09-24; speeds: rough 0.8 on flesh, difficult 0.5 on water and acid, severe 0.2 on lava)
@@ -315,23 +318,23 @@ Duplication:
 - [✗] Menus: `_close_settings_panel` identical in `MainMenu` 68 and `PauseMenu` 64; "leave the session" (peer = null, reset, MainMenu) in `PauseMenu` 59-62, `MainTown` 92-95, `NetworkSync` 61-63; `_on_back_pressed` identical in `LobbyMenu` 149 and `SettingsMenu` 21
 - [✗] Minor: `FullscreenControl`/`VSyncControl` are copies differing in one call; `DebugMenu._button` and `CharacterSelect._button` near-identical
 
-## Dead code and duplication audit, round 2 (2026-09-25: one agent, symbol index + structural diff, nothing removed)
+## Dead code and duplication audit, round 2 (2026-09-25: one agent, symbol index + structural diff)
 
 Only what round 1 above did not list. Line numbers as of the audit.
 
 Dead code and data:
-- [✗] `InventoryPanel.close_requested`, `closable` and the close-button branch (`InventoryPanel.gd:11,53,106-110`): both scenes set `closable = false`; its only listener was the deleted old `InventoryHud.gd`
-- [✗] `EntityStats.load_from_file` (`EntityStats.gd:43`): never called, both controllers use `load_from_data`
-- [✗] `NetworkSync.session_mode` / `SessionMode`: stored, but only read in `MainTown._apply_session_mode`, where host and client act the same; derivable from `NetworkSync.is_online()`
-- [✗] Room JSON `"biome"` (934 rooms): never read, the folder decides (`DungeonMaker.gd:2843` says so); remove it and the Maker code that keeps it in sync (`DungeonMaker.gd:937-939, 2864, 2978-2980, 3005`)
+- [✓] `InventoryPanel.close_requested`, `closable` and the close-button branch (`InventoryPanel.gd:11,53,106-110`): both scenes set `closable = false`; its only listener was the deleted old `InventoryHud.gd` — removed
+- [✓] `EntityStats.load_from_file` (`EntityStats.gd:43`): never called, both controllers use `load_from_data` — removed
+- [✓] `NetworkSync.session_mode` / `SessionMode`: stored, but only read in `MainTown._apply_session_mode`, where host and client act the same; derivable from `NetworkSync.is_online()` — removed, MainTown uses `is_online()`
+- [✓] Room JSON `"biome"` (934 rooms): never read, the folder decides (`DungeonMaker.gd:2843` says so); remove it and the Maker code that keeps it in sync (`DungeonMaker.gd:937-939, 2864, 2978-2980, 3005`) — removed from 931 rooms, the docs and the Maker (the Maker still reads the folder)
 - [✗] Room `"objects"` (94 rooms): only DungeonMaker reads it; editor data until decoration is built
 
 Duplications (single home in brackets):
-- [✗] "Host calls `_x(1, ...)`, client calls `report_x.rpc_id(1, ...)`" written 9x outside NetworkSync (`MainTown`, `GuildTown`, `GuildMission`, `NetworkPositionRelay`) and ~10x inside, plus 20 `report_*` with the same server guard [`@rpc("any_peer","call_local")` + one `_sender()` helper; medium risk]
-- [✗] "Host or offline" `multiplayer_peer == null or is_server()` in 9 NetworkSync spots, `DoorManager.gd:204`, `MinionSpawning.gd:33,64` [`NetworkSync.is_host()` beside `is_online()`]
-- [✗] Removing a player from a mission copied between the disconnect handler (`NetworkSync.gd:36-46`) and `_leave_mission` (869-880); "Countdown cancelled" string 3x [disconnect calls `_leave_mission`]
+- [✓] "Host calls `_x(1, ...)`, client calls `report_x.rpc_id(1, ...)`" written 9x outside NetworkSync (`MainTown`, `GuildTown`, `GuildMission`, `NetworkPositionRelay`) and ~10x inside, plus 20 `report_*` with the same server guard [`@rpc("any_peer","call_local")` + one `_sender()` helper; medium risk] — done: `NetworkSync.ask_host(report_x, [args])` + `_sender()`; `NetworkPositionRelay` kept (host relays without echoing), VoiceChat's copy left (senses)
+- [✓] "Host or offline" `multiplayer_peer == null or is_server()` in 9 NetworkSync spots, `DoorManager.gd:204`, `MinionSpawning.gd:33,64` [`NetworkSync.is_host()` beside `is_online()`] — done: `NetworkSync.is_host()`
+- [✓] Removing a player from a mission copied between the disconnect handler (`NetworkSync.gd:36-46`) and `_leave_mission` (869-880); "Countdown cancelled" string 3x [disconnect calls `_leave_mission`] — done: disconnect calls `_leave_mission`, one `PARTY_CHANGED`
 - [✗] Body lookup by path (`"Player/"+id`, `"Minions/"+id`) 8x in NetworkSync; identical Player loops at 228 and 271; `_resolve_minion_hit` repeats `receive_minion_damage`; line 747 repeats `PlayerLookup.find_local` [`_player(id)`, `_minion(id)`]
-- [✗] TileSolid still bypassed: `DungeonPainter._warn_bad_spawn_cells` (66-77, also misses "no floor"), `TileDestruction.gd:71,89,103` [`TileSolid`]
+- [✓] TileSolid still bypassed: `DungeonPainter._warn_bad_spawn_cells` (66-77, also misses "no floor"), `TileDestruction.gd:71,89,103` [`TileSolid`] — done: `TileSolid.reason` / new `TileSolid.has_floor`
 - [✗] 8-neighbour lists: `FlowField.NEIGHBOR_STEPS` = `MinionController.MOVE_DIRECTIONS`; `TileDestruction.NEIGHBOURS_8` and `LightFlood.DIRS` same set, other order [one constant in `scripts/cells/`; order changes tie-breaks]. Keep `PlayerController.ADJACENT_OFFSETS` (angle order for aiming)
 - [✗] Chebyshev distance inline at `MinionController.gd:942,971`, `FlowField.gd:172,204`, `test/sim/investigate_far_room.gd:152` beside `MinionController._cheb` [one helper]
 - [✗] Living-player filter (`not stats.is_ghost`) at `MinionController.gd:1154,1175,1231`, `SurroundSectors.gd:35`, `DebugMenu.gd:554`; `GridMover._is_ghost` rule repeated at 259 [`PlayerLookup.living(tree)`; `cells/` must not call entities]

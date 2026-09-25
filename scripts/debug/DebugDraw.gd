@@ -234,9 +234,9 @@ func _draw_collisions() -> void:
 ## in a few ticks) or driven by the host.
 func _draw_activity() -> void:
 	for minion in get_tree().get_nodes_in_group("antagonist"):
-		if not "_idle_until_tick" in minion:
+		if not minion.has_method("is_thinking"):
 			continue
-		var thinking: bool = minion.is_multiplayer_authority() and not minion._stuck and minion._idle_until_tick <= GameTick.tick
+		var thinking: bool = minion.is_thinking()
 		var centre: Vector2 = minion.global_position + Vector2(TILE, TILE) / 2.0
 		draw_circle(centre, 2.5, Color(0.3, 1.0, 0.4) if thinking else Color(0.6, 0.6, 0.6))
 

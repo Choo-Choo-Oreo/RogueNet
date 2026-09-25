@@ -295,7 +295,7 @@ func _think(delta: float) -> void:
 	delta += _skipped_delta
 	_skipped_delta = 0.0
 	if _lock != null and _override == null and now >= _taunt_until_msec \
-			and _cheb(_to_tile(_lock.global_position) - _to_tile(global_position)) > LEASH_TILES:
+			and FlowField.cheb(_to_tile(_lock.global_position) - _to_tile(global_position)) > LEASH_TILES:
 		_drop_lock(now)
 	if _override != null:
 		_target = _override
@@ -533,7 +533,7 @@ var _prev_cell := Vector2i.ZERO
 
 func _try_surround_step(target: Node2D, origin_cell: Vector2i, target_cell: Vector2i, full_speed: bool) -> bool:
 	# The fan-out is built for 1x1 bodies; a big one just walks straight at its target.
-	if size_tiles > 1 or _attack_range != 1 or _cheb(target_cell - origin_cell) > SURROUND_RADIUS:
+	if size_tiles > 1 or _attack_range != 1 or FlowField.cheb(target_cell - origin_cell) > SURROUND_RADIUS:
 		return false
 	var target_id := target.get_instance_id()
 	var distances := FlowField.get_distances(_flow_key(target_id), target_cell, grid_mover.is_tile_blocked)
@@ -666,7 +666,7 @@ func _try_swap_with_ranged(tile: Vector2i) -> bool:
 			continue
 		if other._attack_range <= 1 or other.grid_mover.is_moving or not is_instance_valid(other._target):
 			continue
-		if not other._in_attack_range(other._target) or _cheb(_to_tile(other.global_position) - here) != 1:
+		if not other._in_attack_range(other._target) or FlowField.cheb(_to_tile(other.global_position) - here) != 1:
 			continue
 		if not grid_mover.swap_step(Vector2(_to_tile(other.global_position) - here), other.grid_mover):
 			continue
@@ -749,7 +749,7 @@ func _make_way_for_allies(target: Node2D) -> bool:
 		if not is_instance_valid(other) or not (other is MinionController) or other == self or other.is_boss or other.size_tiles > 1:
 			continue
 		var ally_tile: Vector2i = _to_tile(other.global_position)
-		if _cheb(ally_tile - here) > MAKE_WAY_TILES:
+		if FlowField.cheb(ally_tile - here) > MAKE_WAY_TILES:
 			continue
 		var step := FlowField.get_step([target.get_instance_id(), 1], target_cell, ally_tile, other.grid_mover.is_tile_blocked, other._terrain_cost())
 		if step != Vector2i.ZERO and body.has_point(ally_tile + step):
@@ -787,19 +787,19 @@ func _try_slide_step(target: Node2D) -> void:
 		return
 	var origin_cell := _to_tile(global_position)
 	var target_cell := _to_tile(target.global_position)
-	if _cheb(origin_cell - target_cell) != 1:
+	if FlowField.cheb(origin_cell - target_cell) != 1:
 		return
 	var someone_behind := false
 	for direction in MOVE_DIRECTIONS:
 		var behind := origin_cell + Vector2i(direction)
-		if _cheb(behind - target_cell) == 2 and grid_mover.is_tile_occupied(behind):
+		if FlowField.cheb(behind - target_cell) == 2 and grid_mover.is_tile_occupied(behind):
 			someone_behind = true
 			break
 	if not someone_behind:
 		return
 	for direction in MOVE_DIRECTIONS:
 		var side := origin_cell + Vector2i(direction)
-		if _cheb(side - target_cell) != 1:
+		if FlowField.cheb(side - target_cell) != 1:
 			continue
 		if not _step_open(origin_cell, Vector2i(direction)) or grid_mover.is_tile_occupied(side):
 			continue
@@ -811,8 +811,10 @@ func _try_slide_step(target: Node2D) -> void:
 			_slide_ready_msec = GameTick.msec() + SLIDE_COOLDOWN_MSEC + (get_instance_id() % 5) * 250
 		return
 
-func _cheb(offset: Vector2i) -> int:
-	return maxi(absi(offset.x), absi(offset.y))
+## Debug (DebugDraw, DebugMenu): whether this minion runs a full AI tick now, not boxed in,
+## waiting, or a client's copy driven by the host.
+func is_thinking() -> bool:
+	return is_multiplayer_authority() and not _stuck and _idle_until_tick <= GameTick.tick
 
 ## Wall-wise, can this minion step from `origin_cell` to the neighbour `step`
 ## away? A straight step only needs that tile open; a diagonal also must not
@@ -939,7 +941,7 @@ func _next_cached_step(origin_cell: Vector2i, target_cell: Vector2i) -> Vector2i
 	if _cached_path.is_empty():
 		return Vector2i.ZERO
 	var drift := _cached_path_target - target_cell
-	if maxi(absi(drift.x), absi(drift.y)) > CACHED_PATH_TARGET_TOLERANCE:
+	if FlowField.cheb(drift) > CACHED_PATH_TARGET_TOLERANCE:
 		_cached_path.clear()
 		return Vector2i.ZERO
 	if origin_cell == _cached_path[_cached_path_index]:
@@ -952,7 +954,7 @@ func _next_cached_step(origin_cell: Vector2i, target_cell: Vector2i) -> Vector2i
 		_cached_path.clear()  # a door closed or similar -- force a fresh solve
 		return Vector2i.ZERO
 	var step := next_cell - origin_cell
-	if _cheb(step) != 1:
+	if FlowField.cheb(step) != 1:
 		# _try_pursue_step can hop this minion over to _try_direct_step on a
 		# frame where line of sight happens to open up, moving it somewhere
 		# the cached route never accounted for -- a stale route handed
@@ -968,7 +970,7 @@ func _solve_and_cache_path(origin_cell: Vector2i, target_cell: Vector2i) -> Vect
 		return Vector2i.ZERO
 	if not _consume_pathfind_budget():
 		return Vector2i.ZERO
-	var distance := maxi(absi(target_cell.x - origin_cell.x), absi(target_cell.y - origin_cell.y))
+	var distance := FlowField.cheb(target_cell - origin_cell)
 	var radius := mini(distance + PATHFIND_RADIUS_MARGIN, PATHFIND_RADIUS_MAX)
 	var path := Pathfinding.full_path(origin_cell, target_cell, grid_mover.is_tile_blocked, radius, _terrain_cost())
 	if path.is_empty():
@@ -1092,7 +1094,7 @@ func _is_packmate(other: Node) -> bool:
 		return false
 	var here := _to_tile(global_position)
 	var there := _to_tile(other.global_position)
-	if _cheb(there - here) > PACK_RADIUS_TILES:
+	if FlowField.cheb(there - here) > PACK_RADIUS_TILES:
 		return false
 	return _same_room(here, there)
 
@@ -1148,15 +1150,15 @@ func _note_blocked_by_player(now: int) -> void:
 		return
 	var origin := _to_tile(global_position)
 	var lock_tile := _to_tile(_lock.global_position)
-	var origin_dist := _cheb(origin - lock_tile)
+	var origin_dist := FlowField.cheb(origin - lock_tile)
 	var found = null
-	for player in get_tree().get_nodes_in_group("protagonist"):
-		if player == _lock or player.stats.is_ghost:
+	for player in PlayerLookup.living(get_tree()):
+		if player == _lock:
 			continue
 		var tile := _to_tile(player.global_position)
-		if _cheb(tile - origin) != 1:
+		if FlowField.cheb(tile - origin) != 1:
 			continue
-		if _cheb(tile - lock_tile) >= origin_dist:
+		if FlowField.cheb(tile - lock_tile) >= origin_dist:
 			continue
 		found = player
 		break
@@ -1171,9 +1173,7 @@ func _nearest_player() -> Node2D:
 	var nearest: Node2D = null
 	var nearest_dist := INF
 	var avoiding := GameTick.msec() < _avoid_until_msec
-	for player in get_tree().get_nodes_in_group("protagonist"):
-		if player.stats.is_ghost:
-			continue
+	for player in PlayerLookup.living(get_tree()):
 		if avoiding and player.get_instance_id() == _avoid_id:
 			continue
 		var dist: float = global_position.distance_to(player.global_position)
@@ -1182,12 +1182,9 @@ func _nearest_player() -> Node2D:
 			nearest_dist = dist
 	return nearest
 
-## The 8 neighbouring tiles, straight ones first. Diagonal steps obey
-## GridMover.can_step_diagonally (no cutting wall corners or doorways).
-const MOVE_DIRECTIONS: Array[Vector2] = [
-	Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT,
-	Vector2(1, 1), Vector2(1, -1), Vector2(-1, 1), Vector2(-1, -1),
-]
+## The 8 neighbouring tiles, straight ones first (the same list the flow field steps by).
+## Diagonal steps obey GridMover.can_step_diagonally (no cutting wall corners or doorways).
+const MOVE_DIRECTIONS := FlowField.NEIGHBOR_STEPS
 
 ## Patrol: a minion that nobody is near stands still (and costs nothing). Once a player is in its
 ## room or a room next to it, it walks between random spots within PATROL_RADIUS_TILES of where it
@@ -1227,9 +1224,8 @@ func _patrol_gate(now: int, origin_cell: Vector2i) -> bool:
 		_patrol_active = true
 		return true
 	var player_cells: Array[Vector2i] = []
-	for player in get_tree().get_nodes_in_group("protagonist"):
-		if not player.stats.is_ghost:
-			player_cells.append(_to_tile(player.global_position))
+	for player in PlayerLookup.living(get_tree()):
+		player_cells.append(_to_tile(player.global_position))
 	_patrol_active = RoomGraph.current.is_near_any(origin_cell, player_cells)
 	return _patrol_active
 
@@ -1287,7 +1283,7 @@ func _pick_patrol_goal(origin_cell: Vector2i, leader: MinionController = null) -
 		return false
 	for attempt in 8:
 		var goal := area.position + Vector2i(randi() % area.size.x, randi() % area.size.y)
-		if (leader == null and _cheb(goal - origin_cell) < PATROL_MIN_TRAVEL_TILES) or grid_mover.is_tile_blocked(goal):
+		if (leader == null and FlowField.cheb(goal - origin_cell) < PATROL_MIN_TRAVEL_TILES) or grid_mover.is_tile_blocked(goal):
 			continue
 		if grid_mover.tile_cost(goal) > HAZARD_COST:
 			continue

@@ -485,21 +485,34 @@ static func _try_place(rooms: Dictionary, candidate_ids: Array, entry: Dictionar
 				if _overlaps_any(rect, occupied):
 					continue
 				var joint := _joint_cells(from_run, c, shift, axis)
-				var placement := Placement.new()
-				placement.room_id = cand_id
-				placement.offset = offset
-				placement.depth = from_placement.depth + 1
-				placement.suppressed_connectors.append(local_pos)
-				placement.parent_index = entry["placement_index"]
-				placement.joint_cells[local_pos] = joint["cand"]
-				from_placement.joint_cells[entry["local_pos"]] = joint["from"]
-				placement.door_cell = from_placement.offset + _middle_cell(joint["from"]) + step
-				placement.joint_world = _world_joint(from_placement.offset, joint["from"], step)
-				placements.append(placement)
+				placements.append(_joined(cand_id, offset, local_pos, from_placement, entry["local_pos"], entry["placement_index"], joint, step))
 				occupied.append(rect)
 				_queue_connectors(cand, placements.size() - 1, open_connectors, local_pos)
 				return true
 	return false
+
+## A room placed against `from_placement`: its connector at `local_pos` meets the one at
+## `from_local`, `joint` is _joint_cells' result, `step` points from the old room into the new.
+static func _joined(room_id: String, offset: Vector2i, local_pos: Vector2i, from_placement: Placement, from_local: Vector2i, parent_index: int, joint: Dictionary, step: Vector2i) -> Placement:
+	var placement := Placement.new()
+	placement.room_id = room_id
+	placement.offset = offset
+	placement.depth = from_placement.depth + 1
+	placement.suppressed_connectors.append(local_pos)
+	placement.parent_index = parent_index
+	placement.joint_cells[local_pos] = joint["cand"]
+	from_placement.joint_cells[from_local] = joint["from"]
+	placement.door_cell = from_placement.offset + _middle_cell(joint["from"]) + step
+	placement.joint_world = _world_joint(from_placement.offset, joint["from"], step)
+	return placement
+
+## Connectors in reading order (top row first, then left to right), so a fit is deterministic.
+static func _connector_before(p: Dictionary, q: Dictionary) -> bool:
+	var pa := Connector.a(p)
+	var qa := Connector.a(q)
+	if pa.y != qa.y:
+		return pa.y < qa.y
+	return pa.x < qa.x
 
 static func _fit_room_at(rooms: Dictionary, room_id: String, from_placement: Placement, local_pos: Vector2i, placements: Array[Placement], occupied: Array[Rect2i], parent_index: int) -> bool:
 	var from_room: Dictionary = rooms[from_placement.room_id]
@@ -512,13 +525,7 @@ static func _fit_room_at(rooms: Dictionary, room_id: String, from_placement: Pla
 
 	var room: Dictionary = rooms[room_id]
 	var connectors: Array = room["connectors"].duplicate()
-	connectors.sort_custom(func(p, q):
-		var pa := Connector.a(p)
-		var qa := Connector.a(q)
-		if pa.y != qa.y:
-			return pa.y < qa.y
-		return pa.x < qa.x
-	)
+	connectors.sort_custom(_connector_before)
 	for c in connectors:
 		var cand_local := Connector.a(c)
 		if _connector_dir(room, cand_local) != need_dir:
@@ -529,17 +536,7 @@ static func _fit_room_at(rooms: Dictionary, room_id: String, from_placement: Pla
 			if _overlaps_any(rect, occupied):
 				continue
 			var joint := _joint_cells(from_run, c, shift, axis)
-			var placement := Placement.new()
-			placement.room_id = room_id
-			placement.offset = offset
-			placement.depth = from_placement.depth + 1
-			placement.suppressed_connectors.append(cand_local)
-			placement.parent_index = parent_index
-			placement.joint_cells[cand_local] = joint["cand"]
-			from_placement.joint_cells[local_pos] = joint["from"]
-			placement.door_cell = from_placement.offset + _middle_cell(joint["from"]) + step
-			placement.joint_world = _world_joint(from_placement.offset, joint["from"], step)
-			placements.append(placement)
+			placements.append(_joined(room_id, offset, cand_local, from_placement, local_pos, parent_index, joint, step))
 			occupied.append(rect)
 			var extra: Array = []
 			_queue_connectors(room, placements.size() - 1, extra, cand_local)
@@ -659,13 +656,7 @@ static func _place_any_locked(rooms: Dictionary, room_ids: Array, placements: Ar
 
 static func _queue_connectors(room: Dictionary, placement_index: int, open_connectors: Array, skip_local: Vector2i = Vector2i(-1, -1)) -> void:
 	var connectors: Array = room["connectors"].duplicate()
-	connectors.sort_custom(func(p, q):
-		var pa := Connector.a(p)
-		var qa := Connector.a(q)
-		if pa.y != qa.y:
-			return pa.y < qa.y
-		return pa.x < qa.x
-	)
+	connectors.sort_custom(_connector_before)
 	for c in connectors:
 		var local_pos := Connector.a(c)
 		if local_pos == skip_local:

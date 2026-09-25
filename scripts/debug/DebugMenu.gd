@@ -524,7 +524,7 @@ func _overlay_text() -> String:
 		var thinking := 0
 		var all := get_tree().get_nodes_in_group("antagonist")
 		for minion in all:
-			if "_idle_until_tick" in minion and minion.is_multiplayer_authority() and not minion._stuck and minion._idle_until_tick <= GameTick.tick:
+			if minion.has_method("is_thinking") and minion.is_thinking():
 				thinking += 1
 		lines.append("Minions thinking %d   waiting %d" % [thinking, all.size() - thinking])
 	if DebugState.on("show-system-time"):
@@ -549,10 +549,7 @@ func _overlay_text() -> String:
 func _session_lines() -> Array[String]:
 	var lines: Array[String] = []
 	var players := get_tree().get_nodes_in_group("protagonist")
-	var alive := 0
-	for player in players:
-		if not player.stats.is_ghost:
-			alive += 1
+	var alive := PlayerLookup.living(get_tree()).size()
 	var net := "offline"
 	if multiplayer.multiplayer_peer != null:
 		net = "host" if multiplayer.is_server() else "client"

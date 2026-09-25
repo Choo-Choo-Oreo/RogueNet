@@ -25,6 +25,10 @@ const RADIUS := 20
 # target_cell along the flood's shortest path.
 static var _fields := {}
 
+## Steps between two cells a distance `offset` apart when diagonals cost one (Chebyshev).
+static func cheb(offset: Vector2i) -> int:
+	return maxi(absi(offset.x), absi(offset.y))
+
 const NEIGHBOR_STEPS: Array[Vector2i] = [
 	Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT,
 	Vector2i(1, 1), Vector2i(1, -1), Vector2i(-1, 1), Vector2i(-1, -1),
@@ -169,7 +173,7 @@ static func _build_directions(target_cell: Vector2i, terrain_cost: Callable, gri
 		var cell: Vector2i = queue[head]
 		head += 1
 		queued.erase(cell)
-		if maxi(absi(cell.x - target_cell.x), absi(cell.y - target_cell.y)) >= RADIUS:
+		if cheb(cell - target_cell) >= RADIUS:
 			continue
 		if weighted and not costs.has(cell):
 			costs[cell] = terrain_cost.call(cell)
@@ -201,7 +205,7 @@ static func _step_counts(target_cell: Vector2i, grid: StepCache) -> Dictionary:
 	while head < queue.size():
 		var cell: Vector2i = queue[head]
 		head += 1
-		if maxi(absi(cell.x - target_cell.x), absi(cell.y - target_cell.y)) >= RADIUS:
+		if cheb(cell - target_cell) >= RADIUS:
 			continue
 		for step: Vector2i in grid.open_steps(cell):
 			var neighbor := cell + step

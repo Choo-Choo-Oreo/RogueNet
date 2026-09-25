@@ -8,31 +8,21 @@ extends RefCounted
 
 const ROOTS: Array[String] = ["res://game/actions/"]
 
-static var _paths := {}  # action id -> res:// path of its json
-static var _data := {}   # action id -> parsed json, loaded on first use
-
-static func _ensure() -> void:
-	if not _paths.is_empty():
-		return
-	for root in ROOTS:
-		JsonOnloading.find_by_id(root, _paths, "Action")
+static var _index := JsonIndex.new(ROOTS, "Action")
 
 ## The resolved attack dictionaries for a creature's "actions" list, in list order, each
 ## with its action "id" added (the hotbar shows it). An unknown action id is skipped with a warning.
 static func resolve(entries: Array) -> Array:
-	_ensure()
 	var result: Array = []
 	for entry in entries:
 		var id: String = entry if entry is String else str((entry as Dictionary).get("action", ""))
-		if not _paths.has(id):
+		if not _index.has(id):
 			push_warning("Unknown action '%s', skipped" % id)
 			continue
-		if not _data.has(id):
-			_data[id] = JsonOnloading.load_dict(_paths[id])
-		if not ActionRunner.VERBS.has(str(_data[id].get("verb", ""))):
+		var attack := _index.load_data(id)
+		if not ActionRunner.VERBS.has(str(attack.get("verb", ""))):
 			push_warning("Action '%s' has no known verb (%s), skipped" % [id, ", ".join(ActionRunner.VERBS)])
 			continue
-		var attack: Dictionary = (_data[id] as Dictionary).duplicate(true)
 		attack["id"] = id
 		if entry is Dictionary:
 			for key in entry:

@@ -67,6 +67,25 @@ func _sender() -> int:
 func account_name() -> String:
 	return Steam.getPersonaName() if SteamManager.online else "Player"
 
+## The node at `path` under the current scene ("Minions", "Player/3"), or null: none there, or
+## no scene for a moment while the scene changes (packets keep arriving then).
+func _in_scene(path: String) -> Node:
+	var scene := get_tree().current_scene
+	return scene.get_node_or_null(path) if scene != null else null
+
+func _player(peer_id: int) -> Node:
+	return _in_scene("Player/%d" % peer_id)
+
+func _minion(minion_id: int) -> Node:
+	return _in_scene("Minions/%d" % minion_id)
+
+## Calls `method` on each spawned player in `by_peer` with that peer's value.
+func _apply_to_players(by_peer: Dictionary, method: String) -> void:
+	for peer_id in by_peer:
+		var player := _player(peer_id)
+		if player and player.has_method(method):
+			player.call(method, by_peer[peer_id])
+
 func reset_session() -> void:
 	missions.clear()
 	_countdowns.clear()
@@ -135,11 +154,7 @@ func _relay_position(sender_id: int, pos: Vector2) -> void:
 
 @rpc("authority", "unreliable_ordered")
 func receive_position(player_id: int, pos: Vector2) -> void:
-	# current_scene is null for a moment while the scene changes, and packets keep arriving.
-	var scene := get_tree().current_scene
-	if scene == null:
-		return
-	var player := scene.get_node_or_null("Player/" + str(player_id))
+	var player := _player(player_id)
 	if player:
 		player.grid_mover.follow_network(pos)
 
@@ -229,16 +244,7 @@ func _set_character(peer_id: int, character_id: String) -> void:
 @rpc("authority", "reliable")
 func receive_player_characters(characters: Dictionary) -> void:
 	peer_characters = characters
-	var scene := get_tree().current_scene
-	if scene == null:
-		return
-	var player_root := scene.get_node_or_null("Player")
-	if player_root == null:
-		return
-	for peer_id in peer_characters:
-		var player := player_root.get_node_or_null(str(peer_id))
-		if player and player.has_method("set_character"):
-			player.set_character(peer_characters[peer_id])
+	_apply_to_players(peer_characters, "set_character")
 
 # peer_id -> {slot: item id}, the gear each player wears (see PlayerInventory.worn()).
 # Same "tell the host, host tells everyone" route as peer_characters above.
@@ -269,16 +275,7 @@ func _set_equipment(peer_id: int, worn: Dictionary) -> void:
 @rpc("authority", "reliable")
 func receive_player_equipment(equipment: Dictionary) -> void:
 	peer_equipment = equipment
-	var scene := get_tree().current_scene
-	if scene == null:
-		return
-	var player_root := scene.get_node_or_null("Player")
-	if player_root == null:
-		return
-	for peer_id in peer_equipment:
-		var player := player_root.get_node_or_null(str(peer_id))
-		if player and player.has_method("set_equipment"):
-			player.set_equipment(peer_equipment[peer_id])
+	_apply_to_players(peer_equipment, "set_equipment")
 
 @rpc("any_peer", "reliable")
 func report_join_mission(mission_id: int, password: String) -> void:
@@ -475,10 +472,7 @@ func broadcast_minion_spawns(spawns: Array) -> void:
 
 @rpc("authority", "reliable")
 func receive_spawn_minions(spawns: Array) -> void:
-	var scene := get_tree().current_scene
-	if scene == null:
-		return
-	var minions_root := scene.get_node_or_null("Minions")
+	var minions_root := _in_scene("Minions")
 	if minions_root == null:
 		return
 	for spawn in spawns:
@@ -520,8 +514,7 @@ func _send_minion_batch(_tick: int) -> void:
 
 @rpc("authority", "unreliable_ordered")
 func receive_minion_states(ids: PackedInt32Array, positions: PackedVector2Array, states: PackedByteArray) -> void:
-	var scene := get_tree().current_scene
-	var minions := scene.get_node_or_null("Minions") if scene else null
+	var minions := _in_scene("Minions")
 	if minions == null:
 		return
 	for i in ids.size():
@@ -546,20 +539,13 @@ func request_minion_hit(minion_id: int, amount: int, type: String) -> void:
 	_resolve_minion_hit(minion_id, amount, type)
 
 func _resolve_minion_hit(minion_id: int, amount: int, type: String) -> void:
-	var scene := get_tree().current_scene
-	if scene:
-		var minion := scene.get_node_or_null("Minions/" + str(minion_id))
-		if minion and minion.has_method("take_damage"):
-			minion.take_damage(amount, type)
+	receive_minion_damage(minion_id, amount, type)
 	for peer_id in multiplayer.get_peers():
 		receive_minion_damage.rpc_id(peer_id, minion_id, amount, type)
 
 @rpc("authority", "reliable")
 func receive_minion_damage(minion_id: int, amount: int, type: String) -> void:
-	var scene := get_tree().current_scene
-	if scene == null:
-		return
-	var minion := scene.get_node_or_null("Minions/" + str(minion_id))
+	var minion := _minion(minion_id)
 	if minion and minion.has_method("take_damage"):
 		minion.take_damage(amount, type)
 
@@ -622,10 +608,7 @@ func receive_god_mode(player_id: int, on: bool) -> void:
 	_apply_god_mode(player_id, on)
 
 func _apply_god_mode(player_id: int, on: bool) -> void:
-	var scene := get_tree().current_scene
-	if scene == null:
-		return
-	var player := scene.get_node_or_null("Player/" + str(player_id))
+	var player := _player(player_id)
 	if player != null and "debug_god" in player:
 		player.debug_god = on
 
@@ -639,8 +622,7 @@ func request_debug_spawn(minion_id: String, tile: Vector2i) -> void:
 		_host_debug_spawn(minion_id, tile)
 
 func _host_debug_spawn(minion_id: String, tile: Vector2i) -> void:
-	var scene := get_tree().current_scene
-	var minions_root := scene.get_node_or_null("Minions") if scene != null else null
+	var minions_root := _in_scene("Minions")
 	if minions_root != null:
 		MinionSpawning.spawn_debug(minion_id, tile, minions_root)
 
@@ -732,7 +714,7 @@ func _spawn_projectile_copy(texture_path: String, from: Vector2, to: Vector2) ->
 	projectile.global_position = from
 	# Stops at walls like the real one, using whichever local player's map check.
 	var blocked := func(_pos: Vector2) -> bool: return false
-	var local_player := scene.get_node_or_null("Player/" + str(multiplayer.get_unique_id()))
+	var local_player := PlayerLookup.find_local(get_tree())
 	if local_player != null and local_player.get("grid_mover") != null:
 		blocked = local_player.grid_mover.is_position_blocked
 	projectile.launch(texture_path, to, 16.0, func(): pass, blocked)
@@ -750,10 +732,7 @@ func request_taunt(player_id: int, radius_tiles: float, duration: float, max_tar
 	_resolve_taunt(player_id, radius_tiles, duration, max_targets)
 
 func _resolve_taunt(player_id: int, radius_tiles: float, duration: float, max_targets: int) -> void:
-	var scene := get_tree().current_scene
-	if scene == null:
-		return
-	var player := scene.get_node_or_null("Player/" + str(player_id))
+	var player := _player(player_id)
 	if player == null or player.stats.is_ghost:
 		return
 	var radius_px := radius_tiles * 16.0
@@ -787,10 +766,7 @@ func relay_player_hit(player_id: int, amount: int, type: String) -> void:
 
 @rpc("authority", "reliable")
 func receive_player_damage(player_id: int, amount: int, type: String) -> void:
-	var scene := get_tree().current_scene
-	if scene == null:
-		return
-	var player := scene.get_node_or_null("Player/" + str(player_id))
+	var player := _player(player_id)
 	if player and player.has_method("take_damage"):
 		player.take_damage(amount, type)
 
