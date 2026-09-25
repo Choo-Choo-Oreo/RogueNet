@@ -17,6 +17,9 @@ extends Node2D
 const BLOOD_AIR := preload("res://resources/gfx/effects/effects.particles/Blood_Air.png")
 const BLOOD_GROUND := preload("res://resources/gfx/effects/effects.particles/Blood_Ground.png")
 const RUBBLE_PATH := "res://resources/gfx/effects/effects.particles/Rubble_Particles.png"
+## 8x8 cells, 4 tumble frames per row: bone, stone, goo, wisp (hit_spray).
+const CHIPS := preload("res://resources/gfx/effects/effects.particles/Hit_Chips.png")
+const CHIP_ROW := {"bone": 0, "stone": 1, "metal": 1, "organic": 2, "ethereal": 3}
 const RUBBLE_GRID := Vector2i(5, 6)  # columns, rows of 8x8 cells
 
 const FPS := 10.0
@@ -64,6 +67,28 @@ static func blood(body: Node) -> void:
 				var drop := burst._add(BLOOD_AIR, Vector2i(8, 1), centre)
 				drop.air_frames = [randi() % 4]
 				_throw(drop, Vector2(20, 55), Vector2(60, 110))
+
+## A small spray on every hit that doesn't kill (HitFeedback): two drops of blood from flesh,
+## or two chips of whatever else the body is made of (CombatSounds.material). Nothing stays on
+## the floor; the killing blow's blood() is the big one.
+static func hit_spray(body: Node, material: String) -> void:
+	if not body is Node2D or not body.is_inside_tree():
+		return
+	var size: float = body.get_meta("footprint", 1) * 16.0
+	var burst := _spawn(body.get_tree().current_scene, (body as Node2D).global_position + Vector2(size, size) / 2.0)
+	for i in 2:
+		var bit: Piece
+		if CHIP_ROW.has(material):
+			var row: int = CHIP_ROW[material]
+			bit = burst._add(CHIPS, Vector2i(4, 4), Vector2.ZERO)
+			bit.air_frames = [row * 4, row * 4 + 1, row * 4 + 2, row * 4 + 3]
+			bit.bounce = 0.3
+		else:
+			bit = burst._add(BLOOD_AIR, Vector2i(8, 1), Vector2.ZERO)
+			bit.air_frames = [randi() % 4]
+		bit.linger = 0.3
+		bit.fade = 0.3
+		_throw(bit, Vector2(20, 45), Vector2(40, 80))
 
 ## Rubble from one broken wall tile. `centre` is the tile's centre in global pixels and
 ## `wall_atlas` the wall's texture path (from its game/tiles JSON), which gives the colours.

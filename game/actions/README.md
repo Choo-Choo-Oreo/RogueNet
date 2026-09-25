@@ -36,19 +36,24 @@ walks) and for the player (the order is the hotbar slot).
 | `radius_tiles`, `duration`, `max_targets` | For `taunt`: forces minions within the radius (nearest `max_targets`) onto the user for `duration` seconds. |
 | `loudness` | For `throw`: how far the landing carries, in multiples of a footstep (`SenseHearing`). It flies at most `range_tiles` and stops short of a wall. |
 | `needs_sight`, `only_through_walls` | Minion firing rules. The second fires only while a wall is between it and its target. |
+| `sound` | Optional. The swing sound is `resources/sfx/combat/attacks/<action id>.wav` without this field; set it only to borrow another file. The hurt sound a hit makes is picked from the id and `type` (see `resources/sfx/combat/README.md`). |
 
 ## Every action
 
 | Id | What it does | Used by |
 |---|---|---|
 | `bite` | 1 Physical, 1.0 s, adjacent. | most minions (interval or amount overridden), dragon and spider (as Physical.Piercing) |
-| `slash` | 3 Physical, 0.5 s, adjacent. | the player |
+| `slash` | 3 Physical.Slashing, 0.5 s, adjacent. | the player |
 | `bludgeon` | 6 Physical.Bludgeoning, 1.5 s. | minotaur, dragon, ogre |
-| `perditio_touch` | 2 Perditio, 1.4 s. | wraith |
-| `arrow_shot` | 2 Physical, projectile, ranged, 4 tiles. | skeleton_archer, the player |
-| `entropia_bolt` | 2 Entropia, ranged, 4 tiles. | hamster_demonic, the player |
+| `perditio_touch` | 2 Necrotic.Perditio, 1.4 s. | wraith |
+| `arrow_shot` | 2 Physical.Piercing, projectile, ranged, 4 tiles. | skeleton_archer, the player |
+| `entropia_bolt` | 2 Arcana.Entropia, ranged, 4 tiles. | hamster_demonic, the player |
 | `wall_smash` | Breaks walls in a 3x2 line, 6 s, only through walls. | minotaur, ogre |
 | `taunt` | Pulls minions within 6 tiles for 4 s, 12 s cooldown. | the player |
 | `throw_rock` | Throws a rock up to 8 tiles; the landing is a noise (loudness 3) minions investigate. 1.5 s. The picture is the arrow, a placeholder (no rock art yet). | the player (slot 5) |
 
 Costs (ammo, magic, stamina) are not built.
+
+On 2026-09-25 `slash`, `arrow_shot`, `entropia_bolt` and `perditio_touch` got their full type
+names (they were `Physical`, `Physical`, `Entropia`, `Perditio`; the last two weren't in
+`game/damage_types.json`). Nothing has resistances yet, so no fight changed.

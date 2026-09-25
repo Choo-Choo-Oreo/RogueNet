@@ -14,6 +14,16 @@ extends Camera2D
 
 var _normal_zoom := Vector2.ONE
 
+## Screen shake (HitFeedback): a random `offset` that dies away over SHAKE_SECONDS, scaled by
+## the "Screen shake" setting. `offset` is free: the mouse nudge uses `position`.
+const SHAKE_SECONDS := 0.18
+var _shake := 0.0
+var _shake_left := 0.0
+
+func shake(strength: float) -> void:
+	_shake = maxf(_shake * _shake_left / SHAKE_SECONDS, strength * ConfigFileHandler.feedback("screen_shake"))
+	_shake_left = SHAKE_SECONDS
+
 func _process(delta: float) -> void:
 	# Checked every frame, not just in _ready(): a Node's _ready() fires before
 	# its parent's, so at _ready() time the parent hasn't set the real
@@ -21,6 +31,9 @@ func _process(delta: float) -> void:
 	enabled = is_multiplayer_authority()
 	if not enabled:
 		return
+	_shake_left = maxf(_shake_left - delta, 0.0)
+	var amount := _shake * _shake_left / SHAKE_SECONDS
+	offset = Vector2(randf_range(-amount, amount), randf_range(-amount, amount)).round()
 	if DebugState.free_cam != top_level:
 		_set_free(DebugState.free_cam)
 	if top_level:

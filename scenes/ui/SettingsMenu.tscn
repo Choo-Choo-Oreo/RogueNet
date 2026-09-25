@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://cdqcm6fquv4mc" path="res://scripts/settings/AudioControl.gd" id="2_audio"]
 [ext_resource type="Script" uid="uid://c1bslvamdvulm" path="res://scripts/settings/FullscreenControl.gd" id="3_fullscreen"]
 [ext_resource type="Script" uid="uid://dj21umeulwan0" path="res://scripts/settings/VSyncControl.gd" id="4_vsync"]
+[ext_resource type="Script" path="res://scripts/settings/FeedbackControl.gd" id="5_feedback"]
 
 [node name="SettingsMenu" type="Control"]
 layout_mode = 3
@@ -152,6 +153,37 @@ script = ExtResource("3_fullscreen")
 layout_mode = 2
 text = "VSync"
 script = ExtResource("4_vsync")
+
+[node name="ShakeHBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/ShakeHBoxContainer"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Screen Shake"
+
+[node name="ShakeSlider" type="HSlider" parent="MarginContainer/VBoxContainer/ShakeHBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.05
+value = 1.0
+script = ExtResource("5_feedback")
+key = "screen_shake"
+
+[node name="ScreenFlashCheckButton" type="CheckButton" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Red screen flash when hurt"
+script = ExtResource("5_feedback")
+key = "screen_flash"
+
+[node name="HitStopCheckButton" type="CheckButton" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Hit-stop on big hits"
+script = ExtResource("5_feedback")
+key = "hit_stop"
 
 [node name="ButtonBack" type="Button" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(220, 50)

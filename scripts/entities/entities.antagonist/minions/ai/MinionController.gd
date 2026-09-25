@@ -23,6 +23,10 @@ var _last_state: MinionSenses.State = MinionSenses.State.PATROL
 var _size_px: float = 16.0
 ## Which minion this is (set by set_minion_type); BodySweep and the test tools name creatures by it.
 var minion_id := ""
+## Its json "tags" (game/TAGS.md). CombatSounds picks its hit, death and voice sounds from them.
+var tags: Array = []
+## Flash, numbers, sounds when hit (see HitFeedback).
+var hit_feedback := HitFeedback.new()
 ## Tiles per side (json "size_tiles"): 1 normally, 2 for a boss like the minotaur.
 var size_tiles := 1
 ## True for a minion whose json sits in a bosses/ folder (MinionIndex.is_boss). Bosses get privileges over their allies: they walk through
@@ -149,6 +153,8 @@ func set_minion_type(id: String) -> void:
 	minion_id = id
 	var data := MinionIndex.load_data(id)
 	stats.load_from_data(data)
+	tags = data.get("tags", [])
+	hit_feedback.set_tags(tags)
 	$AnimatedSprite2D.sprite_frames = SpriteFramesLoader.build(data["sprite_frames"])
 	size_tiles = int(data.get("size_tiles", 1))
 	is_boss = MinionIndex.is_boss(id)
@@ -204,8 +210,12 @@ func set_minion_type(id: String) -> void:
 	_can_open_doors = door_mode == "open"
 	grid_mover.phases_doors = door_mode == "phase"
 
-func take_damage(amount: int, type: String = "") -> void:
-	stats.take_damage(amount, type)
+## Who landed the hit being taken (a player's peer id), for RunLog via _on_damaged.
+var _hit_by := ""
+
+func take_damage(amount: int, type: String = "", cause: String = "", attacker: String = "") -> void:
+	_hit_by = attacker
+	stats.take_damage(amount, type, cause)
 	senses.note_hit()
 
 ## Called by NetworkSync.receive_minion_state on every peer that isn't this
@@ -227,7 +237,13 @@ func _ready() -> void:
 	if default_minion_type != "":
 		set_minion_type(default_minion_type)
 	_home_position = global_position
+	hit_feedback.name = "HitFeedback"
+	add_child(hit_feedback)
+	hit_feedback.setup(self, $AnimatedSprite2D, stats, tags)
 	stats.died.connect(queue_free)
+	stats.damaged.connect(func(amount: int, _type: String, _cause: String):
+		if _hit_by.is_valid_int():
+			RunLog.minion_hurt(int(_hit_by), amount, minion_id, stats.current_health == 0))
 	tree_exiting.connect(func(): bosses.erase(self))
 	# Which doors this minion may open depends on its "doors" field (see set_minion_type).
 	grid_mover.open_predicate = func(door: DoorRegistry.Door) -> bool:

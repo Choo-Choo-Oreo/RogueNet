@@ -10,6 +10,4 @@ static func perform(caster: Node2D, attack: Dictionary) -> void:
 		attack.get("radius_tiles", 6.0),
 		attack.get("duration", 4.0),
 		attack.get("max_targets", 24))
-	var effect: Dictionary = attack.get("effect", {})
-	if not effect.is_empty():
-		AttackEffect.play_between(caster.global_position, caster.global_position, effect)
+	AttackEffect.play_attack(caster, caster.global_position, attack, attack.get("effect", {}))

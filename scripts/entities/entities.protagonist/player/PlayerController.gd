@@ -60,10 +60,30 @@ func _current_attack() -> Dictionary:
 ## them agree this player can't be hurt.
 var debug_god := false
 
-func take_damage(amount: int, type: String = "") -> void:
+## Who landed the hit being taken (a minion type id), for RunLog via _on_damaged.
+var _hit_by := ""
+
+func take_damage(amount: int, type: String = "", cause: String = "", attacker: String = "") -> void:
 	if debug_god:
 		return
-	stats.take_damage(amount, type)
+	_hit_by = attacker
+	stats.take_damage(amount, type, cause)
+
+func _on_damaged(amount: int, type: String, cause: String) -> void:
+	RunLog.player_hurt(int(str(name)), amount, type, cause, _hit_by, stats.current_health == 0)
+
+## Every peer notes the rooms each living player walks into (RunLog), from where
+## it sees them, only when they reach a new tile.
+var _last_tile := Vector2i(-1000000, 0)
+
+func _note_room() -> void:
+	if stats.is_ghost:
+		return
+	var tile_size: float = grid_mover.tile_size
+	var tile := Vector2i(((global_position + Vector2(tile_size, tile_size) / 2.0) / tile_size).floor())
+	if tile != _last_tile:
+		_last_tile = tile
+		RunLog.visit(int(str(name)), DebugState.room_index_at(tile))
 
 ## Swaps to the ghost skin and stops the player from attacking -- movement
 ## stays on, since a ghost that can still drift around to watch the rest of
@@ -108,7 +128,12 @@ func _ready() -> void:
 	add_child(gear)
 	gear.setup($AnimatedSprite2D)
 	_load_player_data()
+	var hit_feedback := HitFeedback.new()
+	hit_feedback.name = "HitFeedback"
+	add_child(hit_feedback)
+	hit_feedback.setup(self, $AnimatedSprite2D, stats)
 	stats.died.connect(_on_died)
+	stats.damaged.connect(_on_damaged)
 	grid_mover.stepped.connect(_on_stepped)
 	$TileHoverHighlight.sprite_frames = SpriteFramesLoader.build({
 		"frame_size": [16, 16],
@@ -118,6 +143,7 @@ func _ready() -> void:
 	$TileHoverHighlight.visible = false
 
 func _process(delta: float) -> void:
+	_note_room()
 	if is_multiplayer_authority():
 		if grid_mover.is_moving:
 			animator.animate_moving(grid_mover.facing_direction)

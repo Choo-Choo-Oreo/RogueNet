@@ -121,7 +121,7 @@ func _load_gear() -> void:
 			if not _sets.has(set_name):
 				_sets[set_name] = {}
 			_sets[set_name][item["slot"]] = id
-		elif item["slot"] == "back":
+		elif item.get("slot", "") == "back":
 			_back_items.append(id)
 
 ## The wooden crosses (not the Grave_Pile mounds, which are drawn for one floor each).

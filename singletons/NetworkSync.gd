@@ -43,6 +43,9 @@ func _ready() -> void:
 				mission.get("ready", {}).erase(id)
 				_cancel_countdown(mission_id, "Countdown cancelled — the party changed.")
 				_broadcast_members(mission_id)
+		# Someone left while the party was pressing End on the graves: they count as pressed.
+		if not end_votes.is_empty():
+			_check_end_votes()
 		var main_town := get_tree().current_scene
 		if main_town and main_town.has_method("refresh_player_list"):
 			main_town.refresh_player_list()
@@ -52,6 +55,7 @@ func reset_session() -> void:
 	missions.clear()
 	_countdowns.clear()
 	dive_members.clear()
+	end_votes.clear()
 	peer_steam_ids.clear()
 	peer_names.clear()
 	peer_equipment.clear()
@@ -431,6 +435,7 @@ func receive_start_mission(mission_seed: int, mission_biome: String, members: Ar
 	dungeon_seed = mission_seed
 	dungeon_biome = mission_biome
 	dive_members = members.duplicate()
+	end_votes.clear()
 	get_tree().change_scene_to_file("res://scenes/dungeon/Dungeon.tscn")
 
 # Host only: sends the divers (not the players in the town) back to the town.
@@ -451,7 +456,53 @@ func end_mission() -> void:
 @rpc("authority", "reliable")
 func receive_return_to_town() -> void:
 	dive_members.clear()
+	end_votes.clear()
 	get_tree().change_scene_to_file("res://scenes/ui/town/MainTown.tscn")
+
+# --- The party wipe's End button (PartyWipeScreen). Each diver presses it; the
+# host counts the presses, tells the divers who has pressed, and sends the party
+# home once every diver still connected has. A diver who leaves counts as pressed,
+# so nobody can keep the rest waiting.
+
+## Divers who pressed End, as the host last announced.
+var end_votes: Array = []
+signal end_votes_changed
+
+func vote_end() -> void:
+	if multiplayer.multiplayer_peer == null or multiplayer.is_server():
+		_add_end_vote(multiplayer.get_unique_id() if multiplayer.multiplayer_peer != null else 1)
+	else:
+		request_end_vote.rpc_id(1)
+
+@rpc("any_peer", "reliable")
+func request_end_vote() -> void:
+	if multiplayer.is_server():
+		_add_end_vote(multiplayer.get_remote_sender_id())
+
+func _add_end_vote(peer_id: int) -> void:
+	# A dungeon opened without a dive (straight from the editor) has no divers: just go.
+	if dive_members.is_empty():
+		receive_return_to_town()
+		return
+	if peer_id not in dive_members or peer_id in end_votes:
+		return
+	end_votes.append(peer_id)
+	_check_end_votes()
+
+func _check_end_votes() -> void:
+	var here := dive_members.filter(func(id): return id == 1 or id in multiplayer.get_peers())
+	for peer_id in here:
+		if peer_id == 1:
+			receive_end_votes(end_votes)
+		else:
+			receive_end_votes.rpc_id(peer_id, end_votes)
+	if here.all(func(id): return id in end_votes):
+		end_mission()
+
+@rpc("authority", "reliable")
+func receive_end_votes(votes: Array) -> void:
+	end_votes = votes.duplicate()
+	end_votes_changed.emit()
 
 # --- Minions: host decides identity/position and tells everyone else,
 # same "one decider, everyone else is told" split as the dungeon seed above.
@@ -498,35 +549,36 @@ func receive_minion_state(minion_id: int, pos: Vector2, state: int) -> void:
 # reaches the same health and fires its own died signal -- no separate
 # despawn message needed, every peer just queue_frees itself once its own
 # copy hits 0.
-func report_minion_hit(minion_id: int, amount: int, type: String) -> void:
+func report_minion_hit(minion_id: int, amount: int, type: String, cause: String = "", attacker: String = "") -> void:
 	if multiplayer.multiplayer_peer == null or multiplayer.is_server():
-		_resolve_minion_hit(minion_id, amount, type)
+		_resolve_minion_hit(minion_id, amount, type, cause, attacker)
 	else:
-		request_minion_hit.rpc_id(1, minion_id, amount, type)
+		request_minion_hit.rpc_id(1, minion_id, amount, type, cause)
 
+# The attacker is whoever sent the request, not something the client may claim.
 @rpc("any_peer", "reliable")
-func request_minion_hit(minion_id: int, amount: int, type: String) -> void:
+func request_minion_hit(minion_id: int, amount: int, type: String, cause: String) -> void:
 	if not multiplayer.is_server():
 		return
-	_resolve_minion_hit(minion_id, amount, type)
+	_resolve_minion_hit(minion_id, amount, type, cause, str(multiplayer.get_remote_sender_id()))
 
-func _resolve_minion_hit(minion_id: int, amount: int, type: String) -> void:
+func _resolve_minion_hit(minion_id: int, amount: int, type: String, cause: String, attacker: String) -> void:
 	var scene := get_tree().current_scene
 	if scene:
 		var minion := scene.get_node_or_null("Minions/" + str(minion_id))
 		if minion and minion.has_method("take_damage"):
-			minion.take_damage(amount, type)
+			minion.take_damage(amount, type, cause, attacker)
 	for peer_id in multiplayer.get_peers():
-		receive_minion_damage.rpc_id(peer_id, minion_id, amount, type)
+		receive_minion_damage.rpc_id(peer_id, minion_id, amount, type, cause, attacker)
 
 @rpc("authority", "reliable")
-func receive_minion_damage(minion_id: int, amount: int, type: String) -> void:
+func receive_minion_damage(minion_id: int, amount: int, type: String, cause: String, attacker: String) -> void:
 	var scene := get_tree().current_scene
 	if scene == null:
 		return
 	var minion := scene.get_node_or_null("Minions/" + str(minion_id))
 	if minion and minion.has_method("take_damage"):
-		minion.take_damage(amount, type)
+		minion.take_damage(amount, type, cause, attacker)
 
 # Doors. Open/closed state is host-authoritative: anyone who bumps a door (a
 # player, or a minion on the host) calls open_door; a client asks the host, the
@@ -649,6 +701,9 @@ func _spawn_effect(pos: Vector2, data: Dictionary, direction: Vector2) -> void:
 	var scene := get_tree().current_scene
 	if scene == null:
 		return
+	CombatSounds.on_effect(scene, pos, data)
+	if not data.has("texture"):
+		return
 	var effect: AttackEffect = ATTACK_EFFECT_SCENE.instantiate()
 	scene.add_child(effect)
 	effect.global_position = pos
@@ -760,19 +815,19 @@ func request_noise(position: Vector2, loudness: float) -> void:
 # Minion-on-player damage only ever originates on the host (only the host ever
 # runs minion AI/attacks), so this is a straight broadcast, no any_peer report
 # step needed the way minion hits have one.
-func relay_player_hit(player_id: int, amount: int, type: String) -> void:
-	receive_player_damage(player_id, amount, type)
+func relay_player_hit(player_id: int, amount: int, type: String, cause: String = "", attacker: String = "") -> void:
+	receive_player_damage(player_id, amount, type, cause, attacker)
 	for peer_id in multiplayer.get_peers():
-		receive_player_damage.rpc_id(peer_id, player_id, amount, type)
+		receive_player_damage.rpc_id(peer_id, player_id, amount, type, cause, attacker)
 
 @rpc("authority", "reliable")
-func receive_player_damage(player_id: int, amount: int, type: String) -> void:
+func receive_player_damage(player_id: int, amount: int, type: String, cause: String, attacker: String) -> void:
 	var scene := get_tree().current_scene
 	if scene == null:
 		return
 	var player := scene.get_node_or_null("Player/" + str(player_id))
 	if player and player.has_method("take_damage"):
-		player.take_damage(amount, type)
+		player.take_damage(amount, type, cause, attacker)
 
 ## Host only (an ability the host's AI fires, see MinionController._ability_destroy_tiles).
 ## Breaks the walls among `cells`: the host decides which fall and what shows under and

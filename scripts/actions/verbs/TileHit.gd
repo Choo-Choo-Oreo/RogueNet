@@ -7,8 +7,8 @@ extends RefCounted
 ## its footprint (a 2x2 boss is hit on any of its four), so a body caught mid-step counts
 ## for the tile it is mostly on. A ghost cannot be hit.
 
-## Returns true if something was hit.
-static func apply(caster: Node2D, tile: Vector2i, amount: int, type: String) -> bool:
+## Returns true if something was hit. `cause` is the action id (hurt sounds, HitFeedback).
+static func apply(caster: Node2D, tile: Vector2i, amount: int, type: String, cause: String = "") -> bool:
 	var tile_size: float = caster.grid_mover.tile_size
 	var half := Vector2(tile_size, tile_size) / 2.0
 	var hit := false
@@ -19,9 +19,15 @@ static func apply(caster: Node2D, tile: Vector2i, amount: int, type: String) -> 
 		var size: int = creature.get_meta("footprint", 1)
 		if tile.x < origin.x or tile.x >= origin.x + size or tile.y < origin.y or tile.y >= origin.y + size:
 			continue
-		_damage(creature, amount, type)
+		_damage(creature, amount, type, cause, attacker_of(caster))
 		hit = true
 	return hit
+
+## Who landed a hit, as the damage messages carry it: a player's peer id, or a minion's
+## type id (MinionIndex). Hits only ever cross teams, so the receiver knows which it is.
+## Kept for the run's history (RunLog): kills, and what killed each adventurer.
+static func attacker_of(caster: Node2D) -> String:
+	return str(caster.name) if caster.is_in_group("protagonist") else str(caster.get("minion_id"))
 
 ## The group a caster's attacks land on: the other team.
 static func target_team(caster: Node2D) -> String:
@@ -30,8 +36,8 @@ static func target_team(caster: Node2D) -> String:
 ## Minions are host-owned, so a hit on one is reported to the host, which applies it and
 ## tells everyone. Minion AI only runs on the host, so a hit on a player is already coming
 ## from the host and is broadcast. (A player-driven antagonist will need this to change.)
-static func _damage(creature: Node2D, amount: int, type: String) -> void:
+static func _damage(creature: Node2D, amount: int, type: String, cause: String, attacker: String) -> void:
 	if creature.is_in_group("antagonist"):
-		NetworkSync.report_minion_hit(int(str(creature.name)), amount, type)
+		NetworkSync.report_minion_hit(int(str(creature.name)), amount, type, cause, attacker)
 	else:
-		NetworkSync.relay_player_hit(int(str(creature.name)), amount, type)
+		NetworkSync.relay_player_hit(int(str(creature.name)), amount, type, cause, attacker)

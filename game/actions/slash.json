@@ -1,7 +1,7 @@
 {
 	"verb": "hit",
 	"amount": 3,
-	"type": "Physical",
+	"type": "Physical.Slashing",
 	"interval": 0.5,
 	"target_mode": "melee",
 	"effect": {

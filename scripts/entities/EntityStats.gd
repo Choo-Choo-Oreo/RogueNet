@@ -2,6 +2,9 @@ class_name EntityStats
 extends Node
 
 signal health_changed(current: int, max: int)
+## A hit landed: `amount` after resistances (0 = fully blocked), its damage `type`, and `cause`,
+## the action id that dealt it ("" if unknown). Fires on every peer. HitFeedback listens.
+signal damaged(amount: int, type: String, cause: String)
 signal died
 
 const FALLBACK_HEALTH := 1
@@ -43,8 +46,8 @@ func load_from_data(data: Dictionary) -> void:
 func load_from_file(path: String) -> void:
 	load_from_data(JsonOnloading.load_dict(path))
 
-func take_damage(amount: int, type: String = "") -> void:
-	_apply_health(-amount, type)
+func take_damage(amount: int, type: String = "", cause: String = "") -> void:
+	_apply_health(-amount, type, cause)
 
 func take_heal(amount: int, type: String = "") -> void:
 	_apply_health(amount, type)
@@ -53,13 +56,17 @@ func take_heal(amount: int, type: String = "") -> void:
 func heal_to_full() -> void:
 	take_heal(max_health)
 
-func _apply_health(delta: int, type: String) -> void:
-	if delta < 0:
+func _apply_health(delta: int, type: String, cause: String = "") -> void:
+	var is_hit := delta < 0
+	if is_hit:
 		delta += resistances.get(type, FALLBACK_RESISTANCE)
 		delta = min(delta, 0)
 	var was_alive := current_health > 0
+	var before := current_health
 	current_health = clamp(current_health + delta, 0, max_health)
 	health_changed.emit(current_health, max_health)
+	if is_hit and was_alive:
+		damaged.emit(before - current_health, type, cause)
 	# Only the hit that kills bleeds; a ghost taking more damage does not bleed again.
 	if was_alive and current_health == 0:
 		ParticleBurst.blood(get_parent())

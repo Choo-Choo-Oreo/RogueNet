@@ -6,6 +6,10 @@ const SETTINGS_FILE_PATH = "user://settings.ini"
 ## First-run volumes (linear, 0..1). Music is loud next to everything else.
 const DEFAULT_MUSIC_VOLUME := 0.5
 
+## How hard getting hit feels (HitFeedback, HurtOverlay, MouseFollowCamera). Some players need
+## these lower or off. screen_shake is a strength, 0..1; the others are on/off.
+const FEEDBACK_DEFAULTS := {"screen_shake": 1.0, "screen_flash": true, "hit_stop": true}
+
 func _ready() -> void:
 	if not FileAccess.file_exists(SETTINGS_FILE_PATH):
 		config.set_value("audio", "Master_volume", 1.0)
@@ -15,6 +19,9 @@ func _ready() -> void:
 
 		config.set_value("video", "Fullscreen", true)
 		config.set_value("video", "Vsync", true)
+
+		for key in FEEDBACK_DEFAULTS:
+			config.set_value("feedback", key, FEEDBACK_DEFAULTS[key])
 
 		config.save(SETTINGS_FILE_PATH)
 	else:
@@ -43,6 +50,14 @@ func save_audio_setting(key: String, value) -> void:
 func save_video_setting(key: String, value) -> void:
 	config.set_value("video", key, value)
 	config.save(SETTINGS_FILE_PATH)
+
+func save_feedback_setting(key: String, value) -> void:
+	config.set_value("feedback", key, value)
+	config.save(SETTINGS_FILE_PATH)
+
+## One feedback setting (FEEDBACK_DEFAULTS), its default if never saved.
+func feedback(key: String):
+	return config.get_value("feedback", key, FEEDBACK_DEFAULTS.get(key))
 
 func load_video_settings() -> Dictionary:
 	var video_settings := {}

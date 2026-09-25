@@ -33,6 +33,7 @@ static func resolve(entries: Array) -> Array:
 			push_warning("Action '%s' has no known verb (%s), skipped" % [id, ", ".join(ActionRunner.VERBS)])
 			continue
 		var attack: Dictionary = (_data[id] as Dictionary).duplicate(true)
+		attack["id"] = id
 		if entry is Dictionary:
 			for key in entry:
 				if key != "action":

@@ -1,7 +1,7 @@
 {
 	"verb": "hit",
 	"amount": 2,
-	"type": "Perditio",
+	"type": "Necrotic.Perditio",
 	"interval": 1.4,
 	"effect": {
 		"texture": "res://resources/gfx/effects/effects.necrotic/necrotic.perditio.png",

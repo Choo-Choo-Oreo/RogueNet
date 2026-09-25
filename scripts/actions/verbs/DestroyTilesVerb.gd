@@ -13,7 +13,5 @@ static func perform(caster: Node2D, target_global: Vector2, attack: Dictionary) 
 	if NetworkSync.destroy_tiles(cells) == 0:
 		return false
 	caster.animator.animate_facing(target_global - caster.global_position)
-	var effect: Dictionary = attack.get("effect", {})
-	if not effect.is_empty():
-		AttackEffect.play_between(caster.global_position, target_global, effect)
+	AttackEffect.play_attack(caster, target_global, attack, attack.get("effect", {}))
 	return true

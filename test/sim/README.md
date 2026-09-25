@@ -29,7 +29,9 @@ godot --headless -s res://test/sim/dev_sim.gd -- [seconds=15] [natural] [cell_na
   the expectation first, watch it fail, then fix.
 - `dev_cells.json` is written by `test/lab/development/generate_hub.py`; do not edit it by hand.
 
-Two smaller checks run on their own (each exits 1 on failure):
+Smaller checks run on their own (each exits 1 on failure):
+- `hit_feedback.gd` (a few seconds) slashes a minion, hits the player small and big, and kills the minion, and checks
+  that damage numbers, swing/impact/hurt/death sounds and the player's HurtOverlay all happen. It can't judge looks.
 - `dual_grid_after_smash.gd` breaks the walls in `bug3_smash_plain` and compares what is drawn with a fresh refresh.
 - `throw_rock.gd` (about 15 s) throws a rock with the real Throw Rock action into `hearing_rock_behind_wall`
   and checks the noise marker and that the blind rat investigates it.
