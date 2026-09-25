@@ -27,6 +27,9 @@ const PX := ItemSlot.PX
 const MAX_VISIBLE_ROWS := 8
 const CELL_GAP := 4
 const PAGE_WIDTH := 186
+## The page's text sizes: the description, the set's lore, the set line.
+const PAGE_FONTS := {"text": 14, "lore": 12, "set": 13}
+const PAGE_MIN_FONT := 10
 
 ## The parchment look is shared with the other paper screens (Parchment.gd).
 const INK := Parchment.INK
@@ -194,9 +197,16 @@ func _build_page() -> Control:
 	var style := Parchment.page_style()
 	page.add_theme_stylebox_override("panel", style)
 	page.custom_minimum_size.x = PAGE_WIDTH
+	# The words sit in a holder with no size of its own, so a long lore text can't make
+	# the page (and the whole screen) taller; _fit_page shrinks the words instead. Without
+	# it the screen jumped about while scrolling, as each item passed under the mouse.
+	var holder := Control.new()
+	holder.clip_contents = true
+	page.add_child(holder)
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 6)
-	page.add_child(column)
+	column.set_anchors_preset(Control.PRESET_FULL_RECT)
+	holder.add_child(column)
 
 	var picture := Control.new()
 	picture.custom_minimum_size = Vector2(80, 80)
@@ -269,6 +279,19 @@ func show_item(item_id: String) -> void:
 	_page["text"].text = "\"%s\"" % own if own != "" else ("\"%s\"" % set_lore if set_lore != "" else "")
 	_page["lore"].text = set_lore if own != "" and set_lore != "" else ""
 	_page["set"].text = _set_line(set_id)
+	_fit_page()
+
+# Long lore: the smaller words, a step at a time, until it all fits on the page.
+func _fit_page() -> void:
+	var column: Control = _page["name"].get_parent()
+	var room: float = column.get_parent().size.y
+	var shrink := 0
+	while true:
+		for key in PAGE_FONTS:
+			_page[key].add_theme_font_size_override("font_size", maxi(PAGE_MIN_FONT, PAGE_FONTS[key] - shrink))
+		if room <= 0.0 or column.get_combined_minimum_size().y <= room or PAGE_FONTS["text"] - shrink <= PAGE_MIN_FONT:
+			return
+		shrink += 1
 
 func _set_line(set_id: String) -> String:
 	if set_id == "":
