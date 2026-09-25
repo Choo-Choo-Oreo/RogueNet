@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scripts/ui/town/TownStorage.gd" id="1_townstorage"]
 [ext_resource type="Script" path="res://scripts/ui/inventory/InventoryPanel.gd" id="2_inventory"]
 [ext_resource type="Script" path="res://scripts/ui/inventory/StoragePanel.gd" id="3_storage"]
+[ext_resource type="Script" path="res://scripts/ui/MenuScrollButton.gd" id="4_scroll"]
 
 [node name="TownStorage" type="Control"]
 layout_mode = 3
@@ -12,6 +13,27 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_townstorage")
+
+[node name="Backdrop" type="TextureRect" parent="."]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+stretch_mode = 1
+
+[node name="Shade" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 1
@@ -23,34 +45,39 @@ grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
 layout_mode = 2
-theme_override_constants/separation = 14
+theme_override_constants/separation = 8
 
-[node name="Title" type="Label" parent="CenterContainer/VBoxContainer"]
+[node name="TitleRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 30
-text = "STORAGE"
-horizontal_alignment = 1
+
+[node name="BackButton" type="Button" parent="CenterContainer/VBoxContainer/TitleRow"]
+layout_mode = 2
+tooltip_text = "Back to town (Esc)"
+focus_mode = 0
+text = "Back"
+script = ExtResource("4_scroll")
+
+[node name="Title" type="Control" parent="CenterContainer/VBoxContainer/TitleRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Balance" type="Control" parent="CenterContainer/VBoxContainer/TitleRow"]
+layout_mode = 2
 
 [node name="Panels" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 12
 
 [node name="InventoryPanel" type="PanelContainer" parent="CenterContainer/VBoxContainer/Panels"]
 layout_mode = 2
-size_flags_vertical = 0
+size_flags_vertical = 3
 script = ExtResource("2_inventory")
 storage_open = true
 closable = false
 
 [node name="StoragePanel" type="PanelContainer" parent="CenterContainer/VBoxContainer/Panels"]
 layout_mode = 2
-size_flags_vertical = 0
+size_flags_vertical = 3
 script = ExtResource("3_storage")
 
-[node name="BackButton" type="Button" parent="CenterContainer/VBoxContainer"]
-custom_minimum_size = Vector2(220, 50)
-layout_mode = 2
-size_flags_horizontal = 4
-text = "Back"
-
-[connection signal="pressed" from="CenterContainer/VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/TitleRow/BackButton" to="." method="_on_back_button_pressed"]

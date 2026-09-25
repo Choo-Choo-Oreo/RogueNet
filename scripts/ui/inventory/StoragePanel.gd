@@ -1,14 +1,15 @@
 class_name StoragePanel
 extends PanelContainer
 
-## The town storage, dressed like the main menu (parchment on wooden rollers,
-## brown ink). Items drag between here, the bag and the equipment slots;
-## right-click or double-click puts one on, Ctrl+click locks it.
+## The town storage, in the same wooden panel as the inventory, with parchment
+## buttons and a parchment lore page. Items drag between here, the bag and the
+## equipment slots; right-click or double-click puts one on, Shift+click sends it to
+## the bag, Ctrl+click locks it.
 ##
-## - Tabs down the left (TABS) show one group of items, each with how many it
+## - Tabs along the top (TABS) show one group of items, each with how many it
 ##   holds. A tab is worked out from the item's slot or type (ItemDatabase.category),
 ##   nothing is stored for it.
-## - Search filters by name as you type.
+## - Search filters by name as you type (Ctrl+F jumps to it).
 ## - Sort tidies the storage for real (PlayerInventory.sort_storage), merging
 ##   stacks; locked items stay where they are. "Store all" empties the bag into
 ##   storage, except locked items.
@@ -21,15 +22,11 @@ extends PanelContainer
 ## drop into (and a drop anywhere on the grid sends the item into storage).
 
 const UI_DIR := "res://resources/gfx/ui/storage/"
-const MENU_DIR := Parchment.MENU_DIR
 ## Screen pixels per art pixel, as ItemSlot.
 const PX := ItemSlot.PX
 const MAX_VISIBLE_ROWS := 8
 const CELL_GAP := 4
-const TAB_WIDTH := 80
-## How far the chosen tab sticks out towards the grid.
-const TAB_SHIFT := 8
-const PAGE_WIDTH := 210
+const PAGE_WIDTH := 186
 
 ## The parchment look is shared with the other paper screens (Parchment.gd).
 const INK := Parchment.INK
@@ -60,21 +57,16 @@ var _set_view := false
 var _slots: Array[ItemSlot] = []
 var _shown_key := ""
 var _tabs: Array[Button] = []
-var _tab_counts: Array[Label] = []
-var _count: Label
+var _tab_group := ButtonGroup.new()
+var _count: CapacityBar
+var _search_box: LineEdit
 var _scroll: ScrollContainer
 var _list: VBoxContainer
 var _page: Dictionary = {}
 
 
 func _ready() -> void:
-	var style := StyleBoxFlat.new()
-	style.bg_color = InventoryPanel.COLOR_PANEL
-	style.border_color = InventoryPanel.COLOR_PANEL_BORDER
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(4)
-	style.set_content_margin_all(14)
-	add_theme_stylebox_override("panel", style)
+	add_theme_stylebox_override("panel", Parchment.wood_panel())
 	add_to_group("item_details")
 	_build()
 	InventoryPanel.block_clicks(self)
@@ -85,27 +77,10 @@ func _ready() -> void:
 
 func _build() -> void:
 	var column := VBoxContainer.new()
-	column.add_theme_constant_override("separation", 10)
+	column.add_theme_constant_override("separation", 8)
 	add_child(column)
-
-	# the title, on a scroll like the main menu's buttons
-	var title_row := HBoxContainer.new()
-	title_row.add_theme_constant_override("separation", 10)
-	column.add_child(title_row)
-	var title := Parchment.ink_label("Storage", 20)
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	var banner := Parchment.strip(MENU_DIR + "ScrollPaper.png", title)
-	var banner_holder := Control.new()
-	banner_holder.custom_minimum_size = Vector2(220, 20 * PX)
-	banner.set_anchors_preset(Control.PRESET_FULL_RECT)
-	banner_holder.add_child(banner)
-	title_row.add_child(banner_holder)
-	var spacer := Control.new()
-	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title_row.add_child(spacer)
-	_count = InventoryPanel._label("", InventoryPanel.COLOR_DIM, 14)
-	_count.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	title_row.add_child(_count)
+	_count = CapacityBar.new()
+	column.add_child(Parchment.heading("Storage", 18, _count))
 
 	# search, sort, sets, store all
 	var tools := HBoxContainer.new()
@@ -126,6 +101,7 @@ func _build() -> void:
 		_search = text.strip_edges().to_lower()
 		refresh())
 	tools.add_child(search)
+	_search_box = search
 
 	var sort := MenuButton.new()
 	sort.text = "Sort"
@@ -158,20 +134,23 @@ func _build() -> void:
 			ItemSounds.play(self, ItemSounds.REFUSE))
 	tools.add_child(store)
 
-	# tabs | grid | lore page
-	var body := HBoxContainer.new()
-	body.add_theme_constant_override("separation", 6)
-	column.add_child(body)
-	var tab_column := VBoxContainer.new()
-	tab_column.add_theme_constant_override("separation", 4)
-	body.add_child(tab_column)
+	var tab_row := HBoxContainer.new()
+	tab_row.add_theme_constant_override("separation", 4)
+	column.add_child(tab_row)
 	for i in TABS.size():
-		tab_column.add_child(_make_tab(i))
+		tab_row.add_child(_make_tab(i))
+
+	# grid | lore page
+	var body := HBoxContainer.new()
+	body.add_theme_constant_override("separation", 8)
+	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	column.add_child(body)
 
 	_scroll = DropArea.new()
 	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	var cell := ItemSlot.SIZE + CELL_GAP
 	_scroll.custom_minimum_size = Vector2(PlayerInventory.STORAGE_COLUMNS * cell + 10, MAX_VISIBLE_ROWS * cell)
+	_brass_scrollbar(_scroll.get_v_scroll_bar())
 	body.add_child(_scroll)
 	_list = VBoxContainer.new()
 	_list.add_theme_constant_override("separation", 6)
@@ -180,41 +159,31 @@ func _build() -> void:
 
 	body.add_child(_build_page())
 
-	column.add_child(InventoryPanel._label("Drag to move  ·  right-click to equip  ·  Ctrl+click to lock", InventoryPanel.COLOR_DIM, 12))
+	column.add_child(InventoryPanel._label("Drag to move  ·  right-click to equip  ·  Shift+click to take  ·  Ctrl+click to lock  ·  Ctrl+F to search", InventoryPanel.COLOR_DIM, 12))
 
-# A bookmark tab: a small scroll with the group's icon and how many items it holds.
+# A parchment tab with the group's icon and how many items it holds; the chosen one
+# has a gold edge (one ButtonGroup, so only one is down).
 func _make_tab(i: int) -> Button:
 	var tab := Button.new()
-	tab.focus_mode = Control.FOCUS_NONE
-	tab.custom_minimum_size = Vector2(TAB_WIDTH + TAB_SHIFT, 20 * PX)
+	tab.toggle_mode = true
+	tab.button_group = _tab_group
+	tab.button_pressed = i == _tab
+	tab.icon = Parchment.pixel_texture(UI_DIR + TABS[i]["icon"] + ".png")
 	tab.tooltip_text = TABS[i]["name"]
-	for state in ["normal", "hover", "pressed", "hover_pressed", "focus", "disabled"]:
-		tab.add_theme_stylebox_override(state, StyleBoxEmpty.new())
-	var content := HBoxContainer.new()
-	content.alignment = BoxContainer.ALIGNMENT_CENTER
-	content.add_theme_constant_override("separation", 4)
-	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var icon := TextureRect.new()
-	icon.texture = Parchment.pixel_texture(UI_DIR + TABS[i]["icon"] + ".png")
-	icon.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
-	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	content.add_child(icon)
-	var count := Parchment.ink_label("", 14)
-	count.custom_minimum_size.x = 22
-	content.add_child(count)
-	_tab_counts.append(count)
-	var strip := Parchment.strip(UI_DIR + "TabPaperDim.png", content)
-	strip.size = Vector2(TAB_WIDTH, 20 * PX)
-	tab.add_child(strip)
-	tab.set_meta("strip", strip)
+	tab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	Parchment.button_look(tab)
+	for state in ["normal", "hover", "pressed", "hover_pressed"]:
+		var box: StyleBoxFlat = tab.get_theme_stylebox(state)
+		box.content_margin_left = 5
+		box.content_margin_right = 5
+	tab.add_theme_constant_override("h_separation", 4)
+	tab.add_theme_font_size_override("font_size", 14)
 	tab.pressed.connect(func():
 		if _tab != i:
 			_tab = i
 			ItemSounds.play(self, ItemSounds.TAB)
 			refresh()
 			_fade_in())
-	tab.mouse_entered.connect(func(): strip.modulate = Color(1.08, 1.08, 1.08))
-	tab.mouse_exited.connect(func(): strip.modulate = Color.WHITE)
 	_tabs.append(tab)
 	return tab
 
@@ -314,17 +283,13 @@ func _set_line(set_id: String) -> String:
 
 func refresh() -> void:
 	var storage := PlayerInventory.storage
-	_count.text = "%d / %d" % [storage.size() - storage.count(""), storage.size()]
+	_count.set_count(storage.size() - storage.count(""), storage.size())
 	for i in TABS.size():
 		var n := 0
 		for id in storage:
 			if id != "" and _in_tab(id, i) and _found(id):
 				n += 1
-		_tab_counts[i].text = str(n)
-		var strip: Control = _tabs[i].get_meta("strip")
-		var chosen := i == _tab
-		strip.position.x = TAB_SHIFT if chosen else 0
-		strip.get_meta("paper").texture = Parchment.pixel_texture(MENU_DIR + "ScrollPaper.png" if chosen else UI_DIR + "TabPaperDim.png")
+		_tabs[i].text = str(n)
 	var layout := _layout()
 	var key := var_to_str(layout)
 	if key == _shown_key:
@@ -347,6 +312,8 @@ func refresh() -> void:
 			var cell := ItemSlot.new(PlayerInventory.place(PlayerInventory.STORAGE, i))
 			cell.quick_action = PlayerInventory.equip_from
 			cell.quick_hint = "Right-click to equip" if ItemDatabase.item_slot(PlayerInventory.storage[i]) != "" else ""
+			cell.shift_action = func(at: Dictionary): PlayerInventory.send_to(at, PlayerInventory.BAG)
+			cell.shift_hint = "Shift+click to take"
 			grid.add_child(cell)
 			cell.refresh()
 			_slots.append(cell)
@@ -414,6 +381,13 @@ func _section_header(set_id: String) -> Control:
 		row.add_child(bonus)
 	return row
 
+# Ctrl+F: straight to the search box.
+func _unhandled_key_input(event: InputEvent) -> void:
+	if is_visible_in_tree() and event is InputEventKey and event.pressed and event.ctrl_pressed and event.keycode == KEY_F:
+		_search_box.grab_focus()
+		_search_box.select_all()
+		get_viewport().set_input_as_handled()
+
 func _in_tab(item_id: String, tab: int) -> bool:
 	var holds: Array = TABS[tab]["holds"]
 	return holds.is_empty() or holds.has(ItemDatabase.category(item_id))
@@ -424,6 +398,21 @@ func _found(item_id: String) -> bool:
 func _fade_in() -> void:
 	_list.modulate.a = 0.0
 	create_tween().tween_property(_list, "modulate:a", 1.0, 0.15)
+
+# A dark groove with a brass handle, to match the frame's corners.
+static func _brass_scrollbar(bar: ScrollBar) -> void:
+	var groove := StyleBoxFlat.new()
+	groove.bg_color = Color("#140d0c")
+	groove.content_margin_left = 3
+	groove.content_margin_right = 3
+	bar.add_theme_stylebox_override("scroll", groove)
+	bar.add_theme_stylebox_override("scroll_focus", groove)
+	for state in ["grabber", "grabber_highlight", "grabber_pressed"]:
+		var handle := StyleBoxFlat.new()
+		handle.bg_color = {"grabber": GOLD.darkened(0.35), "grabber_highlight": GOLD, "grabber_pressed": GOLD.lightened(0.2)}[state]
+		handle.border_color = OUTLINE
+		handle.set_border_width_all(1)
+		bar.add_theme_stylebox_override(state, handle)
 
 func _tool_button(text: String, icon_name: String, tip: String) -> Button:
 	var button := Button.new()

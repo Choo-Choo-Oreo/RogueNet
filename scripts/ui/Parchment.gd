@@ -3,9 +3,11 @@ extends RefCounted
 
 ## The main menu's parchment look (resources/gfx/ui/main_menu/), for the screens
 ## built in code that match it: the storage, the party wipe's graves. Paper strips
-## between wooden rollers, paper boxes with a dark edge, brown ink.
+## between wooden rollers, paper boxes with a dark edge, brown ink. Also the wooden
+## panels with brass corners the inventory and storage sit in (wood_panel, heading).
 
 const MENU_DIR := "res://resources/gfx/ui/main_menu/"
+const STORAGE_DIR := "res://resources/gfx/ui/storage/"
 ## Screen pixels per art pixel.
 const PX := 2
 const INK := MenuScrollButton.INK
@@ -115,3 +117,35 @@ static func page_style(margin: int = 12) -> StyleBoxFlat:
 	style.set_content_margin_all(margin)
 	return style
 
+## A wooden panel with brass corners and a dark inside (Frame.png, a nine-patch with
+## 8-pixel edges), for a PanelContainer. `padding` is the room inside the wood.
+static func wood_panel(padding: int = 8) -> StyleBoxTexture:
+	var box := StyleBoxTexture.new()
+	box.texture = pixel_texture(STORAGE_DIR + "Frame.png")
+	box.set_texture_margin_all(8 * PX)
+	box.axis_stretch_horizontal = StyleBoxTexture.AXIS_STRETCH_MODE_TILE_FIT
+	box.axis_stretch_vertical = StyleBoxTexture.AXIS_STRETCH_MODE_TILE_FIT
+	box.set_content_margin_all(6 * PX + padding)
+	return box
+
+## A section title on a wooden panel: the words, a brass rule across the rest of the
+## row (Divider.png), then `extra` (a count, a close button) if given.
+static func heading(text: String, font_size: int = 16, extra: Control = null) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	var title := InventoryPanel._label(text, InventoryPanel.COLOR_TEXT, font_size)
+	title.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.6))
+	title.add_theme_constant_override("shadow_offset_y", 2)
+	row.add_child(title)
+	var rule := NinePatchRect.new()
+	rule.texture = pixel_texture(STORAGE_DIR + "Divider.png")
+	rule.patch_margin_left = 6 * PX
+	rule.patch_margin_right = 6 * PX
+	rule.custom_minimum_size = Vector2(12 * PX, 5 * PX)
+	rule.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rule.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(rule)
+	if extra:
+		row.add_child(extra)
+	return row

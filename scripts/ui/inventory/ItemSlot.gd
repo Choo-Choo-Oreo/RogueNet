@@ -6,6 +6,7 @@ extends Panel
 ## slot onto another (Godot's built-in drag and drop: _get_drag_data /
 ## _can_drop_data / _drop_data), or by right-click / double-click, which calls
 ## `quick_action` -- the panel that owns the slot decides what that does.
+## Shift+click calls `shift_action` (bag <-> storage in the town), if it has one.
 ## Ctrl+click locks a bag or storage item (PlayerInventory.toggle_lock).
 ##
 ## The frame shows the item's rarity (resources/gfx/ui/storage/frame_<rarity>.png).
@@ -38,6 +39,8 @@ var at: Dictionary
 var placeholder: Texture2D
 var quick_action: Callable
 var quick_hint := ""
+var shift_action: Callable
+var shift_hint := ""
 
 var _frame := TextureRect.new()
 var _icon := TextureRect.new()
@@ -140,6 +143,9 @@ func _tooltip(item: String) -> String:
 	if data.has("set"):
 		line += ", %s set" % ItemDatabase.set_title(data["set"])
 	var hints := quick_hint
+	if shift_hint != "":
+		hints += ("
+" if hints != "" else "") + shift_hint
 	if at["where"] != PlayerInventory.EQUIP:
 		hints += ("\n" if hints != "" else "") + ("Ctrl+click to unlock" if PlayerInventory.is_locked(at) else "Ctrl+click to lock")
 	return "%s\n%s%s" % [data.get("name", item), line, ("\n" + hints) if hints != "" else ""]
@@ -208,6 +214,11 @@ func _gui_input(event: InputEvent) -> void:
 	if event.button_index == MOUSE_BUTTON_LEFT and event.ctrl_pressed and item != "" and at["where"] != PlayerInventory.EQUIP:
 		PlayerInventory.toggle_lock(at)
 		ItemSounds.play(self, ItemSounds.LOCK)
+		accept_event()
+		return
+	if event.button_index == MOUSE_BUTTON_LEFT and event.shift_pressed and item != "" and shift_action.is_valid():
+		ItemSounds.play_item(self, item)
+		shift_action.call(at)
 		accept_event()
 		return
 	var right_click: bool = event.button_index == MOUSE_BUTTON_RIGHT
