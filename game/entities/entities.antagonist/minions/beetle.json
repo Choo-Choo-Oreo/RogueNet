@@ -1,0 +1,21 @@
+{
+	"tags": ["beast.insect"],
+	"size_tiles": 1,
+	"max_health": 10,
+	"strength": 2,
+	"dexterity": 0,
+	"constitution": 3,
+	"cognitive": 0,
+	"resistances": {},
+	"speed_tiles_per_second": 3.5,
+	"actions": [{"action": "bludgeon", "amount": 3, "interval": 1.5}],
+	"sprite_frames": {
+		"frame_size": [16, 16],
+		"animations": {
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/beetle/beetle/Beetle-Down.png", "frame_count": 4, "speed": 20.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/beetle/beetle/Beetle-Up.png", "frame_count": 4, "speed": 20.0 },
+			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/beetle/beetle/Beetle-Left.png", "frame_count": 4, "speed": 20.0 },
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/beetle/beetle/Beetle-Right.png", "frame_count": 4, "speed": 20.0 }
+		}
+	}
+}

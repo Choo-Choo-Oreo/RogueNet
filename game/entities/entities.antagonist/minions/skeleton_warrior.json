@@ -1,0 +1,22 @@
+{
+	"tags": ["undead.skeleton"],
+	"doors": "open",
+	"size_tiles": 1,
+	"max_health": 10,
+	"strength": 2,
+	"dexterity": 1,
+	"constitution": 2,
+	"cognitive": 1,
+	"resistances": {},
+	"speed_tiles_per_second": 4.0,
+	"actions": [{"action": "slash", "amount": 3, "interval": 1.0}],
+	"sprite_frames": {
+		"frame_size": [16, 16],
+		"animations": {
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/skeleton/skeleton.warrior/SkeletonWarrior-Down.png", "frame_count": 4, "speed": 20.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/skeleton/skeleton.warrior/SkeletonWarrior-Up.png", "frame_count": 4, "speed": 20.0 },
+			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/skeleton/skeleton.warrior/SkeletonWarrior-Left.png", "frame_count": 4, "speed": 20.0 },
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/skeleton/skeleton.warrior/SkeletonWarrior-Right.png", "frame_count": 4, "speed": 20.0 }
+		}
+	}
+}

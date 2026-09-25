@@ -1,0 +1,21 @@
+{
+	"tags": ["beast"],
+	"size_tiles": 1,
+	"max_health": 9,
+	"strength": 2,
+	"dexterity": 1,
+	"constitution": 2,
+	"cognitive": 0,
+	"resistances": {},
+	"speed_tiles_per_second": 4.0,
+	"actions": [{"action": "perditio_touch", "amount": 3, "interval": 1.5}],
+	"sprite_frames": {
+		"frame_size": [16, 16],
+		"animations": {
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/scorpion/scorpion/Scorpion-Down.png", "frame_count": 4, "speed": 20.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/scorpion/scorpion/Scorpion-Up.png", "frame_count": 4, "speed": 20.0 },
+			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/scorpion/scorpion/Scorpion-Left.png", "frame_count": 4, "speed": 20.0 },
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/scorpion/scorpion/Scorpion-Right.png", "frame_count": 4, "speed": 20.0 }
+		}
+	}
+}

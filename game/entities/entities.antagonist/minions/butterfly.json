@@ -1,0 +1,22 @@
+{
+	"tags": ["beast.insect"],
+	"size_tiles": 1,
+	"max_health": 2,
+	"strength": 0,
+	"dexterity": 3,
+	"constitution": 0,
+	"cognitive": 0,
+	"resistances": {},
+	"speed_tiles_per_second": 5.0,
+	"flying": true,
+	"actions": [{"action": "bite", "amount": 1, "interval": 1.2}],
+	"sprite_frames": {
+		"frame_size": [16, 16],
+		"animations": {
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/butterfly/butterfly/Butterfly-Down.png", "frame_count": 4, "speed": 20.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/butterfly/butterfly/Butterfly-Up.png", "frame_count": 4, "speed": 20.0 },
+			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/butterfly/butterfly/Butterfly-Left.png", "frame_count": 4, "speed": 20.0 },
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/butterfly/butterfly/Butterfly-Right.png", "frame_count": 4, "speed": 20.0 }
+		}
+	}
+}

@@ -1,0 +1,22 @@
+{
+	"tags": ["undead.ghoul"],
+	"doors": "open",
+	"size_tiles": 1,
+	"max_health": 12,
+	"strength": 2,
+	"dexterity": 0,
+	"constitution": 2,
+	"cognitive": 0,
+	"resistances": {},
+	"speed_tiles_per_second": 2.5,
+	"actions": [{"action": "bite", "amount": 3, "interval": 1.5}],
+	"sprite_frames": {
+		"frame_size": [16, 16],
+		"animations": {
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/zombie/zombie/Zombie-Down.png", "frame_count": 4, "speed": 20.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/zombie/zombie/Zombie-Up.png", "frame_count": 4, "speed": 20.0 },
+			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/zombie/zombie/Zombie-Left.png", "frame_count": 4, "speed": 20.0 },
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/zombie/zombie/Zombie-Right.png", "frame_count": 4, "speed": 20.0 }
+		}
+	}
+}

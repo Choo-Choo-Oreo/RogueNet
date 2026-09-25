@@ -1,0 +1,19 @@
+{
+	"name": "Voidstar",
+	"slot": "ring",
+	"icon": "res://resources/gfx/ui/icons/items/voidstar_ring.png",
+	"bonus": {
+		"particles": {
+			"amount": 6,
+			"lifetime": 0.8,
+			"colors": ["f0d8ff", "b060ff", "5020a0"],
+			"area": [10, 10],
+			"offset": [0, 0],
+			"direction": [0, -1],
+			"spread": 180.0,
+			"speed": [4, 9],
+			"gravity": [0, 0],
+			"size": [1, 1]
+		}
+	}
+}

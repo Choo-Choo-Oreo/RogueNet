@@ -8,11 +8,15 @@ extends RefCounted
 
 const ITEMS_DIR := "res://game/items"
 
-## The nine equipment slots, in the order the inventory shows them.
-const SLOTS: Array[String] = ["head", "chest", "gloves", "legs", "feet", "neck", "back", "main_hand", "off_hand"]
+## The eleven equipment slots, in the order the inventory shows them.
+const SLOTS: Array[String] = ["head", "chest", "gloves", "legs", "feet", "neck", "back", "main_hand", "off_hand", "ring_1", "ring_2"]
+## An item's "slot" is the kind of slot it goes in. Most slots take the kind of the
+## same name; these share one kind, so a ring fits either ring slot.
+const SLOT_KINDS := {"ring_1": "ring", "ring_2": "ring"}
+## By kind (see slot_kind), so both ring slots are called "Ring".
 const SLOT_NAMES := {
 	"head": "Head", "chest": "Chest", "gloves": "Gloves", "legs": "Legs", "feet": "Feet",
-	"neck": "Neck", "back": "Back", "main_hand": "Main hand", "off_hand": "Off hand",
+	"neck": "Neck", "back": "Back", "main_hand": "Main hand", "off_hand": "Off hand", "ring": "Ring",
 }
 const SET_ORDER: Array[String] = ["heavy_iron", "arcane", "cleric", "necromancer"]
 
@@ -56,7 +60,7 @@ static func _load() -> void:
 			if not file_name.ends_with(".json"):
 				continue
 			var data := JsonOnloading.load_dict(ITEMS_DIR + "/" + folder + "/" + file_name)
-			if not SLOTS.has(data.get("slot", "")):
+			if slots_for(data.get("slot", "")).is_empty():
 				push_error("ItemDatabase: %s has no valid slot" % file_name)
 				continue
 			_items[file_name.get_basename()] = data
@@ -72,8 +76,26 @@ static func get_item(item_id: String) -> Dictionary:
 static func item_name(item_id: String) -> String:
 	return get_item(item_id).get("name", item_id)
 
+## The kind of slot the item goes in ("ring" for either ring slot).
 static func item_slot(item_id: String) -> String:
 	return get_item(item_id).get("slot", "")
+
+## The kind of item an equipment slot takes: "ring" for ring_1 and ring_2, else the slot itself.
+static func slot_kind(slot: String) -> String:
+	return SLOT_KINDS.get(slot, slot)
+
+## The equipment slots that take items of `kind`, in SLOTS order.
+static func slots_for(kind: String) -> Array[String]:
+	var result: Array[String] = []
+	for slot in SLOTS:
+		if slot_kind(slot) == kind:
+			result.append(slot)
+	return result
+
+## What wearing this one item adds ({} for most items): a "bonus" block in the same
+## format as a set's (game/sets/README.md), e.g. a legendary ring's particles.
+static func item_bonus(item_id: String) -> Dictionary:
+	return get_item(item_id).get("bonus", {})
 
 ## All item ids: the four sets first (each in slot order), then everything else.
 static func all_ids() -> Array[String]:
@@ -92,7 +114,7 @@ static func all_ids() -> Array[String]:
 static func _sort_key(item_id: String) -> Array:
 	var item: Dictionary = _items[item_id]
 	var set_index := SET_ORDER.find(item.get("set", ""))
-	return [set_index if set_index >= 0 else SET_ORDER.size(), SLOTS.find(item["slot"]), item_id]
+	return [set_index if set_index >= 0 else SET_ORDER.size(), SLOTS.find(slots_for(item["slot"])[0]), item_id]
 
 static func sheet_path(item_id: String, sheet: String) -> String:
 	return "%s-%s.png" % [get_item(item_id).get("art", ""), sheet]

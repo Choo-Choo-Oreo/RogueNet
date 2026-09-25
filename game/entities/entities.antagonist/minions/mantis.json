@@ -1,0 +1,21 @@
+{
+	"tags": ["beast.insect"],
+	"size_tiles": 1,
+	"max_health": 8,
+	"strength": 2,
+	"dexterity": 3,
+	"constitution": 0,
+	"cognitive": 0,
+	"resistances": {},
+	"speed_tiles_per_second": 5.0,
+	"actions": [{"action": "slash", "amount": 3, "interval": 0.9}],
+	"sprite_frames": {
+		"frame_size": [16, 16],
+		"animations": {
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/mantis/mantis/Mantis-Down.png", "frame_count": 4, "speed": 20.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/mantis/mantis/Mantis-Up.png", "frame_count": 4, "speed": 20.0 },
+			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/mantis/mantis/Mantis-Left.png", "frame_count": 4, "speed": 20.0 },
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/mantis/mantis/Mantis-Right.png", "frame_count": 4, "speed": 20.0 }
+		}
+	}
+}

@@ -12,7 +12,13 @@
 	"monsters": {
 		"rat": 2,
 		"bat": 2,
-		"rat_blind": 1
+		"rat_blind": 1,
+		"goblin": 2,
+		"ant": 1,
+		"beetle": 1,
+		"orc": 1,
+		"spiderling": 1,
+		"mimic": 0.3
 	},
 	"music": "res://resources/sfx/music/Groovy.mp3",
 	"default_door": "none"

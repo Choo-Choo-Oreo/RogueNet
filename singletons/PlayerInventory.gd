@@ -59,9 +59,9 @@ func _set_at(at: Dictionary, item_id: String) -> void:
 			storage[at["key"]] = item_id
 
 ## Whether item_id may sit at `at`: anything fits a bag or storage cell, an
-## equipment slot only takes items made for it.
+## equipment slot only takes items made for its kind (a ring fits either ring slot).
 func fits(item_id: String, at: Dictionary) -> bool:
-	return item_id == "" or at["where"] != EQUIP or ItemDatabase.item_slot(item_id) == at["key"]
+	return item_id == "" or at["where"] != EQUIP or ItemDatabase.item_slot(item_id) == ItemDatabase.slot_kind(at["key"])
 
 ## Dragging from `from` onto `to` swaps the two, so both items have to fit where they land.
 func can_move(from: Dictionary, to: Dictionary) -> bool:
@@ -78,11 +78,20 @@ func move(from: Dictionary, to: Dictionary) -> bool:
 	return true
 
 ## Puts the item at `at` on, and whatever was worn in that slot goes where it came from.
+## With two slots for its kind (rings) it takes the first empty one, else swaps with the first.
 func equip_from(at: Dictionary) -> bool:
 	var item_id := get_at(at)
 	if item_id == "" or at["where"] == EQUIP:
 		return false
-	return move(at, place(EQUIP, ItemDatabase.item_slot(item_id)))
+	var slots := ItemDatabase.slots_for(ItemDatabase.item_slot(item_id))
+	if slots.is_empty():
+		return false
+	var slot := slots[0]
+	for free in slots:
+		if equipped.get(free, "") == "":
+			slot = free
+			break
+	return move(at, place(EQUIP, slot))
 
 ## Moves the item at `at` into the first free cell of `where` (BAG or STORAGE).
 func send_to(at: Dictionary, where: String) -> bool:

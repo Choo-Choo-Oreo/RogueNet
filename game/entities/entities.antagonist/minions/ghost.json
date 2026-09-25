@@ -1,0 +1,23 @@
+{
+	"tags": ["undead.ghostly"],
+	"doors": "phase",
+	"size_tiles": 1,
+	"max_health": 5,
+	"strength": 0,
+	"dexterity": 1,
+	"constitution": 0,
+	"cognitive": 1,
+	"resistances": {},
+	"speed_tiles_per_second": 3.5,
+	"flying": true,
+	"actions": ["perditio_touch"],
+	"sprite_frames": {
+		"frame_size": [16, 16],
+		"animations": {
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/ghost/ghost/Ghost-Down.png", "frame_count": 4, "speed": 20.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/ghost/ghost/Ghost-Up.png", "frame_count": 4, "speed": 20.0 },
+			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/ghost/ghost/Ghost-Left.png", "frame_count": 4, "speed": 20.0 },
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/ghost/ghost/Ghost-Right.png", "frame_count": 4, "speed": 20.0 }
+		}
+	}
+}

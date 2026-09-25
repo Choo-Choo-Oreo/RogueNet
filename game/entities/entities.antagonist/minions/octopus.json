@@ -1,0 +1,21 @@
+{
+	"tags": ["beast"],
+	"size_tiles": 1,
+	"max_health": 8,
+	"strength": 1,
+	"dexterity": 2,
+	"constitution": 1,
+	"cognitive": 1,
+	"resistances": {},
+	"speed_tiles_per_second": 3.5,
+	"actions": [{"action": "bite", "amount": 2, "interval": 1.0}],
+	"sprite_frames": {
+		"frame_size": [16, 16],
+		"animations": {
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/octopus/octopus/Octopus-Down.png", "frame_count": 4, "speed": 20.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/octopus/octopus/Octopus-Up.png", "frame_count": 4, "speed": 20.0 },
+			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/octopus/octopus/Octopus-Left.png", "frame_count": 4, "speed": 20.0 },
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/octopus/octopus/Octopus-Right.png", "frame_count": 4, "speed": 20.0 }
+		}
+	}
+}

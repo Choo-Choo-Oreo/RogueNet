@@ -1,0 +1,19 @@
+{
+	"name": "Ember heart",
+	"slot": "ring",
+	"icon": "res://resources/gfx/ui/icons/items/ember_heart_ring.png",
+	"bonus": {
+		"particles": {
+			"amount": 5,
+			"lifetime": 1.0,
+			"colors": ["fff0a0", "ffb040", "e05020"],
+			"area": [8, 6],
+			"offset": [0, 2],
+			"direction": [0, -1],
+			"spread": 20.0,
+			"speed": [5, 10],
+			"gravity": [0, -3],
+			"size": [1, 1]
+		}
+	}
+}

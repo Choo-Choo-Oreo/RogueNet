@@ -67,7 +67,7 @@ func refresh() -> void:
 
 func _tooltip(item: String) -> String:
 	if item == "":
-		return ItemDatabase.SLOT_NAMES[at["key"]] + ": empty" if at["where"] == PlayerInventory.EQUIP else ""
+		return ItemDatabase.SLOT_NAMES[ItemDatabase.slot_kind(at["key"])] + ": empty" if at["where"] == PlayerInventory.EQUIP else ""
 	var data := ItemDatabase.get_item(item)
 	var line: String = ItemDatabase.SLOT_NAMES.get(data.get("slot", ""), "")
 	if data.has("set"):

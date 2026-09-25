@@ -2,6 +2,6 @@
 	"room_count": { "min": 30, "max": 45 },
 	"default_door": "none",
 	"tag_weights": { "corridor": 0.7, "maze": 0.6, "killzone": 0.5, "peaceful": 0.7 },
-	"monsters": { "rat_blind": 3, "leech": 2, "bat": 2 },
+	"monsters": { "rat_blind": 3, "leech": 2, "bat": 2, "slime": 2, "toad": 1, "beetle": 1, "dragonfly": 1 },
 	"music": "res://resources/sfx/music/Groovy.mp3"
 }
