@@ -3,5 +3,8 @@
 	"slot": "off_hand",
 	"set": "poacher",
 	"art": "res://resources/gfx/gear/off_hand/poacher/PoacherTorch",
-	"icon": "res://resources/gfx/ui/icons/items/poacher_torch.png"
+	"icon": "res://resources/gfx/ui/icons/items/poacher_torch.png",
+	"glow_radius": 128.0,
+	"bright_fraction": 0.5,
+	"glow_color": [1, 1, 1, 1]
 }

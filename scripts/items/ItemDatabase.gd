@@ -79,6 +79,16 @@ static func item_slot(item_id: String) -> String:
 static func is_cosmetic(item_id: String) -> bool:
 	return not get_item(item_id).has("actions")
 
+## The light a wearer gives off: the first item in their hands (main hand, then off hand) with a
+## glow_radius, or {} when neither hand holds a light. worn is {slot: item id}, as
+## PlayerInventory.worn() and NetworkSync.peer_equipment hold it.
+static func light_of(worn: Dictionary) -> Dictionary:
+	for slot in ["main_hand", "off_hand"]:
+		var item := get_item(str(worn.get(slot, "")))
+		if item.has("glow_radius"):
+			return item
+	return {}
+
 ## All item ids: the four sets first (each in slot order), then everything else.
 static func all_ids() -> Array[String]:
 	_load()

@@ -3,5 +3,8 @@
 	"slot": "off_hand",
 	"art": "res://resources/gfx/fallbacks/FallbackTorch",
 	"overlay": "res://resources/gfx/fallbacks/FallbackTorchFlame.json",
-	"icon": "res://resources/gfx/fallbacks/fallback_torch.png"
+	"icon": "res://resources/gfx/fallbacks/fallback_torch.png",
+	"glow_radius": 96.0,
+	"bright_fraction": 0.25,
+	"glow_color": [1, 1, 1, 1]
 }
