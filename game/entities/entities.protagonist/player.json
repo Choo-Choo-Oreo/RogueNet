@@ -5,5 +5,5 @@
 	"constitution": 1,
 	"cognitive": 0,
 	"resistances": {},
-	"actions": ["slash", {"action": "arrow_shot", "interval": 0.8}, {"action": "entropia_bolt", "interval": 0.6}, "taunt", "throw_rock"]
+	"actions": ["taunt", "throw_rock"]
 }

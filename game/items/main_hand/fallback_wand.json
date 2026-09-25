@@ -2,5 +2,6 @@
 	"name": "Wand",
 	"slot": "main_hand",
 	"art": "res://resources/gfx/fallbacks/FallbackWand",
-	"icon": "res://resources/gfx/fallbacks/fallback_wand.png"
+	"icon": "res://resources/gfx/fallbacks/fallback_wand.png",
+	"actions": [{ "action": "entropia_bolt", "interval": 0.6 }]
 }

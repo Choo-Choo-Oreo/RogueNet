@@ -2,5 +2,6 @@
 	"name": "Bow",
 	"slot": "main_hand",
 	"art": "res://resources/gfx/fallbacks/FallbackBow",
-	"icon": "res://resources/gfx/fallbacks/fallback_bow.png"
+	"icon": "res://resources/gfx/fallbacks/fallback_bow.png",
+	"actions": [{ "action": "arrow_shot", "interval": 0.8 }]
 }

@@ -1,0 +1,12 @@
+{
+	"sprite_frames": {
+		"frame_size": [16, 16],
+		"animations": {
+			"Front": { "texture": "res://resources/gfx/fallbacks/FallbackTorchFlame-Down.png", "frame_count": 8, "speed": 10.0 },
+			"FrontRight": { "texture": "res://resources/gfx/fallbacks/FallbackTorchFlame-DownRight.png", "frame_count": 8, "speed": 10.0 },
+			"Side": { "texture": "res://resources/gfx/fallbacks/FallbackTorchFlame-Right.png", "frame_count": 8, "speed": 10.0 },
+			"BackRight": { "texture": "res://resources/gfx/fallbacks/FallbackTorchFlame-UpRight.png", "frame_count": 8, "speed": 10.0 },
+			"Back": { "texture": "res://resources/gfx/fallbacks/FallbackTorchFlame-Up.png", "frame_count": 8, "speed": 10.0 }
+		}
+	}
+}
