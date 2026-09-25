@@ -22,17 +22,25 @@ const VOICE_OK := 0
 const MAX_PACKET_BYTES := 8192
 ## A speaker counts as talking until this long after their last packet.
 const SPEAKING_TIMEOUT_MSEC := 300
-## How far talking carries for minions' hearing (a footstep is 1.0, a thrown rock 3.0).
-const VOICE_LOUDNESS := 2.0
-## At most one voice noise this often while talking.
+## How far talking carries for minions' hearing goes with how loud the player talks: the
+## voice level (RMS, in dB under the loudest the mic can record) on a straight line from
+## QUIET_DB (MIN_VOICE_LOUDNESS, a whisper) to LOUD_DB (MAX_VOICE_LOUDNESS, yelling). Quieter
+## than QUIET_DB is background hiss and makes no noise. A footstep is loudness 1.0, a rock 3.0.
+const QUIET_DB := -45.0
+const LOUD_DB := -6.0
+const MIN_VOICE_LOUDNESS := 1.0
+const MAX_VOICE_LOUDNESS := 10.0
+## A chunk with this share of its samples at the mic's limit is peaking: MAX_VOICE_LOUDNESS.
+const CLIPPED_FRACTION := 0.02
+## At most one voice noise this often while talking, as loud as the loudest bit since the last.
 const VOICE_NOISE_SECONDS := 0.5
-## Peak level (0..1) under which a voice packet is background hiss, not talking.
-const VOICE_NOISE_THRESHOLD := 0.05
 
 var _sample_rate := 24000
 var _players: Dictionary = {}     # peer_id -> AudioStreamPlayer
 var _last_heard: Dictionary = {}  # peer_id -> msec of their last packet
 var _next_noise_msec := 0
+## The loudest voice level (dB) not yet made into a noise; -INF when there is none.
+var _loudest_db := -INF
 
 func _ready() -> void:
 	if SteamManager.online:
@@ -58,6 +66,7 @@ func _process(_delta: float) -> void:
 	# Read every frame, not just while V is held: Steam still has the last bit buffered after
 	# the key goes up, and says NOT_RECORDING / NO_DATA when there is nothing.
 	_send_available_voice()
+	_make_noise()
 	var now := Time.get_ticks_msec()
 	for peer_id in _last_heard.keys():
 		if now - _last_heard[peer_id] > SPEAKING_TIMEOUT_MSEC:
@@ -87,8 +96,7 @@ func _send_available_voice() -> void:
 	_note_speaking(me)
 	# Our own voice is decoded only for the minions' ears (and loopback), never played.
 	var pcm := _decompress(data)
-	if _peak(pcm) >= VOICE_NOISE_THRESHOLD:
-		_make_noise()
+	_loudest_db = maxf(_loudest_db, _level_db(pcm))
 	if loopback:
 		_play(me, pcm)
 	if multiplayer.get_peers().is_empty():
@@ -98,17 +106,42 @@ func _send_available_voice() -> void:
 	else:
 		report_voice.rpc_id(1, data)
 
-## Talking where minions are: a noise at this player, like a footstep (PlayerController).
+## Talking where minions are: a noise at this player, like a footstep (PlayerController),
+## as loud as the loudest the player talked since the last one.
 func _make_noise() -> void:
 	var now := Time.get_ticks_msec()
-	if now < _next_noise_msec:
+	if now < _next_noise_msec or _loudest_db < QUIET_DB:
 		return
+	var loudness := voice_loudness(_loudest_db)
+	_loudest_db = -INF
 	var scene := get_tree().current_scene
 	var me: Node2D = scene.get_node_or_null("Player/" + str(multiplayer.get_unique_id())) if scene else null
 	if me == null:
 		return
 	_next_noise_msec = now + int(VOICE_NOISE_SECONDS * 1000.0)
-	NetworkSync.report_noise(me.global_position, VOICE_LOUDNESS)
+	NetworkSync.report_noise(me.global_position, loudness)
+
+## A voice level (dB) as a noise loudness, see QUIET_DB.
+static func voice_loudness(db: float) -> float:
+	var t := clampf(inverse_lerp(QUIET_DB, LOUD_DB, db), 0.0, 1.0)
+	return lerpf(MIN_VOICE_LOUDNESS, MAX_VOICE_LOUDNESS, t)
+
+## How loud a chunk of voice is: its RMS in dB under the loudest the mic can record (0 dB).
+## A chunk peaking the mic (CLIPPED_FRACTION of it at the limit) counts as 0 dB.
+static func _level_db(pcm: PackedByteArray) -> float:
+	var count := pcm.size() / 2
+	if count == 0:
+		return -INF
+	var sum := 0.0
+	var clipped := 0
+	for i in count:
+		var sample := pcm.decode_s16(i * 2)
+		sum += float(sample * sample)
+		if absi(sample) >= 32767:
+			clipped += 1
+	if clipped >= count * CLIPPED_FRACTION:
+		return 0.0
+	return linear_to_db(sqrt(sum / count) / 32768.0)
 
 # --- The host: pass it on to everyone in the same place. Channel 1, so voice never waits
 # behind the game's own messages on channel 0.
@@ -180,12 +213,6 @@ func _player_for(peer_id: int) -> AudioStreamPlayer:
 		player.play()
 		_players[peer_id] = player
 	return _players[peer_id]
-
-static func _peak(pcm: PackedByteArray) -> float:
-	var peak := 0
-	for i in range(0, pcm.size(), 2):
-		peak = maxi(peak, absi(pcm.decode_s16(i)))
-	return peak / 32768.0
 
 func _note_speaking(peer_id: int) -> void:
 	var was_speaking := _last_heard.has(peer_id)
