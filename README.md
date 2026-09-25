@@ -61,7 +61,8 @@ Notes:
 - Patrol (no JSON, every minion): while a player is in its room or a room next to it, an
   unalerted minion walks at half speed between random spots within 8 tiles of where it stands
   (never leaving the room), resting 1.5 to 4 s at each. With no player near it stands still.
-  After an alert ends, where it stands becomes its new home.
+  After an alert ends, where it stands becomes its new home. Packmates (`pack`) patrol as a
+  herd: the lowest-id one leads, the others pick spots within 3 tiles of its goal.
 - `flying` (optional, default `false`) — set `true` for minions that fly
   (bat, flying hamsters). Terrain (water, lava, rough ground) never slows
   them, their routes ignore terrain cost, and their idle animation never
