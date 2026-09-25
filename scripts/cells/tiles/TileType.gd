@@ -28,6 +28,10 @@ const TERRAIN_SPEED := {
 @export var glow_radius := 0.0
 @export var glow_color := Color.WHITE
 
+## Liquids only (see Wading): how much of a body wading in it shows below the surface,
+## 0 hidden (lava) to 1 clear.
+@export_range(0.0, 1.0) var see_through := 0.45
+
 func move_speed() -> float:
 	return TERRAIN_SPEED[terrain]
 
@@ -55,6 +59,7 @@ func load_from_data(data: Dictionary) -> void:
 	orientable = data.get("orientable", false)
 	glow_radius = data.get("glow_radius", 0.0)
 	overlay_density = data.get("overlay_density", 0.2)
+	see_through = data.get("see_through", 0.45)
 
 func load_from_file(path: String) -> void:
 	load_from_data(JsonOnloading.load_dict(path))

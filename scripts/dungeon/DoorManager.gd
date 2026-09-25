@@ -16,6 +16,10 @@ extends Node2D
 ## drawn as up to three sprites per piece: frame (posts, picked by the wall the
 ## door stands in), leaves (the sliding halves, picked by the door's tier, the
 ## only layer that animates) and overlay (the lintel, above creatures).
+##
+## Sound: when a door starts opening or closing, every peer plays
+## resources/sfx/effects/doors/<type>_open.wav / _close.wav at the door, falling back to the
+## type's first word (wood_fold -> wood_open.wav). A type with no file is silent.
 
 const SHADING_MATERIAL := preload("res://resources/shaders/normal_lit_material.tres")
 const TILE := 16
@@ -33,6 +37,7 @@ const OVERLAY_Z := 1800
 const LAYER_INTERVAL := 0.05
 const CLOSE_DELAY := 2.0
 const CHECK_INTERVAL := 0.25
+const SFX_DIR := "res://resources/sfx/effects/doors/"
 
 var _art := {}       # "type:width:tier:wall" -> {"layers": [{"texture": CanvasTexture, "animated": bool, "overlay": bool}], "pieces": Dictionary, "frames": int, "frame_size": Vector2i, "own_cell_row": int}
 var _visuals: Array = []  # [{"door": Door, "sprites": Array, "frame": float, "shown": int}]
@@ -67,7 +72,7 @@ func build() -> void:
 				sprite.set_meta("overlay", layer["overlay"])
 				add_child(sprite)
 				sprites.append(sprite)
-		var visual := {"door": door, "sprites": sprites, "frame": 0.0, "shown": -1}
+		var visual := {"door": door, "sprites": sprites, "frame": 0.0, "shown": -1, "was_open": door.is_open}
 		_show_frame(visual, 0)
 		_visuals.append(visual)
 
@@ -154,6 +159,9 @@ func _process(delta: float) -> void:
 		_update_layering()
 	for visual in _visuals:
 		var door: DoorRegistry.Door = visual["door"]
+		if door.is_open != visual["was_open"]:
+			visual["was_open"] = door.is_open
+			_play_sound(visual)
 		var last: float = _art[_art_key(door)]["frames"] - 1
 		var target := last if door.is_open else 0.0
 		if visual["frame"] != target:
@@ -190,6 +198,26 @@ func _show_frame(visual: Dictionary, frame: int) -> void:
 		var size: Vector2i = sprite.get_meta("frame_size")
 		var column: int = frame if sprite.get_meta("animated") else 0
 		sprite.region_rect = Rect2(column * size.x, sprite.get_meta("atlas_y"), size.x, size.y)
+
+func _play_sound(visual: Dictionary) -> void:
+	var door: DoorRegistry.Door = visual["door"]
+	var path := sound_path(door.type, door.is_open)
+	if path == "":
+		return
+	var middle := Vector2.ZERO
+	for cell in door.cells:
+		middle += (Vector2(cell) + Vector2(0.5, 0.5)) * TILE
+	middle /= maxf(door.cells.size(), 1)
+	# the sound lasts as long as the door moves (a boss door takes over a second)
+	SoundPlayer.play(self, path, {"at": middle, "jitter": 0.05, "max_length": door.open_seconds + 0.4, "volume_db": -4.0})
+
+## The door type's open or close sound (see the top of this file), or "" if it has none.
+static func sound_path(type: String, open: bool) -> String:
+	var action := "_open.wav" if open else "_close.wav"
+	for name in [type, type.get_slice("_", 0)]:
+		if ResourceLoader.exists(SFX_DIR + name + action):
+			return SFX_DIR + name + action
+	return ""
 
 func _is_authority() -> bool:
 	return multiplayer.multiplayer_peer == null or multiplayer.is_server()

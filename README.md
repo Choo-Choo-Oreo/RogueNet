@@ -207,6 +207,11 @@ JSON. DungeonMaker keeps it when re-saving.)
   count toward that; older tiles were made under a 6-color cap) —
   regenerate normal maps after any wall/floor art edit.
 - Naming is subject-first: `wall_forest_dense`, not `wall_dense_forest`.
+- A floor is a liquid when `resources/sfx/effects/<name without floor_>/enter.wav`
+  exists (see that folder's README). Bodies wading in it sink, and below the surface
+  take the tile art's most common colour, with a rim, droplets and rings in its lightest
+  colour made paler (`scripts/entities/Wading.gd`). `see_through` (0-1, default 0.45)
+  says how much of the legs shows below the surface: water 0.45, acid 0.3, lava 0.12.
 - Wall/floor pairs share one 6-colour palette (`wall_smooth_cave` + `floor_smooth_cave`, added 2026-09-24: water-worn cave rock, a smooth sibling of `wall_rough_cave`; the wall reuses the rough cave's autotile mask, the floor reuses the dirt floor's rounded mask so both blend the same way).
 
 ### Items — `game/items/<folder>/<id>.json`

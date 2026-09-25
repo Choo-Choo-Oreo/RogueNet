@@ -1,8 +1,9 @@
 shader_type canvas_item;
 
-// A creature standing in water (Wading.gd): drawn a little lower, and everything below the
-// water's surface is tinted and see-through, with a pale rim where the surface meets the
-// body. The surface wobbles a pixel up and down along its length. Gear layers use their
+// A creature standing in a liquid (Wading.gd): drawn a little lower, and everything below the
+// surface is tinted and see-through, with a pale rim where the surface meets the body.
+// "water", "foam", "tint" and "underwater_alpha" are set per liquid (Wading.liquid_look),
+// so lava and acid use them too; the defaults below are water's. The surface wobbles a pixel up and down along its length. Gear layers use their
 // body's material (use_parent_material), so they sink with it. amount = 0 is dry ground.
 
 uniform float amount : hint_range(0.0, 1.0) = 0.0;

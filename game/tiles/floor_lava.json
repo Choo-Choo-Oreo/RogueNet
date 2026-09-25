@@ -9,5 +9,6 @@
 	"overlay_density": 0.2,
 	"glow_radius": 64.0,
 	"glow_color": [0.87451, 0.443137, 0.14902, 1],
+	"see_through": 0.12,
 	"marker_color": [0.87451, 0.443137, 0.14902, 1]
 }
