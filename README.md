@@ -226,7 +226,9 @@ JSON. DungeonMaker keeps it when re-saving.)
   `main_hand`, `off_hand`.
 - `art` — the worn sheets' path minus the `-<Direction>.png` ending. The game
   adds `-Down`, `-DownRight`, `-Right`, `-UpRight` and `-Up`: 4 frames of
-  16x16 each, lined up with the Human's walk cycle. Left-facing views are the
+  16x16 each, lined up with the Human's walk cycle. In `-Right`, frames 1 and
+  3 are the strides: the body dips 1 px, so every piece sits 1 px lower there
+  (legs and feet follow the stride pose). Left-facing views are the
   right-facing art mirrored. Which slots draw over or behind the body for
   each direction is `DRAW_ORDER` in `scripts/items/ItemDatabase.gd`.
 - `set` — optional; storage lists items set by set (`heavy_iron`, `arcane`,
