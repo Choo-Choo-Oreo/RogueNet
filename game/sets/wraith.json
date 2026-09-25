@@ -1,0 +1,25 @@
+{
+	"bonus": {
+		"trail": {
+			"texture": "res://resources/gfx/effects/effects.sets/WraithFootprints.png",
+			"frame_count": 1,
+			"speed": 1.0,
+			"rotate": true,
+			"lifetime": 1.5,
+			"fade": 1.5
+		},
+		"particles": {
+			"amount": 6,
+			"lifetime": 1.6,
+			"colors": ["a0fff0", "40e0d0", "1a3a44"],
+			"area": [12, 10],
+			"offset": [0, 2],
+			"direction": [0, -1],
+			"spread": 60.0,
+			"speed": [2, 5],
+			"gravity": [0, -2],
+			"size": [1, 2],
+			"behind": true
+		}
+	}
+}

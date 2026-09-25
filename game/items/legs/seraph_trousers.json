@@ -1,0 +1,7 @@
+{
+	"name": "Seraph trousers",
+	"slot": "legs",
+	"set": "seraph",
+	"art": "res://resources/gfx/gear/legs/seraph/SeraphTrousers",
+	"icon": "res://resources/gfx/ui/icons/items/seraph_trousers.png"
+}

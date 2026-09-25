@@ -1,0 +1,7 @@
+{
+	"name": "Archmage's gloves",
+	"slot": "gloves",
+	"set": "archmage",
+	"art": "res://resources/gfx/gear/gloves/archmage/ArchmageGloves",
+	"icon": "res://resources/gfx/ui/icons/items/archmage_gloves.png"
+}

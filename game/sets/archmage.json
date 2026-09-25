@@ -1,0 +1,23 @@
+{
+	"bonus": {
+		"aura": {
+			"texture": "res://resources/gfx/effects/effects.sets/ArchmagePentagram.png",
+			"frame_size": [32, 32],
+			"frame_count": 8,
+			"speed": 10.0,
+			"offset": [0, 4]
+		},
+		"particles": {
+			"amount": 8,
+			"lifetime": 1.0,
+			"colors": ["fff0ff", "ff90ff", "e040ff"],
+			"area": [14, 14],
+			"offset": [0, 0],
+			"direction": [0, -1],
+			"spread": 180.0,
+			"speed": [3, 8],
+			"gravity": [0, 0],
+			"size": [1, 1]
+		}
+	}
+}

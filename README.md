@@ -224,7 +224,10 @@ JSON. DungeonMaker keeps it when re-saving.)
   right-facing art mirrored. Which slots draw over or behind the body for
   each direction is `DRAW_ORDER` in `scripts/items/ItemDatabase.gd`.
 - `set` — optional; storage lists items set by set (`heavy_iron`, `arcane`,
-  `cleric`, `necromancer`, then everything else).
+  `cleric`, `necromancer`, then everything else). Wearing a whole set (head,
+  chest, gloves, legs and feet; weapons and amulet don't count) turns on its
+  full-set bonus, if `game/sets/<set>.json` gives it one: an aura under the
+  feet, a trail left on the floor, particles. See `game/sets/README.md`.
 - `icon` — optional 16x16 PNG for inventory slots, kept in
   `resources/gfx/ui/icons/items/<item id>.png`. Without one, the slot
   shows the front view cropped to its pixels, which is too small to read for

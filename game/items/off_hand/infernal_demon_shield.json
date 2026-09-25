@@ -1,0 +1,7 @@
+{
+	"name": "Demon-face shield",
+	"slot": "off_hand",
+	"set": "infernal",
+	"art": "res://resources/gfx/gear/off_hand/infernal/InfernalDemonShield",
+	"icon": "res://resources/gfx/ui/icons/items/infernal_demon_shield.png"
+}

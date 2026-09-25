@@ -1,0 +1,7 @@
+{
+	"name": "Wraith jerkin",
+	"slot": "chest",
+	"set": "wraith",
+	"art": "res://resources/gfx/gear/chest/wraith/WraithJerkin",
+	"icon": "res://resources/gfx/ui/icons/items/wraith_jerkin.png"
+}

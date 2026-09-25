@@ -1,0 +1,7 @@
+{
+	"name": "Seraph gloves",
+	"slot": "gloves",
+	"set": "seraph",
+	"art": "res://resources/gfx/gear/gloves/seraph/SeraphGloves",
+	"icon": "res://resources/gfx/ui/icons/items/seraph_gloves.png"
+}

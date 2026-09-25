@@ -1,0 +1,7 @@
+{
+	"name": "Molten heart",
+	"slot": "neck",
+	"set": "infernal",
+	"art": "res://resources/gfx/gear/amulets/infernal/InfernalHeartAmulet",
+	"icon": "res://resources/gfx/ui/icons/items/infernal_heart_amulet.png"
+}
