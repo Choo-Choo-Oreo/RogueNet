@@ -3,8 +3,8 @@ extends PanelContainer
 
 ## The town storage, in the same wooden panel as the inventory, with parchment
 ## buttons and a parchment lore page. Items drag between here, the bag and the
-## equipment slots; right-click or double-click puts one on, Shift+click sends it to
-## the bag, Ctrl+click locks it.
+## equipment slots; right-click or double-click puts one on, Shift+click (or a Shift
+## sweep across several) sends it to the bag, Ctrl+click locks it.
 ##
 ## - Tabs along the top (TABS) show one group of items, each with how many it
 ##   holds. A tab is worked out from the item's slot or type (ItemDatabase.category),
@@ -162,7 +162,7 @@ func _build() -> void:
 
 	body.add_child(_build_page())
 
-	column.add_child(InventoryPanel._label("Drag to move  ·  right-click to equip  ·  Shift+click to take  ·  Ctrl+click to lock  ·  Ctrl+F to search", InventoryPanel.COLOR_DIM, 12))
+	column.add_child(InventoryPanel._label("Drag to move  ·  right-click to equip  ·  Shift+click or sweep to take  ·  Ctrl+click to lock  ·  Ctrl+F to search", InventoryPanel.COLOR_DIM, 12))
 
 # A parchment tab with the group's icon and how many items it holds; the chosen one
 # has a gold edge (one ButtonGroup, so only one is down).
@@ -336,7 +336,7 @@ func refresh() -> void:
 			cell.quick_action = PlayerInventory.equip_from
 			cell.quick_hint = "Right-click to equip" if ItemDatabase.item_slot(PlayerInventory.storage[i]) != "" else ""
 			cell.shift_action = func(at: Dictionary): PlayerInventory.send_to(at, PlayerInventory.BAG)
-			cell.shift_hint = "Shift+click to take"
+			cell.shift_hint = "Shift+click to take (hold and sweep for more)"
 			grid.add_child(cell)
 			cell.refresh()
 			_slots.append(cell)

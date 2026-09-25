@@ -6,7 +6,8 @@ extends Panel
 ## slot onto another (Godot's built-in drag and drop: _get_drag_data /
 ## _can_drop_data / _drop_data), or by right-click / double-click, which calls
 ## `quick_action` -- the panel that owns the slot decides what that does.
-## Shift+click calls `shift_action` (bag <-> storage in the town), if it has one.
+## Shift+click calls `shift_action` (bag <-> storage in the town), if it has one. Keeping
+## Shift and the button held and sweeping across other slots does the same to each of them.
 ## Ctrl+click locks a bag or storage item (PlayerInventory.toggle_lock).
 ##
 ## The frame shows the item's rarity (resources/gfx/ui/storage/frame_<rarity>.png).
@@ -57,10 +58,16 @@ var _time := randf() * TAU
 var _rank := 0
 
 static var _frames: Dictionary = {}
+## A Shift sweep in progress: the slot that follows the mouse for it (the one it started on,
+## or another if the storage rebuilt its cells meanwhile), and the places already sent this
+## sweep, so each goes once.
+static var _sweep_from: ItemSlot = null
+static var _swept: Dictionary = {}
 
 func _init(place: Dictionary, empty_icon: Texture2D = null) -> void:
 	at = place
 	placeholder = empty_icon
+	add_to_group("item_slot")
 	custom_minimum_size = Vector2(SIZE, SIZE)
 	clip_contents = true
 	add_theme_stylebox_override("panel", StyleBoxEmpty.new())
@@ -207,6 +214,27 @@ func bump() -> void:
 
 # ---------------------------------------------------------------- input
 
+# The sweep follows the mouse here, not in _gui_input: that only reaches the slot the press
+# started on, which a storage rebuild can free halfway through.
+func _input(event: InputEvent) -> void:
+	if _sweep_from != self:
+		return
+	if event is InputEventMouseMotion and event.shift_pressed:
+		_sweep_to(event.position)
+	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
+		_sweep_from = null
+		_swept.clear()
+
+func _exit_tree() -> void:
+	if _sweep_from != self:
+		return
+	_sweep_from = null
+	for slot in get_tree().get_nodes_in_group("item_slot"):
+		if slot != self and not slot.is_queued_for_deletion():
+			_sweep_from = slot
+			return
+	_swept.clear()
+
 func _gui_input(event: InputEvent) -> void:
 	if not (event is InputEventMouseButton and event.pressed):
 		return
@@ -216,9 +244,10 @@ func _gui_input(event: InputEvent) -> void:
 		ItemSounds.play(self, ItemSounds.LOCK)
 		accept_event()
 		return
-	if event.button_index == MOUSE_BUTTON_LEFT and event.shift_pressed and item != "" and shift_action.is_valid():
-		ItemSounds.play_item(self, item)
-		shift_action.call(at)
+	if event.button_index == MOUSE_BUTTON_LEFT and event.shift_pressed and shift_action.is_valid():
+		_sweep_from = self
+		_swept.clear()
+		_shift_send()
 		accept_event()
 		return
 	var right_click: bool = event.button_index == MOUSE_BUTTON_RIGHT
@@ -228,9 +257,27 @@ func _gui_input(event: InputEvent) -> void:
 		quick_action.call(at)
 		accept_event()
 
+## Shift+click, or a Shift sweep passing over: sends this slot's item across (once per sweep).
+func _shift_send() -> void:
+	var item := item_id()
+	var key := str(at)
+	if item == "" or _swept.has(key):
+		return
+	_swept[key] = true
+	ItemSounds.play_item(self, item)
+	shift_action.call(at)
+
+# Sends whichever slot is under the mouse (a position on the screen), if it can send.
+func _sweep_to(mouse: Vector2) -> void:
+	for slot in get_tree().get_nodes_in_group("item_slot"):
+		var inside := Rect2(Vector2.ZERO, slot.size).has_point(slot.get_global_transform_with_canvas().affine_inverse() * mouse)
+		if inside and slot.shift_action.is_valid() and slot.is_visible_in_tree() and not slot.is_queued_for_deletion():
+			slot._shift_send()
+			return
+
 func _get_drag_data(_at_position: Vector2) -> Variant:
 	var item := item_id()
-	if item == "":
+	if item == "" or _sweep_from != null:
 		return null
 	ItemSounds.play_item(self, item)
 	var preview := TextureRect.new()

@@ -8,7 +8,7 @@ extends PanelContainer
 ##
 ## Right-click or double-click: a bag item goes on, a worn item comes off -- into the
 ## storage when `storage_open` (the town), else into the bag. In the town, Shift+click
-## sends a bag item to the storage.
+## sends a bag item to the storage, and a Shift sweep across the bag sends each one.
 
 signal close_requested
 
@@ -98,11 +98,11 @@ func _build() -> void:
 		cell.quick_action = _quick_action
 		if storage_open:
 			cell.shift_action = func(at: Dictionary): PlayerInventory.send_to(at, PlayerInventory.STORAGE)
-			cell.shift_hint = "Shift+click to store"
+			cell.shift_hint = "Shift+click to store (hold and sweep for more)"
 		bag_grid.add_child(cell)
 		_slots.append(cell)
 
-	var hint := "Right-click: wear or take off  ·  Shift+click: store" if storage_open else "Right-click: wear or take off  ·  drop gear on yourself"
+	var hint := "Right-click: wear or take off  ·  Shift+click or sweep: store" if storage_open else "Right-click: wear or take off  ·  drop gear on yourself"
 	column.add_child(_label(hint, COLOR_DIM, 12))
 
 func _slot_column(slots: Array[String]) -> VBoxContainer:
