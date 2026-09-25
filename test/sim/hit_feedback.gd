@@ -59,7 +59,8 @@ func _process(_delta: float) -> bool:
 			_expect(Player.voices(Sounds.attack_sound(slash)) > 0, "the slash made no swing sound")
 		3:
 			_expect(_count_numbers() > 0, "hitting the minion showed no damage number")
-			_expect(Player.voices(Sounds.DIR + "impact/" + Sounds.material(_minion.tags) + ".wav") > 0 or _minion.stats.current_health <= 0, "hitting the minion made no impact sound")
+			# Started at all, not still sounding: an impact is ~0.1 s and has ended by this step.
+			_expect(Player._last.has(Sounds.DIR + "impact/" + Sounds.material(_minion.tags) + ".wav") or _minion.stats.current_health <= 0, "hitting the minion made no impact sound")
 			var hurt_before: int = _player.stats.current_health
 			root.get_node("NetworkSync").relay_player_hit(int(str(_player.name)), 1, "Physical", "bite")
 			_expect(_player.stats.current_health == hurt_before - 1, "the player took no damage")
