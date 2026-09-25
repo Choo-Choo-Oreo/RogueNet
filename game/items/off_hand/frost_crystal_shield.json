@@ -3,5 +3,6 @@
 	"slot": "off_hand",
 	"set": "frost",
 	"art": "res://resources/gfx/gear/off_hand/frost/FrostCrystalShield",
-	"icon": "res://resources/gfx/ui/icons/items/frost_crystal_shield.png"
+	"icon": "res://resources/gfx/ui/icons/items/frost_crystal_shield.png",
+	"sound": "glass"
 }

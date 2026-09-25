@@ -2,5 +2,7 @@
 	"name": "Backpack",
 	"slot": "back",
 	"art": "res://resources/gfx/gear/back/backpack/Backpack",
-	"icon": "res://resources/gfx/ui/icons/items/backpack.png"
+	"icon": "res://resources/gfx/ui/icons/items/backpack.png",
+	"sound": "leather",
+	"description": "Big enough for everything except your problems."
 }

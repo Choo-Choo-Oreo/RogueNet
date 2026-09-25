@@ -1,5 +1,7 @@
 {
 	"name": "Ruby ring",
 	"slot": "ring",
-	"icon": "res://resources/gfx/ui/icons/items/ruby_ring.png"
+	"icon": "res://resources/gfx/ui/icons/items/ruby_ring.png",
+	"rarity": "rare",
+	"description": "A drop of fire set in gold."
 }

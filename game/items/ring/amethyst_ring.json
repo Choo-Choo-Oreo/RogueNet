@@ -1,5 +1,7 @@
 {
 	"name": "Amethyst ring",
 	"slot": "ring",
-	"icon": "res://resources/gfx/ui/icons/items/amethyst_ring.png"
+	"icon": "res://resources/gfx/ui/icons/items/amethyst_ring.png",
+	"rarity": "rare",
+	"description": "Said to keep the wearer's head clear. It does not."
 }

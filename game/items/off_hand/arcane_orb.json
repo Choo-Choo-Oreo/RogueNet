@@ -3,5 +3,6 @@
 	"slot": "off_hand",
 	"set": "arcane",
 	"art": "res://resources/gfx/gear/off_hand/arcane/ArcaneOrb",
-	"icon": "res://resources/gfx/ui/icons/items/arcane_orb.png"
+	"icon": "res://resources/gfx/ui/icons/items/arcane_orb.png",
+	"sound": "glass"
 }

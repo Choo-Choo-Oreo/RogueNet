@@ -3,5 +3,6 @@
 	"slot": "main_hand",
 	"set": "assassin",
 	"art": "res://resources/gfx/gear/main_hand/assassin/AssassinFang",
-	"icon": "res://resources/gfx/ui/icons/items/assassin_fang.png"
+	"icon": "res://resources/gfx/ui/icons/items/assassin_fang.png",
+	"sound": "metal"
 }

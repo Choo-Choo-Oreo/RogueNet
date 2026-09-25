@@ -3,5 +3,6 @@
 	"slot": "off_hand",
 	"set": "hamster",
 	"art": "res://resources/gfx/gear/off_hand/hamster/HamsterSeedShield",
-	"icon": "res://resources/gfx/ui/icons/items/hamster_seed_shield.png"
+	"icon": "res://resources/gfx/ui/icons/items/hamster_seed_shield.png",
+	"sound": "wood"
 }

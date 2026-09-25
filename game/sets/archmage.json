@@ -1,4 +1,7 @@
 {
+	"rarity": "legendary",
+	"sound": "cloth",
+	"description": "The Void stares back. The archmage stares harder.",
 	"bonus": {
 		"aura": {
 			"texture": "res://resources/gfx/effects/effects.sets/ArchmagePentagram.png",

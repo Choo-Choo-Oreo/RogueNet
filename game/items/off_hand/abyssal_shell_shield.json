@@ -3,5 +3,6 @@
 	"slot": "off_hand",
 	"set": "abyssal",
 	"art": "res://resources/gfx/gear/off_hand/abyssal/AbyssalShellShield",
-	"icon": "res://resources/gfx/ui/icons/items/abyssal_shell_shield.png"
+	"icon": "res://resources/gfx/ui/icons/items/abyssal_shell_shield.png",
+	"sound": "bone"
 }

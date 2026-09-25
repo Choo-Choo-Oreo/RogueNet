@@ -174,7 +174,7 @@ func refresh() -> void:
 
 func _hint_for(at: Dictionary) -> String:
 	if at["where"] != PlayerInventory.EQUIP:
-		return "Right-click to equip"
+		return "Right-click to equip" if ItemDatabase.item_slot(PlayerInventory.get_at(at)) != "" else ""
 	return "Right-click to put in storage" if storage_open else "Right-click to put in bag"
 
 func _quick_action(at: Dictionary) -> void:

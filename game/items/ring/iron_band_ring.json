@@ -1,5 +1,6 @@
 {
 	"name": "Iron band",
 	"slot": "ring",
-	"icon": "res://resources/gfx/ui/icons/items/iron_band_ring.png"
+	"icon": "res://resources/gfx/ui/icons/items/iron_band_ring.png",
+	"description": "Plain, honest iron. It will outlast you."
 }

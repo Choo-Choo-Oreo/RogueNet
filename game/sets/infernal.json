@@ -1,4 +1,7 @@
 {
+	"rarity": "legendary",
+	"sound": "metal",
+	"description": "Forged in the deepest volcano by something that is still looking for it.",
 	"bonus": {
 		"trail": {
 			"texture": "res://resources/gfx/effects/effects.sets/InfernalLava.png",

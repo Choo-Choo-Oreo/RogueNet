@@ -2,5 +2,7 @@
 	"name": "Crimson cape",
 	"slot": "back",
 	"art": "res://resources/gfx/gear/back/crimson_cape/CrimsonCape",
-	"icon": "res://resources/gfx/ui/icons/items/crimson_cape.png"
+	"icon": "res://resources/gfx/ui/icons/items/crimson_cape.png",
+	"rarity": "uncommon",
+	"description": "Makes any entrance twice as dramatic."
 }

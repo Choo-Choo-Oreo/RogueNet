@@ -1,0 +1,6 @@
+{
+	"name": "Health potion",
+	"type": "potion",
+	"description": "Tastes of iron and cherries. Mostly iron.",
+	"icon": "res://resources/gfx/ui/icons/items/health_potion.png"
+}

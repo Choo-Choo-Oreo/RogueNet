@@ -203,7 +203,7 @@ JSON. DungeonMaker keeps it when re-saving.)
 - Naming is subject-first: `wall_forest_dense`, not `wall_dense_forest`.
 - Wall/floor pairs share one 6-colour palette (`wall_smooth_cave` + `floor_smooth_cave`, added 2026-09-24: water-worn cave rock, a smooth sibling of `wall_rough_cave`; the wall reuses the rough cave's autotile mask, the floor reuses the dirt floor's rounded mask so both blend the same way).
 
-### Items — `game/items/<slot>/<id>.json`
+### Items — `game/items/<folder>/<id>.json`
 
 ```json
 {
@@ -232,9 +232,17 @@ JSON. DungeonMaker keeps it when re-saving.)
   `resources/gfx/ui/icons/items/<item id>.png`. Without one, the slot
   shows the front view cropped to its pixels, which is too small to read for
   gloves and boots.
-- Items are cosmetic only for now (no stats, no rarity). The inventory lives
-  in `singletons/PlayerInventory.gd`, in memory only: it starts over on every
-  launch, with one of every item in the town storage.
+- `type` — instead of `slot`, for things that can't be worn: `potion`,
+  `material` or `item` (folders `potion/`, `material/`, `misc/`).
+- `rarity`, `sound`, `description` — optional; without them the item takes
+  its set's (`game/sets/README.md`), then a default. `stack` — optional, how
+  many fit in one cell (potions 10, materials 50, gear 1 by default).
+- Items have no stats yet. The inventory lives in
+  `singletons/PlayerInventory.gd`, in memory only: it starts over on every
+  launch, with one of every item in the town storage (5 of anything that
+  stacks). The storage screen (`scripts/ui/inventory/StoragePanel.gd`) has
+  tabs by kind, search, sort, a set view, a lore page, and Ctrl+click to lock
+  an item so sorting and "Store all" leave it alone.
 
 ## Tech stack
 

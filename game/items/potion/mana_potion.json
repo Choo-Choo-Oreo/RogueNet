@@ -1,0 +1,6 @@
+{
+	"name": "Mana potion",
+	"type": "potion",
+	"description": "It fizzes. Sometimes it hums.",
+	"icon": "res://resources/gfx/ui/icons/items/mana_potion.png"
+}

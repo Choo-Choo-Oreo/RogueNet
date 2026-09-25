@@ -1,5 +1,7 @@
 {
 	"name": "Emerald ring",
 	"slot": "ring",
-	"icon": "res://resources/gfx/ui/icons/items/emerald_ring.png"
+	"icon": "res://resources/gfx/ui/icons/items/emerald_ring.png",
+	"rarity": "rare",
+	"description": "Green as the deep forest, and as quiet."
 }

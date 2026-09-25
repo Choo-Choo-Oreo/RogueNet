@@ -3,5 +3,6 @@
 	"slot": "main_hand",
 	"set": "cleric",
 	"art": "res://resources/gfx/gear/main_hand/cleric/ClericMace",
-	"icon": "res://resources/gfx/ui/icons/items/cleric_mace.png"
+	"icon": "res://resources/gfx/ui/icons/items/cleric_mace.png",
+	"sound": "metal"
 }

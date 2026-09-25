@@ -1,0 +1,8 @@
+{
+	"name": "Glowcap",
+	"type": "material",
+	"rarity": "uncommon",
+	"sound": "organic",
+	"description": "A mushroom that glows in the dark. Do not eat it. Probably.",
+	"icon": "res://resources/gfx/ui/icons/items/glowcap.png"
+}

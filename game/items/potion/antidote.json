@@ -1,0 +1,6 @@
+{
+	"name": "Antidote",
+	"type": "potion",
+	"description": "Bitter enough to scare the poison out.",
+	"icon": "res://resources/gfx/ui/icons/items/antidote.png"
+}

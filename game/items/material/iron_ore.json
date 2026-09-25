@@ -1,0 +1,7 @@
+{
+	"name": "Iron ore",
+	"type": "material",
+	"sound": "stone",
+	"description": "Heavy, rusty, and full of promise.",
+	"icon": "res://resources/gfx/ui/icons/items/iron_ore.png"
+}

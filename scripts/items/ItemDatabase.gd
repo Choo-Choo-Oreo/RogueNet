@@ -1,13 +1,15 @@
 class_name ItemDatabase
 extends RefCounted
 
-## Every item in game/items/<slot>/<id>.json, loaded once. The filename (minus
-## .json) is the item's id, same rule as minions. Items are only cosmetic gear
-## for now: a name, the slot it goes in, an optional set, and "art", the path
-## of its sheets minus the "-<Direction>.png" ending (see README.md).
+## Every item in game/items/<folder>/<id>.json, loaded once. The filename (minus
+## .json) is the item's id, same rule as minions. Gear has a "slot" it goes in, an
+## optional set, and "art", the path of its sheets minus the "-<Direction>.png"
+## ending; things that aren't worn (potions, materials) have a "type" instead
+## (see README.md). Rarity, sound and lore come from the item, else its set.
 
 const ITEMS_DIR := "res://game/items"
-## One <set>.json per set that has a full-set bonus (see game/sets/README.md).
+## One <set>.json per set: its rarity, sound and lore, and its full-set bonus if it
+## has one (see game/sets/README.md).
 const SETS_DIR := "res://game/sets"
 
 ## The eleven equipment slots, in the order the inventory shows them.
@@ -21,6 +23,17 @@ const SLOT_NAMES := {
 	"neck": "Neck", "back": "Back", "main_hand": "Main hand", "off_hand": "Off hand", "ring": "Ring",
 }
 const SET_ORDER: Array[String] = ["heavy_iron", "arcane", "cleric", "necromancer"]
+## What an item without a "slot" is. The storage tabs sort by slot kind or by this.
+const TYPES: Array[String] = ["potion", "material", "item"]
+## How many of one item fit in one bag or storage cell, by type. Gear never stacks.
+## An item's own "stack" overrides this.
+const STACK_SIZES := {"potion": 10, "material": 50}
+## Lowest first. An item's "rarity", else its set's, else "common".
+const RARITIES: Array[String] = ["common", "uncommon", "rare", "epic", "legendary"]
+## What an item sounds like when picked up or put down (ItemSounds.MATERIALS): its own
+## "sound", else by its slot kind here, else its set's, else by its type, else cloth.
+const SLOT_SOUNDS := {"neck": "jewel", "ring": "jewel"}
+const TYPE_SOUNDS := {"potion": "glass", "material": "stone", "item": "paper"}
 ## The slots a full set has to fill. Held items and the amulet don't count, so
 ## any weapon can be used with a set's bonus.
 const FULL_SET_SLOTS: Array[String] = ["head", "chest", "gloves", "legs", "feet"]
@@ -66,8 +79,8 @@ static func _load() -> void:
 			if not file_name.ends_with(".json"):
 				continue
 			var data := JsonOnloading.load_dict(ITEMS_DIR + "/" + folder + "/" + file_name)
-			if slots_for(data.get("slot", "")).is_empty():
-				push_error("ItemDatabase: %s has no valid slot" % file_name)
+			if slots_for(data.get("slot", "")).is_empty() and not TYPES.has(data.get("type", "")):
+				push_error("ItemDatabase: %s has no valid slot or type" % file_name)
 				continue
 			_items[file_name.get_basename()] = data
 	for file_name in DirAccess.get_files_at(SETS_DIR):
@@ -93,6 +106,53 @@ static func item_slot(item_id: String) -> String:
 static func slot_kind(slot: String) -> String:
 	return SLOT_KINDS.get(slot, slot)
 
+## "potion", "material" or "item" for things that aren't worn; "" for gear.
+static func item_type(item_id: String) -> String:
+	return get_item(item_id).get("type", "")
+
+## Where the item belongs for sorting and the storage tabs: its slot kind for gear
+## ("head", "ring"), else its type ("potion").
+static func category(item_id: String) -> String:
+	var slot := item_slot(item_id)
+	return slot if slot != "" else item_type(item_id)
+
+## "Head", "Ring", "Potion": what the item is, for tooltips.
+static func category_name(item_id: String) -> String:
+	var slot := item_slot(item_id)
+	return SLOT_NAMES.get(slot, "") if slot != "" else item_type(item_id).capitalize()
+
+static func stack_size(item_id: String) -> int:
+	return int(get_item(item_id).get("stack", STACK_SIZES.get(item_type(item_id), 1)))
+
+static func rarity(item_id: String) -> String:
+	var item := get_item(item_id)
+	return item.get("rarity", set_info(item.get("set", "")).get("rarity", RARITIES[0]))
+
+## 0 for common up to 4 for legendary.
+static func rarity_rank(item_id: String) -> int:
+	return maxi(0, RARITIES.find(rarity(item_id)))
+
+static func sound(item_id: String) -> String:
+	var item := get_item(item_id)
+	if item.has("sound"):
+		return item["sound"]
+	if SLOT_SOUNDS.has(item.get("slot", "")):
+		return SLOT_SOUNDS[item["slot"]]
+	return set_info(item.get("set", "")).get("sound", TYPE_SOUNDS.get(item_type(item_id), "cloth"))
+
+## The item's own flavour text ("" when it has none; its set's lore is set_info()).
+static func description(item_id: String) -> String:
+	return get_item(item_id).get("description", "")
+
+## A set's game/sets JSON ({} for a set without one, or for "").
+static func set_info(set_id: String) -> Dictionary:
+	_load()
+	return _sets.get(set_id, {})
+
+## "heavy_iron" -> "Heavy Iron".
+static func set_title(set_id: String) -> String:
+	return set_id.replace("_", " ").capitalize()
+
 ## The equipment slots that take items of `kind`, in SLOTS order.
 static func slots_for(kind: String) -> Array[String]:
 	var result: Array[String] = []
@@ -106,7 +166,8 @@ static func slots_for(kind: String) -> Array[String]:
 static func item_bonus(item_id: String) -> Dictionary:
 	return get_item(item_id).get("bonus", {})
 
-## All item ids: the four sets first (each in slot order), then everything else.
+## All item ids: the four sets first (each in slot order), then everything else,
+## then the things that aren't worn (by type).
 static func all_ids() -> Array[String]:
 	_load()
 	var ids: Array[String] = []
@@ -123,7 +184,14 @@ static func all_ids() -> Array[String]:
 static func _sort_key(item_id: String) -> Array:
 	var item: Dictionary = _items[item_id]
 	var set_index := SET_ORDER.find(item.get("set", ""))
-	return [set_index if set_index >= 0 else SET_ORDER.size(), SLOTS.find(slots_for(item["slot"])[0]), item_id]
+	return [set_index if set_index >= 0 else SET_ORDER.size(), category_index(item_id), item_id]
+
+## Gear in SLOTS order, then the TYPES, so sorting by slot follows the inventory.
+static func category_index(item_id: String) -> int:
+	var slots := slots_for(item_slot(item_id))
+	if not slots.is_empty():
+		return SLOTS.find(slots[0])
+	return SLOTS.size() + TYPES.find(item_type(item_id))
 
 ## The set that fills every FULL_SET_SLOTS slot of worn (slot -> item id), or ""
 ## when one is empty or they come from different sets.
@@ -138,8 +206,7 @@ static func full_set(worn: Dictionary) -> String:
 
 ## What wearing the full set adds ({} for a set without a bonus).
 static func set_bonus(set_id: String) -> Dictionary:
-	_load()
-	return _sets.get(set_id, {}).get("bonus", {})
+	return set_info(set_id).get("bonus", {})
 
 static func sheet_path(item_id: String, sheet: String) -> String:
 	return "%s-%s.png" % [get_item(item_id).get("art", ""), sheet]

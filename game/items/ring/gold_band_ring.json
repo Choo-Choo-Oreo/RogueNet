@@ -1,5 +1,7 @@
 {
 	"name": "Gold band",
 	"slot": "ring",
-	"icon": "res://resources/gfx/ui/icons/items/gold_band_ring.png"
+	"icon": "res://resources/gfx/ui/icons/items/gold_band_ring.png",
+	"rarity": "uncommon",
+	"description": "Heavier than it looks, and so was the price."
 }

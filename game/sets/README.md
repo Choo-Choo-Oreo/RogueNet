@@ -1,8 +1,19 @@
 # Sets
 
-`<set>.json`, one file per item set that has a **full-set bonus**. The file name is the set's
-id, the same word the items use in their `"set"` (`game/items/`). A set without a file here
-works as before and has no bonus.
+`<set>.json`, one file per item set. The file name is the set's id, the same word the items use
+in their `"set"` (`game/items/`). Every set has a file; only some have a `bonus`.
+
+What every set file gives its items (an item can override any of them):
+- `rarity`: `common`, `uncommon`, `rare`, `epic` or `legendary` (`ItemDatabase.RARITIES`). It
+  picks the storage frame; epic and legendary items float and spark.
+- `sound`: the material it's made of, one of the names in `ItemSounds.MATERIALS` (`metal`,
+  `stone`, `wood`, `leather`, `bone`, `organic`, `cloth`, `glass`, `paper`, `jewel`). It picks
+  the pick-up / put-down sound in `resources/sfx/ui/inventory/` and how hard the icon lands.
+- `description`: a line or two of lore, shown on the storage's lore page under the item's own.
+
+The rarities, sounds and lore written so far are placeholders, to be tuned.
+
+## Full-set bonus
 
 A body gets the bonus when its `head`, `chest`, `gloves`, `legs` and `feet` all come from that
 set (`ItemDatabase.FULL_SET_SLOTS`). The weapons and the amulet don't count, so any weapon can

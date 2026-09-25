@@ -1,0 +1,8 @@
+{
+	"name": "Dungeon key",
+	"type": "item",
+	"rarity": "uncommon",
+	"sound": "metal",
+	"description": "Opens a door somewhere below. Which one is your problem.",
+	"icon": "res://resources/gfx/ui/icons/items/dungeon_key.png"
+}

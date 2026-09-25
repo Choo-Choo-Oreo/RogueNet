@@ -1,5 +1,7 @@
 {
 	"name": "Silver band",
 	"slot": "ring",
-	"icon": "res://resources/gfx/ui/icons/items/silver_band_ring.png"
+	"icon": "res://resources/gfx/ui/icons/items/silver_band_ring.png",
+	"rarity": "uncommon",
+	"description": "Cool to the touch, even in the Volcano."
 }

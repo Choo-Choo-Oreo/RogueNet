@@ -1,0 +1,8 @@
+{
+	"name": "Old map",
+	"type": "item",
+	"rarity": "rare",
+	"sound": "paper",
+	"description": "Someone marked an X. Someone always marks an X.",
+	"icon": "res://resources/gfx/ui/icons/items/old_map.png"
+}

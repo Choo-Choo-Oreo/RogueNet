@@ -1,5 +1,7 @@
 {
 	"name": "Bone ring",
 	"slot": "ring",
-	"icon": "res://resources/gfx/ui/icons/items/bone_ring.png"
+	"icon": "res://resources/gfx/ui/icons/items/bone_ring.png",
+	"sound": "bone",
+	"description": "Carved from something that used to have opinions."
 }

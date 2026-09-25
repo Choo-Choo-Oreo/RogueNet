@@ -2,5 +2,7 @@
 	"name": "Back sword",
 	"slot": "back",
 	"art": "res://resources/gfx/gear/back/back_sword/BackSword",
-	"icon": "res://resources/gfx/ui/icons/items/back_sword.png"
+	"icon": "res://resources/gfx/ui/icons/items/back_sword.png",
+	"sound": "metal",
+	"description": "A spare blade for when the first one gets stuck in something."
 }

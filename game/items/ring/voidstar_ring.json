@@ -1,4 +1,6 @@
 {
+	"rarity": "legendary",
+	"description": "A spark from the Void, curled up and sleeping.",
 	"name": "Voidstar",
 	"slot": "ring",
 	"icon": "res://resources/gfx/ui/icons/items/voidstar_ring.png",

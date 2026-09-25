@@ -2,5 +2,6 @@
 	"name": "Red pennant",
 	"slot": "back",
 	"art": "res://resources/gfx/gear/back/pennant/PennantRed",
-	"icon": "res://resources/gfx/ui/icons/items/pennant_red.png"
+	"icon": "res://resources/gfx/ui/icons/items/pennant_red.png",
+	"description": "Fly it high so the party can find you in the dark."
 }

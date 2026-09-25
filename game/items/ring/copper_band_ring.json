@@ -1,5 +1,6 @@
 {
 	"name": "Copper band",
 	"slot": "ring",
-	"icon": "res://resources/gfx/ui/icons/items/copper_band_ring.png"
+	"icon": "res://resources/gfx/ui/icons/items/copper_band_ring.png",
+	"description": "Turns your finger green. Worth it."
 }

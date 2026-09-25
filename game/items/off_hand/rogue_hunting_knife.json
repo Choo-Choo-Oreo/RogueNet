@@ -3,5 +3,6 @@
 	"slot": "off_hand",
 	"set": "rogue",
 	"art": "res://resources/gfx/gear/off_hand/rogue/RogueHuntingKnife",
-	"icon": "res://resources/gfx/ui/icons/items/rogue_hunting_knife.png"
+	"icon": "res://resources/gfx/ui/icons/items/rogue_hunting_knife.png",
+	"sound": "metal"
 }

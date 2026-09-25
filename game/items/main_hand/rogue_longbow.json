@@ -3,5 +3,6 @@
 	"slot": "main_hand",
 	"set": "rogue",
 	"art": "res://resources/gfx/gear/main_hand/rogue/RogueLongbow",
-	"icon": "res://resources/gfx/ui/icons/items/rogue_longbow.png"
+	"icon": "res://resources/gfx/ui/icons/items/rogue_longbow.png",
+	"sound": "wood"
 }

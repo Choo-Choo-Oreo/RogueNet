@@ -1,4 +1,7 @@
 {
+	"rarity": "legendary",
+	"sound": "cloth",
+	"description": "Where the wearer walks, flowers remember the sun.",
 	"bonus": {
 		"trail": {
 			"texture": "res://resources/gfx/effects/effects.sets/SeraphFlowers.png",

@@ -1,0 +1,7 @@
+{
+	"name": "Monster bone",
+	"type": "material",
+	"sound": "bone",
+	"description": "Strong, light, and only slightly haunted.",
+	"icon": "res://resources/gfx/ui/icons/items/monster_bone.png"
+}

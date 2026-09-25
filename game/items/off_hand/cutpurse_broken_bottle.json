@@ -3,5 +3,6 @@
 	"slot": "off_hand",
 	"set": "cutpurse",
 	"art": "res://resources/gfx/gear/off_hand/cutpurse/CutpurseBrokenBottle",
-	"icon": "res://resources/gfx/ui/icons/items/cutpurse_broken_bottle.png"
+	"icon": "res://resources/gfx/ui/icons/items/cutpurse_broken_bottle.png",
+	"sound": "glass"
 }

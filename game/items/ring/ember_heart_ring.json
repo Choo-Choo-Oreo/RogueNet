@@ -1,4 +1,6 @@
 {
+	"rarity": "legendary",
+	"description": "It is warm. It is always warm.",
 	"name": "Ember heart",
 	"slot": "ring",
 	"icon": "res://resources/gfx/ui/icons/items/ember_heart_ring.png",

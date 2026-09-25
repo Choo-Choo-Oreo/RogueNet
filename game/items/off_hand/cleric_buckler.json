@@ -3,5 +3,6 @@
 	"slot": "off_hand",
 	"set": "cleric",
 	"art": "res://resources/gfx/gear/off_hand/cleric/ClericBuckler",
-	"icon": "res://resources/gfx/ui/icons/items/cleric_buckler.png"
+	"icon": "res://resources/gfx/ui/icons/items/cleric_buckler.png",
+	"sound": "metal"
 }

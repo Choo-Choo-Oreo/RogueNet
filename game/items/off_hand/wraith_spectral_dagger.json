@@ -3,5 +3,6 @@
 	"slot": "off_hand",
 	"set": "wraith",
 	"art": "res://resources/gfx/gear/off_hand/wraith/WraithSpectralDagger",
-	"icon": "res://resources/gfx/ui/icons/items/wraith_spectral_dagger.png"
+	"icon": "res://resources/gfx/ui/icons/items/wraith_spectral_dagger.png",
+	"sound": "metal"
 }

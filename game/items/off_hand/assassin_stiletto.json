@@ -3,5 +3,6 @@
 	"slot": "off_hand",
 	"set": "assassin",
 	"art": "res://resources/gfx/gear/off_hand/assassin/AssassinStiletto",
-	"icon": "res://resources/gfx/ui/icons/items/assassin_stiletto.png"
+	"icon": "res://resources/gfx/ui/icons/items/assassin_stiletto.png",
+	"sound": "metal"
 }

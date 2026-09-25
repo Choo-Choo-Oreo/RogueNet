@@ -2,5 +2,6 @@
 	"name": "Yellow pennant",
 	"slot": "back",
 	"art": "res://resources/gfx/gear/back/pennant/PennantYellow",
-	"icon": "res://resources/gfx/ui/icons/items/pennant_yellow.png"
+	"icon": "res://resources/gfx/ui/icons/items/pennant_yellow.png",
+	"description": "Bright enough to be seen. Also bright enough to be shot at."
 }

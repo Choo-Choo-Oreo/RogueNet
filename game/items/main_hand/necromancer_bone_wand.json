@@ -3,5 +3,6 @@
 	"slot": "main_hand",
 	"set": "necromancer",
 	"art": "res://resources/gfx/gear/main_hand/necromancer/NecromancerBoneWand",
-	"icon": "res://resources/gfx/ui/icons/items/necromancer_bone_wand.png"
+	"icon": "res://resources/gfx/ui/icons/items/necromancer_bone_wand.png",
+	"sound": "bone"
 }

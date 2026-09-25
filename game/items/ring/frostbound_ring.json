@@ -1,4 +1,6 @@
 {
+	"rarity": "legendary",
+	"description": "Frost creeps along your knuckles and never melts.",
 	"name": "Frostbound ring",
 	"slot": "ring",
 	"icon": "res://resources/gfx/ui/icons/items/frostbound_ring.png",

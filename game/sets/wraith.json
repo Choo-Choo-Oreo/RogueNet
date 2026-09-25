@@ -1,4 +1,7 @@
 {
+	"rarity": "legendary",
+	"sound": "leather",
+	"description": "Worn by hunters who died on the hunt and kept going anyway.",
 	"bonus": {
 		"trail": {
 			"texture": "res://resources/gfx/effects/effects.sets/WraithFootprints.png",
