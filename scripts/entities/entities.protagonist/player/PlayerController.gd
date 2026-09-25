@@ -143,6 +143,10 @@ func _ready() -> void:
 	hit_feedback.name = "HitFeedback"
 	add_child(hit_feedback)
 	hit_feedback.setup(self, $AnimatedSprite2D, stats)
+	var wading := Wading.new()
+	wading.name = "Wading"
+	add_child(wading)
+	wading.setup(self, $AnimatedSprite2D, grid_mover)
 	stats.died.connect(_on_died)
 	stats.damaged.connect(_on_damaged)
 	grid_mover.stepped.connect(_on_stepped)

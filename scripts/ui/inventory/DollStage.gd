@@ -135,22 +135,31 @@ func _draw_doll() -> void:
 	for child in _doll.get_children():
 		child.queue_free()
 	var sheet: String = FACINGS[_facing][0]
-	for slot in ItemDatabase.DRAW_ORDER[sheet]:
+	var mirrored: bool = FACINGS[_facing][1]
+	var facing: String = ItemDatabase.LEFT_SHEETS[sheet] if mirrored else sheet
+	for slot in ItemDatabase.draw_order(facing):
 		var texture: Texture2D
+		var flip := mirrored
 		if slot == "body":
 			texture = _body_sheets[sheet]
 		else:
 			var item_id: String = PlayerInventory.equipped.get(slot, "")
 			if item_id == "":
 				continue
-			texture = load(ItemDatabase.sheet_path(item_id, sheet))
+			var item_sheet := sheet
+			# facing left, held items keep to their own hand (ItemDatabase.held_left)
+			if mirrored and slot in ItemDatabase.HELD_SLOTS:
+				var view := ItemDatabase.held_left(item_id, facing)
+				item_sheet = view[0]
+				flip = view[1]
+			texture = load(ItemDatabase.sheet_path(item_id, item_sheet))
 		if texture == null:
 			continue
 		# gear drawn without step frames has fewer frames than the body
 		var frames := maxi(1, texture.get_width() / ItemDatabase.FRAME_SIZE)
 		var layer := _rect(ItemDatabase.frame_texture(texture, _frame % frames))
 		layer.size = _doll.size
-		layer.flip_h = FACINGS[_facing][1]
+		layer.flip_h = flip
 		_doll.add_child(_ignore(layer))
 
 func _process(delta: float) -> void:

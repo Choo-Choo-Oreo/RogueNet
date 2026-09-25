@@ -60,6 +60,17 @@ const DRAW_ORDER := {
 	"Up": ["main_hand", "off_hand", "body", "head", "chest", "legs", "feet", "neck", "back", "gloves"],
 }
 
+## Facing left the body is its right-facing art mirrored (flip_h). Held items mirrored
+## along with it would change hands, so they don't simply follow (see held_left):
+## facing left the main hand is the far hand and the off hand the near one.
+const LEFT_SHEETS := {"Right": "Left", "DownRight": "DownLeft", "UpRight": "UpLeft"}
+const HELD_SLOTS: Array[String] = ["main_hand", "off_hand"]
+## What a held item shows facing left. Down-left and up-left: its plain front and back
+## views, unmirrored (each hand is on the same side as facing straight down or up).
+## Left: its own "-Left" art when drawn (a shield in the near hand shows its face),
+## else its right-facing art mirrored.
+const HELD_LEFT := {"Left": "Left", "DownLeft": "Down", "UpLeft": "Up"}
+
 static var _items: Dictionary = {}
 static var _sets: Dictionary = {}   # set id -> its game/sets JSON
 static var _loaded := false
@@ -211,6 +222,25 @@ static func set_bonus(set_id: String) -> Dictionary:
 static func sheet_path(item_id: String, sheet: String) -> String:
 	return "%s-%s.png" % [get_item(item_id).get("art", ""), sheet]
 
+## Paint order for a DRAW_ORDER sheet or a LEFT_SHEETS one. Facing left is the mirrored
+## right-facing order with the two hands swapped: the main hand goes where the off hand was.
+static func draw_order(sheet: String) -> Array:
+	var right = LEFT_SHEETS.find_key(sheet)
+	if right == null:
+		return DRAW_ORDER[sheet]
+	var order: Array = DRAW_ORDER[right].duplicate()
+	var main := order.find("main_hand")
+	order[order.find("off_hand")] = "main_hand"
+	order[main] = "off_hand"
+	return order
+
+## Which sheet a held item draws facing `left_sheet` (a LEFT_SHEETS value), and whether mirrored.
+static func held_left(item_id: String, left_sheet: String) -> Array:
+	var sheet: String = HELD_LEFT[left_sheet]
+	if ResourceLoader.exists(sheet_path(item_id, sheet)):
+		return [sheet, false]
+	return [LEFT_SHEETS.find_key(left_sheet), true]
+
 ## One frame of one sheet, e.g. the front view in the inventory.
 static func frame_texture(sheet_texture: Texture2D, frame: int) -> AtlasTexture:
 	var atlas := AtlasTexture.new()
@@ -232,6 +262,13 @@ static func sprite_frames(item_id: String) -> SpriteFrames:
 			continue
 		for i in FRAME_COUNT:
 			frames.add_frame(anim_name, frame_texture(texture, i))
+	# own left-facing art (held items only, see HELD_LEFT), as an animation named after its sheet
+	var left := sheet_path(item_id, "Left")
+	if ResourceLoader.exists(left):
+		var texture: Texture2D = load(left)
+		frames.add_animation("Left")
+		for i in FRAME_COUNT:
+			frames.add_frame("Left", frame_texture(texture, i))
 	_sprite_frames[item_id] = frames
 	return frames
 

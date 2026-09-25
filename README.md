@@ -231,6 +231,12 @@ JSON. DungeonMaker keeps it when re-saving.)
   (legs and feet follow the stride pose). Left-facing views are the
   right-facing art mirrored. Which slots draw over or behind the body for
   each direction is `DRAW_ORDER` in `scripts/items/ItemDatabase.gd`.
+  Held items (`main_hand`, `off_hand`) stay in their own hand facing left
+  (`ItemDatabase.held_left`): facing left the main hand is the far hand
+  (behind the body) and the off hand the near one (in front). Down-left and
+  up-left use the plain `-Down` and `-Up` art. Facing left uses an optional
+  `-Left` sheet when there is one (a shield showing its face in the near
+  hand), else the `-Right` art mirrored.
 - `set` — optional; storage lists items set by set (`heavy_iron`, `arcane`,
   `cleric`, `necromancer`, then everything else). Wearing a whole set (head,
   chest, gloves, legs and feet; weapons and amulet don't count) turns on its
