@@ -15,3 +15,12 @@ func _ready() -> void:
 	elif node is Range:
 		node.set_value_no_signal(float(value))
 		node.value_changed.connect(func(v: float): ConfigFileHandler.save_feedback_setting(key, v))
+
+## Back to ConfigFileHandler.FEEDBACK_DEFAULTS (saved through the same signal as a click).
+func restore_default() -> void:
+	var value = ConfigFileHandler.FEEDBACK_DEFAULTS[key]
+	var node: Node = self
+	if node is CheckButton:
+		node.button_pressed = bool(value)
+	elif node is Range:
+		node.value = float(value)
