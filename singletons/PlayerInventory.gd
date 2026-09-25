@@ -1,8 +1,8 @@
 extends Node
 
 ## This machine's own player: what they wear, their bag, and their storage in
-## the town. Filled from the hero's save (ProtagonistSave) when one is picked and
-## written back by save_hero(): on arriving in and leaving the town, and when the
+## the town. Filled from the adventurer's save (ProtagonistSave) when one is picked and
+## written back by save_adventurer(): on arriving in and leaving the town, and when the
 ## game window closes. Other players only ever learn what you wear, through
 ## NetworkSync.peer_equipment -- bag and storage stay local.
 ##
@@ -20,48 +20,48 @@ const BAG_SIZE := 21
 const STORAGE_COLUMNS := 8
 const MIN_STORAGE_SIZE := 48
 
-## The hero being played (a ProtagonistSave character), picked on the main menu's
-## Characters screen; {} until one is picked. Set it through use_hero().
-var hero: Dictionary = {}
+## The adventurer being played (a ProtagonistSave character), picked on the main menu's
+## Characters screen; {} until one is picked. Set it through use_adventurer().
+var adventurer: Dictionary = {}
 
 var equipped: Dictionary = {}
 var bag: Array[String] = []
 var storage: Array[String] = []
 
 func _ready() -> void:
-	# The hero picked last time, so a restart starts where the player left off.
+	# The adventurer picked last time, so a restart starts where the player left off.
 	var saves := ProtagonistSave.new()
-	hero = saves.load_character(saves.last_id())
-	_fill(hero)
+	adventurer = saves.load_character(saves.last_id())
+	_fill(adventurer)
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
-		save_hero()
+		save_adventurer()
 
-## Plays `new_hero` and fills the inventory from its save; {} empties it. The hero being
+## Plays `new_adventurer` and fills the inventory from its save; {} empties it. The adventurer being
 ## left is saved first (a swap in town keeps what it carried) and the new one is remembered.
-func use_hero(new_hero: Dictionary) -> void:
-	save_hero()
+func use_adventurer(new_adventurer: Dictionary) -> void:
+	save_adventurer()
 	var saves := ProtagonistSave.new()
-	var id: String = new_hero.get("id", "")
-	# Read back from its file: the caller's copy may predate the save just made (same hero).
+	var id: String = new_adventurer.get("id", "")
+	# Read back from its file: the caller's copy may predate the save just made (same adventurer).
 	var saved := saves.load_character(id) if id != "" else {}
-	hero = saved if not saved.is_empty() else new_hero
+	adventurer = saved if not saved.is_empty() else new_adventurer
 	saves.remember(id)
-	_fill(hero)
-	# Not shared: heroes are picked on the main menu, with no session to share with.
-	# The town shares what the hero wears on arrival (MainTown._ready).
+	_fill(adventurer)
+	# Not shared: adventurers are picked on the main menu, with no session to share with.
+	# The town shares what the adventurer wears on arrival (MainTown._ready).
 	changed.emit()
 
-## Writes the inventory into the hero's save file. Does nothing with no hero picked.
-func save_hero() -> void:
-	if hero.is_empty():
+## Writes the inventory into the adventurer's save file. Does nothing with no adventurer picked.
+func save_adventurer() -> void:
+	if adventurer.is_empty():
 		return
-	hero["equipped"] = worn()
-	hero["bag"] = bag.duplicate()
-	hero["storage"] = storage.duplicate()
-	if ProtagonistSave.new().save(hero) != OK:
-		push_warning("Could not save the character %s." % hero["name"])
+	adventurer["equipped"] = worn()
+	adventurer["bag"] = bag.duplicate()
+	adventurer["storage"] = storage.duplicate()
+	if ProtagonistSave.new().save(adventurer) != OK:
+		push_warning("Could not save the character %s." % adventurer["name"])
 
 ## Item ids no longer in ItemDatabase are dropped, and so is worn gear that no longer
 ## fits its slot. Storage keeps every saved cell; the bag is always BAG_SIZE.
@@ -143,7 +143,7 @@ func send_to(at: Dictionary, where: String) -> bool:
 		return false
 	return move(at, place(where, free))
 
-## Puts each of item_ids the hero does not own yet into storage, adding whole rows when
+## Puts each of item_ids the adventurer does not own yet into storage, adding whole rows when
 ## it is full. Returns how many were added. For the editor-only debug buttons (StoragePanel).
 func add_to_storage(item_ids: Array[String]) -> int:
 	var owned := worn().values() + bag + storage

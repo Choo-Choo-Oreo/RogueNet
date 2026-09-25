@@ -1,14 +1,14 @@
 extends Control
 
 ## The Characters screen, Terraria style. Opens from Singleplayer / Multiplayer on the main menu
-## and from Swap Characters in town. Two sides: Adventurers (the heroes saved on this machine,
+## and from Swap Characters in town. Two sides: Adventurers (the adventurers saved on this machine,
 ## ProtagonistSave: make one, delete one, pick one to play) and Wardens (the antagonist side, a
-## placeholder until that role is built). Picking sets PlayerInventory's hero (loading its items,
+## placeholder until that role is built). Picking sets PlayerInventory's adventurer (loading its items,
 ## remembered for the next start) and emits `picked`; whoever opened the screen decides what's next.
 ## Built in code, like the inventory windows. Only the "human" look exists so far, so
-## there is no look picker yet: a new hero gets ProtagonistSave's default.
+## there is no look picker yet: a new adventurer gets ProtagonistSave's default.
 
-signal picked(hero: Dictionary)
+signal picked(adventurer: Dictionary)
 
 const NAME_MAX_LENGTH := 24
 
@@ -17,7 +17,7 @@ const NAME_MAX_LENGTH := 24
 var in_town := false
 
 var _saves := ProtagonistSave.new()
-var _heroes: Array[Dictionary] = []
+var _adventurers: Array[Dictionary] = []
 var _list: ItemList
 var _name_edit: LineEdit
 var _new_button: Button
@@ -117,66 +117,66 @@ func _button(parent: Control, text: String, action: Callable) -> Button:
 	parent.add_child(button)
 	return button
 
-## Rebuilds the list from the files, keeping `select_id` (or the playing hero) selected.
+## Rebuilds the list from the files, keeping `select_id` (or the playing adventurer) selected.
 func _refresh(select_id := "") -> void:
 	if select_id == "":
-		select_id = PlayerInventory.hero.get("id", "")
-	_heroes = _saves.list()
+		select_id = PlayerInventory.adventurer.get("id", "")
+	_adventurers = _saves.list()
 	_list.clear()
-	for hero in _heroes:
-		var index := _list.add_item("%s   (%s, %s)" % [hero["name"], hero["skin"], hero["difficulty"]])
-		if hero["id"] == select_id:
+	for adventurer in _adventurers:
+		var index := _list.add_item("%s   (%s, %s)" % [adventurer["name"], adventurer["skin"], adventurer["difficulty"]])
+		if adventurer["id"] == select_id:
 			_list.select(index)
 	_update_buttons()
 
 func _selected() -> Dictionary:
 	var picked_items := _list.get_selected_items()
-	return _heroes[picked_items[0]] if not picked_items.is_empty() else {}
+	return _adventurers[picked_items[0]] if not picked_items.is_empty() else {}
 
 func _update_buttons() -> void:
-	var hero := _selected()
+	var adventurer := _selected()
 	_new_button.disabled = _name_edit.text.strip_edges() == ""
 	# The town can be gone back to with nothing selected, as long as someone is still being played.
-	_play_button.disabled = hero.is_empty() and (not in_town or PlayerInventory.hero.is_empty())
-	_delete_button.disabled = hero.is_empty()
-	if not hero.is_empty():
-		_confirm_delete.dialog_text = "Delete %s for good? Their items go with them." % hero["name"]
+	_play_button.disabled = adventurer.is_empty() and (not in_town or PlayerInventory.adventurer.is_empty())
+	_delete_button.disabled = adventurer.is_empty()
+	if not adventurer.is_empty():
+		_confirm_delete.dialog_text = "Delete %s for good? Their items go with them." % adventurer["name"]
 
 func _create() -> void:
 	if _name_edit.text.strip_edges() == "":
 		return
-	var hero := _saves.create(_name_edit.text)
-	if _saves.save(hero) != OK:
-		set_message("Could not save %s." % hero["name"])
+	var adventurer := _saves.create(_name_edit.text)
+	if _saves.save(adventurer) != OK:
+		set_message("Could not save %s." % adventurer["name"])
 		return
 	_name_edit.clear()
 	set_message("")
-	_refresh(hero["id"])
+	_refresh(adventurer["id"])
 
 func _play() -> void:
-	var hero := _selected()
-	if hero.is_empty():
+	var adventurer := _selected()
+	if adventurer.is_empty():
 		return
-	PlayerInventory.use_hero(hero)
-	picked.emit(hero)
+	PlayerInventory.use_adventurer(adventurer)
+	picked.emit(adventurer)
 	_close()
 
 ## Plays the selected adventurer if it is a different one, then closes.
 func _back_to_town() -> void:
-	var hero := _selected()
-	if hero.is_empty() or hero["id"] == PlayerInventory.hero.get("id", ""):
+	var adventurer := _selected()
+	if adventurer.is_empty() or adventurer["id"] == PlayerInventory.adventurer.get("id", ""):
 		_close()
 	else:
 		_play()
 
 func _delete() -> void:
-	var hero := _selected()
-	if hero.is_empty():
+	var adventurer := _selected()
+	if adventurer.is_empty():
 		return
-	# Let go of it first: use_hero saves the hero it leaves, which would write the file back.
-	if PlayerInventory.hero.get("id", "") == hero["id"]:
-		PlayerInventory.use_hero({})
-	_saves.delete(hero["id"])
+	# Let go of it first: use_adventurer saves the adventurer it leaves, which would write the file back.
+	if PlayerInventory.adventurer.get("id", "") == adventurer["id"]:
+		PlayerInventory.use_adventurer({})
+	_saves.delete(adventurer["id"])
 	_refresh()
 
 ## Same as SettingsMenu's Back: hide the main menu's panel and go.

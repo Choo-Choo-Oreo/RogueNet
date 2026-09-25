@@ -66,7 +66,7 @@ Ranked by how badly a real player gets stuck or confused.
 left edge of the screen, an empty grey box above it where a logo should be, and 80% of
 the screen empty and near-black.
 
-**What they want to do:** start playing (alone or with friends), pick a hero, change
+**What they want to do:** start playing (alone or with friends), pick an adventurer, change
 settings.
 
 ### Keyboard + mouse
@@ -116,18 +116,18 @@ settings.
 - [V] It looks different from the other screens: title-case "Characters" at size 28 (others:
   capitals at 30), 120×40 buttons (others: 220×50), and buttons along the bottom instead of
   a left column.
-- Nothing shows what the hero looks like.
+- Nothing shows what the adventurer looks like.
 
 ### Controller
-- [V] No focus on open, and **creating a hero needs typing** in a text field, which a
+- [V] No focus on open, and **creating an adventurer needs typing** in a text field, which a
   controller can't do.
 
 ### Direction
 - Focus the list.
 - Pre-fill a default name, or use Steam's on-screen keyboard.
 - Label the buttons for what they do ("Select" vs "Play", "Delete" on the dialog).
-- Explain why a button is disabled, or pre-select the first hero.
-- Show a hero preview (the inventory doll already exists).
+- Explain why a button is disabled, or pre-select the first adventurer.
+- Show an adventurer preview (the inventory doll already exists).
 
 ---
 
@@ -176,7 +176,7 @@ Leave. In multiplayer there's also a left sidebar (players, mute boxes, chat).
 - [V] **Leave is instant and unconfirmed. If the host presses it, everyone is dropped to the
   main menu with no message** (`MainTown.gd:92-95`, `NetworkSync.gd:61-64`).
 - ~~"Swap Characters" opens a skin picker with one option.~~ Fixed 2026-09-25: it opens the same
-  Characters screen (heroes), so the word means one thing.
+  Characters screen (adventurers), so the word means one thing.
 - [V] In singleplayer the sidebar hides but the buttons keep their 280px offset, so the left
   third of the screen is empty.
 
@@ -323,7 +323,7 @@ The **mission party screen**:
 - Hide unbuilt tabs and buttons.
 - While the game menu is open, gameplay input stops (mark it handled).
 - A focus border on slots, and keep focus inside the menu.
-- Hide the mic prompt without voice chat, and call `set_player_name` with the hero's name.
+- Hide the mic prompt without voice chat, and call `set_player_name` with the adventurer's name.
 - Only add DebugMenu when `OS.is_debug_build()`.
 
 ---
@@ -532,7 +532,7 @@ Sizes: small = an hour or two, medium = a session, large = several sessions.
 ### C: later, depends on other systems
 15. Controller item handling in storage and inventory (§6). Medium to large; wait for the item system.
 16. Steam lobby / overlay invites instead of typing IDs (§3). Large, touches the Steam layer.
-17. Hero preview, icons in the hotbar, mission summary, UI scale. Each waits on art or systems.
+17. Adventurer preview, icons in the hotbar, mission summary, UI scale. Each waits on art or systems.
 
 ---
 

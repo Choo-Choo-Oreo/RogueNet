@@ -1,17 +1,17 @@
 class_name ProtagonistSave
 extends CharacterSave
 
-## A player's saved hero (see CharacterSave for the files and the shared fields), in
-## user://characters/protagonist/. In multiplayer the host only ever learns what a hero
+## A player's saved adventurer (see CharacterSave for the files and the shared fields), in
+## user://characters/protagonist/. In multiplayer the host only ever learns what an adventurer
 ## wears (NetworkSync.peer_equipment); the rest stays on this machine.
 ##
 ## On top of the shared fields:
 ##   skin        a PlayerController.CHARACTERS key ("human")
 ##   difficulty  reserved for the softcore / mediumcore / hardcore tiers (not used yet)
 ##   equipped    slot -> item id, only slots that hold something (PlayerInventory.worn())
-##   bag         item ids, "" for an empty cell (PlayerInventory.bag); a new hero's
+##   bag         item ids, "" for an empty cell (PlayerInventory.bag); a new adventurer's
 ##               holds every starter kit
-##   storage     the same for the town storage, which belongs to this hero
+##   storage     the same for the town storage, which belongs to this adventurer
 
 const DIFFICULTIES := ["softcore", "mediumcore", "hardcore"]
 const STARTER_KITS_PATH := "res://game/entities/entities.protagonist/starter_kits.json"

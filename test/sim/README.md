@@ -40,8 +40,8 @@ Smaller checks run on their own (each exits 1 on failure; `--fixed-fps 60` makes
 - `throw_rock.gd` (about 15 s) throws a rock with the real Throw Rock action into `hearing_rock_behind_wall`
   and checks the noise marker and that the blind rat investigates it.
 - `character_select.gd` (a few seconds) goes through the Characters screen with a test save folder:
-  Singleplayer opens it, a new hero is listed, Play picks it, remembers it and goes on to the town,
-  Swap Characters in town opens the same screen and saves the hero being left, and leaving the town saves the bag.
+  Singleplayer opens it, a new adventurer is listed, Play picks it, remembers it and goes on to the town,
+  Swap Characters in town opens the same screen and saves the adventurer being left, and leaving the town saves the bag.
 - `debug_senses.gd` turns on the sense debug overlays and the inspector in the Test Lab, makes a
   sound and builds every creature's inspector panel: a crash there is a bug in the debug drawing.
 - `investigate_far_room.gd` (a real dungeon, seed 1, not the lab) places a rat, makes a noise two rooms

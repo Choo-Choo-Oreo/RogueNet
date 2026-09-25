@@ -4,7 +4,7 @@ extends RefCounted
 ## Saved characters, Terraria style: one JSON file per character, kept on this machine
 ## only. What both teams share lives here: the files, their folder, listing, deleting,
 ## and the fields every character has. Each team's own fields come from its save:
-## ProtagonistSave (a player's hero) and AntagonistSave (a player-driven antagonist).
+## ProtagonistSave (a player's adventurer) and AntagonistSave (a player-driven antagonist).
 ##
 ## Every character has:
 ##   id       the file name (made once by create(), never shown)

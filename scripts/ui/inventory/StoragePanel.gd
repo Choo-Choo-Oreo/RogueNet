@@ -59,7 +59,7 @@ func _build() -> void:
 
 	column.add_child(InventoryPanel._label("Drag gear onto your character, or right-click it", InventoryPanel.COLOR_DIM, 12))
 
-## Adds one of each item `ids` returns that the hero lacks (PlayerInventory.add_to_storage).
+## Adds one of each item `ids` returns that the adventurer lacks (PlayerInventory.add_to_storage).
 func _debug_button(column: VBoxContainer, text: String, ids: Callable) -> void:
 	var button := InventoryPanel._flat_button("[debug] " + text)
 	button.pressed.connect(func():

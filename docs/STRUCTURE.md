@@ -227,7 +227,7 @@ own), and the Maker tool.
 
 **`scripts/items/`, `scripts/ui/`, `scripts/settings/`, `scripts/debug/`, `scripts/util/`**
 Item data lookup (loot and rarity later); menu and HUD scripts, including the lobby menu,
-with `inventory/` and `town/`. A player-driven hero and a player-driven antagonist see
+with `inventory/` and `town/`. A player-driven adventurer and a player-driven antagonist see
 different screens, so a HUD piece only one side uses goes in `ui/protagonist/` or
 `ui/antagonist/` (scripts and scenes alike); what both use (prompts, chat, pause menu)
 stays in `ui/`. Options controls; developer tools; small helpers with no

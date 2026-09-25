@@ -25,14 +25,14 @@ func _start_singleplayer() -> void:
 	NetworkSync.peer_names[1] = NetworkSync.account_name()
 	get_tree().change_scene_to_file("res://scenes/ui/town/MainTown.tscn")
 
-## Singleplayer and Multiplayer both go through the Characters screen (the last hero picked
+## Singleplayer and Multiplayer both go through the Characters screen (the last adventurer picked
 ## is already selected): `then` runs once one is picked; Back cancels.
 func _pick_character(then: Callable) -> void:
 	_close_settings_panel()
 	panel_settings.visible = true
 	var select = preload("res://scenes/ui/protagonist/CharacterSelect.tscn").instantiate()
 	panel_settings.add_child(select)
-	select.picked.connect(func(_hero): then.call_deferred())
+	select.picked.connect(func(_adventurer): then.call_deferred())
 
 func _on_dungeon_maker_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/dungeon/DungeonMaker.tscn")

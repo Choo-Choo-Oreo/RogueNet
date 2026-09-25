@@ -15,9 +15,9 @@ func _ready() -> void:
 	MusicManager.stop()
 	refresh_player_list()
 	VoiceChat.speaking_changed.connect(_on_speaking_changed)
-	# The hero's saved look; with no hero picked (a test going straight here) keep the default.
-	if not PlayerInventory.hero.is_empty():
-		_choose_character(PlayerInventory.hero["skin"])
+	# The adventurer's saved look; with no adventurer picked (a test going straight here) keep the default.
+	if not PlayerInventory.adventurer.is_empty():
+		_choose_character(PlayerInventory.adventurer["skin"])
 	# Singleplayer has nobody to list or talk to.
 	sidebar.visible = NetworkSync.is_online()
 	player_list_panel.visible = NetworkSync.is_online()
@@ -26,11 +26,11 @@ func _ready() -> void:
 	chat_log.scroll_following = true
 	send_button.pressed.connect(_send_chat)
 	chat_input.text_submitted.connect(func(_text): _send_chat())
-	PlayerInventory.save_hero()
+	PlayerInventory.save_adventurer()
 
-# Leaving the town any way (Leave, a dive starting, the host going) saves the hero.
+# Leaving the town any way (Leave, a dive starting, the host going) saves the adventurer.
 func _exit_tree() -> void:
-	PlayerInventory.save_hero()
+	PlayerInventory.save_adventurer()
 
 # Enter in the input box or the Send button both come here.
 func _send_chat() -> void:
@@ -81,16 +81,16 @@ func _on_leave_button_pressed() -> void:
 	NetworkSync.reset_session()
 	get_tree().change_scene_to_file("res://scenes/ui/MainMenu.tscn")
 
-## The same Characters screen as the main menu's. Picking a hero saves the one being left
-## (PlayerInventory.use_hero), then shows the new one's look and gear to everyone.
+## The same Characters screen as the main menu's. Picking an adventurer saves the one being left
+## (PlayerInventory.use_adventurer), then shows the new one's look and gear to everyone.
 func _on_swap_characters_button_pressed() -> void:
 	panel_main.hide()
 	panel_character.show()
 	var select = preload("res://scenes/ui/protagonist/CharacterSelect.tscn").instantiate()
 	select.in_town = true
 	panel_character.add_child(select)
-	select.picked.connect(func(hero: Dictionary):
-		_choose_character(hero["skin"])
+	select.picked.connect(func(adventurer: Dictionary):
+		_choose_character(adventurer["skin"])
 		NetworkSync.share_equipment(PlayerInventory.worn()))
 	select.tree_exited.connect(panel_main.show)
 
@@ -103,6 +103,6 @@ func _on_storage_back_pressed() -> void:
 	panel_main.show()
 
 func _choose_character(character_id: String) -> void:
-	if not PlayerInventory.hero.is_empty():
-		PlayerInventory.hero["skin"] = character_id
+	if not PlayerInventory.adventurer.is_empty():
+		PlayerInventory.adventurer["skin"] = character_id
 	NetworkSync.ask_host(NetworkSync.report_player_character, [character_id])
