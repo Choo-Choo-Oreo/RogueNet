@@ -6,7 +6,7 @@ extends CharacterSave
 ## wears (NetworkSync.peer_equipment); the rest stays on this machine.
 ##
 ## On top of the shared fields:
-##   skin        a PlayerController.CHARACTERS key ("human")
+##   skin        a PlayerController.SKINS key ("human")
 ##   difficulty  reserved for the softcore / mediumcore / hardcore tiers (not used yet)
 ##   equipped    slot -> item id, only slots that hold something (PlayerInventory.worn())
 ##   bag         item ids, "" for an empty cell (PlayerInventory.bag); a new adventurer's

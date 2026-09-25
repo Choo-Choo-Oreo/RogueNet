@@ -30,7 +30,7 @@ func _start_singleplayer() -> void:
 func _pick_character(then: Callable) -> void:
 	_close_settings_panel()
 	panel_settings.visible = true
-	var select = preload("res://scenes/ui/protagonist/CharacterSelect.tscn").instantiate()
+	var select = preload("res://scenes/ui/CharacterSelect.tscn").instantiate()
 	panel_settings.add_child(select)
 	select.picked.connect(func(_adventurer): then.call_deferred())
 

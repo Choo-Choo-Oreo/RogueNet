@@ -17,7 +17,7 @@ func _ready() -> void:
 	VoiceChat.speaking_changed.connect(_on_speaking_changed)
 	# The adventurer's saved look; with no adventurer picked (a test going straight here) keep the default.
 	if not PlayerInventory.adventurer.is_empty():
-		_choose_character(PlayerInventory.adventurer["skin"])
+		_share_skin(PlayerInventory.adventurer["skin"])
 	# Singleplayer has nobody to list or talk to.
 	sidebar.visible = NetworkSync.is_online()
 	player_list_panel.visible = NetworkSync.is_online()
@@ -86,11 +86,11 @@ func _on_leave_button_pressed() -> void:
 func _on_swap_characters_button_pressed() -> void:
 	panel_main.hide()
 	panel_character.show()
-	var select = preload("res://scenes/ui/protagonist/CharacterSelect.tscn").instantiate()
+	var select = preload("res://scenes/ui/CharacterSelect.tscn").instantiate()
 	select.in_town = true
 	panel_character.add_child(select)
 	select.picked.connect(func(adventurer: Dictionary):
-		_choose_character(adventurer["skin"])
+		_share_skin(adventurer["skin"])
 		NetworkSync.share_equipment(PlayerInventory.worn()))
 	select.tree_exited.connect(panel_main.show)
 
@@ -102,7 +102,6 @@ func _on_storage_back_pressed() -> void:
 	panel_storage.hide()
 	panel_main.show()
 
-func _choose_character(character_id: String) -> void:
-	if not PlayerInventory.adventurer.is_empty():
-		PlayerInventory.adventurer["skin"] = character_id
-	NetworkSync.ask_host(NetworkSync.report_player_character, [character_id])
+## Tells everyone the adventurer's skin, the look the others see in the dungeon.
+func _share_skin(skin_id: String) -> void:
+	NetworkSync.ask_host(NetworkSync.report_skin, [skin_id])

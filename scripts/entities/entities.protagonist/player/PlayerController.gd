@@ -8,17 +8,16 @@ extends CharacterBody2D
 ## The worn gear, drawn on top of (or behind) $AnimatedSprite2D. See set_equipment().
 var gear := GearLayers.new()
 
-## Purely cosmetic -- which sprite_frames to wear. Characters don't (yet)
-## differ in stats or attack, so that data doesn't live in these files; see
-## PLAYER_DATA_PATH. Only the Human is left: gear (GearLayers) is drawn to fit
-## its body, and the old knight and dwarf were temporary.
-const CHARACTERS := {
+## Skins: the adventurer's look, purely cosmetic -- which sprite_frames to wear. Stats
+## and actions are the same for every skin (ADVENTURER_DATA_PATH). Only the Human is left:
+## gear (GearLayers) is drawn to fit its body, and the old knight and dwarf were temporary.
+const SKINS := {
 	"human": "res://resources/gfx/entities/entities.protagonist/human/human.json",
 }
-const DEFAULT_CHARACTER := "human"
+const DEFAULT_SKIN := "human"
 
-## Stats/attack shared by every character skin.
-const PLAYER_DATA_PATH := "res://game/entities/entities.protagonist/player.json"
+## Stats/attack shared by every skin.
+const ADVENTURER_DATA_PATH := "res://game/entities/entities.protagonist/adventurer.json"
 const GHOST_DATA_PATH := "res://resources/gfx/entities/entities.protagonist/ghost/ghost.json"
 
 const TILE_HOVER_DATA := {
@@ -43,8 +42,8 @@ var _is_dead := false
 ## living. Static so LightMap can ask without holding a player reference.
 static var local_is_ghost := false
 
-func set_character(character_id: String) -> void:
-	var data := JsonOnloading.load_dict(CHARACTERS.get(character_id, CHARACTERS[DEFAULT_CHARACTER]))
+func set_skin(skin_id: String) -> void:
+	var data := JsonOnloading.load_dict(SKINS.get(skin_id, SKINS[DEFAULT_SKIN]))
 	$AnimatedSprite2D.sprite_frames = SpriteFramesLoader.build(data["sprite_frames"])
 
 ## worn: slot -> item id (NetworkSync.peer_equipment). Drawn, and its actions go on the hotbar.
@@ -53,14 +52,14 @@ func set_equipment(worn: Dictionary) -> void:
 	gear.set_equipment(worn)
 	_update_attacks()
 
-func _load_player_data() -> void:
-	var data := JsonOnloading.load_dict(PLAYER_DATA_PATH)
+func _load_adventurer_data() -> void:
+	var data := JsonOnloading.load_dict(ADVENTURER_DATA_PATH)
 	stats.load_from_data(data)
 	_own_actions = data.get("actions", [])
 	_update_attacks()
 
 ## Gear actions come first, weapons before the other slots, then the player's own
-## actions (player.json: taunt, throw rock), cut to the 10 hotbar slots.
+## actions (adventurer.json: taunt, throw rock), cut to the 10 hotbar slots.
 const WEAPON_SLOTS: Array[String] = ["main_hand", "off_hand"]
 
 func _update_attacks() -> void:
@@ -132,7 +131,7 @@ func _ready() -> void:
 	gear.name = "GearLayers"
 	add_child(gear)
 	gear.setup($AnimatedSprite2D)
-	_load_player_data()
+	_load_adventurer_data()
 	stats.died.connect(_on_died)
 	grid_mover.stepped.connect(_on_stepped)
 	$TileHoverHighlight.sprite_frames = SpriteFramesLoader.build({

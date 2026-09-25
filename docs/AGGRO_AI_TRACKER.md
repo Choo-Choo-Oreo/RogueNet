@@ -71,7 +71,7 @@ Status key: [ ] todo, [x] done, [~] built / needs playtest, [-] on hold
 
 ## Built 2026-09-23 (all [~] need playtest)
 
-MinionController: _lock / _override / timers, force_target(); MinionSenses.forget(); NetworkSync.report_taunt; PlayerController._try_taunt; slot 4 in player.json (radius 6, 4s, 12s cooldown, cap 24). Flyers are cosmetic-only in this codebase (they path like walkers) so no flyer exemption was needed.
+MinionController: _lock / _override / timers, force_target(); MinionSenses.forget(); NetworkSync.report_taunt; PlayerController._try_taunt; slot 4 in adventurer.json (radius 6, 4s, 12s cooldown, cap 24). Flyers are cosmetic-only in this codebase (they path like walkers) so no flyer exemption was needed.
 
 ## Hearing built 2026-09-24 (needs playtest)
 

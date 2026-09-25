@@ -7,7 +7,7 @@ JSON describes the body, so a boss and a player-driven antagonist would use the 
 
 | Folder | Holds |
 |---|---|
-| `entities.protagonist/` | The player body (`player.json`). |
+| `entities.protagonist/` | The adventurer body (`adventurer.json`), shared by the player and a future AI adventurer. |
 | `entities.antagonist/` | Bosses (`bosses/`) and minions (`minions/`); see its README for the list and the id rules. |
 
 The field-by-field format is in the root `README.md` under "Minions". Sprite PNGs and their

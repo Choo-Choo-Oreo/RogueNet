@@ -1,15 +1,15 @@
 extends GutTest
 
 ## The player's hotbar comes from worn gear (item "actions"), weapons first, then the
-## player's own actions from player.json.
+## player's own actions from adventurer.json.
 
 var player: PlayerController
 
-# Kept out of the tree: its GridMover needs a dungeon. So player.json's own actions are
-# read here the way _load_player_data() does.
+# Kept out of the tree: its GridMover needs a dungeon. So adventurer.json's own actions are
+# read here the way _load_adventurer_data() does.
 func before_each() -> void:
 	player = autofree(preload("res://scenes/entities/PlayerController.tscn").instantiate())
-	player._own_actions = JsonOnloading.load_dict(PlayerController.PLAYER_DATA_PATH)["actions"]
+	player._own_actions = JsonOnloading.load_dict(PlayerController.ADVENTURER_DATA_PATH)["actions"]
 
 func _ids() -> Array:
 	return player.hotbar_actions().map(func(attack): return attack["id"])

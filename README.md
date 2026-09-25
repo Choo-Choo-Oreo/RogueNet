@@ -243,7 +243,7 @@ JSON. DungeonMaker keeps it when re-saving.)
 - `actions` — optional; what wearing it lets you do, in the same form as a
   creature's `actions` (ids from `game/actions/`, with per-item overrides).
   They fill the hotbar: main hand first, then off hand, then the other slots,
-  then the player's own actions from `player.json` (taunt, throw rock), up to
+  then the adventurer's own actions from `adventurer.json` (taunt, throw rock), up to
   10. An item without `actions` is cosmetic.
 - `icon` — optional 16x16 PNG for inventory slots, kept in
   `resources/gfx/ui/icons/items/<item id>.png`. Without one, the slot

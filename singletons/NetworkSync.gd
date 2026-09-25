@@ -226,28 +226,28 @@ func receive_player_names(names: Dictionary) -> void:
 	if main_town and main_town.has_method("refresh_player_list"):
 		main_town.refresh_player_list()
 
-# peer_id -> character id (only "human" today), which sprite each player shows in the dungeon.
-var peer_characters: Dictionary = {}
+# peer_id -> skin id (only "human" today): the look each player's adventurer shows in the dungeon.
+var peer_skins: Dictionary = {}
 
 @rpc("any_peer", "reliable")
-func report_player_character(character_id: String) -> void:
+func report_skin(skin_id: String) -> void:
 	if not is_host():
 		return
-	_set_character(_sender(), character_id)
+	_set_skin(_sender(), skin_id)
 
-func _set_character(peer_id: int, character_id: String) -> void:
-	peer_characters[peer_id] = character_id
+func _set_skin(peer_id: int, skin_id: String) -> void:
+	peer_skins[peer_id] = skin_id
 	for other_id in multiplayer.get_peers():
-		receive_player_characters.rpc_id(other_id, peer_characters)
-	receive_player_characters(peer_characters)
+		receive_skins.rpc_id(other_id, peer_skins)
+	receive_skins(peer_skins)
 
 @rpc("authority", "reliable")
-func receive_player_characters(characters: Dictionary) -> void:
-	peer_characters = characters
-	_apply_to_players(peer_characters, "set_character")
+func receive_skins(skins: Dictionary) -> void:
+	peer_skins = skins
+	_apply_to_players(peer_skins, "set_skin")
 
 # peer_id -> {slot: item id}, the gear each player wears (see PlayerInventory.worn()).
-# Same "tell the host, host tells everyone" route as peer_characters above.
+# Same "tell the host, host tells everyone" route as peer_skins above.
 var peer_equipment: Dictionary = {}
 
 ## Called by PlayerInventory whenever this machine's player changes what they wear.
