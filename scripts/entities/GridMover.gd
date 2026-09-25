@@ -13,7 +13,7 @@ extends Node
 @onready var wall_data: TileMapLayer = get_tree().current_scene.find_child("WallData", true, false)
 @onready var floor_data: TileMapLayer = get_tree().current_scene.find_child("FloorData", true, false)
 
-@onready var _void_source_id: int = TileTypeRegistry.new().get_id("floor_void")
+@onready var _void_source_id: int = _tile_ids().get_id("floor_void")
 
 ## Emitted when a step finishes, with the tile stepped onto. Not for teleports.
 signal stepped(tile: Vector2i)
@@ -40,13 +40,22 @@ func _footprint_tiles(anchor: Vector2i) -> Array[Vector2i]:
 			tiles.append(anchor + Vector2i(x, y))
 	return tiles
 
-var _floor_speed := {}
+## Floor tile id -> move speed, read from game/tiles/ once and shared by every mover. Each
+## mover used to read the registry and all the tile files itself, which with hundreds of
+## minions was thousands of file reads while a dungeon loaded.
+static var _floor_speed := {}
+static var _registry: TileTypeRegistry = null
+
+static func _tile_ids() -> TileTypeRegistry:
+	if _registry == null:
+		_registry = TileTypeRegistry.new()
+	return _registry
 
 func _ready() -> void:
-	_build_floor_speeds()
+	if _floor_speed.is_empty():
+		_build_floor_speeds()
 
-func _build_floor_speeds() -> void:
-	var registry := TileTypeRegistry.new()
+static func _build_floor_speeds() -> void:
 	var dir := DirAccess.open("res://game/tiles/")
 	if dir == null:
 		return
@@ -56,7 +65,7 @@ func _build_floor_speeds() -> void:
 		var tile := TileType.new()
 		tile.load_from_file("res://game/tiles/" + file_name)
 		if tile.category == TileType.Category.FLOOR:
-			_floor_speed[registry.get_id(tile.tile_name)] = tile.move_speed()
+			_floor_speed[_tile_ids().get_id(tile.tile_name)] = tile.move_speed()
 
 ## True for a mover that flies: terrain never slows it, and its pathfinding
 ## ignores terrain cost. Set from the minion JSON's "flying" (MinionController).

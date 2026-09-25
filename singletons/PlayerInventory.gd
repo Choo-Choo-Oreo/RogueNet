@@ -282,7 +282,7 @@ func _sort_key(item_id: String, by: String, stamp: int) -> Array:
 	return by_set + [ItemDatabase.category_index(item_id), item_id]
 
 # Compares two sort keys element by element.
-static func _before(a: Array, b: Array) -> bool:
+func _before(a: Array, b: Array) -> bool:
 	for i in mini(a.size(), b.size()):
 		if a[i] != b[i]:
 			return a[i] < b[i]

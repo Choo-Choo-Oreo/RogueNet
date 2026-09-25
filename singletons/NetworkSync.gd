@@ -113,13 +113,19 @@ func report_position(pos: Vector2) -> void:
 	_relay_position(sender_id, pos)
 
 func _relay_position(sender_id: int, pos: Vector2) -> void:
-	for peer_id in multiplayer.get_peers():
-		if peer_id == sender_id:
-			continue
-		# Players still in the town have no dungeon to move anyone in.
-		if not dive_members.is_empty() and peer_id not in dive_members:
-			continue
-		receive_position.rpc_id(peer_id, sender_id, pos)
+	for peer_id in dive_peers():
+		if peer_id != sender_id:
+			receive_position.rpc_id(peer_id, sender_id, pos)
+
+## The other peers in the dungeon: everything that only happens there (positions, minions,
+## hits, doors, effects, broken walls) goes only to them. Players still in the town have no
+## dungeon, and were otherwise shown its attack effects and played its sounds. With no dive
+## on record (a dungeon opened straight from the editor), every peer.
+func dive_peers() -> Array:
+	var peers := Array(multiplayer.get_peers())
+	if dive_members.is_empty():
+		return peers
+	return peers.filter(func(id): return id in dive_members)
 
 @rpc("authority", "unreliable_ordered")
 func receive_position(player_id: int, pos: Vector2) -> void:
@@ -510,7 +516,7 @@ func receive_end_votes(votes: Array) -> void:
 func broadcast_minion_spawns(spawns: Array) -> void:
 	if spawns.is_empty():
 		return
-	for peer_id in multiplayer.get_peers():
+	for peer_id in dive_peers():
 		receive_spawn_minions.rpc_id(peer_id, spawns)
 
 @rpc("authority", "reliable")
@@ -530,7 +536,7 @@ func receive_spawn_minions(spawns: Array) -> void:
 # position) -- clients never run minion AI at all, they only ever render
 # whatever the host last told them.
 func relay_minion_state(minion_id: int, pos: Vector2, state: int) -> void:
-	for peer_id in multiplayer.get_peers():
+	for peer_id in dive_peers():
 		receive_minion_state.rpc_id(peer_id, minion_id, pos, state)
 
 @rpc("authority", "unreliable_ordered")
@@ -568,7 +574,7 @@ func _resolve_minion_hit(minion_id: int, amount: int, type: String, cause: Strin
 		var minion := scene.get_node_or_null("Minions/" + str(minion_id))
 		if minion and minion.has_method("take_damage"):
 			minion.take_damage(amount, type, cause, attacker)
-	for peer_id in multiplayer.get_peers():
+	for peer_id in dive_peers():
 		receive_minion_damage.rpc_id(peer_id, minion_id, amount, type, cause, attacker)
 
 @rpc("authority", "reliable")
@@ -610,7 +616,8 @@ func set_door(id: int, open: bool) -> void:
 	if not DoorRegistry.set_open(id, open):
 		return
 	if multiplayer.multiplayer_peer != null and multiplayer.is_server():
-		receive_door_state.rpc(id, open)
+		for peer_id in dive_peers():
+			receive_door_state.rpc_id(peer_id, id, open)
 
 @rpc("authority", "reliable")
 func receive_door_state(id: int, open: bool) -> void:
@@ -710,7 +717,7 @@ func _spawn_effect(pos: Vector2, data: Dictionary, direction: Vector2) -> void:
 	effect.play(data, direction)
 
 func _forward_effect(pos: Vector2, data: Dictionary, direction: Vector2, skip_id: int) -> void:
-	for peer_id in multiplayer.get_peers():
+	for peer_id in dive_peers():
 		if peer_id != skip_id:
 			receive_effect.rpc_id(peer_id, pos, data, direction)
 
@@ -737,7 +744,7 @@ func share_projectile(texture_path: String, from: Vector2, to: Vector2) -> void:
 		request_projectile.rpc_id(1, texture_path, from, to)
 
 func _forward_projectile(texture_path: String, from: Vector2, to: Vector2, skip_id: int) -> void:
-	for peer_id in multiplayer.get_peers():
+	for peer_id in dive_peers():
 		if peer_id != skip_id:
 			receive_projectile.rpc_id(peer_id, texture_path, from, to)
 
@@ -817,7 +824,7 @@ func request_noise(position: Vector2, loudness: float) -> void:
 # step needed the way minion hits have one.
 func relay_player_hit(player_id: int, amount: int, type: String, cause: String = "", attacker: String = "") -> void:
 	receive_player_damage(player_id, amount, type, cause, attacker)
-	for peer_id in multiplayer.get_peers():
+	for peer_id in dive_peers():
 		receive_player_damage.rpc_id(peer_id, player_id, amount, type, cause, attacker)
 
 @rpc("authority", "reliable")
@@ -842,7 +849,7 @@ func destroy_tiles(cells: Array[Vector2i]) -> int:
 	if changes.is_empty():
 		return 0
 	receive_tile_changes(changes)
-	for peer_id in multiplayer.get_peers():
+	for peer_id in dive_peers():
 		receive_tile_changes.rpc_id(peer_id, changes)
 	return changes.size()
 

@@ -98,6 +98,7 @@ for the bottom wall of a room and the game rotates it for the other three sides.
 - [✓] Boss door emblems in `doors/doors.emblems/`: 15 damage types (Arcana, Entropia, Fluentia, Frigid, Inanis, Necrotic, Ordo, Perditio, Physical, Plenum, Ruina, Solum, Torpor, Virulentia, Zeal), listed in `emblems.json`
 - [✗] Boss door frame for smooth cave (`wall_smooth_cave` has no `SmoothCave_W4/W5_Frame` yet)
 - [✗] Treasure door (the locked-door item above, once items and keys exist)
+- [✗] `wood_fold` at widths 1 and 2 (`Wood_Fold_W1`/`W2`), **or decide it stays 3-5 wide**: manor rooms ask for it on 3-wide connectors, but where the room next door only overlaps 1-2 tiles of the opening, no `wood_fold` fits and the game falls back to an iron door (found 2026-09-25)
 
 ### New floors
 

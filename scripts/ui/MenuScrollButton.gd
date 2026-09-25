@@ -149,16 +149,21 @@ func strike_point() -> Vector2:
 	return _visual.global_position + Vector2(ROLLER_SIZE.x + PAPER_SIZE.x - 2, PAPER_Y + CUT_ROW) * PX
 
 ## A slash runs right to left along the cut, then the two halves fall apart.
+## Timed with a tween this button owns, not scene timers, so a scene change mid-effect
+## just stops it instead of resuming the effect on a freed button.
 func cut() -> void:
 	_start_destroying()
 	_slash.visible = true
+	var steps := create_tween()
 	for f in SLASH_FRAMES:
-		(_slash.texture as AtlasTexture).region.position.x = f * SLASH_SIZE.x
-		await get_tree().create_timer(0.045).timeout
+		steps.tween_callback(func():
+			(_slash.texture as AtlasTexture).region.position.x = f * SLASH_SIZE.x)
+		steps.tween_interval(0.045)
 		if f == 1:
-			_fall_apart()
-	_slash.visible = false
-	await get_tree().create_timer(0.35).timeout
+			steps.tween_callback(_fall_apart)
+	steps.tween_callback(func(): _slash.visible = false)
+	steps.tween_interval(0.35)
+	await steps.finished
 	_finish_effect()
 
 func _fall_apart() -> void:
@@ -174,21 +179,23 @@ func _fall_apart() -> void:
 		tween.tween_property(roller, "modulate:a", 0.0, 0.3)
 
 ## Fire eats the paper from the right-hand end (where the staff is) to the left.
+## Tween-timed for the same reason as cut().
 func burn() -> void:
 	_start_destroying()
 	for i in 2:
 		(_halves[i].texture as AtlasTexture).atlas = BURN_TEX
 	_flames.visible = true
+	var steps := create_tween()
 	for f in BURN_FRAMES:
-		for i in 2:
-			(_halves[i].texture as AtlasTexture).region.position.x = f * PAPER_SIZE.x
-		(_flames.texture as AtlasTexture).region.position.x = f * PAPER_SIZE.x
-		await get_tree().create_timer(BURN_TIME / BURN_FRAMES).timeout
-	_flames.visible = false
-	var tween := create_tween().set_parallel()
-	for roller in [_roller_left, _roller_right]:
-		tween.tween_property(roller, "modulate:a", 0.0, 0.25)
-	await tween.finished
+		steps.tween_callback(func():
+			for i in 2:
+				(_halves[i].texture as AtlasTexture).region.position.x = f * PAPER_SIZE.x
+			(_flames.texture as AtlasTexture).region.position.x = f * PAPER_SIZE.x)
+		steps.tween_interval(BURN_TIME / BURN_FRAMES)
+	steps.tween_callback(func(): _flames.visible = false)
+	steps.tween_property(_roller_left, "modulate:a", 0.0, 0.25)
+	steps.parallel().tween_property(_roller_right, "modulate:a", 0.0, 0.25)
+	await steps.finished
 	_finish_effect()
 
 func _start_destroying() -> void:

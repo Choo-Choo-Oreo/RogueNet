@@ -45,8 +45,12 @@ func _show_error(text: String, color := Color(1.0, 0.45, 0.4), seconds := ERROR_
 	var my_id := _toast_id
 	if seconds <= 0.0:
 		return
-	await get_tree().create_timer(seconds).timeout
-	if my_id == _toast_id and is_instance_valid(_toast):
+	# A connected timer, not an await: an await would wake up on a freed menu once the
+	# scene has changed, and a signal to a freed node just goes nowhere.
+	get_tree().create_timer(seconds).timeout.connect(_hide_toast.bind(my_id))
+
+func _hide_toast(toast_id: int) -> void:
+	if toast_id == _toast_id and is_instance_valid(_toast):
 		_toast.visible = false
 
 ## A peer left over from an earlier host or join still owns the Steam listen
@@ -136,8 +140,10 @@ func _on_join_button_pressed():
 	_joining = true
 	_show_error("Joining %s ..." % host_steam_id, Color(0.8, 0.85, 1.0), 0.0)
 
-	await get_tree().create_timer(JOIN_TIMEOUT).timeout
-	if is_instance_valid(self) and _joining:
+	get_tree().create_timer(JOIN_TIMEOUT).timeout.connect(_on_join_timeout)
+
+func _on_join_timeout() -> void:
+	if _joining:
 		_fail_join("Join timed out. The host did not answer.")
 
 func _on_connected_to_server():

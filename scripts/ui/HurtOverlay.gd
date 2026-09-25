@@ -83,6 +83,14 @@ func _muffle() -> void:
 	open.tween_property(filter, "cutoff_hz", OPEN_CUTOFF, MUFFLE_SECONDS).set_ease(Tween.EASE_IN)
 	open.tween_callback(func(): AudioServer.set_bus_effect_enabled(bus, 0, false))
 
+## Leaving the scene mid-muffle kills the tween before it switches the filter off, which
+## would leave every sound muffled from then on.
+func _exit_tree() -> void:
+	var filter := _low_pass()
+	if filter:
+		AudioServer.set_bus_effect_enabled(AudioServer.get_bus_index("Master"), 0, false)
+		filter.cutoff_hz = OPEN_CUTOFF
+
 ## The Master bus's first effect, a low-pass left disabled until a big hit.
 static func _low_pass() -> AudioEffectLowPassFilter:
 	var bus := AudioServer.get_bus_index("Master")

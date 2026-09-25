@@ -65,8 +65,8 @@ static func visit(peer_id: int, room_index: int) -> void:
 ## How long the adventurer lived, in seconds (so far, if still alive).
 static func seconds_alive(peer_id: int) -> int:
 	var died: int = of(peer_id)["died_msec"]
-	return int(((died if died >= 0 else Time.get_ticks_msec()) - _started_msec) / 1000)
+	return floori(((died if died >= 0 else Time.get_ticks_msec()) - _started_msec) / 1000.0)
 
 ## "12m 05s"
 static func duration_text(seconds: int) -> String:
-	return "%dm %02ds" % [seconds / 60, seconds % 60] if seconds >= 60 else "%ds" % seconds
+	return "%dm %02ds" % [floori(seconds / 60.0), seconds % 60] if seconds >= 60 else "%ds" % seconds

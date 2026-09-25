@@ -43,11 +43,14 @@ static func spawn_in_unseen_cells(spawn_cells: Array[Vector2i], monster_weights:
 		if minion_id != "" and not MinionIndex.has(minion_id):
 			push_warning("Spawn cell %s names unknown minion '%s', rolling instead" % [tile, minion_id])
 			minion_id = ""
-		if minion_id == "":
-			minion_id = _roll_minion(_favored_weights(monster_weights, favors.get(tile, [])), rng)
-		if minion_id == "":
-			continue
-		var placed := fit_tile(minion_id, tile, minions_root)
+		var placed := NO_FIT
+		if minion_id != "":
+			placed = fit_tile(minion_id, tile, minions_root)
+		else:
+			var rolled := _roll_and_fit(_favored_weights(monster_weights, favors.get(tile, [])), tile, minions_root, rng)
+			if not rolled.is_empty():
+				minion_id = rolled[0]
+				placed = rolled[1]
 		if placed == NO_FIT:
 			continue
 		var id := _next_id
@@ -64,15 +67,22 @@ static func spawn_antagonists(entries: Array, minions_root: Node) -> void:
 	if mp.multiplayer_peer != null and not mp.is_server():
 		return
 	var spawned: Array = []
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
 	for entry in entries:
 		var minion_id: String = entry["minion"]
-		if minion_id == "":
-			minion_id = _pick_boss(entry["favor"])
-		if minion_id == "" or not MinionIndex.has(minion_id):
-			push_warning("Antagonist spawn at %s found no boss (minion '%s'), skipped" % [entry["tile"], minion_id])
-			continue
-		var placed := fit_tile(minion_id, entry["tile"], minions_root)
+		var placed := NO_FIT
+		if minion_id != "" and MinionIndex.has(minion_id):
+			placed = fit_tile(minion_id, entry["tile"], minions_root)
+		elif minion_id == "":
+			# Only a boss that fits the room: a 7x7 dragon picked for a small boss room
+			# used to be skipped, leaving the room with no boss at all.
+			var rolled := _roll_and_fit(_favored_weights(_boss_weights(), entry["favor"]), entry["tile"], minions_root, rng)
+			if not rolled.is_empty():
+				minion_id = rolled[0]
+				placed = rolled[1]
 		if placed == NO_FIT:
+			push_warning("Antagonist spawn at %s found no boss that fits (minion '%s'), skipped" % [entry["tile"], minion_id])
 			continue
 		var id := _next_id
 		_next_id += 1
@@ -81,17 +91,29 @@ static func spawn_antagonists(entries: Array, minions_root: Node) -> void:
 	if not spawned.is_empty():
 		NetworkSync.broadcast_minion_spawns(spawned)
 
-## A random boss: every boss (see MinionIndex.is_boss) starts at weight 1, then the
-## room's favored_antagonist boosts the matching ones, the very same weighting a
-## favored_minion gives the biome table (_favored_weights). No favor = all equal.
-static func _pick_boss(favor: Array) -> String:
+## Every boss (see MinionIndex.is_boss) at weight 1. A room's favored_antagonist then
+## boosts the matching ones, the very same weighting a favored_minion gives the biome
+## table (_favored_weights). No favor = all equal.
+static func _boss_weights() -> Dictionary:
 	var weights := {}
 	for minion_id: String in MinionIndex.ids():
 		if MinionIndex.is_boss(minion_id):
 			weights[minion_id] = 1.0
-	var rng := RandomNumberGenerator.new()
-	rng.randomize()
-	return _roll_minion(_favored_weights(weights, favor), rng)
+	return weights
+
+## Rolls a minion from `weights` whose whole body fits at (or near) `tile`; one that does
+## not fit is struck off and the roll repeats. Returns [minion id, tile], or [] if none fits.
+static func _roll_and_fit(weights: Dictionary, tile: Vector2i, minions_root: Node, rng: RandomNumberGenerator) -> Array:
+	var left := weights.duplicate()
+	while not left.is_empty():
+		var minion_id := _roll_minion(left, rng)
+		if minion_id == "":
+			return []
+		var placed := fit_tile(minion_id, tile, minions_root, false)
+		if placed != NO_FIT:
+			return [minion_id, placed]
+		left.erase(minion_id)
+	return []
 
 ## Debug menu: one minion of a chosen type on a chosen tile, host only.
 static func spawn_debug(minion_id: String, tile: Vector2i, minions_root: Node) -> void:
@@ -109,23 +131,24 @@ static func spawn_debug(minion_id: String, tile: Vector2i, minions_root: Node) -
 
 ## The tile to spawn `minion_id` on so its WHOLE body fits: a big minion (size_tiles 2+)
 ## stands on a square of tiles starting at its top-left one, and a spawn cell only
-## promises that one tile is open. Returns `tile` itself when the body fits there, else
+## promises that one tile is open (a debug spawn not even that). Returns `tile` itself when the body fits there, else
 ## the nearest tile (searching up to FIT_SEARCH_RADIUS out) where every tile of the
 ## square is open floor, else NO_FIT with a warning. Host only, before broadcasting.
 const FIT_SEARCH_RADIUS := 6
 ## What fit_tile returns when the body fits nowhere: the spawn is skipped, never placed in a wall.
 const NO_FIT := Vector2i(-2147483648, -2147483648)
 
-static func fit_tile(minion_id: String, tile: Vector2i, minions_root: Node) -> Vector2i:
+static func fit_tile(minion_id: String, tile: Vector2i, minions_root: Node, warn := true) -> Vector2i:
 	var size := int(MinionIndex.load_data(minion_id).get("size_tiles", 1))
-	if size <= 1:
-		return tile
 	var scene := minions_root.get_tree().current_scene
 	var wall_data := scene.find_child("WallData", true, false) as TileMapLayer
 	var floor_data := scene.find_child("FloorData", true, false) as TileMapLayer
 	if wall_data == null or floor_data == null:
 		return tile
-	var void_id := TileTypeRegistry.new().get_id("floor_void")
+	var void_id := GridMover._tile_ids().get_id("floor_void")
+	# The usual case, and the only check a 1x1 body needs (the debug menu can aim it at a wall).
+	if _body_fits(tile, size, wall_data, floor_data, void_id):
+		return tile
 	var best := tile
 	var best_distance := INF
 	for dy in range(-FIT_SEARCH_RADIUS, FIT_SEARCH_RADIUS + 1):
@@ -137,7 +160,8 @@ static func fit_tile(minion_id: String, tile: Vector2i, minions_root: Node) -> V
 			best = candidate
 			best_distance = distance
 	if best_distance == INF:
-		push_warning("No room for a %dx%d '%s' within %d tiles of %s, not spawning it" % [size, size, minion_id, FIT_SEARCH_RADIUS, tile])
+		if warn:
+			push_warning("No room for a %dx%d '%s' within %d tiles of %s, not spawning it" % [size, size, minion_id, FIT_SEARCH_RADIUS, tile])
 		return NO_FIT
 	return best
 

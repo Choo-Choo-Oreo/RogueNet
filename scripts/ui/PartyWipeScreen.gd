@@ -47,8 +47,9 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if not _opened and _all_players_dead():
 		_opened = true
-		await get_tree().create_timer(DELAY).timeout
-		_open()
+		# A connection, not an await: if the dungeon closes during the delay (the host
+		# ends the mission), the connection goes with this node instead of resuming on it.
+		get_tree().create_timer(DELAY).timeout.connect(_open)
 
 func _all_players_dead() -> bool:
 	var players := get_tree().get_nodes_in_group("protagonist")
@@ -60,7 +61,9 @@ func _all_players_dead() -> bool:
 	return true
 
 func _unhandled_input(event: InputEvent) -> void:
-	if _history != null and event.is_action_pressed("ui_cancel"):
+	# Once the graves are up, Esc only closes the history page; it never opens the pause
+	# menu, which would sit hidden behind this screen.
+	if visible and event.is_action_pressed("ui_cancel"):
 		_close_history()
 		get_viewport().set_input_as_handled()
 
@@ -209,28 +212,29 @@ func _press_end() -> void:
 		return
 	_voted = true
 	ItemSounds.play(self, ItemSounds.SORT)
-	NetworkSync.vote_end()
 	_end_button.disabled = true
 	_end_button.burn()
 	_show_votes()
+	# Last: the final vote sends everyone to town at once, which frees this screen.
+	NetworkSync.vote_end()
 
 func _show_votes() -> void:
 	if _ready_line == null:
 		return
 	var votes := NetworkSync.end_votes
-	var ready := 0
+	var ready_count := 0
 	for peer_id in _graves:
 		var voted: bool = votes.has(peer_id) or (peer_id == _local_id() and _voted)
 		_graves[peer_id].set_voted(voted)
 		if voted:
-			ready += 1
+			ready_count += 1
 	var total := _graves.size()
 	if total <= 1:
 		_ready_line.text = "Returning to town..." if _voted else ""
 	elif _voted:
-		_ready_line.text = "%d / %d ready  ·  waiting for the others" % [ready, total]
+		_ready_line.text = "%d / %d ready  ·  waiting for the others" % [ready_count, total]
 	else:
-		_ready_line.text = "%d / %d ready" % [ready, total]
+		_ready_line.text = "%d / %d ready" % [ready_count, total]
 
 # ---------------------------------------------------------------- the history page
 
@@ -493,7 +497,7 @@ class Grave extends Control:
 		var up := _hover or selected
 		_outline.visible = up
 		if _body.modulate.a >= 1.0:
-			_body.position.y = -LIFT if up else 0.0
+			_body.position.y = -LIFT if up else 0
 		var words: Array[String] = []
 		if _is_local:
 			words.append("You")
@@ -537,12 +541,12 @@ class Grave extends Control:
 		var image := stone.get_image()
 		if image.is_compressed():
 			image.decompress()
-		var size := image.get_size()
-		var out := Image.create(size.x + 2, size.y + 2, false, Image.FORMAT_RGBA8)
+		var image_size := image.get_size()
+		var out := Image.create(image_size.x + 2, image_size.y + 2, false, Image.FORMAT_RGBA8)
 		var inside := func(px: int, py: int) -> bool:
-			return px >= 0 and py >= 0 and px < size.x and py < size.y and image.get_pixel(px, py).a > 0.5
-		for y in size.y + 2:
-			for x in size.x + 2:
+			return px >= 0 and py >= 0 and px < image_size.x and py < image_size.y and image.get_pixel(px, py).a > 0.5
+		for y in image_size.y + 2:
+			for x in image_size.x + 2:
 				if inside.call(x - 1, y - 1):
 					continue
 				if inside.call(x - 2, y - 1) or inside.call(x, y - 1) or inside.call(x - 1, y - 2) or inside.call(x - 1, y):
