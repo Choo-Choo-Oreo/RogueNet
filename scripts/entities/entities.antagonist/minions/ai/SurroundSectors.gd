@@ -30,10 +30,7 @@ static func counts_for(tree: SceneTree, target_id: int, tile_size: int) -> Packe
 
 static func _refresh(tree: SceneTree, tile_size: int) -> void:
 	_counts.clear()
-	var players: Array[Node2D] = []
-	for player: Node2D in tree.get_nodes_in_group("protagonist"):
-		if not player.stats.is_ghost:
-			players.append(player)
+	var players := PlayerLookup.living(tree)
 	if players.is_empty():
 		return
 	var max_px := float(RADIUS_TILES * tile_size)

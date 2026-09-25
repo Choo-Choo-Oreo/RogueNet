@@ -1,24 +1,35 @@
 extends Node2D
 class_name LightMap
 
+## The world's light: every torch a Viewer holds (Viewer.light) and every glowing tile,
+## and how lit each 8px cell is (Level). Minions ask whether a player's torch reaches them
+## (is_tile_lit); PlayerVision asks how bright a cell is (level_at). It draws what light looks
+## like: the glow colour tint and the normal-map shading. What each player can see, and the
+## darkness over the rest, is PlayerVision's.
+
 const CELL := 8
 const TILE := 16
-const DIRS := LightFlood.DIRS
 const STRAIGHT := LightFlood.STRAIGHT
-const DIAGONAL := LightFlood.DIAGONAL
-const PATH_SLACK := LightFlood.PATH_SLACK
+const NO_CELL := Vector2i(-99999, -99999)
+## Pixels walked per unit of flood cost (torches and glow alike; 1.0824 was tuned by eye).
+const COST_TO_PIXELS := CELL / (STRAIGHT * 1.0824)
+## Most lights drawn at once (light_smooth's light_map_1..4, normal_lit's lights[4]).
+const MAX_DRAWN := 4
+## Where the shaders' bright step ends (light_steps.gdshaderinc step_1). Each light's own
+## bright_fraction is scaled to land here, so one set of steps draws every torch.
+const BRIGHT_STEP := 0.5
 
 @export var tile_initialize: TileInitialize
-@export var player_root: Node
-@export var light_radius := 128.0
-@export var view_half := 320
 
-var _wall_data: TileMapLayer
-var _floor_data: TileMapLayer
-const MAX_OTHERS := 3
+## Light levels, for seeing by: BRIGHT out to a light's bright_fraction of its radius, DIM from
+## there to the edge, DARK where no light reaches.
+enum Level { DARK, DIM, BRIGHT }
 
-# One light per player: its own window of cells and the flood results inside it.
+# One torch: its own window of cells around its holder and the flood results inside it.
 class Light:
+	var radius := 0.0
+	var bright_fraction := 0.5
+	var ghost := false
 	var image: Image
 	var texture: ImageTexture
 	var top_left := Vector2i.ZERO
@@ -28,19 +39,19 @@ class Light:
 	var last_light_pos := Vector2(INF, INF)
 	var light_pos := Vector2.ZERO
 
-var _local: Light
-var _others := {}  # other player's node -> Light (vision is shared; at most MAX_OTHERS are drawn)
-var _side := 0
-var _sprite: Sprite2D
+var _wall_data: TileMapLayer
+var _floor_data: TileMapLayer
+var _lights := {}  # Viewer -> Light, only viewers holding a light
+## The lights the local player's screen shows this frame, their own first (Viewer.shown_to_local).
+var drawn: Array[Light] = []
 var _blocked_cache := {}
 var _door_version := 0
 var _glow_cost := {}
 var _glow_from := {}
-var _glow_seed := {}
 var _glow_sources: Array = []
 var _glow_reached: Array[Vector2i] = []
 var _glow_image: Image
-var _glow_texture: ImageTexture
+var glow_texture: ImageTexture
 var _tint: Sprite2D
 var _glow_top_left := Vector2i.ZERO
 
@@ -49,25 +60,11 @@ var _shading: ShaderMaterial = load("res://resources/shaders/normal_lit_material
 func _ready() -> void:
 	_wall_data = tile_initialize.get_node("WallData")
 	_floor_data = tile_initialize.get_node("FloorData")
-	_side = int(view_half * 2.0 / CELL) + 1
-	_local = _make_light()
 	_glow_image = Image.create(1, 1, false, Image.FORMAT_RGBA8)
 	_glow_image.fill(Color(0, 0, 0, 1))
-	_glow_texture = ImageTexture.create_from_image(_glow_image)
-	_sprite = Sprite2D.new()
-	_sprite.texture = _local.texture
-	_sprite.centered = false
-	_sprite.scale = Vector2(CELL, CELL)
-	_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	var smooth := ShaderMaterial.new()
-	smooth.shader = load("res://resources/shaders/light_smooth.gdshader")
-	smooth.set_shader_parameter("cell_size", float(CELL))
-	smooth.set_shader_parameter("glow_map", _glow_texture)
-	_sprite.material = smooth
-	_sprite.z_index = 2000
-	add_child(_sprite)
+	glow_texture = ImageTexture.create_from_image(_glow_image)
 	_tint = Sprite2D.new()
-	_tint.texture = _glow_texture
+	_tint.texture = glow_texture
 	_tint.centered = false
 	_tint.scale = Vector2(CELL, CELL)
 	_tint.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
@@ -85,15 +82,18 @@ func bake_glow() -> void:
 	_scan_glow_sources(tiles)
 	_glow_top_left = tiles.position * 2
 	_glow_image = Image.create(tiles.size.x * 2, tiles.size.y * 2, false, Image.FORMAT_RGBA8)
-	_glow_texture = ImageTexture.create_from_image(_glow_image)
+	glow_texture = ImageTexture.create_from_image(_glow_image)
 	_flood_glow()
 	_paint_glow()
-	_tint.texture = _glow_texture
+	_tint.texture = glow_texture
 	_tint.position = Vector2(_glow_top_left * CELL)
-	var smooth: ShaderMaterial = _sprite.material
-	smooth.set_shader_parameter("glow_map", _glow_texture)
-	smooth.set_shader_parameter("glow_origin", _tint.position)
-	smooth.set_shader_parameter("glow_size", Vector2(_glow_image.get_size()))
+
+## World pixel of the glow map's top-left corner, and its size in cells (for PlayerVision's shader).
+func glow_origin() -> Vector2:
+	return _tint.position
+
+func glow_size() -> Vector2:
+	return Vector2(_glow_image.get_size())
 
 func _process(_delta: float) -> void:
 	var started := Time.get_ticks_usec()
@@ -101,90 +101,102 @@ func _process(_delta: float) -> void:
 	DebugState.add_time("light", Time.get_ticks_usec() - started)
 
 func _process_inner() -> void:
-	var player := _local_player()
-	if player == null:
-		return
-	_sprite.visible = not DebugState.see_all
 	if DoorRegistry.version != _door_version:
-		# A door opened or closed: every light re-floods next update.
+		# A door opened or closed (or a wall was smashed): every light re-floods next update.
 		_door_version = DoorRegistry.version
-		_local.last_origin = Vector2i(-99999, -99999)
-		for other: Light in _others.values():
-			other.last_origin = Vector2i(-99999, -99999)
-	_update_light(_local, player, true)
-	_shading.set_shader_parameter("light_pos", _local.light_pos)
-	_update_others()
+		_blocked_cache.clear()
+		for light: Light in _lights.values():
+			light.last_origin = NO_CELL
+	_update_lights()
+	_pick_drawn()
+	var positions := PackedVector2Array()
+	positions.resize(MAX_DRAWN)
+	for i in drawn.size():
+		var light := drawn[i]
+		if light.light_pos != light.last_light_pos:
+			light.last_light_pos = light.light_pos
+			_paint(light)
+		positions[i] = light.light_pos
+	_shading.set_shader_parameter("lights", positions)
+	_shading.set_shader_parameter("light_count", drawn.size())
 
-## True if any of this tile's four half-tile (CELL) cells are part of the
-## local player's currently-flooded vision. Used by minion spawning to decide
-## whether a spawn cell is still in view (skip it) or safe to roll into.
-## Only cells the light actually shows count (not the dark fringe past its edge, see _level).
+## Every viewer's torch, living or not, on every machine: the host needs them all for the
+## minions (is_tile_lit), the others to draw their teammates' light.
+func _update_lights() -> void:
+	for viewer in _lights.keys():
+		if not Viewer.all.has(viewer):
+			_lights.erase(viewer)
+	for viewer in Viewer.all:
+		var data := viewer.light
+		if data.is_empty():
+			_lights.erase(viewer)
+			continue
+		var radius := float(data["glow_radius"])
+		var bright := float(data.get("bright_fraction", BRIGHT_STEP))
+		var light: Light = _lights.get(viewer)
+		if light == null or light.radius != radius or light.bright_fraction != bright:
+			light = _make_light(radius, bright)
+			_lights[viewer] = light
+		light.ghost = viewer.ghost
+		light.light_pos = (viewer.position + Vector2(TILE / 2.0, TILE / 2.0)).round()
+		var origin := Vector2i((light.light_pos / CELL).floor())
+		if origin != light.last_origin:
+			light.last_origin = origin
+			_flood(light, origin)
+			light.last_light_pos = Vector2(INF, INF)
+
+func _pick_drawn() -> void:
+	drawn.clear()
+	for viewer in Viewer.local_first():
+		if drawn.size() >= MAX_DRAWN:
+			break
+		if _lights.has(viewer) and Viewer.shown_to_local(viewer):
+			drawn.append(_lights[viewer])
+
+## True if a living viewer's torch lights any of this tile's four cells: a minion notices a
+## light that reaches it. Glowing tiles don't count; glow alone never alerts a minion.
 func is_tile_lit(tile: Vector2i) -> bool:
-	var gap := _gap(_local)
-	for dy in 2:
-		for dx in 2:
-			var cell := tile * 2 + Vector2i(dx, dy)
-			if _local.cost.has(cell) and _level(_fraction(_local, cell, gap)) != Level.DARK:
+	for light: Light in _lights.values():
+		if light.ghost:
+			continue
+		var gap := _gap(light)
+		for cell in half_cells(tile):
+			if light.cost.has(cell) and _level(_fraction(light, cell, gap)) != Level.DARK:
 				return true
 	return false
 
-func _local_player() -> Node2D:
-	for child in player_root.get_children():
-		if child.is_multiplayer_authority():
-			return child as Node2D
-	return null
+## How lit one cell is, from the brightest of every torch and glowing tile (a Level).
+## ghosts: also count dead viewers' torches (what a ghost sees).
+func level_at(cell: Vector2i, ghosts := false) -> int:
+	var best: int = _level(_glow_fraction(cell)) if _glow_cost.has(cell) else Level.DARK
+	for light: Light in _lights.values():
+		if light.cost.has(cell) and (ghosts or not light.ghost):
+			best = maxi(best, _level(_fraction(light, cell, _gap(light))))
+	return best
 
-func _make_light() -> Light:
+## Each drawn light's cells with their Level (the debug view of torch light).
+func drawn_levels() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for light in drawn:
+		var levels := {}
+		var gap := _gap(light)
+		for cell in light.reached:
+			var level := _level(_fraction(light, cell, gap))
+			if level != Level.DARK:
+				levels[cell] = level
+		result.append(levels)
+	return result
+
+func _make_light(radius: float, bright: float) -> Light:
 	var light := Light.new()
-	light.image = Image.create(_side, _side, false, Image.FORMAT_RGBA8)
+	light.radius = radius
+	light.bright_fraction = clampf(bright, 0.01, 0.99)
+	# Room for the whole flood: it runs PATH_SLACK past the radius, plus rounding.
+	var half := ceili(radius / CELL * LightFlood.PATH_SLACK) + 2
+	light.image = Image.create(half * 2 + 1, half * 2 + 1, false, Image.FORMAT_RGBA8)
 	light.image.fill(Color(1, 0, 0, 1))
 	light.texture = ImageTexture.create_from_image(light.image)
 	return light
-
-# Floods and paints one player's light, only when they moved to a new cell or moved within it.
-func _update_light(light: Light, player: Node2D, is_local: bool) -> void:
-	light.light_pos = (player.global_position + Vector2(TILE / 2.0, TILE / 2.0)).round()
-	var origin := Vector2i((light.light_pos / CELL).floor())
-	if origin != light.last_origin:
-		light.last_origin = origin
-		_flood(light, origin, is_local)
-		light.last_light_pos = Vector2(INF, INF)
-	if light.light_pos != light.last_light_pos:
-		light.last_light_pos = light.light_pos
-		_paint(light)
-
-# Vision is shared: every other player carries their own light, however far from the local player
-# (a ranger can see through a frontliner's eyes). The shaders take the brightest of all the lights,
-# so up to MAX_OTHERS others are drawn.
-func _update_others() -> void:
-	var present: Array[Node2D] = []
-	for child in player_root.get_children():
-		if child.is_multiplayer_authority():
-			continue
-		# A dead player's light is only visible to other ghosts.
-		if child.stats.is_ghost and not PlayerController.local_is_ghost:
-			continue
-		present.append(child as Node2D)
-	for player in _others.keys():
-		if not is_instance_valid(player) or not present.has(player):
-			_others.erase(player)
-	var smooth: ShaderMaterial = _sprite.material
-	var positions := PackedVector2Array([Vector2.ZERO, Vector2.ZERO, Vector2.ZERO])
-	var count := 0
-	for player in present:
-		if count >= MAX_OTHERS:
-			break
-		if not _others.has(player):
-			_others[player] = _make_light()
-		var light: Light = _others[player]
-		_update_light(light, player, false)
-		count += 1
-		smooth.set_shader_parameter("other_map_%d" % count, light.texture)
-		smooth.set_shader_parameter("other_origin_%d" % count, Vector2(light.top_left * CELL))
-		positions[count - 1] = light.light_pos
-	smooth.set_shader_parameter("other_count", count)
-	_shading.set_shader_parameter("other_lights", positions)
-	_shading.set_shader_parameter("other_light_count", count)
 
 func _scan_glow_sources(tiles: Rect2i) -> void:
 	_glow_sources.clear()
@@ -212,75 +224,60 @@ func _paint(light: Light) -> void:
 		image.set_pixelv(pixel, Color(_fraction(light, cell, gap), 0, 0, 1))
 	light.texture.update(image)
 
-## How far out a lit cell is: 0 at the light, 1 at the edge of light_radius (farther of the
-## straight line and the way round walls). What the darkness is shaded by, and what levels use.
+## How far out a lit cell is: 0 at the light, 1 at the edge of its radius (farther of the
+## straight line and the way round walls), scaled so its bright edge sits at BRIGHT_STEP.
+## What the darkness is shaded by, and what levels use.
 func _fraction(light: Light, cell: Vector2i, gap: float) -> float:
 	var centre := (Vector2(cell) + Vector2(0.5, 0.5)) * CELL
 	var straight := (centre - light.light_pos).length()
-	var walked: float = light.cost[cell] * CELL / (STRAIGHT * 1.0824) - gap
-	return minf(maxf(straight, walked) / light_radius, 1.0)
+	var walked: float = light.cost[cell] * COST_TO_PIXELS - gap
+	var raw := minf(maxf(straight, walked) / light.radius, 1.0)
+	if raw <= light.bright_fraction:
+		return raw * BRIGHT_STEP / light.bright_fraction
+	return BRIGHT_STEP + (raw - light.bright_fraction) * (1.0 - BRIGHT_STEP) / (1.0 - light.bright_fraction)
 
 func _gap(light: Light) -> float:
 	return ((Vector2(light.last_origin) + Vector2(0.5, 0.5)) * CELL - light.light_pos).length()
 
-## Light levels, for seeing by: BRIGHT out to BRIGHT_FRACTION of light_radius, DIM from there
-## to the edge, DARK where the light does not reach.
-enum Level { DARK, DIM, BRIGHT }
-const BRIGHT_FRACTION := 0.5
-
-## Every cell (CELL-sized) the local player's light reaches, with its Level.
-func local_levels() -> Dictionary:
-	var levels := {}
-	if _local == null:
-		return levels
-	var gap := _gap(_local)
-	for cell in _local.reached:
-		var level := _level(_fraction(_local, cell, gap))
-		if level != Level.DARK:
-			levels[cell] = level
-	return levels
-
-## The flood runs a little past light_radius (PATH_SLACK, and one cell of rounding); those cells
+## The flood runs a little past the radius (PATH_SLACK, and one cell of rounding); those cells
 ## are painted fully dark (fraction 1), so they are DARK here too.
 static func _level(fraction: float) -> Level:
 	if fraction >= 1.0:
 		return Level.DARK
-	return Level.BRIGHT if fraction <= BRIGHT_FRACTION else Level.DIM
+	return Level.BRIGHT if fraction <= BRIGHT_STEP else Level.DIM
+
+## A glowing tile's fraction at a cell it reached, the same distance rule as a torch's but
+## measured from the edge of the tile.
+func _glow_fraction(cell: Vector2i) -> float:
+	var source: Dictionary = _glow_sources[_glow_from[cell]]
+	var centre := (Vector2(cell) + Vector2(0.5, 0.5)) * CELL
+	var source_centre: Vector2 = (Vector2(source["tile"]) + Vector2(0.5, 0.5)) * TILE
+	var beyond := (centre - source_centre).abs() - Vector2(TILE / 2.0, TILE / 2.0)
+	var straight := Vector2(maxf(beyond.x, 0.0), maxf(beyond.y, 0.0)).length()
+	var walked: float = (_glow_cost[cell] - source["head"]) * COST_TO_PIXELS - CELL * 0.75
+	return minf(maxf(straight, walked) / source["radius"], 1.0)
 
 func _paint_glow() -> void:
 	_glow_image.fill(Color(0, 0, 0, 1))
 	for cell in _glow_reached:
 		var pixel := cell - _glow_top_left
-		if pixel.x < 0 or pixel.y < 0 or pixel.x >= _glow_image.get_width() or pixel.y >= _glow_image.get_height():
-			continue
-		var source: Dictionary = _glow_sources[_glow_from[cell]]
-		var centre := (Vector2(cell) + Vector2(0.5, 0.5)) * CELL
-		var source_centre: Vector2 = (Vector2(source["tile"]) + Vector2(0.5, 0.5)) * TILE
-		var beyond := (centre - source_centre).abs() - Vector2(TILE / 2.0, TILE / 2.0)
-		var straight := Vector2(maxf(beyond.x, 0.0), maxf(beyond.y, 0.0)).length()
-		var walked: float = (_glow_cost[cell] - source["head"]) * CELL / (STRAIGHT * 1.0824) - CELL * 0.75
-		var fraction: float = maxf(straight, walked) / source["radius"]
-		var color: Color = source["color"]
-		_glow_image.set_pixelv(pixel, Color(color.r, color.g, color.b, minf(fraction, 1.0)))
-	_glow_texture.update(_glow_image)
+		var color: Color = _glow_sources[_glow_from[cell]]["color"]
+		_glow_image.set_pixelv(pixel, Color(color.r, color.g, color.b, _glow_fraction(cell)))
+	glow_texture.update(_glow_image)
 
-func _flood(light: Light, origin: Vector2i, is_local: bool) -> void:
-	_blocked_cache.clear()
-	var half := int(_side / 2.0)
+func _flood(light: Light, origin: Vector2i) -> void:
+	var half := int(light.image.get_width() / 2.0)
 	light.top_left = origin - Vector2i(half, half)
-	if is_local:
-		_sprite.position = Vector2(light.top_left * CELL)
-		_sprite.material.set_shader_parameter("window_origin", _sprite.position)
-	var radius_cells := light_radius / CELL
-	var flood := LightFlood.flood(origin, radius_cells, _is_blocked)
-	_reveal_doors(flood)
+	var flood := LightFlood.flood(origin, light.radius / CELL, _is_blocked)
+	reveal_doors(flood, half_cells)
 	light.cost = flood["cost"]
 	light.reached = flood["reached"]
 
 # The flood stops at the first cell of a closed solid door, so the rest of it (the far half of a
 # vertical door, the overhang above a horizontal one) would stay dark. Once any part of a door is
-# lit, light all of it at the same cost, so it draws whole from whichever side it is seen.
-func _reveal_doors(flood: Dictionary) -> void:
+# reached, reach all of it at the same cost, so it draws whole from whichever side it is seen.
+# cells_of(tile) is the flood's cells in one tile: half_cells for light, [tile] for sight.
+static func reveal_doors(flood: Dictionary, cells_of: Callable) -> void:
 	var cost: Dictionary = flood["cost"]
 	var reached: Array = flood["reached"]
 	for door: DoorRegistry.Door in DoorRegistry.doors:
@@ -288,7 +285,7 @@ func _reveal_doors(flood: Dictionary) -> void:
 			continue
 		var best := -1
 		for tile in door.cells:
-			for c in _half_cells(tile):
+			for c in cells_of.call(tile):
 				if cost.has(c) and (best < 0 or cost[c] < best):
 					best = cost[c]
 		if best < 0:
@@ -297,79 +294,47 @@ func _reveal_doors(flood: Dictionary) -> void:
 		for entry in door.pieces:
 			shown.append(entry["cell"] + Vector2i(0, -1))
 		for tile in shown:
-			for c in _half_cells(tile):
+			for c in cells_of.call(tile):
 				if not cost.has(c):
 					cost[c] = best
 					reached.append(c)
 
-# The four half-tile (CELL) cells that make up one tile.
-func _half_cells(tile: Vector2i) -> Array[Vector2i]:
+## The four half-tile (CELL) cells that make up one tile.
+static func half_cells(tile: Vector2i) -> Array[Vector2i]:
 	var base := tile * 2
 	return [base, base + Vector2i(1, 0), base + Vector2i(0, 1), base + Vector2i(1, 1)]
 
 func _flood_glow() -> void:
 	_glow_cost.clear()
 	_glow_from.clear()
-	_glow_seed.clear()
 	_glow_reached.clear()
 	if _glow_sources.is_empty():
 		return
 	var biggest := 0.0
 	for source in _glow_sources:
 		biggest = maxf(biggest, source["radius"])
-	var max_cost := int(biggest / CELL * STRAIGHT * PATH_SLACK)
-	var buckets: Array = []
-	buckets.resize(max_cost + DIAGONAL + 1)
+	var highest := LightFlood.max_cost(biggest / CELL)
+	var seeds := {}
 	for i in _glow_sources.size():
 		var source: Dictionary = _glow_sources[i]
-		var head := max_cost - int(source["radius"] / CELL * STRAIGHT * PATH_SLACK)
-		source["head"] = head
-		for dy in 2:
-			for dx in 2:
-				var cell: Vector2i = source["tile"] * 2 + Vector2i(dx, dy)
-				_glow_cost[cell] = head
-				_glow_from[cell] = i
-				_glow_seed[cell] = true
-				if buckets[head] == null:
-					buckets[head] = []
-				buckets[head].append(cell)
+		source["head"] = highest - LightFlood.max_cost(source["radius"] / CELL)
+		for cell in half_cells(source["tile"]):
+			seeds[cell] = [source["head"], i]
 	var bounds := _glow_image.get_size()
-	for level in range(max_cost + 1):
-		if buckets[level] == null:
-			continue
-		for cell: Vector2i in buckets[level]:
-			if _glow_cost[cell] != level:
-				continue
-			_glow_reached.append(cell)
-			if _is_blocked(cell) and not _glow_seed.has(cell):
-				continue
-			if _glow_seed.has(cell) and _is_interior_seed(cell):
-				continue
-			for dir in DIRS:
-				var step := DIAGONAL if dir.x != 0 and dir.y != 0 else STRAIGHT
-				if step == DIAGONAL and (_is_blocked(cell + Vector2i(dir.x, 0)) or _is_blocked(cell + Vector2i(0, dir.y))):
-					continue
-				var next: Vector2i = cell + dir
-				var next_cost: int = level + step
-				var pixel := next - _glow_top_left
-				if next_cost > max_cost or pixel.x < 0 or pixel.y < 0 or pixel.x >= bounds.x or pixel.y >= bounds.y:
-					continue
-				if _glow_cost.has(next) and _glow_cost[next] <= next_cost:
-					continue
-				_glow_cost[next] = next_cost
-				_glow_from[next] = _glow_from[cell]
-				if buckets[next_cost] == null:
-					buckets[next_cost] = []
-				buckets[next_cost].append(next)
-
-func _is_interior_seed(cell: Vector2i) -> bool:
-	for dir in DIRS:
-		if not _glow_seed.has(cell + dir):
-			return false
-	return true
+	var inside := func(cell: Vector2i) -> bool:
+		var pixel := cell - _glow_top_left
+		return pixel.x >= 0 and pixel.y >= 0 and pixel.x < bounds.x and pixel.y < bounds.y
+	var flood := LightFlood.flood_sources(seeds, highest, _is_blocked, inside)
+	_glow_cost = flood["cost"]
+	_glow_from = flood["from"]
+	_glow_reached.assign(flood["reached"])
 
 func _is_blocked(cell: Vector2i) -> bool:
-	var tile := Vector2i(floori(cell.x * CELL / float(TILE)), floori(cell.y * CELL / float(TILE)))
+	return blocks_light(Vector2i(floori(cell.x * CELL / float(TILE)), floori(cell.y * CELL / float(TILE))))
+
+## Whether light (and so sight) stops at this tile: a wall, no floor, or a closed solid door.
+## Cached until a door changes or a wall is smashed (both bump DoorRegistry.version).
+func blocks_light(tile: Vector2i) -> bool:
 	if _blocked_cache.has(tile):
 		return _blocked_cache[tile]
 	var blocked := TileSolid.is_solid(_wall_data, _floor_data, tile) or DoorRegistry.blocks_sight(tile)

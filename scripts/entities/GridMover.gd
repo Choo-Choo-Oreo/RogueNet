@@ -26,6 +26,7 @@ var facing_direction := Vector2.DOWN
 var footprint := 1:
 	set(value):
 		footprint = maxi(value, 1)
+		_occupancy.footprint = footprint
 		var owner_body := get_parent()
 		if owner_body != null:
 			owner_body.set_meta("footprint", footprint)
@@ -40,9 +41,23 @@ func footprint_tiles(anchor: Vector2i) -> Array[Vector2i]:
 
 var _floor_speed := {}
 
+## This body's place in the map's occupancy index (Occupancy), in it while in the tree.
+var _occupancy := Occupancy.Entry.new()
+
 func _ready() -> void:
 	_build_floor_speeds()
 	set_process(false)  # only runs while gliding to a network position (follow_network)
+
+func _enter_tree() -> void:
+	_occupancy.body = get_parent()
+	Occupancy.register(_occupancy)
+
+func _exit_tree() -> void:
+	Occupancy.unregister(_occupancy)
+
+## A ghost stops counting as standing anywhere (the body calls this when it dies).
+func become_ghost() -> void:
+	_occupancy.solid = false
 
 ## A position another machine sent (NetworkSync, once a tick): the body glides there over
 ## one tick instead of jumping, so remote players and minions look as smooth as local ones.
@@ -167,9 +182,9 @@ func teleport(pos: Vector2) -> void:
 		_tween.kill()
 	is_moving = false
 	_finish_step = Callable()
-	for tile in _reserved.keys():
-		if _reserved[tile] == _body:
-			_reserved.erase(tile)
+	for tile in Occupancy.reserved.keys():
+		if Occupancy.reserved[tile] == _body:
+			Occupancy.reserved.erase(tile)
 	_body.global_position = pos
 
 ## Only set for the length of swap_step: the creature this one is trading tiles with, which
@@ -231,46 +246,10 @@ func is_position_blocked(global_pos: Vector2) -> bool:
 	var tile := Vector2i(floori(global_pos.x / tile_size), floori(global_pos.y / tile_size))
 	return DoorRegistry.closed_door_at(tile) != null
 
-## Shared per-frame index backing is_tile_occupied() -- rescanning every
-## protagonist/antagonist on every single query was O(n) per call, and with
-## hundreds of minions now calling this unthrottled every frame (see
-## MinionController._try_direct_step, added once pathfinding itself got
-## throttled), that added up to O(n^2) per frame and became the new
-## bottleneck. Building the tile -> occupants map once per frame instead
-## (Godot 4 script statics, shared by every GridMover instance regardless of
-## which one triggers the rebuild) turns it back into O(n) total. Assumes
-## every mover uses the same tile_size, true everywhere in this project
-## today.
-static var _occupancy_frame: int = -1
-static var _occupancy_tick: int = -1
-static var _occupancy_index: Dictionary = {}  # Vector2i -> Array[Node2D]
-
-## Every living creature on `tile` this frame (ghosts excluded).
+## Every living creature on `tile` this frame (ghosts excluded), from the map's index
+## (Occupancy, which this mover registers its body into).
 func occupants_at(tile: Vector2i) -> Array:
-	return occupants(get_tree(), tile, tile_size)
-
-## The same for code that has no GridMover of its own (DoorManager). A body covers the
-## tiles from its top-left one, as many as its footprint.
-static func occupants(tree: SceneTree, tile: Vector2i, size_px: int) -> Array:
-	# Also rebuilt on a new tick: a frame can run several ticks, and steps end on them.
-	var frame := Engine.get_process_frames()
-	if frame != _occupancy_frame or GameTick.tick != _occupancy_tick:
-		_occupancy_frame = frame
-		_occupancy_tick = GameTick.tick
-		_occupancy_index.clear()
-		for group in ["protagonist", "antagonist"]:
-			for body: Node2D in tree.get_nodes_in_group(group):
-				if is_ghost_body(body):
-					continue
-				var body_tile := Vector2i(floori(body.global_position.x / size_px), floori(body.global_position.y / size_px))
-				var body_size: int = body.get_meta("footprint", 1)
-				for y in body_size:
-					for x in body_size:
-						var covered := body_tile + Vector2i(x, y)
-						if not _occupancy_index.has(covered):
-							_occupancy_index[covered] = []
-						_occupancy_index[covered].append(body)
-	return _occupancy_index.get(tile, [])
+	return Occupancy.occupants(tile, tile_size)
 
 ## True if some other creature (any protagonist or antagonist besides this
 ## mover's own body) is currently standing on `tile` -- lets a mover refuse
@@ -295,19 +274,11 @@ func _tile_occupied_single(tile: Vector2i) -> bool:
 		if is_boss and body.is_in_group("antagonist") and not body.get_meta("is_boss", false):
 			continue
 		return true
-	var holder = _reserved.get(tile)
+	var holder = Occupancy.reserved.get(tile)
 	if holder == null or not is_instance_valid(holder) or holder == _body or holder == _swap_partner:
 		return false
 	return not (is_boss and holder.is_in_group("antagonist") and not holder.get_meta("is_boss", false))
 
-## Destination tiles of steps already in progress (tile -> the body stepping
-## onto it). A body only counts as standing on a tile once its position floors
-## into it, which for a multi-frame step happens late -- so without this, two
-## creatures could both see the same tile as free and both step onto it.
-## Claimed in move_one_tile, released when that step's tween finishes; an entry
-## whose body was freed mid-step is ignored (is_instance_valid) rather than
-## needing cleanup. Ghosts never reserve, same as they never count as occupants.
-static var _reserved: Dictionary = {}  # Vector2i -> Node2D
 
 func _is_blocked(target_global: Vector2) -> bool:
 	if wall_data == null or no_clip():
@@ -393,7 +364,7 @@ func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> bool:
 	var reserved_tiles: Array[Vector2i] = footprint_tiles(target_tile)
 	if not is_ghost:
 		for covered in reserved_tiles:
-			_reserved[covered] = _body
+			Occupancy.reserved[covered] = _body
 
 	# Terrain speed is decided by whichever tile has the majority of the body
 	# on it, not the destination tile the instant the step starts -- so the
@@ -421,8 +392,8 @@ func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> bool:
 		is_moving = false
 		_finish_step = Callable()
 		for covered in reserved_tiles:
-			if _reserved.get(covered) == _body:
-				_reserved.erase(covered)
+			if Occupancy.reserved.get(covered) == _body:
+				Occupancy.reserved.erase(covered)
 		stepped.emit(target_tile)
 	var tween := create_tween()
 	_tween = tween

@@ -90,9 +90,9 @@ func apply_overrides(overrides: Dictionary) -> void:
 ## origin/is_blocked describe the owning entity's position and tile-blocked
 ## check (e.g. MinionController's GridMover) -- kept as parameters rather
 ## than a stored reference, same reasoning as the sense components use.
-## lit is whether the target's real light (the same LightMap the local
-## player's own vision uses, not an approximated radius) currently touches
-## origin's tile -- being seen gives you away even without a clear line back.
+## lit is whether a living player's torch (LightMap.is_tile_lit, the real
+## flood, not an approximated radius) currently touches origin's tile --
+## being seen gives you away even without a clear line back. No torch, no lit.
 ## Only a creature with sight notices it (a blind one ignores light).
 ## delta is the time since the last call (not necessarily a frame -- callers
 ## may throttle how often they call update()).

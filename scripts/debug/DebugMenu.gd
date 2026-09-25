@@ -16,18 +16,24 @@ const TILE := 16
 const REFRESH_SECONDS := 0.25
 const SAMPLE_SECONDS := 1.0
 
-## Listed identically on the "always" and "debug" tabs (see DebugState.on).
+## Listed identically on the "always" and "debug" tabs (see DebugState.on). A one-item entry
+## is a section heading. Protagonist = what your team senses; Antagonist = the minions' side.
 const OPTIONS := [
+	["General"],
 	["show-fps", "FPS and frame time"],
 	["show-coordinates", "Your tile and the mouse tile"],
 	["show-room-under-mouse", "Room under you and the mouse"],
 	["show-time-usage", "Process / physics time and node count"],
-	["show-minion-counts", "Minion counts by state"],
 	["show-session-info", "Players, network, seed, biome, doors"],
-	["show-room-outlines", "Room outlines"],
-	["show-room-ids", "Room ids, roles and depth"],
-	["show-connectors", "Connectors (green joined, red sealed)"],
-	["show-doors", "Doors"],
+	["show-system-time", "Time per system (minion AI, light, vision)"],
+	["log-bodies-in-walls", "Log a creature on a wall / void / no-floor tile"],
+	["Protagonist (your team)"],
+	["show-vision", "Team vision, what the darkness leaves: yellow bright, blue dim (lit and in sight, or touched)"],
+	["show-torch-light", "Each torch's reach: orange bright, brown dim (only players holding one)"],
+	["show-adventurer-sight", "Each teammate's sight: tiles in range and line of sight, lit or not (green)"],
+	["show-adventurer-touch", "Each teammate's touch: the tiles they feel (pink outline)"],
+	["Antagonist (minions)"],
+	["show-minion-counts", "Minion counts by state"],
 	["show-minion-state", "Minion state and target"],
 	["show-minion-routes", "Minion routes"],
 	["show-sight", "Minion sight: range, and a line to you (green sees you, red blocked, grey too far)"],
@@ -36,15 +42,17 @@ const OPTIONS := [
 	["show-smell", "Minion smell (not built yet: draws nothing)"],
 	["show-taste", "Minion taste (not built yet: draws nothing)"],
 	["show-minion-inspector", "Inspector: everything the minion under the mouse is tracking"],
+	["show-active-minions", "Minions thinking (green) vs waiting (grey)"],
+	["show-flow-field", "Flow field to you: tiles away + step direction"],
+	["World"],
+	["show-room-outlines", "Room outlines"],
+	["show-room-ids", "Room ids, roles and depth"],
+	["show-connectors", "Connectors (green joined, red sealed)"],
+	["show-doors", "Doors"],
 	["show-tile-grid", "Tile grid (bright line every 8 tiles)"],
 	["show-mesh-grid", "Mesh (dual) grid, half a tile off the tile grid"],
 	["show-mesh-tiles", "Debug tile overlay on the mesh cells (50%)"],
 	["show-collision-rectangles", "What blocks you (red) / shots only (orange)"],
-	["show-active-minions", "Minions thinking (green) vs waiting (grey)"],
-	["show-vision", "Your light in levels: yellow bright, blue dim, nothing drawn = dark"],
-	["show-flow-field", "Flow field to you: tiles away + step direction"],
-	["show-system-time", "Time per system (minion AI, light)"],
-	["log-bodies-in-walls", "Log a creature on a wall / void / no-floor tile"],
 ]
 
 # Fixed sizes so the panel never resizes when the tab or the hint text changes.
@@ -199,6 +207,11 @@ func _tab(tabs: TabContainer, title: String) -> VBoxContainer:
 ## Both tabs scroll together so switching between them keeps your place.
 func _options(parent: Control, tab: String) -> void:
 	for option in OPTIONS:
+		if option.size() == 1:
+			var heading := Label.new()
+			heading.text = option[0]
+			parent.add_child(heading)
+			continue
 		var key: String = tab + ":" + option[0]
 		var box := _check(parent, option[0], DebugState.flags.get(key, false), func(on): DebugState.set_flag(key, on))
 		box.tooltip_text = option[1]

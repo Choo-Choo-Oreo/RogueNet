@@ -1,5 +1,8 @@
 {
-	"sword": ["fallback_sword", "militia_wooden_shield", "militia_gambeson", "militia_trousers"],
-	"bow": ["fallback_bow", "poacher_torch", "poacher_hide_vest", "poacher_breeches"],
-	"wand": ["fallback_wand", "apprentice_tattered_book", "apprentice_robe", "apprentice_robe_skirt"]
+	"worn": ["fallback_sword", "fallback_torch"],
+	"bag": {
+		"sword": ["fallback_sword", "militia_wooden_shield", "militia_gambeson", "militia_trousers"],
+		"bow": ["fallback_bow", "poacher_torch", "poacher_hide_vest", "poacher_breeches"],
+		"wand": ["fallback_wand", "apprentice_tattered_book", "apprentice_robe", "apprentice_robe_skirt"]
+	}
 }

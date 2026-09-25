@@ -64,15 +64,15 @@ func test_populate_skips_owned_items_and_grows_storage() -> void:
 	PlayerInventory.use_adventurer(adventurers.create("Collector"))
 	PlayerInventory.bag[0] = PACK
 	var all := ItemDatabase.all_ids()
-	var owned := all.filter(func(item_id): return PlayerInventory.bag.has(item_id))
+	var owned := all.filter(func(item_id): return PlayerInventory.bag.has(item_id) or PlayerInventory.worn().values().has(item_id))
 	var added := PlayerInventory.add_to_storage(all)
-	assert_eq(added, all.size() - owned.size(), "what is in the bag (starter kits, the backpack) is not added again")
+	assert_eq(added, all.size() - owned.size(), "what is worn or in the bag (starter gear and kits, the backpack) is not added again")
 	assert_false(PlayerInventory.storage.has(PACK))
 	assert_eq(PlayerInventory.storage.size() % PlayerInventory.STORAGE_COLUMNS, 0)
 	assert_eq(PlayerInventory.add_to_storage(all), 0, "a second press adds nothing")
 
 func test_new_adventurer_gets_every_starter_kit_in_the_bag() -> void:
-	var kits := JsonOnloading.load_dict(ProtagonistSave.STARTER_KITS_PATH)
+	var kits: Dictionary = JsonOnloading.load_dict(ProtagonistSave.STARTER_KITS_PATH)["bag"]
 	assert_eq(kits.size(), 3)
 	PlayerInventory.use_adventurer(adventurers.create("Rookie"))
 	for kit in kits.values():
@@ -81,6 +81,13 @@ func test_new_adventurer_gets_every_starter_kit_in_the_bag() -> void:
 			assert_true(PlayerInventory.bag.has(item_id), "%s made it into the bag" % item_id)
 		var gives_action: bool = kit.any(func(item_id): return not ItemDatabase.is_cosmetic(item_id))
 		assert_true(gives_action, "every kit has something to attack with")
+
+func test_new_adventurer_wears_the_starter_gear() -> void:
+	PlayerInventory.use_adventurer(adventurers.create("Rookie"))
+	var worn := PlayerInventory.worn()
+	for item_id in JsonOnloading.load_dict(ProtagonistSave.STARTER_KITS_PATH)["worn"]:
+		assert_eq(worn.get(ItemDatabase.item_slot(item_id)), item_id, "%s is worn in its slot" % item_id)
+	assert_false(ItemDatabase.light_of(worn).is_empty(), "a new adventurer starts with light")
 
 func test_the_last_adventurer_played_is_remembered_until_deleted() -> void:
 	var adventurer := adventurers.create("Regular")

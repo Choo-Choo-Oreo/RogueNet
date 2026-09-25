@@ -3,15 +3,14 @@ shader_type canvas_item;
 // Normal-map shading driven by code instead of a Godot light.
 // A flat surface is left exactly as drawn. Surfaces tilted toward the light get brighter,
 // tilted away get darker, in flat steps, fading out with distance from the light.
-uniform vec2 light_pos = vec2(0.0);      // world position of the light (set by LightMap.gd)
 uniform float light_height = 24.0;       // lower = stronger, sharper highlights
 uniform float strength = 0.8;            // overall amount of shading
 uniform float reach = 96.0;              // pixels from the light where shading fades to nothing
 uniform float steps = 4.0;               // brightness levels of the shading (higher = smoother)
 
-// The other players' lights (set by LightMap.gd).
-uniform vec2 other_lights[3];
-uniform int other_light_count = 0;
+// World positions of the torches on screen (set by LightMap.gd); none when nobody holds one.
+uniform vec2 lights[4];
+uniform int light_count = 0;
 
 varying vec2 world_pos;
 
@@ -36,11 +35,11 @@ void fragment() {
 	// Blend the lights instead of choosing one. Choosing (nearest, or strongest) switches at a line
 	// between two players and leaves a hard seam. Adding the lights is smooth everywhere, and dividing
 	// by the total reach (never less than 1) stops the effect doubling where they overlap. With one
-	// light the total reach is at most 1, so the result is the same as before.
-	vec2 sum = light_shade(normal, light_pos);
-	for (int i = 0; i < 3; i++) {
-		if (i < other_light_count) {
-			sum += light_shade(normal, other_lights[i]);
+	// light the total reach is at most 1, so it is that light's shading alone.
+	vec2 sum = vec2(0.0);
+	for (int i = 0; i < 4; i++) {
+		if (i < light_count) {
+			sum += light_shade(normal, lights[i]);
 		}
 	}
 	COLOR.rgb *= 1.0 + sum.x / max(sum.y, 1.0);

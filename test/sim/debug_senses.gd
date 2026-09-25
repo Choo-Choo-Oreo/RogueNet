@@ -4,14 +4,14 @@ extends SceneTree
 # autoload before the autoloads exist (Sound uses GameTick).
 var _sound
 
-## Smoke check for the sense debug overlays: loads the Test Lab with show-sight, show-sound,
-## show-touch, show-smell, show-taste and show-minion-inspector on, makes a sound, lets the
+## Smoke check for the sense debug overlays: loads the Test Lab with every minion and
+## adventurer sense overlay on (OPTIONS), makes a sound, lets the
 ## overlay draw for a few seconds and builds the inspector panel for every creature. Any script
 ## error in the drawing code shows up in the output; it prints PASS when it got through.
 ##
 ##   godot --headless -s res://test/sim/debug_senses.gd
 
-const OPTIONS := ["show-sight", "show-sound", "show-touch", "show-smell", "show-taste", "show-minion-inspector", "show-vision", "show-flow-field"]
+const OPTIONS := ["show-sight", "show-sound", "show-touch", "show-smell", "show-taste", "show-minion-inspector", "show-vision", "show-torch-light", "show-adventurer-sight", "show-adventurer-touch", "show-flow-field"]
 const RUN_FRAMES := 300
 
 var _frames := 0
@@ -37,6 +37,8 @@ func _process(_delta: float) -> bool:
 		# Set here, not at start: the debug menu loads the saved settings when the dungeon opens.
 		for option in OPTIONS:
 			DebugState.flags["always:" + option] = true
+		# A torch, so show-torch-light has a light to draw.
+		players[0].set_equipment({"off_hand": "poacher_torch"})
 		_sound.make(self, players[0].global_position, 3.0)
 		if _sound.recent.is_empty():
 			print("FAIL debug_senses: a sound made with show-sound on left no flood to draw")

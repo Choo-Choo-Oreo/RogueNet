@@ -163,14 +163,14 @@ Two decisions gate most of these (see "Decisions needed" below): what `power` me
 - [✗] Glow ideas: flicker (shader wobble on the radius), glowstone wall tile, glow radius/colour tuning
 - [✓] Water and lava animation: `TileInitialize.gd` creates the first 8 columns and sets Godot tile animation (frames = image width / 64, 0.1 s each); confirmed working by Orea in game
 - [✓] Water and lava art touch-up: calm water with a darker deep (`.claude/tools/liquid_touchup.py`), lava with a dark cooled crust and an uneven wave rolling in to the shore (`.claude/tools/lava_shore.py`, style A); normals rebuilt; new lava not seen in game yet
-- [✗] Lava glow / ignore darkness: glow is applied only where the player's light already reaches, so lava is darkened like stone and never reveals unseen ground
+- [✓] Lava glow / ignore darkness: glow is applied only where the player's light already reaches, so lava is darkened like stone and never reveals unseen ground — 2026-09-25: glow now shows anywhere in a teammate's sight (`PlayerVision`), torch or not; needs a look in game
 - [✗] Variants for other materials (only `floor_flesh`, `wall_forest` and `barrier_forest_dense` have extra variant sets; `floor_lava` and `floor_water` have animation frames instead)
 - [✓] Normal-map tools merged into `.claude/tools/normal_maps.py` (one table of materials; `python normal_maps.py [name]`)
 - [✓] Old normal-map scripts deleted (still in git history)
 - [✗] `floor_dirt` / `floor_grass` normals were made with other settings than the script's defaults, so `normal_maps.py` lists them but skips them by default (`SKIP_BY_DEFAULT`); a plain rebuild will not touch them (by design, still open)
 - [✗] Specular / glare map (`#FFFFFF` vein glare is painted in; the shader doesn't read a specular map)
-- [✗] Light steps and radius tuning: values exist (`light_steps.gdshaderinc` 0.5 / 0.75 / 0.9, `light_radius` 128); tuning by eye is what's left
-- [✓] Other players' vision and party shared vision (`LightMap.gd` follows up to 3 other players via `other_map_1..3`; ghosts also see dead players' lights; a two-player playtest is still owed)
+- [✗] Light steps and radius tuning: values exist (`light_steps.gdshaderinc` 0.5 / 0.75 / 0.9; each torch's `glow_radius` / `bright_fraction` in its item json, poacher 128 / 0.5, fallback 96 / 0.25); tuning by eye is what's left
+- [✓] Other players' vision and party shared vision (`PlayerVision.gd` draws up to 4 teammates' sight and `LightMap.gd` up to 4 torches, `light_smooth.gdshader` `sight_map_1..4` / `light_map_1..4`; ghosts also see dead players' light and vision; a two-player playtest is still owed)
 - [✓] `wall_wood_plank`, `wall_rough_cave`, `wall_flesh` tile types and lit textures exist
 - [✓] Normal maps for those three walls (`.claude/tools/normal_maps.py` lists them, PNGs exist)
 - [✓] Normal map for the void: `floor_void_normal.png`, flat like lava's (`plain` in `.claude/tools/normal_maps.py`), no specular, wired into `game/tiles/floor_void.json` 2026-09-24 (needs a look in game). Door normal maps now exist (`resources/gfx/doors/*_Normal.png`). `wall_marble.png` exists with no tile JSON or normal (orphan)
@@ -266,14 +266,14 @@ and take readings with F5 (`show-minion-state`) off, since item 7 alone draws 52
 - [✗] 3. High. `MinionController._try_surround_step` (about line 516): 8 directions checked per tick, with a new lambda, typed array and Callables each call. Hoist them; use the grid from 2
 - [✗] 4. High in big rooms. `Pathfinding.full_path` builds a new `AStarGrid2D` (up to 49x49) per solve, up to 32 solves a frame. Keep one per dungeon, updated on door and tile changes
 - [✗] 5. Medium-high. `FlowField`: a new `StepCache` re-reads a 41x41 wall area every time the player changes tile, and `DoorRegistry._changed` wipes every field on each door open, close or swing end. Keep the wall cache across targets; drop only fields near the door
-- [✗] 6. Medium. `GridMover.occupants` rebuilds the tile index every frame (about 530 new arrays). Update it when a step starts or ends
+- [✗] 6. Medium. `Occupancy.occupants` rebuilds the tile index every frame (about 530 new arrays). Update it when a step starts or ends
 - [✗] 7. High while F5 is on. `DebugDraw.gd` (about lines 286-309) draws a text label for every minion, off-screen ones too. Skip minions outside the view, as `_draw_senses` already does
 - [✗] 8. Medium spike. Alert icons (`MinionController` about 416 -> `AttackEffect` 62-70) rebuild SpriteFrames per icon; a whole room alerting at once makes hundreds. Cache the frames or pool the icons
 - [✗] 9. Medium. Every minion's `_process` runs every frame, even when asleep, with 2 `get_ticks_usec` and a string-keyed `DebugState.add_time`. Time the minion loop once; stop processing sleeping minions
 - [✗] 10. Medium, check physics ms in F4 first. Minions all share collision layer/mask 1, so the physics engine tracks rat-vs-rat pairs nothing uses. Leave other minions out of their mask
 - [✗] 11. High in multiplayer. Every moving minion sends one RPC per frame per peer (`MinionController` 318 -> `NetworkSync` 481-492), and parked minions send once a second. Batch them into one packed message at 10-20 Hz; send tile and state on change
 - [✗] 12. Medium. `LightMap` refills its 81x81 image and re-uploads the texture every frame per moving lit player (up to 4). Paint only when the cell changes
-- [✗] 13. Low-medium. `LightMap` clears `_blocked_cache` on every flood; only needed on a door change or broken tile
+- [✓] 13. Low-medium. `LightMap` clears `_blocked_cache` on every flood; only needed on a door change or broken tile — done 2026-09-25: cleared on `DoorRegistry.version` change and `bake_glow` only (`blocks_light`, shared with `PlayerVision`)
 - [✗] 14. Medium. `Sound.flood` allocates a new array per heap push and pop, and calls `hearing_budget` on every minion per footstep. Packed heap; distance filter first
 - [✗] 15. Medium, memory. `FlowField` keeps one field per noise marker until a door changes or a new dungeon loads. Drop fields whose target is gone
 - [✗] 16. Medium, load time. Each spawned minion runs `find_child("LightMap")` over a scene that already holds every rat (`MinionController` line 223). Pass it in from the spawner
@@ -318,6 +318,21 @@ Duplication:
 - [✗] Menus: `_close_settings_panel` identical in `MainMenu` 68 and `PauseMenu` 64; "leave the session" (peer = null, reset, MainMenu) in `PauseMenu` 59-62, `MainTown` 92-95, `NetworkSync` 61-63; `_on_back_pressed` identical in `LobbyMenu` 149 and `SettingsMenu` 21
 - [✗] Minor: `FullscreenControl`/`VSyncControl` are copies differing in one call; `DebugMenu._button` and `CharacterSelect._button` near-identical
 
+## Light and vision split (2026-09-25, Orea's A-F)
+
+- [✓] A. Light only from a held torch: `ItemDatabase.light_of(worn)` (main hand, then off hand, first item with `glow_radius`), `PlayerController.held_light()`; `LightMap` makes a light per torch holder with that item's `glow_radius` / `bright_fraction` (scaled onto the shaders' 0.5 bright step, `LightMap.BRIGHT_STEP`). No torch, no light, no normal-map shading
+- [✓] B. Torches and glowing tiles share one flood (`LightFlood.flood_sources`) and one light format (`glow_radius`, `glow_color`; torches add `bright_fraction`)
+- [✓] C. `LightMap.is_tile_lit` checks every living player's torch, not just the host's own light (minions on the host never noticed a client's light). Needs the two-player test
+- [✓] D. `PlayerVision.gd` (new, beside `LightMap` in `scripts/cells/tiles/`, node in `Dungeon.tscn`) draws the darkness: the team's sight (`adventurer.json` sight 16, flood per tile, walls and closed doors stop it) on lit cells, plus touch (1 tile, drawn dim). Minion spawning now skips tiles any living player sees (`PlayerVision.is_tile_seen`), not the host's light
+- [✓] E. Debug menu in sections (General, Protagonist, Antagonist, World); new `show-torch-light`, `show-adventurer-sight`, `show-adventurer-touch`; `show-vision` is now the team's vision
+- [✓] F. `test/unit/test_light_and_senses.gd`, `test/sim/vision_torch.gd`; `dev_sim` and `debug_senses` hand the player the poacher torch
+- [✗] Two-player playtest: a client's torch alerting minions, teammates' sight and torches drawn, ghosts
+- [✗] Look in game: touch dimness (`light_smooth.gdshader` `touch_fraction` 0.6, a look, not a rule), lava seen far off, sight edge at 16 tiles
+- [✗] Hearing 8 for adventurers is in `adventurer.json` but nothing reads it yet (sound parked)
+- [✓] `cells` no longer reaches into players for light and vision: `PlayerController` registers a `Viewer` (`scripts/cells/Viewer.gd`: position, held light, sight, touch, ghost, is_local) that `LightMap` and `PlayerVision` read; their `player_root` export is gone
+- [✓] New adventurers start wearing `starter_kits.json` `worn` (fallback sword + fallback torch; kits moved under `bag`); the sword kit still puts a second fallback sword in the bag
+- [✓] Folder rule: `SurroundSectors.gd` moved to `scripts/entities/entities.antagonist/minions/ai/` (minion AI, finds players via `PlayerLookup`); the tile occupancy index and step reservations moved from `GridMover` to `scripts/cells/Occupancy.gd` (`Occupancy.occupants`, `Occupancy.reserved`; `DoorManager` uses it; a dying player's `GridMover.become_ghost()` stops them blocking)
+
 ## Dead code and duplication audit, round 2 (2026-09-25: one agent, symbol index + structural diff)
 
 Only what round 1 above did not list. Line numbers as of the audit.
@@ -337,11 +352,11 @@ Duplications (single home in brackets):
 - [✓] TileSolid still bypassed: `DungeonPainter._warn_bad_spawn_cells` (66-77, also misses "no floor"), `TileDestruction.gd:71,89,103` [`TileSolid`] — done: `TileSolid.reason` / new `TileSolid.has_floor`
 - [✓] 8-neighbour lists: `FlowField.NEIGHBOR_STEPS` = `MinionController.MOVE_DIRECTIONS`; `TileDestruction.NEIGHBOURS_8` and `LightFlood.DIRS` same set, other order [one constant in `scripts/cells/`; order changes tie-breaks]. Keep `PlayerController.ADJACENT_OFFSETS` (angle order for aiming) — done: `MinionController.MOVE_DIRECTIONS` and `TileDestruction` use `FlowField.NEIGHBOR_STEPS`; `LightFlood.DIRS` left (light, order matters)
 - [✓] Chebyshev distance inline at `MinionController.gd:942,971`, `FlowField.gd:172,204`, `test/sim/investigate_far_room.gd:152` beside `MinionController._cheb` [one helper] — done: `FlowField.cheb`
-- [✓] Living-player filter (`not stats.is_ghost`) at `MinionController.gd:1154,1175,1231`, `SurroundSectors.gd:35`, `DebugMenu.gd:554`; `GridMover._is_ghost` rule repeated at 259 [`PlayerLookup.living(tree)`; `cells/` must not call entities] — done: `PlayerLookup.living(tree)`, `GridMover.is_ghost_body`; `SurroundSectors` left (in `cells/`)
+- [✓] Living-player filter (`not stats.is_ghost`) at `MinionController.gd:1154,1175,1231`, `SurroundSectors.gd:35`, `DebugMenu.gd:554`; `GridMover._is_ghost` rule repeated at 259 [`PlayerLookup.living(tree)`; `cells/` must not call entities] — done: `PlayerLookup.living(tree)`, `GridMover.is_ghost_body`; `SurroundSectors` too since it moved to `entities.antagonist/minions/ai/` (2026-09-25)
 - [✓] Debug copies: "minion is thinking" in `DebugDraw.gd:239` and `DebugMenu.gd:527` (read private fields); no-clip test `BodySweep.gd:44` = `GridMover._no_clip` [public methods] — done: `MinionController.is_thinking()`, `GridMover.no_clip()`
 - [✓] `StoragePanel.gd:14-20` rebuilds `InventoryPanel.frame_style()` — done
 - [✓] `ActionIndex` and `MinionIndex` share the same lazy id cache [a `JsonIndex` class] — done: `scripts/util/JsonIndex.gd`
-- [✗] `LightMap._flood_glow` (310-360) is a multi-source copy of `LightFlood.flood`; magic `1.0824` twice (220, 261) — left for now (light and vision, with the senses)
+- [✓] `LightMap._flood_glow` (310-360) is a multi-source copy of `LightFlood.flood`; magic `1.0824` twice (220, 261) — done 2026-09-25: `LightFlood.flood_sources` does both (`flood` is its one-source case), `LightMap.COST_TO_PIXELS` holds the 1.0824
 - [✓] In-file: `DungeonMaker._cell_in_bounds` bypassed at 1750, 1777, 1803, 1859, 2389 and the undo block duplicated (1762-1772, 1878-1888); `DungeonAssembler` connector sort (514, 661) and Placement setup (487-501, 532-543) — done: `_cell_in_bounds` everywhere, `_push_tile_undo`, `DungeonAssembler._joined` / `_connector_before`
 - [✗] The five sense scripts share `enabled`, `range_tiles`, `DEBUG_COLOR`, `debug_draw` with no base class; Smell and Taste are identical stubs [a `Sense` base] — left: Orea is holding off on the senses (2026-09-25)
 

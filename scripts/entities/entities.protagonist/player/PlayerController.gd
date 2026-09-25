@@ -49,6 +49,7 @@ func set_skin(skin_id: String) -> void:
 ## worn: slot -> item id (NetworkSync.peer_equipment). Drawn, and its actions go on the hotbar.
 func set_equipment(worn: Dictionary) -> void:
 	_worn = worn
+	viewer.light = ItemDatabase.light_of(worn)
 	gear.set_equipment(worn)
 	_update_attacks()
 
@@ -56,7 +57,21 @@ func _load_adventurer_data() -> void:
 	var data := JsonOnloading.load_dict(ADVENTURER_DATA_PATH)
 	stats.load_from_data(data)
 	_own_actions = data.get("actions", [])
+	_senses = data.get("senses", {})
+	viewer.sight = sense_range("sight")
+	viewer.touch = sense_range("touch")
 	_update_attacks()
+
+## adventurer.json "senses": sense -> {"range_tiles": n}, or false for one it doesn't have.
+var _senses := {}
+
+## A sense's range in tiles; 0 when the adventurer doesn't have that sense.
+func sense_range(sense: String) -> float:
+	var entry = _senses.get(sense, false)
+	return float(entry.get("range_tiles", 0.0)) if entry is Dictionary else 0.0
+
+## What the map's light and vision know about this adventurer (cells never reads the player).
+var viewer := Viewer.new()
 
 ## Gear actions come first, weapons before the other slots, then the player's own
 ## actions (adventurer.json: taunt, throw rock), cut to the 10 hotbar slots.
@@ -106,6 +121,8 @@ func _on_died() -> void:
 		return
 	_is_dead = true
 	stats.is_ghost = true
+	viewer.ghost = true
+	grid_mover.become_ghost()
 	if is_multiplayer_authority():
 		local_is_ghost = true
 	# Above every other entity (players/minions sit at 1000), but below
@@ -128,6 +145,8 @@ func _ready() -> void:
 	if is_multiplayer_authority():
 		local_is_ghost = false
 	add_to_group("protagonist")
+	viewer.is_local = is_multiplayer_authority()
+	Viewer.register(viewer)
 	gear.name = "GearLayers"
 	add_child(gear)
 	gear.setup($AnimatedSprite2D)
@@ -141,7 +160,11 @@ func _ready() -> void:
 	$TileHoverHighlight.play("Play")
 	$TileHoverHighlight.visible = false
 
+func _exit_tree() -> void:
+	Viewer.unregister(viewer)
+
 func _process(delta: float) -> void:
+	viewer.position = global_position
 	if is_multiplayer_authority():
 		if grid_mover.is_moving:
 			animator.animate_moving(grid_mover.facing_direction)

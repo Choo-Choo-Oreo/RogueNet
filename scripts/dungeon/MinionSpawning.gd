@@ -1,8 +1,8 @@
 class_name MinionSpawning
 extends RefCounted
 
-## Rolls and instantiates minions into any spawn cell not currently lit for
-## the local player -- called at dungeon start (everything is unseen at t=0,
+## Rolls and instantiates minions into any spawn cell no living player can see
+## (PlayerVision.is_tile_seen: the whole party's senses) -- called at dungeon start (everything is unseen at t=0,
 ## so this naturally fills the whole dungeon), and later on boss death and
 ## from a debug menu. No "already spawned here" memory: a spawn cell that's
 ## still unseen keeps re-rolling every call, which can double up minions on
@@ -24,7 +24,7 @@ static var _next_id: int = 1
 
 ## `favors` maps a spawn cell to its room's favored-minion list (see
 ## DungeonAssembler.collect_spawn_favors); cells without one roll the plain table.
-static func spawn_in_unseen_cells(spawn_cells: Array[Vector2i], monster_weights: Dictionary, light_map: LightMap, minions_root: Node, favors: Dictionary = {}, fixed_minions: Dictionary = {}) -> void:
+static func spawn_in_unseen_cells(spawn_cells: Array[Vector2i], monster_weights: Dictionary, vision: PlayerVision, minions_root: Node, favors: Dictionary = {}, fixed_minions: Dictionary = {}) -> void:
 	if monster_weights.is_empty() and fixed_minions.is_empty():
 		return
 	# Acts as host with no peer at all too -- eg. running Dungeon.tscn directly in the editor.
@@ -34,7 +34,7 @@ static func spawn_in_unseen_cells(spawn_cells: Array[Vector2i], monster_weights:
 	rng.randomize()
 	var spawned: Array = []
 	for tile in spawn_cells:
-		if light_map.is_tile_lit(tile):
+		if vision.is_tile_seen(tile):
 			continue
 		# A cell that names its minion always gets it (as long as that minion exists).
 		var minion_id: String = fixed_minions.get(tile, "")

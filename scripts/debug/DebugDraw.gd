@@ -31,6 +31,7 @@ const NO_SENSE_COLOR := Color(0.6, 0.6, 0.6)
 
 var _was_drawing := false
 var _light_map: LightMap = null
+var _vision: PlayerVision = null
 var _renders: Array = []
 var _renders_frame := -100000
 var _mesh_texture: Texture2D = null
@@ -41,7 +42,7 @@ func _ready() -> void:
 	z_as_relative = false
 
 func _any_draw() -> bool:
-	for option in ["show-room-outlines", "show-room-ids", "show-connectors", "show-doors", "show-minion-state", "show-minion-routes", "show-sight", "show-sound", "show-touch", "show-smell", "show-taste", "show-minion-inspector", "show-tile-grid", "show-mesh-grid", "show-mesh-tiles", "show-collision-rectangles", "show-active-minions", "show-vision", "show-flow-field"]:
+	for option in ["show-room-outlines", "show-room-ids", "show-connectors", "show-doors", "show-minion-state", "show-minion-routes", "show-sight", "show-sound", "show-touch", "show-smell", "show-taste", "show-minion-inspector", "show-tile-grid", "show-mesh-grid", "show-mesh-tiles", "show-collision-rectangles", "show-active-minions", "show-vision", "show-torch-light", "show-adventurer-sight", "show-adventurer-touch", "show-flow-field"]:
 		if DebugState.on(option):
 			return true
 	return false
@@ -61,6 +62,10 @@ func _draw() -> void:
 		_draw_mesh_tiles()
 	if DebugState.on("show-vision"):
 		_draw_vision()
+	if DebugState.on("show-torch-light"):
+		_draw_torch_light()
+	if DebugState.on("show-adventurer-sight") or DebugState.on("show-adventurer-touch"):
+		_draw_adventurer_senses()
 	if DebugState.on("show-flow-field"):
 		_draw_flow_field()
 	if DebugState.on("show-collision-rectangles"):
@@ -172,16 +177,44 @@ func _light() -> LightMap:
 		_light_map = get_parent().find_child("LightMap", true, false) as LightMap
 	return _light_map
 
-## The local player's light in levels (LightMap.Level), in the 8px light cells: yellow = bright,
-## blue = dim, nothing drawn = dark.
+func _player_vision() -> PlayerVision:
+	if not is_instance_valid(_vision):
+		_vision = get_parent().find_child("PlayerVision", true, false) as PlayerVision
+	return _vision
+
+## What the local player's team sees (PlayerVision.team_levels), in the 8px light cells:
+## yellow = bright, blue = dim, nothing drawn = dark.
 func _draw_vision() -> void:
+	var vision := _player_vision()
+	if vision == null:
+		return
+	_draw_levels(vision.team_levels(), Color(1.0, 0.9, 0.3, 0.25), Color(0.3, 0.5, 1.0, 0.25))
+
+## Each torch on screen (LightMap.drawn_levels): orange = bright, brown = dim.
+func _draw_torch_light() -> void:
 	var light := _light()
 	if light == null:
 		return
-	var levels := light.local_levels()
+	for levels in light.drawn_levels():
+		_draw_levels(levels, Color(1.0, 0.55, 0.1, 0.2), Color(0.55, 0.3, 0.1, 0.2))
+
+func _draw_levels(levels: Dictionary, bright: Color, dim: Color) -> void:
 	for cell in levels:
-		var color := Color(1.0, 0.9, 0.3, 0.25) if levels[cell] == LightMap.Level.BRIGHT else Color(0.3, 0.5, 1.0, 0.25)
+		var color := bright if levels[cell] == LightMap.Level.BRIGHT else dim
 		draw_rect(Rect2(Vector2(cell) * LightMap.CELL, Vector2(LightMap.CELL, LightMap.CELL)), color, true)
+
+## Each teammate's sight (green: in range and line of sight, lit or not) and touch (pink outline).
+func _draw_adventurer_senses() -> void:
+	var vision := _player_vision()
+	if vision == null:
+		return
+	for view in vision.drawn_views():
+		if DebugState.on("show-adventurer-sight"):
+			for tile in view.seen:
+				draw_rect(Rect2(Vector2(tile) * TILE, Vector2(TILE, TILE)), Color(0.3, 1.0, 0.4, 0.12), true)
+		if DebugState.on("show-adventurer-touch"):
+			for tile in view.touched:
+				draw_rect(Rect2(Vector2(tile) * TILE + Vector2(1, 1), Vector2(TILE - 2, TILE - 2)), Color(1.0, 0.4, 0.8, 0.8), false, 1.0)
 
 ## The shared walking-distance field minions follow toward the local player:
 ## the number is tiles to the player, the line points along the step they take.

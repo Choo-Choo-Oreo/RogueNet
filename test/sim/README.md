@@ -47,6 +47,9 @@ Smaller checks run on their own (each exits 1 on failure; `--fixed-fps 60` makes
 - `investigate_far_room.gd` (a real dungeon, seed 1, not the lab) places a rat, makes a noise two rooms
   away along the most turning route, and checks it walks there (Investigate never keeps it in its room)
   and then back to its home room on patrol.
+- `vision_torch.gd` (a few seconds) stands the player in `light_blind_ignores` with no torch (only the
+  tiles next to them are seen, by touch; nothing is lit for minions), then with the poacher torch (a tile
+  3 away is seen and lit).
 
 Not covered: the smash telegraph is visual. The boss zone (bug 5) is sampled, but the flicker the audit
 describes has not been reproduced yet.

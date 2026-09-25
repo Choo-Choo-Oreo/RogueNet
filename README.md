@@ -255,9 +255,10 @@ JSON. DungeonMaker keeps it when re-saving.)
   and also while standing still. Example: `fallback_torch`'s flame, 8 frames
   at 10 fps. **Not read by the game yet**; until then only `art` shows.
 - `glow_radius`, `bright_fraction`, `glow_color` — optional; the item gives off
-  light while worn in `main_hand` or `off_hand` (the torches: 128 px = 8 tiles,
-  the inner half bright, white `[r, g, b, a]` like tile `glow_color`).
-  **Not read by the game yet**; LightMap still uses its own 128 / 0.5.
+  light while worn in `main_hand` or `off_hand` (the poacher torch: 128 px = 8
+  tiles, the inner half bright; `glow_radius` is pixels), white `[r, g, b, a]` like tile `glow_color`).
+  Without a torch a player gives off no light at all (see `PlayerVision.gd`
+  for what they can still see).
 - Items are cosmetic only for now (no stats, no rarity). The inventory lives
   in `singletons/PlayerInventory.gd`, in memory only: it starts over on every
   launch, with one of every item in the town storage.

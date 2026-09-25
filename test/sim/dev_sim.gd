@@ -140,6 +140,9 @@ func _process(_delta: float) -> bool:
 func _begin_run() -> void:
 	_player = get_nodes_in_group("protagonist")[0]
 	_player.set("debug_god", true)
+	# Light comes from a held torch. light_blind_ignores puts a rat 7 tiles off, inside the
+	# poacher torch's 8 (the fallback torch only reaches 6).
+	_player.set_equipment({"off_hand": "poacher_torch"})
 	_set_patrol()
 	var tile_size: int = _player.grid_mover.tile_size
 	var rect: Dictionary = _cell["rect"]

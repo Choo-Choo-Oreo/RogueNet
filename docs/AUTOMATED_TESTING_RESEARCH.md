@@ -237,7 +237,7 @@ add-on in `addons/` (only `godotsteam`), and no `.csproj`.
 | File | Shape | Test idea |
 |---|---|---|
 | `scripts/dungeon/DungeonAssembler.gd` | `RefCounted`, static: `generate`, `generate_with_retry`, `rotate_room`, `with_rotations`, `load_rooms`, `load_defines`, `pick_biome`, `collect_*` | Invariants across seeds and biomes; rotation round-trip; golden on fixtures |
-| `scripts/cells/Pathfinding.gd`, `FlowField.gd`, `LineOfSight.gd`, `LightFlood.gd`, `ActionShapes.gd`, `SurroundSectors.gd`, `RoomGraph.gd` | `RefCounted`, almost all static | Tiny hand-drawn ASCII grids: "path goes around this wall", "sight blocked here" |
+| `scripts/cells/Pathfinding.gd`, `FlowField.gd`, `LineOfSight.gd`, `LightFlood.gd`, `ActionShapes.gd`, `RoomGraph.gd` (and `SurroundSectors.gd`, now in `entities.antagonist/minions/ai/`) | `RefCounted`, almost all static | Tiny hand-drawn ASCII grids: "path goes around this wall", "sight blocked here" |
 | `scripts/JsonOnloading.gd` | static `load_dict` | Loads every content JSON; malformed files fail |
 | `Connector.validate` (already called for every room in `_read_folder`) | returns a list of problems | Room validation already half exists: turn "problems printed" into "test fails" |
 

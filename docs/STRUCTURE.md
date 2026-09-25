@@ -209,7 +209,7 @@ changes tiles but it is not tile code.
 **`scripts/cells/`** The map's data: what each cell holds and knows. That is what is in it
 (a creature, a door, a wall, floor or no floor), the scent trail, and the light. Because it
 is the data that spreads from cell to cell, the flooding lives here (light flood, flow
-fields, pathfinding, line of sight, surround sectors), and later ongoing spreading
+fields, pathfinding, line of sight), and later ongoing spreading
 (liquid, fire) would join it. It is a foundation layer: entities and dungeon code ask it
 questions ("what blocks a step here?", "who is standing here?"), and it never calls back
 into them. Bodies register themselves into it, so it does not scan the creature groups.
@@ -297,9 +297,12 @@ Found by a read-only scan of the code (three agents, 2026-09-24):
 
 - **The grid mover reaches into the door registry and tile types, and `cells` reads player
   ghost state and team groups.** With `cells` as the foundation layer, the direction is
-  fixed (entities ask `cells`), but the reverse reach-ins have to go: the light map's ghost
-  check, the surround sectors' group scan, and the occupancy index in the grid mover, which
-  is cell data and moves into `cells`. So does the door registry (doors are interactables a
+  fixed (entities ask `cells`), but the reverse reach-ins have to go: ~~the light map's ghost
+  check~~ (closed 2026-09-25: bodies register a `Viewer` in `scripts/cells/Viewer.gd`, which
+  `LightMap` and `PlayerVision` read), ~~the surround sectors' group scan~~ (closed 2026-09-25:
+  it is minion AI, moved to `entities.antagonist/minions/ai/`), and ~~the occupancy index in the grid mover~~ (closed
+  2026-09-25: `scripts/cells/Occupancy.gd`, bodies register an entry and mark it not solid as
+  a ghost). Still to move: the door registry (doors are interactables a
   cell knows about: position, open or closed); placing doors during generation stays in
   `dungeon`. Other placed objects (graves, chests) follow the same rule once they exist.
 - **The network singleton finds bodies by node path** (`Player/<id>`, `Minions/<id>`) and

@@ -226,4 +226,4 @@ func _anyone_near(door: DoorRegistry.Door) -> bool:
 
 ## A living creature covers `tile` (GridMover's shared per-frame index; ghosts don't count).
 func _occupied(tile: Vector2i) -> bool:
-	return not GridMover.occupants(get_tree(), tile, TILE).is_empty()
+	return not Occupancy.occupants(tile, TILE).is_empty()
