@@ -33,12 +33,33 @@ var _active_tier: State = State.PATROL
 ## Where Investigate is heading: a Sound marker (a spot, see Sound). Invalid outside Investigate.
 var investigate_marker: Node2D
 
+## Which sense last raised the alert, for the debug overlay: "touch", "sight", "smell", "taste",
+## "hearing", "light" (lit by the player's glow), "hit" or "" (nothing yet / gave up).
+var last_trigger := ""
+
+## Debug overlay (show-minion-senses): every sense draws its own range, then a line to the spot
+## being investigated.
+func debug_draw(canvas: CanvasItem, centre: Vector2) -> void:
+	for sense in [touch, sight, hearing, smell, taste]:
+		sense.debug_draw(canvas, centre)
+	if state == State.INVESTIGATE and is_instance_valid(investigate_marker):
+		canvas.draw_line(centre, investigate_marker.global_position, Color(SenseHearing.DEBUG_COLOR, 0.8), 1.0)
+
+## Names of the senses currently enabled, for the debug label.
+func enabled_names() -> String:
+	var names: Array[String] = []
+	for sense_name in ["touch", "sight", "hearing", "smell", "taste"]:
+		if get(sense_name).enabled:
+			names.append(sense_name)
+	return " ".join(names)
+
 ## Getting hit always means the minion now knows roughly where its attacker
 ## is, even with no direct sense of them (e.g. shot from off-screen or from
 ## behind) -- forces Attack and (re)starts the same sticky window as a real
 ## detection. Simple fallback: it doesn't track who actually hit it, just
 ## goes straight for whichever player update() finds nearest next tick.
 func note_hit() -> void:
+	last_trigger = "hit"
 	_active_timer = ACTIVE_ALERT_SECONDS
 	_active_tier = State.ATTACK
 
@@ -48,6 +69,7 @@ func hear(marker: Node2D) -> void:
 	if state == State.ATTACK:
 		return
 	investigate_marker = marker
+	last_trigger = "hearing"
 	_active_timer = ACTIVE_ALERT_SECONDS
 	_active_tier = State.INVESTIGATE
 	state = State.INVESTIGATE
@@ -59,6 +81,7 @@ func forget() -> void:
 	_active_tier = State.PATROL
 	state = State.PATROL
 	investigate_marker = null
+	last_trigger = ""
 
 ## Per-minion-type toggle, e.g. rat_blind's "senses": {"sight": false} JSON
 ## key -- keys match this node's own property names (touch/sight/hearing/
@@ -93,16 +116,21 @@ func update(origin: Vector2, target: Node2D, is_blocked: Callable, lit: bool, de
 		_active_tier = State.PATROL
 		state = State.PATROL
 		return state
-	var direct_sense := (
-		touch.detects(origin, target)
-		or sight.detects(origin, target, is_blocked)
-		or smell.detects(origin, target)
-		or taste.detects(origin, target)
-	)
-	if direct_sense:
+	var direct := ""
+	if touch.detects(origin, target):
+		direct = "touch"
+	elif sight.detects(origin, target, is_blocked):
+		direct = "sight"
+	elif smell.detects(origin, target):
+		direct = "smell"
+	elif taste.detects(origin, target):
+		direct = "taste"
+	if direct != "":
+		last_trigger = direct
 		_active_timer = ACTIVE_ALERT_SECONDS
 		_active_tier = State.ATTACK
 	elif lit and state != State.ATTACK:
+		last_trigger = "light"
 		# The glow gives away where the light is: investigate that spot (once, not the player).
 		if state != State.INVESTIGATE or not is_instance_valid(investigate_marker):
 			investigate_marker = Sound.marker_at(target.get_tree(), target.global_position)

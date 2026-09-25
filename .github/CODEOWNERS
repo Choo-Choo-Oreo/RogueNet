@@ -1,0 +1,17 @@
+# Who must review a pull request that touches these paths (see docs/OWNERSHIP.md).
+# Needs the "Require review from Code Owners" rule in a branch ruleset on main to do anything.
+# The last matching line wins. scenes/ has no line: it is open to anyone.
+
+# Orea: core systems, gameplay numbers, tests
+/scripts/          @Choo-Choo-Oreo
+/singletons/       @Choo-Choo-Oreo
+/addons/           @Choo-Choo-Oreo
+/game/             @Choo-Choo-Oreo
+/test/             @Choo-Choo-Oreo
+/project.godot     @Choo-Choo-Oreo
+/.github/          @Choo-Choo-Oreo
+/.claude/          @Choo-Choo-Oreo
+/docs/OWNERSHIP.md @Choo-Choo-Oreo
+
+# Silvery: art (the GitHub name is taken from the commit author, check it is right)
+/resources/gfx/    @SilverFoxxey

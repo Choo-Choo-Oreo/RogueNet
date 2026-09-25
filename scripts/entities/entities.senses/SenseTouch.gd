@@ -20,3 +20,10 @@ func notify_exit() -> void:
 
 func detects(_origin: Vector2, _target: Node2D) -> bool:
 	return enabled and _touching
+
+## Debug overlay (show-minion-senses): a one-tile ring, solid while something is touching.
+const DEBUG_COLOR := Color(1.0, 0.3, 0.9)
+
+func debug_draw(canvas: CanvasItem, centre: Vector2) -> void:
+	if enabled:
+		canvas.draw_arc(centre, 16.0, 0.0, TAU, 20, Color(DEBUG_COLOR, 1.0 if _touching else 0.5), 1.0)

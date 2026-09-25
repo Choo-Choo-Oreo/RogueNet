@@ -30,6 +30,7 @@ const OPTIONS := [
 	["show-doors", "Doors"],
 	["show-minion-state", "Minion state and target"],
 	["show-minion-routes", "Minion routes"],
+	["show-minion-senses", "Minion senses: ranges of touch/sight/hearing, what alerted it, noise spots"],
 	["show-tile-grid", "Tile grid (bright line every 8 tiles)"],
 	["show-mesh-grid", "Mesh (dual) grid, half a tile off the tile grid"],
 	["show-mesh-tiles", "Debug tile overlay on the mesh cells (50%)"],

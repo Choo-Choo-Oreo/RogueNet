@@ -15,3 +15,12 @@ func hears(origin: Vector2, noise_position: Vector2, loudness: float) -> bool:
 	if not enabled:
 		return false
 	return origin.distance_to(noise_position) <= range_tiles * loudness * tile_size
+
+## Debug overlay (show-minion-senses): a solid ring where a footstep (loudness 1) is heard, a
+## faint one where a thrown rock (loudness 3) is.
+const DEBUG_COLOR := Color(0.3, 0.9, 1.0)
+
+func debug_draw(canvas: CanvasItem, centre: Vector2) -> void:
+	if enabled:
+		canvas.draw_arc(centre, range_tiles * tile_size, 0.0, TAU, 48, Color(DEBUG_COLOR, 0.6), 1.0)
+		canvas.draw_arc(centre, range_tiles * 3.0 * tile_size, 0.0, TAU, 64, Color(DEBUG_COLOR, 0.2), 1.0)

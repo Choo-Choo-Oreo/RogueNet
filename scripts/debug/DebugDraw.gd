@@ -39,7 +39,7 @@ func _ready() -> void:
 	z_as_relative = false
 
 func _any_draw() -> bool:
-	for option in ["show-room-outlines", "show-room-ids", "show-connectors", "show-doors", "show-minion-state", "show-minion-routes", "show-tile-grid", "show-mesh-grid", "show-mesh-tiles", "show-collision-rectangles", "show-active-minions", "show-vision", "show-flow-field"]:
+	for option in ["show-room-outlines", "show-room-ids", "show-connectors", "show-doors", "show-minion-state", "show-minion-routes", "show-minion-senses", "show-tile-grid", "show-mesh-grid", "show-mesh-tiles", "show-collision-rectangles", "show-active-minions", "show-vision", "show-flow-field"]:
 		if DebugState.on(option):
 			return true
 	return false
@@ -73,6 +73,8 @@ func _draw() -> void:
 		_draw_doors()
 	if DebugState.on("show-minion-state") or DebugState.on("show-minion-routes"):
 		_draw_minions()
+	if DebugState.on("show-minion-senses"):
+		_draw_senses()
 
 ## The tiles currently on screen (plus one of margin).
 func _visible_tiles() -> Rect2i:
@@ -302,6 +304,26 @@ func _draw_minions() -> void:
 			var from: int = maxi(minion._cached_path_index - 1, 0)
 			for i in range(from, path.size() - 1):
 				draw_line(Vector2(path[i]) * TILE + Vector2(8, 8), Vector2(path[i + 1]) * TILE + Vector2(8, 8), Color(1.0, 1.0, 1.0, 0.6), 1.0)
+
+## Every minion near the screen: each sense's own range (SenseX.debug_draw), what last alerted it
+## and which senses it has, and every noise spot (Sound markers, with the seconds left). A new sense
+## shows up here by getting a debug_draw of its own; nothing in this file changes.
+func _draw_senses() -> void:
+	var near := _visible_tiles().grow(8)
+	for minion in get_tree().get_nodes_in_group("antagonist"):
+		if not "senses" in minion or not near.has_point(Vector2i((minion.global_position / TILE).floor())):
+			continue
+		var senses: MinionSenses = minion.senses
+		var centre: Vector2 = minion.global_position + Vector2(TILE, TILE) / 2.0
+		senses.debug_draw(self, centre)
+		var trigger := senses.last_trigger if senses.state != MinionSenses.State.PATROL else ""
+		_label(centre + Vector2(-8, 13), "%s%s" % [senses.enabled_names(), " <- " + trigger if trigger != "" else ""], Color(1, 1, 1, 0.8))
+	var now := Time.get_ticks_msec()
+	for marker: Node2D in get_tree().get_nodes_in_group(Sound.GROUP):
+		var at := marker.global_position
+		var left := (int(marker.get_meta("until_msec", now)) - now) / 1000.0
+		draw_colored_polygon(PackedVector2Array([at + Vector2(0, -4), at + Vector2(4, 0), at + Vector2(0, 4), at + Vector2(-4, 0)]), Color(0.3, 0.9, 1.0, 0.7))
+		_label(at + Vector2(-8, -6), "noise %.0fs" % left, Color(0.3, 0.9, 1.0))
 
 ## Text is drawn at screen resolution and snapped to a whole screen pixel, so it
 ## stays sharp at any camera zoom instead of being a scaled-up world-size glyph.
