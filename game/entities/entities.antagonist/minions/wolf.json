@@ -1,5 +1,6 @@
 {
 	"tags": ["beast.canine"],
+	"pack": "wolf",
 	"size_tiles": 1,
 	"max_health": 10,
 	"strength": 2,

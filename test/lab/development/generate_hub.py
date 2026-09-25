@@ -247,6 +247,15 @@ cell('hearing_rock_behind_wall', [
 cell('hearing_range', ['R.............r'] + ['...............'] * 12, door_x=6)
 
 
+# ---- packs: wolves share alarms (creature JSON "pack": "wolf"); a rat is not in the pack ----
+# Three wolves and a rat spread out, the player far away in the bottom corner (more than the light's
+# 8 tiles from any of them). One wolf (top left) is the one that is alerted; the others are outside
+# its hearing and sight, so they can only react through the pack.
+_pack = ['..w.........w..'] + ['...............'] * 2 + ['.......w......r'] + ['...............'] * 9
+cell('pack_wolves_investigate', _pack, door_x=6)
+cell('pack_wolves_attack', _pack, door_x=6)
+
+
 # ---- what must be true (checked by test/sim/dev_sim.gd; keep a cell after its bug is fixed) ----
 # Creatures named here must get within 3 tiles of the player once the door is open. "big" is any
 # 2x2 body. Every cell also fails if any creature ever stands on a wall, void or no-floor tile.
@@ -268,13 +277,18 @@ REACH = {
 # is a footstep, 3.0 a thrown rock. The sim then does NOT tell the creatures where the player is,
 # so only hearing can move them. HEAR: must get within 3 tiles of the noise and never attack.
 # NO_HEAR: must not react at all (never leave Patrol).
-NOISE_AT = {'hearing_rock_behind_wall': (12, 1, 3.0), 'hearing_range': (7, 1, 1.0)}
-HEAR = {'hearing_rock_behind_wall': ['rat_blind'], 'hearing_range': ['rat_blind']}
-NO_HEAR = {'hearing_range': ['rat']}
+NOISE_AT = {'hearing_rock_behind_wall': (12, 1, 3.0), 'hearing_range': (7, 1, 1.0),
+            'pack_wolves_investigate': (3, 1, 1.0)}
+HEAR = {'hearing_rock_behind_wall': ['rat_blind'], 'hearing_range': ['rat_blind'], 'pack_wolves_investigate': ['wolf']}
+NO_HEAR = {'hearing_range': ['rat'], 'pack_wolves_investigate': ['rat'], 'pack_wolves_attack': ['rat']}
+# POKE: the first creature of this id is hit (as if shot from the dark) and goes to Attack; the
+# sim then does NOT tell the others anything. ATTACKS: every creature of these ids must reach Attack.
+POKE = {'pack_wolves_attack': 'wolf'}
+ATTACKS = {'pack_wolves_attack': ['wolf']}
 
 # Where the player stands instead of at the door (interior column, row), for cells that test a
 # straight line to the creature. The sim and the Test Lab both use it for "step inside".
-PLAYER_AT = {'terrain_lava': (13, 1), 'terrain_water': (13, 1), 'terrain_acid': (13, 1), 'hearing_rock_behind_wall': (14, 12), 'hearing_range': (7, 12)}
+PLAYER_AT = {'terrain_lava': (13, 1), 'terrain_water': (13, 1), 'terrain_acid': (13, 1), 'hearing_rock_behind_wall': (14, 12), 'hearing_range': (7, 12), 'pack_wolves_investigate': (7, 12), 'pack_wolves_attack': (7, 12)}
 
 # The Minotaur is expected to be skipped here, so the cell may spawn fewer creatures than it pins.
 MAY_SKIP = ['bug1_no_room_for_boss']
@@ -349,6 +363,12 @@ NOTES = {
     'hearing_range': ('A blind rat (hears 8) and a plain rat (hears 3), 7 tiles either side of a spot near the top.',
                       'Do NOT press Enter. Press N: one footstep at the spot. Then walk about yourself: every step you take is a footstep.',
                       'Only the blind rat should come to look at the spot. The plain rat should ignore it.'),
+    'pack_wolves_investigate': ('Three wolves (a pack) and a rat (not in it). Only the top-left wolf is close enough to hear a footstep.',
+                                'Do NOT press Enter. Press N: one footstep beside the top-left wolf.',
+                                'All three wolves should walk to the footstep (the readout says "-> going to"). The rat must ignore it.'),
+    'pack_wolves_attack': ('The same wolves and rat. The top-left wolf is shot from the dark (the sim pokes it).',
+                           'Do NOT press Enter. Wake one wolf yourself: open the door, press the backslash key to step inside, walk toward the top-left wolf until it attacks you.',
+                           'When one wolf goes to Attack, every wolf attacks you. The rat should not care.'),
     'doors_widths': ('Minotaur, archer, rat and wraith behind 1, 2 and 3 wide wooden doors.',
                      'Open each door and step back.',
                      'The Minotaur cannot use the 1-wide door; everyone else should get out of theirs.'),
@@ -447,6 +467,7 @@ def place(b, ox, oy, door_side):
                       'index': [k['name'] for k in cells].index(c['name']),
                       'noise_at': ({'x': ox + 1 + NOISE_AT[c['name']][0], 'y': oy + 1 + NOISE_AT[c['name']][1], 'loudness': NOISE_AT[c['name']][2]}
                                    if c['name'] in NOISE_AT else None),
+                      'poke': POKE.get(c['name'], ''), 'attacks': ATTACKS.get(c['name'], []),
                       'hear': HEAR.get(c['name'], []), 'no_hear': NO_HEAR.get(c['name'], []),
                       'player_at': ({'x': ox + 1 + PLAYER_AT[c['name']][0], 'y': oy + 1 + PLAYER_AT[c['name']][1]}
                                     if c['name'] in PLAYER_AT else None),

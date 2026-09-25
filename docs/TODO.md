@@ -141,6 +141,8 @@ Two decisions gate most of these (see "Decisions needed" below): what `power` me
 - [✓] `Mine_Cabin_Cavern_19x15`: about 8% of its floor was unreachable from its doors. Gone since the 2026-09-24 mine redesign; the new `Mine_Cabin_Cavern_17x13` has every floor tile reachable
 
 ## Rendering and art
+**Rule (Orea, 2026-09-24): NEVER use 3D rigging for sprites.** No posed 3D models, skeletons or rendered-then-downscaled frames, not even as a base. See the house-style table in `docs/ART_TODO.md`.
+- [✗] Boss sprites (minotaur, dragon, ogre, spider) are still 3D renders, cut to 8 colours. They need redrawing in 2D by hand. Sprite work is paused until Orea restarts it.
 - [✓] Vision limit and walls blocking light: `LightMap.gd` (Minecraft-style flood fill from the local player, round, smooth to the pixel, stepped brightness) replaced the shadow/occluder attempt
 - [✓] Normal-map shading driven by code: `normal_lit.gdshader` + `normal_lit_material.tres` on every DisplayLayer (set in `TileInitialize.gd`), `light_pos` fed by `LightMap.gd` (no `PointLight2D`)
 - [✓] Light brightness follows the walked path around corners (`_cost` in `LightMap.gd`, `max(straight, walked - gap)` in `_paint`)

@@ -167,6 +167,7 @@ func set_minion_type(id: String) -> void:
 	$HealthPixelBar.position = Vector2(_size_px / 2.0, _size_px + 2.0)
 	$HealthPixelBar.setup(stats, 32 if _size_px > grid_mover.tile_size else 16)
 	senses.apply_overrides(data.get("senses", {}))
+	pack_id = str(data.get("pack", ""))
 	# One "flying" flag: wings never freeze (animation), terrain never slows
 	# it, and its routes ignore terrain cost (GridMover.flies).
 	var flying: bool = data.get("flying", false)
@@ -311,6 +312,9 @@ func _process_inner(delta: float) -> void:
 	var is_tracking := goal != null and state != MinionSenses.State.PATROL
 	if state != _last_state:
 		_show_alertness(state)
+		# A minion that just stepped up an alert level calls its pack (unless the pack called it).
+		if state > _last_state and pack_id != "" and senses.last_trigger != "pack":
+			_alert_pack(state)
 	_last_state = state
 	# Only tell peers when something they'd render changed (plus a slow
 	# heartbeat so a late joiner still gets a parked minion's position).
@@ -1044,6 +1048,41 @@ func _drop_lock(now: int) -> void:
 	_unreachable_since_msec = 0
 	_blocked_since_msec = 0
 	senses.forget()
+	_wake_up()
+
+## Pack: minions of one `pack` id (creature JSON, e.g. "wolf") within PACK_RADIUS_TILES share
+## alarms. When one steps up to Investigate its packmates go to look at the same spot; when one
+## goes to Attack they attack the same player. A minion raised by the pack does not call it
+## again (last_trigger "pack"), so the alarm does not chain across the room.
+const PACK_RADIUS_TILES := 16
+var pack_id := ""
+
+func _alert_pack(state: MinionSenses.State) -> void:
+	var player: Node2D = _lock if is_instance_valid(_lock) else _target
+	var marker := senses.investigate_marker
+	for other: Node in get_tree().get_nodes_in_group("antagonist"):
+		if other == self or not "pack_id" in other or other.pack_id != pack_id:
+			continue
+		if _cheb(_to_tile(other.global_position) - _to_tile(global_position)) > PACK_RADIUS_TILES:
+			continue
+		if state == MinionSenses.State.ATTACK:
+			other.join_pack_attack(player)
+		elif is_instance_valid(marker):
+			other.join_pack_investigation(marker)
+
+## A packmate is attacking `player`: attack them too, unless already attacking.
+func join_pack_attack(player: Node2D) -> void:
+	if not is_multiplayer_authority() or not _is_valid_target(player) or senses.state == MinionSenses.State.ATTACK:
+		return
+	_lock = player
+	senses.note_hit("pack")
+	_wake_up()
+
+## A packmate is going to look at `marker`: go too, unless already investigating or attacking.
+func join_pack_investigation(marker: Node2D) -> void:
+	if not is_multiplayer_authority() or senses.state != MinionSenses.State.PATROL:
+		return
+	senses.hear(marker, "pack")
 	_wake_up()
 
 ## Noise entry points (host-side, from Sound.make): whether this minion's ears reach the

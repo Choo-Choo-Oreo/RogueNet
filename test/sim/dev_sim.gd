@@ -20,7 +20,7 @@ const CELLS_FILE := "res://test/sim/dev_cells.json"
 const DEFAULT_CELLS := ["minion_minotaur", "bug1_spawn_fit", "bug1_no_room_for_boss", "bug1_hole_band",
 	"bug2_two_wide_gap", "bug2_one_wide_gap", "bug6_boss_blocks_gap", "bug3_smash_plain", "bug3_smash_door", "bug3_smash_pillar",
 	"bug4_corridor_archer", "bug4_open_archer", "bug5_boss_crowd", "terrain_lava", "terrain_water", "terrain_acid",
-	"hearing_rock_behind_wall", "hearing_range"]
+	"hearing_rock_behind_wall", "hearing_range", "pack_wolves_investigate", "pack_wolves_attack"]
 const SAMPLE_SECONDS := 0.25
 ## A creature that moved less than this (tiles) over STALL_SECONDS while the player was farther
 ## than STALL_MIN_DISTANCE is reported as stalled.
@@ -150,6 +150,11 @@ func _begin_run() -> void:
 	if noise != null:
 		_noise_pos = (Vector2(_world_tile(noise)) + Vector2(0.5, 0.5)) * tile_size
 		root.get_node("NetworkSync").report_noise(_noise_pos, float(noise["loudness"]))
+	elif _cell.get("poke", "") != "":
+		for w in _watch:
+			if str(w["id"]) == _cell["poke"]:
+				w["node"].senses.note_hit()
+				break
 	elif not _natural:
 		for w in _watch:
 			w["node"].force_target(_player, _seconds)
@@ -291,6 +296,10 @@ func _finish() -> void:
 					problems.append("%s heard the noise but stopped %.1f tiles from it" % [w["id"], w["closest_noise"]])
 				if int(w["state"]) >= 2:
 					problems.append("%s attacked; a noise should only make it investigate" % w["id"])
+	for id in _cell.get("attacks", []):
+		for w in _watch:
+			if str(w["id"]) == id and int(w["state"]) < 2:
+				problems.append("%s never went to Attack though its pack did" % w["id"])
 	for deaf in _cell.get("no_hear", []):
 		for w in _watch:
 			if str(w["id"]) == deaf and int(w["state"]) > 0:

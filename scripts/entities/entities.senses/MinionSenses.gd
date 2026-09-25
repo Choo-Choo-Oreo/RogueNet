@@ -34,7 +34,7 @@ var _active_tier: State = State.PATROL
 var investigate_marker: Node2D
 
 ## Which sense last raised the alert, for the debug overlay: "touch", "sight", "smell", "taste",
-## "hearing", "light" (lit by the player's glow), "hit" or "" (nothing yet / gave up).
+## "hearing", "light" (lit by the player's glow), "hit", "pack" (a packmate raised the alarm) or "" (nothing yet / gave up).
 var last_trigger := ""
 
 ## Debug overlay (show-minion-senses): every sense draws its own range, then a line to the spot
@@ -58,18 +58,18 @@ func enabled_names() -> String:
 ## behind) -- forces Attack and (re)starts the same sticky window as a real
 ## detection. Simple fallback: it doesn't track who actually hit it, just
 ## goes straight for whichever player update() finds nearest next tick.
-func note_hit() -> void:
-	last_trigger = "hit"
+func note_hit(trigger := "hit") -> void:
+	last_trigger = trigger
 	_active_timer = ACTIVE_ALERT_SECONDS
 	_active_tier = State.ATTACK
 
 ## A noise was heard at `marker`: go and look, unless already attacking someone. The newest
 ## noise wins if this minion was already investigating another.
-func hear(marker: Node2D) -> void:
+func hear(marker: Node2D, trigger := "hearing") -> void:
 	if state == State.ATTACK:
 		return
 	investigate_marker = marker
-	last_trigger = "hearing"
+	last_trigger = trigger
 	_active_timer = ACTIVE_ALERT_SECONDS
 	_active_tier = State.INVESTIGATE
 	state = State.INVESTIGATE

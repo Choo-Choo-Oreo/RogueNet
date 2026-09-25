@@ -49,10 +49,13 @@ Open work per owner, from the audit:
 |---|---|
 | Tile size | 16x16 pixels. The camera is top-down, and walls show a front face on their south side. |
 | Tile colors | At most 8 colors per tile (was 6 until 2026-09-24; older tiles still use 4-6). For walls the pure black top doesn't count. |
+| No 3D | **NEVER use 3D rigging** or anything built from it: no posed 3D models, skeletons or rendered-then-downscaled frames, not even as a base to paint over. Sprites are drawn in 2D. (Orea, 2026-09-24. The current boss sheets are 3D renders and are the reason for this rule.) |
 | Edges | Hard pixels only. No soft brushes, no semi-transparent pixels, no anti-aliasing. |
 | Shades | No two shades that are nearly the same. If you can't tell them apart at 1x, merge them. |
 | Wall tops | Pure black `#000000`. This is what makes walls merge into the void. |
-| Characters, objects | 16x16 per frame. The tile color limit does not apply (the knight uses up to 17). |
+| Characters, objects | 16x16 per frame; bosses are bigger (the frame is `size_tiles` x 16). |
+| Sprite colors | **At most 8 colors per sprite**, shared by all of its directions (one palette, so it doesn't change colour when it turns). Set 2026-09-24; older sprites such as the knight (up to 17) are over it. |
+| Animation | **8 frames per animation, played at 10 fps** (100 ms per frame, so one loop is 0.8 s). Same for everything that animates. |
 | Files | PNG in the repo, keep the `.aseprite` next to it. |
 | Normal maps | Not your job. They are generated from your PNG by a script. Tell Orea when a tile changes. |
 

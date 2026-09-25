@@ -1,6 +1,6 @@
 {
- "hub": "Development_Hub_315x39",
- "width": 315,
+ "hub": "Development_Hub_332x39",
+ "width": 332,
  "height": 39,
  "cells": [
   {
@@ -25,6 +25,8 @@
    "wade_max": -1,
    "index": 0,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -54,6 +56,8 @@
    "wade_max": -1,
    "index": 2,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -83,6 +87,8 @@
    "wade_max": -1,
    "index": 4,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -112,6 +118,8 @@
    "wade_max": -1,
    "index": 6,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -141,6 +149,8 @@
    "wade_max": -1,
    "index": 8,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -170,6 +180,8 @@
    "wade_max": -1,
    "index": 10,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -199,6 +211,8 @@
    "wade_max": -1,
    "index": 12,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -230,6 +244,8 @@
    "wade_max": -1,
    "index": 14,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -259,6 +275,8 @@
    "wade_max": -1,
    "index": 16,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -291,6 +309,8 @@
    "wade_max": -1,
    "index": 19,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -322,6 +342,8 @@
    "wade_max": -1,
    "index": 21,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -353,6 +375,8 @@
    "wade_max": -1,
    "index": 23,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -384,6 +408,8 @@
    "wade_max": -1,
    "index": 25,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -413,6 +439,8 @@
    "wade_max": -1,
    "index": 27,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -442,6 +470,8 @@
    "wade_max": -1,
    "index": 29,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -471,6 +501,8 @@
    "wade_max": 0,
    "index": 31,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": {
@@ -503,6 +535,8 @@
    "wade_max": 0,
    "index": 33,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": {
@@ -535,6 +569,8 @@
    "wade_max": -1,
    "index": 35,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -568,6 +604,8 @@
     "y": 4,
     "loudness": 1.0
    },
+   "poke": "",
+   "attacks": [],
    "hear": [
     "rat_blind"
    ],
@@ -581,6 +619,44 @@
    "what": "A blind rat (hears 8) and a plain rat (hears 3), 7 tiles either side of a spot near the top.",
    "try": "Do NOT press Enter. Press N: one footstep at the spot. Then walk about yourself: every step you take is a footstep.",
    "look": "Only the blind rat should come to look at the spot. The plain rat should ignore it."
+  },
+  {
+   "name": "pack_wolves_attack",
+   "door": {
+    "x": 321,
+    "y": 16
+   },
+   "entry": {
+    "x": 321,
+    "y": 14
+   },
+   "rect": {
+    "x": 314,
+    "y": 2,
+    "w": 17,
+    "h": 15
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "wade_max": -1,
+   "index": 39,
+   "noise_at": null,
+   "poke": "wolf",
+   "attacks": [
+    "wolf"
+   ],
+   "hear": [],
+   "no_hear": [
+    "rat"
+   ],
+   "player_at": {
+    "x": 322,
+    "y": 15
+   },
+   "what": "The same wolves and rat. The top-left wolf is shot from the dark (the sim pokes it).",
+   "try": "Do NOT press Enter. Wake one wolf yourself: open the door, press the backslash key to step inside, walk toward the top-left wolf until it attacks you.",
+   "look": "When one wolf goes to Attack, every wolf attacks you. The rat should not care."
   },
   {
    "name": "minion_rat_blind",
@@ -604,6 +680,8 @@
    "wade_max": -1,
    "index": 1,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -633,6 +711,8 @@
    "wade_max": -1,
    "index": 3,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -662,6 +742,8 @@
    "wade_max": -1,
    "index": 5,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -691,6 +773,8 @@
    "wade_max": -1,
    "index": 7,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -720,6 +804,8 @@
    "wade_max": -1,
    "index": 9,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -749,6 +835,8 @@
    "wade_max": -1,
    "index": 11,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -778,6 +866,8 @@
    "wade_max": -1,
    "index": 13,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -809,6 +899,8 @@
    "wade_max": -1,
    "index": 15,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -840,6 +932,8 @@
    "wade_max": -1,
    "index": 17,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -872,6 +966,8 @@
    "wade_max": -1,
    "index": 18,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -903,6 +999,8 @@
    "wade_max": -1,
    "index": 20,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -934,6 +1032,8 @@
    "wade_max": -1,
    "index": 22,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -965,6 +1065,8 @@
    "wade_max": -1,
    "index": 24,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -994,6 +1096,8 @@
    "wade_max": -1,
    "index": 26,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -1023,6 +1127,8 @@
    "wade_max": -1,
    "index": 28,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -1052,6 +1158,8 @@
    "wade_max": -1,
    "index": 30,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -1081,6 +1189,8 @@
    "wade_max": 0,
    "index": 32,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": {
@@ -1113,6 +1223,8 @@
    "wade_max": -1,
    "index": 34,
    "noise_at": null,
+   "poke": "",
+   "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": null,
@@ -1146,6 +1258,8 @@
     "y": 24,
     "loudness": 3.0
    },
+   "poke": "",
+   "attacks": [],
    "hear": [
     "rat_blind"
    ],
@@ -1157,6 +1271,48 @@
    "what": "A blind rat (hears 8 tiles, sees nothing) on one side of a wall with a gap; you are on the other side.",
    "try": "Do NOT press Enter (that tells them where you are). Press N: a rock lands at the far side. Or throw one yourself: key 5, click the far side.",
    "look": "The rat should go to the spot the sound came from (through the gap), not to you. \"-> going to\" in the readout shows where. It must not attack you."
+  },
+  {
+   "name": "pack_wolves_investigate",
+   "door": {
+    "x": 304,
+    "y": 22
+   },
+   "entry": {
+    "x": 304,
+    "y": 24
+   },
+   "rect": {
+    "x": 297,
+    "y": 22,
+    "w": 17,
+    "h": 15
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "wade_max": -1,
+   "index": 38,
+   "noise_at": {
+    "x": 301,
+    "y": 24,
+    "loudness": 1.0
+   },
+   "poke": "",
+   "attacks": [],
+   "hear": [
+    "wolf"
+   ],
+   "no_hear": [
+    "rat"
+   ],
+   "player_at": {
+    "x": 305,
+    "y": 35
+   },
+   "what": "Three wolves (a pack) and a rat (not in it). Only the top-left wolf is close enough to hear a footstep.",
+   "try": "Do NOT press Enter. Press N: one footstep beside the top-left wolf.",
+   "look": "All three wolves should walk to the footstep (the readout says \"-> going to\"). The rat must ignore it."
   }
  ]
 }
