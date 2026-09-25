@@ -48,125 +48,54 @@ Acts on instinct: no tools, no magic, not dead, not infernal.
 
 | Tag | Meaning | Minions |
 |---|---|---|
-| `beast` (plain) | An animal that has no secondary category yet. | bat, bat_echo, cat, clam, crab, dragon, eagle, leech, leech_flesh, minotaur, octopus, owl, penguin, scorpion, snake, spider, spiderling, toad, turtle |
+| `beast` (plain) | An animal that has no secondary category yet. | bat, bat_echo, leech, leech_flesh, dragon, spider, minotaur |
 | `beast.rodent` | Rats and hamsters. | rat, rat_blind, rat_toothless, hamster, hamster_flying, hamster_demonic |
 | `beast.canine` | Wolves and dogs. | wolf, wolf_hellhound |
-| `beast.insect` | Insects: bees, ants, beetles, moths and the like. | ant, bee, beetle, butterfly, dragonfly, mantis, moth |
 
 ### `undead`: dead things that still move
 
 | Tag | Meaning | Minions |
 |---|---|---|
-| `undead.skeleton` | Walking bones, whatever they carry or how big they are. A giant skeleton would be this too. | skeleton_archer, skeleton_warrior |
-| `undead.ghostly` | Spirits with no body to speak of: wraiths and other ghosts. | ghost, wraith |
-| `undead.ghoul` | Rotting flesh that walks: zombies, ghouls. | zombie |
+| `undead.skeleton` | Walking bones, whatever they carry or how big they are. A giant skeleton would be this too. | skeleton_archer |
+| `undead.ghostly` | Spirits with no body to speak of: wraiths and other ghosts. | wraith |
+| `undead.ghoul` | Rotting flesh that walks. Reserved, no minion uses it yet. | none |
 
 ### `giant`: huge humanoid brutes
 Big, strong and dim, walks on two legs, uses crude weapons. Not an animal (that is `beast`).
 
 | Tag | Meaning | Minions |
 |---|---|---|
-| `giant` (plain) | A giant with no secondary category yet. | ogre, yeti |
+| `giant` (plain) | A giant with no secondary category yet. | ogre |
 
 ### `demon`: infernal or corrupted versions of ordinary things
-Add it *on top of* the creature's own tag. A creature that is nothing but a demon (the imp)
-carries it alone. It has no secondary category yet.
+Add it *on top of* the creature's own tag. It has no secondary category yet.
 
 | Tag | Meaning | Minions |
 |---|---|---|
-| `demon` | Hellish or corrupted. | hamster_demonic, imp, wolf_hellhound |
-
-### `humanoid`: people-sized folk
-Walks on two legs, uses tools, weapons or magic, and is not huge (that is `giant`) or dead
-(that is `undead`).
-
-| Tag | Meaning | Minions |
-|---|---|---|
-| `humanoid` (plain) | A humanoid with no secondary category yet. | goblin, lizardman, orc, witch |
-
-### `construct`: made things that move
-Built or carved, then brought to life: not born, not dead.
-
-| Tag | Meaning | Minions |
-|---|---|---|
-| `construct` (plain) | A construct with no secondary category yet. | gargoyle, mimic |
-
-### `ooze`: living blobs
-No bones, no fixed shape.
-
-| Tag | Meaning | Minions |
-|---|---|---|
-| `ooze` (plain) | Slimes and the like. | slime |
-
-### `plant`: walking plants and fungi
-
-| Tag | Meaning | Minions |
-|---|---|---|
-| `plant` (plain) | Mushrooms, mandrakes and other things that grow. | mandrake, mushroom |
-
-### `elemental`: living elements
-A body made of fire (later maybe water, stone, air).
-
-| Tag | Meaning | Minions |
-|---|---|---|
-| `elemental` (plain) | An elemental with no secondary category yet. | fire_spirit |
+| `demon` | Hellish or corrupted. | hamster_demonic, wolf_hellhound |
 
 ## Every minion and its tags
 
 | Minion | Tags |
 |---|---|
-| ant | beast.insect |
 | bat | beast |
 | bat_echo | beast |
-| bee | beast.insect |
-| beetle | beast.insect |
-| butterfly | beast.insect |
-| cat | beast |
-| clam | beast |
-| crab | beast |
 | dragon | beast |
-| dragonfly | beast.insect |
-| eagle | beast |
-| fire_spirit | elemental |
-| gargoyle | construct |
-| ghost | undead.ghostly |
-| goblin | humanoid |
 | hamster | beast.rodent |
 | hamster_demonic | beast.rodent, demon |
 | hamster_flying | beast.rodent |
-| imp | demon |
 | leech | beast |
 | leech_flesh | beast |
-| lizardman | humanoid |
-| mandrake | plant |
-| mantis | beast.insect |
-| mimic | construct |
 | minotaur | beast |
-| moth | beast.insect |
-| mushroom | plant |
-| octopus | beast |
 | ogre | giant |
-| orc | humanoid |
-| owl | beast |
-| penguin | beast |
 | rat | beast.rodent |
 | rat_blind | beast.rodent |
 | rat_toothless | beast.rodent |
-| scorpion | beast |
 | skeleton_archer | undead.skeleton |
-| skeleton_warrior | undead.skeleton |
-| slime | ooze |
-| snake | beast |
 | spider | beast |
-| spiderling | beast |
-| toad | beast |
-| turtle | beast |
-| witch | humanoid |
 | wolf | beast.canine |
 | wolf_hellhound | beast.canine, demon |
 | wraith | undead.ghostly |
-| yeti | giant |
-| zombie | undead.ghoul |
 
 ## Room tags
 

@@ -14,12 +14,7 @@
 		"rat_blind": 1,
 		"skeleton_archer": 2,
 		"wolf": 1,
-		"wraith": 2,
-		"goblin": 2,
-		"zombie": 1,
-		"skeleton_warrior": 1,
-		"orc": 1,
-		"mimic": 0.3
+		"wraith": 2
 	},
 	"music": "res://resources/sfx/music/Groovy.mp3",
 	"default_door": "none"

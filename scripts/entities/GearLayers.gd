@@ -30,8 +30,7 @@ func set_equipment(worn: Dictionary) -> void:
 	for slot in _layers:
 		var layer: AnimatedSprite2D = _layers[slot]
 		var item_id: String = worn.get(slot, "")
-		# Items without "art" (rings) aren't drawn on the body; GearEffects still shows their bonus.
-		if item_id == "" or ItemDatabase.get_item(item_id).get("art", "") == "":
+		if item_id == "" or not ItemDatabase.has_item(item_id):
 			layer.sprite_frames = null
 			layer.visible = false
 		else:

@@ -2,7 +2,7 @@ class_name InventoryPanel
 extends PanelContainer
 
 ## The inventory window: a preview of the Human wearing the current gear (turn
-## it with the arrows), the eleven equipment slots, and the bag. Built in code so
+## it with the arrows), the nine equipment slots, and the bag. Built in code so
 ## the dungeon (InventoryHud) and the town storage (TownStorage) share one copy.
 ##
 ## Right-click or double-click: a bag item goes on, a worn item comes off --
@@ -20,9 +20,9 @@ const COLOR_PANEL_BORDER := Color("#3b3447")
 const COLOR_TEXT := Color("#d8d2e4")
 const COLOR_DIM := Color("#8f879e")
 
-## Two columns: worn pieces on the left, neck / back / rings on the right, and the
-## two hands together on the bottom row. "" leaves a cell empty.
-const EQUIP_LAYOUT: Array[String] = ["head", "neck", "chest", "back", "gloves", "ring_1", "legs", "ring_2", "feet", "", "main_hand", "off_hand"]
+## Two columns, the way the slots sit in the mockup: worn pieces on the left,
+## neck / back / hands on the right.
+const EQUIP_LAYOUT: Array[String] = ["head", "neck", "chest", "back", "gloves", "main_hand", "legs", "off_hand", "feet"]
 
 ## The 8 ways the preview can face: which drawn sheet, its label, mirrored or not.
 const FACINGS := [
@@ -130,14 +130,7 @@ func _build() -> void:
 	equip_grid.add_theme_constant_override("v_separation", 6)
 	top.add_child(equip_grid)
 	for slot in EQUIP_LAYOUT:
-		if slot == "":
-			var gap := Control.new()
-			gap.custom_minimum_size = Vector2.ONE * ItemSlot.SIZE
-			equip_grid.add_child(gap)
-			continue
-		# the empty-slot picture is per kind: both ring slots show slot_ring.png
-		var picture: Texture2D = load(UI_DIR + "slot_%s.png" % ItemDatabase.slot_kind(slot))
-		var cell := ItemSlot.new(PlayerInventory.place(PlayerInventory.EQUIP, slot), picture)
+		var cell := ItemSlot.new(PlayerInventory.place(PlayerInventory.EQUIP, slot), load(UI_DIR + "slot_%s.png" % slot))
 		cell.quick_action = _quick_action
 		equip_grid.add_child(cell)
 		_slots.append(cell)
