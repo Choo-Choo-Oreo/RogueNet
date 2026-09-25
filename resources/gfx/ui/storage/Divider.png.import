@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dl16hty6e4nuj"
-path="res://.godot/imported/TabPaperDim.png-1fd8f26d219cf662a192304a1a8e8b4d.ctex"
+uid="uid://bq7mhfo1f6fvr"
+path="res://.godot/imported/Divider.png-1cd6b0418bcc33964b8c4cf245e7f31c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/gfx/ui/storage/TabPaperDim.png"
-dest_files=["res://.godot/imported/TabPaperDim.png-1fd8f26d219cf662a192304a1a8e8b4d.ctex"]
+source_file="res://resources/gfx/ui/storage/Divider.png"
+dest_files=["res://.godot/imported/Divider.png-1cd6b0418bcc33964b8c4cf245e7f31c.ctex"]
 
 [params]
 
