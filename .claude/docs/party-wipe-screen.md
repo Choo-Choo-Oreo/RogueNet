@@ -1,9 +1,33 @@
 # Party Wipe Screen (graves)
 
-**Status: proposal, waiting on Orea's sign-off.** Asked for by Silvery Foxy
-on 2026-09-24. Nothing is built. The mockup is at
-https://claude.ai/artifact/T51A9sLsAMb7q1DtheLS3Z; only Foxy can open it
-until they share it.
+**Status: built on `silvery/art-and-gear` (2026-09-25), waiting on Orea's
+review before it merges.** Asked for by Silvery Foxy on 2026-09-24. The
+original mockup is at https://claude.ai/artifact/T51A9sLsAMb7q1DtheLS3Z.
+
+## What was built
+
+- `scripts/ui/PartyWipeScreen.gd` (+ `scenes/ui/PartyWipeScreen.tscn`)
+  replaces `DeathCountdown` in `Dungeon.tscn`. It fades to a coloured
+  graveyard, raises one headstone per adventurer (the stone matches the
+  dive's biome), and carves the name and cause of death on it. Clicking a
+  stone opens a parchment page with that adventurer's history.
+- `scripts/dungeon/RunLog.gd` keeps the history: time alive, rooms walked
+  into, damage dealt and taken, biggest hit, kills per creature, and the
+  killing blow. It isn't sent anywhere. Every peer fills in its own copy
+  from the hit messages, which all peers already receive.
+- **Attacker on every hit:** `TileHit.attacker_of(caster)` goes through
+  NetworkSync's hit messages to `take_damage(..., attacker)`. For a hit on
+  a player it's the minion's type id; for a hit on a minion it's the
+  player's peer id. On the host, a client's hit on a minion is credited to
+  whoever sent it, not to what the client claims.
+- **End votes:** `NetworkSync.vote_end()` goes to the host, which counts
+  presses (`end_votes`) and tells the divers. A candle lights on each
+  grave. Once every diver still connected has pressed, `end_mission()`
+  runs. A diver who leaves counts as pressed.
+- **Art** in `resources/gfx/ui/party_wipe/`: `Graveyard.png` (320x180),
+  `Headstone<Biome>.png` (13 biomes, 56x56), `Candle.png`.
+- Rooms explored uses `DebugState.room_index_at`, the only room lookup
+  there is. It lives in a debug class, so it may want a proper home.
 
 ## The idea
 
@@ -20,7 +44,7 @@ whole party is dead:
   player must press it. When everyone has, the party returns to town, where
   they make a new character.
 
-## What exists already
+## What existed before (for reference)
 
 - **Party death is already detected:** `DeathCountdown._all_players_dead()`,
   plus `PlayerController._on_died()` for the ghost swap.
@@ -32,7 +56,7 @@ whole party is dead:
   distant graves in the backdrop). The new headstone and backdrop from the
   mockup are greyscale value passes, not added to the project yet.
 
-## What is missing, in the order it would be built
+## What was missing (all built now, see above)
 
 1. **Cause of death.** `take_damage(amount, type)` doesn't say who hit, so
    the killer is unknown. It would need an optional attacker (id and name,

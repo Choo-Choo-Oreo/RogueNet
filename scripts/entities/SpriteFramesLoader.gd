@@ -25,5 +25,17 @@ static func build(data: Dictionary) -> SpriteFrames:
 			frames.add_frame(anim_name, atlas)
 	return frames
 
+## One still picture of the body: the first frame of its "Front" animation (or of
+## whichever comes first). For portraits and lists. null if there are no animations.
+static func first_frame(data: Dictionary) -> Texture2D:
+	var animations: Dictionary = data.get("animations", {})
+	if animations.is_empty():
+		return null
+	var anim: Dictionary = animations.get("Front", animations.values()[0])
+	var atlas := AtlasTexture.new()
+	atlas.atlas = load(anim["texture"])
+	atlas.region = Rect2(Vector2.ZERO, vector_from_array(data.get("frame_size", [16, 16])))
+	return atlas
+
 static func vector_from_array(values: Array) -> Vector2:
 	return Vector2(values[0], values[1])

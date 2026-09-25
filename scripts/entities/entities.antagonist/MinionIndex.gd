@@ -60,3 +60,12 @@ static func is_boss(minion_id: String) -> bool:
 	if not _paths.has(minion_id):
 		return false
 	return String(_paths[minion_id]).contains(BOSS_FOLDER)
+
+## What players call it: the json's "name" if it has one, else the id in words
+## ("rat_blind" -> "Rat Blind").
+static func display_name(minion_id: String) -> String:
+	return load_data(minion_id).get("name", minion_id.capitalize())
+
+## Its first front-facing frame, for lists (the graves screen). null for an unknown id.
+static func icon(minion_id: String) -> Texture2D:
+	return SpriteFramesLoader.first_frame(load_data(minion_id).get("sprite_frames", {}))

@@ -6,6 +6,7 @@ extends Node2D
 @onready var chat_box: ChatBox = $UILayer/ChatBox
 
 func _ready() -> void:
+	RunLog.begin()
 	add_child(DebugDraw.new())
 	add_child(BodySweep.new())
 	add_child(DebugMenu.new())

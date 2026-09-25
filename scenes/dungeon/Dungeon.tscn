@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/PauseMenu.tscn" id="1_pausemenu"]
 [ext_resource type="PackedScene" path="res://scenes/ui/Hotbar.tscn" id="1_hotbar"]
 [ext_resource type="PackedScene" path="res://scenes/ui/HealthBar.tscn" id="1_healthbar"]
-[ext_resource type="PackedScene" path="res://scenes/ui/DeathCountdown.tscn" id="1_deathcountdown"]
+[ext_resource type="PackedScene" path="res://scenes/ui/PartyWipeScreen.tscn" id="1_partywipe"]
 [ext_resource type="PackedScene" path="res://scenes/ui/ChatBox.tscn" id="1_chatbox"]
 [ext_resource type="PackedScene" path="res://scenes/ui/InventoryHud.tscn" id="1_inventoryhud"]
 [ext_resource type="Script" path="res://scripts/dungeon/Dungeon.gd" id="1_dungeonroot"]
@@ -315,7 +315,7 @@ visible = false
 
 [node name="HealthBar" parent="UILayer" instance=ExtResource("1_healthbar")]
 
-[node name="DeathCountdown" parent="UILayer" instance=ExtResource("1_deathcountdown")]
+[node name="PartyWipeScreen" parent="UILayer" instance=ExtResource("1_partywipe")]
 
 [node name="ChatBox" parent="UILayer" instance=ExtResource("1_chatbox")]
 
