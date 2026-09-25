@@ -2,8 +2,8 @@ extends Control
 
 class_name SettingsMenu
 
-@onready var fullscreen_check_button: CheckButton = $MarginContainer/VBoxContainer/FullscreenCheckButton
-@onready var v_sync_check_button: CheckButton = $MarginContainer/VBoxContainer/VSyncCheckButton
+@onready var fullscreen_check_button: CheckButton = $MarginContainer/VBoxContainer/Tabs/Video/FullscreenCheckButton
+@onready var v_sync_check_button: CheckButton = $MarginContainer/VBoxContainer/Tabs/Video/VSyncCheckButton
 
 func _ready():
 	# set_pressed_no_signal, not button_pressed = ...: this is reading the

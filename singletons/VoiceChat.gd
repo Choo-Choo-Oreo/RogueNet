@@ -1,8 +1,11 @@
 extends Node
 
-## Push-to-talk voice chat over Steam. Press push_to_talk (V, or Share on a pad) to turn the
-## mic on and again to turn it off: Steam records the microphone picked in the Steam client and hands back compressed
-## voice. It goes to the host, which passes it on to everyone in the same place as the
+## Push-to-talk voice chat. Press push_to_talk (V, or Share on a pad) to turn the mic on and
+## again to turn it off. The game records the microphone itself (MicInput, with the mic and gain
+## picked in Settings > Voice; not Steam's recording) and sends each chunk squeezed to a byte a
+## sample (MuLaw), with how loud it is in the dungeon (voice_db) in front. Only talking is sent:
+## a chunk quieter than the gate (gate_db, a little under this player's whisper) is background.
+## It goes to the host, which passes it on to everyone in the same place as the
 ## speaker (the town, or the same started mission), the same way chat goes through the host
 ## (NetworkSync.send_chat). In a mission the living and the ghosts are two channels: ghosts
 ## hear only ghosts, from anywhere; the living hear only the living, from where the speaker
@@ -11,41 +14,54 @@ extends Node
 ## speaker gets their own player on the VoiceChat bus.
 ##
 ## Talking in the dungeon is also a noise (NetworkSync.report_noise) that minions can hear.
-## Needs Steam (SteamManager.online); without it V does nothing.
 
 signal speaking_changed(peer_id: int, speaking: bool)
-## This player's own voice, as each chunk comes off the mic (16-bit mono at sample_rate). The
-## Test Lab's mic check records it.
+## This player's own voice while the mic is on for talking, each chunk as it comes off the mic
+## (16-bit mono at MicInput.RATE). The Test Lab's mic check records it.
 signal own_voice(pcm: PackedByteArray)
 ## This player's talking made a noise of `db` (what minions hear, voice_db).
 signal voice_noise(db: float)
 
-## Flip by hand to hear your own voice played back: tests the mic and playback alone.
+## Flip by hand (or in Settings > Voice) to hear your own voice played back.
 var loopback := false
 ## Peers this player does not want to hear: peer_id -> true. Local only.
 var muted: Dictionary = {}
 
-## Steam's k_EVoiceResultOK (GodotSteam binds the other results, not this one).
-const VOICE_OK := 0
-## The host drops anything bigger (Steam voice is a few hundred bytes a frame).
+## The host drops anything bigger (a chunk is a few hundred bytes).
 const MAX_PACKET_BYTES := 8192
 ## A speaker counts as talking until this long after their last packet.
 const SPEAKING_TIMEOUT_MSEC := 300
-## How loud talking is for minions' hearing (Sound, in dB like every noise) goes with how loud
-## the player talks: the voice level (RMS, in dB under the loudest the mic can record) plus
-## MIC_TO_WORLD_DB, from WHISPER_DB at QUIET_DB to YELL_DB. Quieter than QUIET_DB is
-## background hiss and makes no noise. A footstep is 30 dB (PlayerController.FOOTSTEP_DB).
-const QUIET_DB := -45.0
-const MIC_TO_WORLD_DB := 75.0
+## How loud talking is in the dungeon (Sound, in dB like every noise; a footstep is
+## PlayerController.FOOTSTEP_DB): from WHISPER_DB to YELL_DB, in a straight line between this
+## player's whisper and yell as their mic records them (RMS, in dB under the loudest the mic
+## can record). Settings > Voice calibrates the two (whisper_mic_db, yell_mic_db); until then
+## they are the DEFAULT_ ones.
 const WHISPER_DB := 30.0
 const YELL_DB := 70.0
-## A chunk with this share of its samples at the mic's limit is peaking: MAX_VOICE_LOUDNESS.
+const DEFAULT_WHISPER_MIC_DB := -45.0
+const DEFAULT_YELL_MIC_DB := -5.0
+## Quieter than this far under the whisper is not talking: not sent, no noise.
+const GATE_UNDER_WHISPER_DB := 6.0
+## The gate stays open this long after the last chunk over it, so words keep their ends.
+const GATE_HOLD_MSEC := 300
+## A chunk with this share of its samples at the mic's limit is peaking: 0 dB.
 const CLIPPED_FRACTION := 0.02
 ## At most one voice noise this often while talking, as loud as the loudest bit since the last.
 const VOICE_NOISE_SECONDS := 0.5
+## How quickly background_db follows each new quiet chunk (its share of the average).
+const BACKGROUND_FOLLOW := 0.05
 
-## Steam's voice sample rate, set once Steam is up.
-var sample_rate := 24000
+## This player's calibration (Settings > Voice, the "voice" settings).
+var whisper_mic_db := DEFAULT_WHISPER_MIC_DB
+var yell_mic_db := DEFAULT_YELL_MIC_DB
+## The mic right now, for Settings > Voice's meter: the last chunk's level, and the background
+## (the chunks under the gate, averaged). -INF before there is any.
+var level_db := -INF
+var background_db := -INF
+## Keeps the mic running without sending anything (Settings > Voice's meter and calibration).
+var monitoring := false
+
+var mic := MicInput.new()
 var _players: Dictionary = {}     # peer_id -> AudioStreamPlayer
 var _lost: Dictionary = {}        # speaker -> [msec, dB their voice loses on the way to us]
 ## How often a living speaker's way to us is worked out again (they or we may have moved).
@@ -54,10 +70,15 @@ var _last_heard: Dictionary = {}  # peer_id -> msec of their last packet
 var _next_noise_msec := 0
 ## The loudest voice level (dB) not yet made into a noise; -INF when there is none.
 var _loudest_db := -INF
+var _gate_open_until := 0
 
 func _ready() -> void:
-	if SteamManager.online:
-		sample_rate = Steam.getVoiceOptimalSampleRate()
+	add_child(mic)
+	mic.chunk.connect(_on_mic_chunk)
+	MicInput.set_device(ConfigFileHandler.get_setting("voice", "device", MicInput.DEFAULT_DEVICE))
+	mic.gain_db = ConfigFileHandler.get_setting("voice", "gain_db", 0.0)
+	whisper_mic_db = ConfigFileHandler.get_setting("voice", "whisper_mic_db", DEFAULT_WHISPER_MIC_DB)
+	yell_mic_db = ConfigFileHandler.get_setting("voice", "yell_mic_db", DEFAULT_YELL_MIC_DB)
 	get_tree().scene_changed.connect(_on_scene_changed)
 	multiplayer.peer_disconnected.connect(_drop)
 	multiplayer.server_disconnected.connect(func():
@@ -67,7 +88,7 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	# Exact match, so Ctrl+V (paste in the Dungeon Maker) is not a push to talk. Typing a V in
 	# a text box never gets here: the box eats the key.
-	if not (event.is_action_pressed("push_to_talk", false, true) and SteamManager.online):
+	if not event.is_action_pressed("push_to_talk", false, true):
 		return
 	# V and the pad's Share button both toggle: one press on, the next off.
 	set_talking(not talking)
@@ -88,18 +109,46 @@ func _on_scene_changed() -> void:
 
 func set_talking(on: bool) -> void:
 	talking = on
-	if on:
-		Steam.startVoiceRecording()
+	_update_mic()
+	if SteamManager.online:
+		Steam.setInGameVoiceSpeaking(Steam.getSteamID(), on)
+
+func set_monitoring(on: bool) -> void:
+	monitoring = on
+	_update_mic()
+
+func _update_mic() -> void:
+	if talking or monitoring:
+		if not mic.is_on():
+			mic.start()
 	else:
-		Steam.stopVoiceRecording()
-	Steam.setInGameVoiceSpeaking(Steam.getSteamID(), on)
+		mic.stop()
+		level_db = -INF
+
+# --- Settings > Voice: each saved at once.
+
+func set_device(device: String) -> void:
+	MicInput.set_device(device)
+	ConfigFileHandler.save_setting("voice", "device", device)
+
+## A new gain moves the calibration with it (both are levels after the gain), so it changes how
+## loud friends hear you, not how loud you are in the dungeon. Uncalibrated, it changes both.
+func set_gain(db: float) -> void:
+	if is_calibrated():
+		set_calibration(whisper_mic_db + db - mic.gain_db, yell_mic_db + db - mic.gain_db)
+	mic.gain_db = db
+	ConfigFileHandler.save_setting("voice", "gain_db", db)
+
+func set_calibration(whisper: float, yell: float) -> void:
+	whisper_mic_db = whisper
+	yell_mic_db = yell
+	ConfigFileHandler.save_setting("voice", "whisper_mic_db", whisper)
+	ConfigFileHandler.save_setting("voice", "yell_mic_db", yell)
+
+func is_calibrated() -> bool:
+	return whisper_mic_db != DEFAULT_WHISPER_MIC_DB or yell_mic_db != DEFAULT_YELL_MIC_DB
 
 func _process(_delta: float) -> void:
-	if not SteamManager.online:
-		return
-	# Read every frame, not just while talking: Steam still has the last bit buffered after
-	# talking is toggled off, and says NOT_RECORDING / NO_DATA when there is nothing.
-	_send_available_voice()
 	_make_noise()
 	var now := Time.get_ticks_msec()
 	for peer_id in _last_heard.keys():
@@ -118,24 +167,32 @@ func set_muted(peer_id: int, on: bool) -> void:
 
 # --- Sending: this player's voice, to the host.
 
-func _send_available_voice() -> void:
-	var available: Dictionary = Steam.getAvailableVoice()
-	if available["result"] != VOICE_OK or available["size"] == 0:
-		return
-	var voice: Dictionary = Steam.getVoice(available["size"])
-	if voice["result"] != VOICE_OK:
-		return
-	var data: PackedByteArray = voice["buffer"].slice(0, voice["size"])
+## Every chunk the mic records: measured (level_db, background_db) and, while talking with the
+## gate open, sent with its loudness in the dungeon in front.
+func _on_mic_chunk(pcm: PackedByteArray) -> void:
+	level_db = mic_level_db(pcm)
+	var now := Time.get_ticks_msec()
+	if level_db >= gate_db():
+		_gate_open_until = now + GATE_HOLD_MSEC
+	elif level_db > -INF:
+		background_db = level_db if background_db == -INF else lerpf(background_db, level_db, BACKGROUND_FOLLOW)
+	var open := now <= _gate_open_until
 	var me := multiplayer.get_unique_id()
-	_note_speaking(me)
-	# Our own voice is decoded only for the minions' ears (and loopback), never played.
-	var pcm := _decompress(data)
-	_loudest_db = maxf(_loudest_db, mic_level_db(pcm))
+	var db := my_voice_db(level_db)
+	# Loopback also while only monitoring, so Settings > Voice can play you back.
+	if loopback and open:
+		_play(me, pcm, db)
+	if not talking:
+		return
 	own_voice.emit(pcm)
-	if loopback:
-		_play(me, pcm)
+	if not open:
+		return
+	_note_speaking(me)
+	if level_db >= gate_db():
+		_loudest_db = maxf(_loudest_db, level_db)
 	if multiplayer.get_peers().is_empty():
 		return
+	var data := PackedByteArray([roundi(db)]) + MuLaw.encode(pcm)
 	if multiplayer.is_server():
 		_relay(me, data)
 	else:
@@ -145,9 +202,9 @@ func _send_available_voice() -> void:
 ## as loud as the loudest the player talked since the last one. A ghost makes no noise.
 func _make_noise() -> void:
 	var now := Time.get_ticks_msec()
-	if now < _next_noise_msec or _loudest_db < QUIET_DB:
+	if now < _next_noise_msec or _loudest_db == -INF:
 		return
-	var db := voice_db(_loudest_db)
+	var db := my_voice_db(_loudest_db)
 	_loudest_db = -INF
 	var me: Node2D = NetworkSync._player(multiplayer.get_unique_id())
 	if me == null or _is_ghost(me):
@@ -156,9 +213,30 @@ func _make_noise() -> void:
 	NetworkSync.report_noise(me.global_position, db)
 	voice_noise.emit(db)
 
-## A voice level (dB under the mic's limit) as a noise in the dungeon, see MIC_TO_WORLD_DB.
-static func voice_db(mic_db: float) -> float:
-	return clampf(mic_db + MIC_TO_WORLD_DB, WHISPER_DB, YELL_DB)
+## The mic level under which this player is not talking.
+func gate_db() -> float:
+	return whisper_mic_db - GATE_UNDER_WHISPER_DB
+
+## This player's mic level as a loudness in the dungeon, with their calibration.
+func my_voice_db(mic_db: float) -> float:
+	return voice_db(mic_db, whisper_mic_db, yell_mic_db)
+
+## A mic level (dB under the mic's limit) as a loudness in the dungeon: `whisper_mic` is
+## WHISPER_DB, `yell_mic` YELL_DB, a straight line between, never past either.
+static func voice_db(mic_db: float, whisper_mic := DEFAULT_WHISPER_MIC_DB, yell_mic := DEFAULT_YELL_MIC_DB) -> float:
+	var along := (mic_db - whisper_mic) / maxf(yell_mic - whisper_mic, 1.0)
+	return clampf(lerpf(WHISPER_DB, YELL_DB, along), WHISPER_DB, YELL_DB)
+
+## The other way, uncalibrated: the mic level a voice of `db` has (the Test Lab's fake talkers).
+static func mic_level_for(db: float) -> float:
+	return lerpf(DEFAULT_WHISPER_MIC_DB, DEFAULT_YELL_MIC_DB, (db - WHISPER_DB) / (YELL_DB - WHISPER_DB))
+
+## The average of several levels (dB) as the ear hears it: of their power, not of the dB numbers.
+static func average_db(levels: Array) -> float:
+	var power := 0.0
+	for level in levels:
+		power += db_to_linear(level) ** 2
+	return linear_to_db(sqrt(power / levels.size())) if not levels.is_empty() else -INF
 
 ## How loud a chunk of voice is: its RMS in dB under the loudest the mic can record (0 dB).
 ## A chunk peaking the mic (CLIPPED_FRACTION of it at the limit) counts as 0 dB.
@@ -213,26 +291,19 @@ func _place_of(peer_id: int) -> int:
 
 # --- Hearing: everyone else's voice.
 
+## `data`: the speaker's loudness in the dungeon (one byte, voice_db), then their voice (MuLaw).
 @rpc("authority", "unreliable_ordered", "call_remote", 1)
 func receive_voice(sender_id: int, data: PackedByteArray) -> void:
-	if muted.has(sender_id):
+	if muted.has(sender_id) or data.size() < 2:
 		return
 	_note_speaking(sender_id)
-	_play(sender_id, _decompress(data))
+	_play(sender_id, MuLaw.decode(data.slice(1)), data[0])
 
-## 16-bit mono samples at sample_rate, or empty when Steam could not read the packet.
-func _decompress(data: PackedByteArray) -> PackedByteArray:
-	# Room for a whole second of samples; one packet is a small part of that.
-	var out: Dictionary = Steam.decompressVoice(data, sample_rate, sample_rate * 2)
-	if out["result"] != VOICE_OK:
-		return PackedByteArray()
-	return out["uncompressed"].slice(0, out["size"])
-
-func _play(peer_id: int, pcm: PackedByteArray) -> void:
+func _play(peer_id: int, pcm: PackedByteArray, db: float) -> void:
 	if pcm.is_empty():
 		return
 	var player := _player_for(peer_id)
-	_place_voice(peer_id, player, pcm)
+	_place_voice(peer_id, player, db)
 	var playback: AudioStreamGeneratorPlayback = player.get_stream_playback()
 	var frames := PackedVector2Array()
 	@warning_ignore("integer_division")  # 2 bytes per sample
@@ -250,7 +321,7 @@ func _player_for(peer_id: int) -> AudioStreamPlayer2D:
 	if not _players.has(peer_id):
 		var generator := AudioStreamGenerator.new()
 		generator.mix_rate_mode = AudioStreamGenerator.MIX_RATE_CUSTOM
-		generator.mix_rate = sample_rate
+		generator.mix_rate = MicInput.RATE
 		generator.buffer_length = 0.5
 		var player := AudioStreamPlayer2D.new()
 		player.stream = generator
@@ -263,13 +334,13 @@ func _player_for(peer_id: int) -> AudioStreamPlayer2D:
 	return _players[peer_id]
 
 ## A living speaker in the dungeon is heard from their body, as loud as what reaches us of
-## how loud they talk (voice_db), or not at all below our hearing. Anyone else (the town, a
-## ghost, loopback) is heard at full volume: the player sits on the listener, the screen's centre.
-func _place_voice(peer_id: int, player: AudioStreamPlayer2D, pcm: PackedByteArray) -> void:
+## how loud they talk (`db`, voice_db), or not at all below our hearing. Anyone else (the town,
+## a ghost, loopback) is heard at full volume: the player sits on the listener, the screen's centre.
+func _place_voice(peer_id: int, player: AudioStreamPlayer2D, db: float) -> void:
 	var body: Node2D = NetworkSync._player(peer_id)
 	if _in_mission and Viewer.local() != null and body != null and not _is_ghost(body) and peer_id != multiplayer.get_unique_id():
 		player.global_position = body.global_position
-		player.volume_db = heard_volume_db(peer_id, body.global_position, voice_db(mic_level_db(pcm)))
+		player.volume_db = heard_volume_db(peer_id, body.global_position, db)
 	else:
 		var viewport := get_viewport()
 		player.global_position = viewport.get_canvas_transform().affine_inverse() * (viewport.get_visible_rect().size / 2.0)

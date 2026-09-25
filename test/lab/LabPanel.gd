@@ -253,6 +253,7 @@ func _refresh_readout() -> void:
 		lines.append("talker at %s: %.0f dB, %s (you hear from %.0f)" % [_tile_of(_voice), _voice.db, reaches, _player.viewer.hearing])
 	if is_instance_valid(_mic):
 		lines.append(_mic.status)
+		lines.append(_mic.background_line())
 		lines.append_array(_mic.results)
 	_readout.text = "You: %s\n%s" % [_tile_of(_player), "\n".join(lines) if not lines.is_empty() else "(no creatures in this cell)"]
 

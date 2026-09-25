@@ -1,13 +1,14 @@
 class_name LabMicCheck
 extends Node
 
-## The Test Lab's mic check (the voice_mic_check cell). Turns your mic on (VoiceChat, so it needs
-## Steam like the game does) and asks you to whisper, then talk, then yell: GAP_SECONDS to get
-## ready, then TAKE_SECONDS of recording each. For every take it keeps two things:
+## The Test Lab's mic check (the voice_mic_check cell). Turns your mic on (VoiceChat: the mic,
+## gain and calibration from Settings > Voice) and asks you to whisper, then talk, then yell:
+## GAP_SECONDS to get ready, then TAKE_SECONDS of recording each. It shows your background level
+## (the mic when you are not talking, VoiceChat.background_db). For every take it keeps:
 ## - what the game made of it: the noises your talking made (VoiceChat.voice_noise, the dB
 ##   minions hear, one every half second at most);
 ## - the recording itself (VoiceChat.own_voice): its average and loudest level, turned into dB
-##   the same way (VoiceChat.voice_db), and saved as a WAV in user://test_lab/ to play back.
+##   the same way (VoiceChat.my_voice_db), and saved as a WAV in user://test_lab/ to play back.
 ## The two should agree; the target is where a whisper, talking and a yell are meant to land.
 
 const TAKES := [["whisper", 30.0], ["talk", 50.0], ["yell", 70.0]]
@@ -35,9 +36,6 @@ func _exit_tree() -> void:
 		VoiceChat.set_talking(false)
 
 func start() -> void:
-	if not SteamManager.online:
-		status = "Steam is not running: the mic check needs Steam's voice, like the game."
-		return
 	results.clear()
 	VoiceChat.set_talking(true)
 	_begin(0)
@@ -70,6 +68,11 @@ func _process(_delta: float) -> void:
 		VoiceChat.set_talking(false)
 		status = "Done (WAVs in %s). Press M to go again." % ProjectSettings.globalize_path(WAV_DIR)
 
+## The background level and the gate (under it is not talking), for the panel.
+func background_line() -> String:
+	return "background %.0f dB under the mic's limit, gate %.0f (calibrated: %s)" % [
+		VoiceChat.background_db, VoiceChat.gate_db(), "yes" if VoiceChat.is_calibrated() else "no, defaults"]
+
 func _on_own_voice(pcm: PackedByteArray) -> void:
 	if _recording:
 		_pcm.append_array(pcm)
@@ -89,17 +92,13 @@ func _result() -> String:
 		for db in _noises:
 			total += db
 		game = "%.0f avg, %.0f max (%d noises)" % [total / _noises.size(), _noises.max(), _noises.size()]
-	var heard := _levels.filter(func(level: float) -> bool: return level >= VoiceChat.QUIET_DB)
+	var heard := _levels.filter(func(level: float) -> bool: return level >= VoiceChat.gate_db())
 	var recording := "silent"
 	if not heard.is_empty():
-		# Average as power, like the ear (and RMS) does, not the plain mean of the dB.
-		var power := 0.0
-		for level in heard:
-			power += db_to_linear(level) ** 2
-		var average := linear_to_db(sqrt(power / heard.size()))
+		var average := VoiceChat.average_db(heard)
 		var loudest: float = heard.max()
 		recording = "%.0f avg (%.0f dB under the mic's limit), %.0f loudest (%.0f)" % [
-			VoiceChat.voice_db(average), average, VoiceChat.voice_db(loudest), loudest]
+			VoiceChat.my_voice_db(average), average, VoiceChat.my_voice_db(loudest), loudest]
 	return "%s, target %.0f dB\n   game: %s\n   recording: %s\n   %s" % [word.to_upper(), TAKES[_take][1], game, recording, wav]
 
 ## Saves the take as a WAV; returns where, or why not.
@@ -109,7 +108,7 @@ func _save(word: String) -> String:
 	DirAccess.make_dir_recursive_absolute(WAV_DIR)
 	var wav := AudioStreamWAV.new()
 	wav.format = AudioStreamWAV.FORMAT_16_BITS
-	wav.mix_rate = VoiceChat.sample_rate
+	wav.mix_rate = MicInput.RATE
 	wav.stereo = false
 	wav.data = _pcm
 	var path := WAV_DIR + word + ".wav"

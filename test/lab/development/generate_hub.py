@@ -273,9 +273,11 @@ cell('light_blind_ignores', ['...............'] * 3 + ['.......R.......'] + ['..
 # ---- voice: fake teammates talking without a break, to walk up to and listen (Test Lab only) ----
 # The talker stands left of a wall with the open side below it: walk up in the open, stand behind
 # the wall (35 dB off), or come round its end (a corner).
-_voice = ['...............'] + ['.......#.......'] * 6 + ['...............'] * 6
+# A plain rat (hears from 27 dB) is shut in a closed room on the far side of the wall, 7 tiles
+# from the talker in a straight line: only the yell gets through to it (70 - 6 - 35 = 29 dB).
+_voice = ['.......#.......'] * 2 + ['.......#..r....'] + ['.......#.......'] * 3 + ['.......########'] + ['...............'] * 6
 for _n in ('voice_whisper', 'voice_talk', 'voice_yell'):
-    cell(_n, _voice, door_x=11)
+    cell(_n, _voice, door_x=1)
 # Records you whispering, talking and yelling, to compare what the game makes of it.
 cell('voice_mic_check', ['.........'] * 5)
 # Where each fake talker stands (interior column, row) and how loud it talks, in dB like every
@@ -424,12 +426,12 @@ NOTES = {
                      'The Minotaur cannot use the 1-wide door; everyone else should get out of theirs.'),
     'voice_whisper': ('A fake teammate whispering (30 dB) without a break, left of a wall. It sounds like a buzz, as quiet as a real whisper comes off the mic.',
                       'Open the door, press backslash to step inside, and walk up to it: in the open, behind the wall, round the end of the wall.',
-                      'You hear from 22 dB, so a whisper carries 8 tiles over open floor and never through the wall. The readout shows what reaches you.'),
+                      'The blue dot is the talker; under it, what reaches you. You hear from 22 dB, so a whisper carries 8 tiles over open floor and never through the wall. Tick show-sound to see its spread (it is a noise, like real talking). The rat shut in behind the wall must not come.'),
     'voice_talk': ('The same, talking (50 dB).', 'Walk up to it the same way.',
-                   'Heard across the room (28 tiles in the open) and round the end of the wall (quieter), but not through it (35 dB off leaves about 10).'),
+                   'Heard across the room (28 tiles in the open) and round the end of the wall (quieter), but not through it (35 dB off leaves about 10). The rat shut in behind the wall (hears from 27) must not come.'),
     'voice_yell': ('The same, yelling (70 dB).', 'Walk up to it the same way.',
-                   'Heard through the wall, quieter than in the open. Say if the loudness feels wrong anywhere.'),
-    'voice_mic_check': ('Records your own voice (Steam must be running) to see what dB the game makes of it.',
+                   'Heard through the wall, quieter than in the open. The rat shut in behind the wall should hear it (about 29 dB reaches it; it hears from 27) and try to come to look. Say if the loudness feels wrong anywhere.'),
+    'voice_mic_check': ('Records your own voice (the mic, gain and calibration from Settings > Voice) to see what dB the game makes of it.',
                         'Press M: it turns your mic on and asks you to whisper, then talk, then yell, a few seconds each.',
                         'The table compares, for each: what minions hear (the game), the loudness of the recording, and the target (30 / 50 / 70). The takes are saved as WAVs you can play back.'),
     'swarm_rats': ('About 60 rats in one room.', 'Open the door and fight or run.',

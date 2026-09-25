@@ -868,11 +868,11 @@
   {
    "name": "voice_whisper",
    "door": {
-    "x": 358,
+    "x": 348,
     "y": 27
    },
    "entry": {
-    "x": 358,
+    "x": 348,
     "y": 25
    },
    "rect": {
@@ -907,16 +907,16 @@
    },
    "what": "A fake teammate whispering (30 dB) without a break, left of a wall. It sounds like a buzz, as quiet as a real whisper comes off the mic.",
    "try": "Open the door, press backslash to step inside, and walk up to it: in the open, behind the wall, round the end of the wall.",
-   "look": "You hear from 22 dB, so a whisper carries 8 tiles over open floor and never through the wall. The readout shows what reaches you."
+   "look": "The blue dot is the talker; under it, what reaches you. You hear from 22 dB, so a whisper carries 8 tiles over open floor and never through the wall. Tick show-sound to see its spread (it is a noise, like real talking). The rat shut in behind the wall must not come."
   },
   {
    "name": "voice_yell",
    "door": {
-    "x": 375,
+    "x": 365,
     "y": 27
    },
    "entry": {
-    "x": 375,
+    "x": 365,
     "y": 25
    },
    "rect": {
@@ -951,7 +951,7 @@
    },
    "what": "The same, yelling (70 dB).",
    "try": "Walk up to it the same way.",
-   "look": "Heard through the wall, quieter than in the open. Say if the loudness feels wrong anywhere."
+   "look": "Heard through the wall, quieter than in the open. The rat shut in behind the wall should hear it (about 29 dB reaches it; it hears from 27) and try to come to look. Say if the loudness feels wrong anywhere."
   },
   {
    "name": "minion_rat_blind",
@@ -1787,11 +1787,11 @@
   {
    "name": "voice_talk",
    "door": {
-    "x": 368,
+    "x": 358,
     "y": 33
    },
    "entry": {
-    "x": 368,
+    "x": 358,
     "y": 35
    },
    "rect": {
@@ -1826,7 +1826,7 @@
    },
    "what": "The same, talking (50 dB).",
    "try": "Walk up to it the same way.",
-   "look": "Heard across the room (28 tiles in the open) and round the end of the wall (quieter), but not through it (35 dB off leaves about 10)."
+   "look": "Heard across the room (28 tiles in the open) and round the end of the wall (quieter), but not through it (35 dB off leaves about 10). The rat shut in behind the wall (hears from 27) must not come."
   },
   {
    "name": "voice_mic_check",
@@ -1861,7 +1861,7 @@
    "voice_at": null,
    "mic_check": true,
    "player_at": null,
-   "what": "Records your own voice (Steam must be running) to see what dB the game makes of it.",
+   "what": "Records your own voice (the mic, gain and calibration from Settings > Voice) to see what dB the game makes of it.",
    "try": "Press M: it turns your mic on and asks you to whisper, then talk, then yell, a few seconds each.",
    "look": "The table compares, for each: what minions hear (the game), the loudness of the recording, and the target (30 / 50 / 70). The takes are saved as WAVs you can play back."
   }

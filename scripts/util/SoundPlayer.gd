@@ -56,7 +56,7 @@ static func play(from: Node, path: String, options: Dictionary = {}) -> Node:
 	if at != null and not always and not o["heard"] and not on_screen(from, at):
 		return null
 	var now := Time.get_ticks_msec()
-	var voices: Array = _alive(path)
+	var sounding: Array = _alive(path)
 	if not always:
 		var last: Dictionary = _last.get(path, {})
 		if not last.is_empty() and now - int(last["msec"]) < int(float(o["merge"]) * 1000.0):
@@ -65,7 +65,7 @@ static func play(from: Node, path: String, options: Dictionary = {}) -> Node:
 				last["boost"] = float(last["boost"]) + float(o["boost"])
 				earlier.volume_db += float(o["boost"])
 			return null
-		if voices.size() >= int(o["max_voices"]):
+		if sounding.size() >= int(o["max_voices"]):
 			return null
 	var player: Node
 	if at != null:
@@ -84,8 +84,8 @@ static func play(from: Node, path: String, options: Dictionary = {}) -> Node:
 	player.finished.connect(player.queue_free)
 	from.get_tree().root.add_child(player)
 	player.play()
-	voices.append(player)
-	_playing[path] = voices
+	sounding.append(player)
+	_playing[path] = sounding
 	_last[path] = {"msec": now, "player": player, "boost": 0.0}
 	var max_length: float = o["max_length"]
 	if stream.get_length() / player.pitch_scale > max_length:

@@ -35,13 +35,20 @@ func _ready() -> void:
 	var fullscreen_on: bool = config.get_value("video", "Fullscreen", true)
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if fullscreen_on else DisplayServer.WINDOW_MODE_WINDOWED)
 
-func save_audio_setting(key: String, value) -> void:
-	config.set_value("audio", key, value)
+## Any setting, saved at once. `section` is the settings tab it belongs to ("audio", "video", "voice").
+func save_setting(section: String, key: String, value) -> void:
+	config.set_value(section, key, value)
 	config.save(SETTINGS_FILE_PATH)
 
+## A saved setting, or `fallback` when it was never saved.
+func get_setting(section: String, key: String, fallback = null):
+	return config.get_value(section, key, fallback)
+
+func save_audio_setting(key: String, value) -> void:
+	save_setting("audio", key, value)
+
 func save_video_setting(key: String, value) -> void:
-	config.set_value("video", key, value)
-	config.save(SETTINGS_FILE_PATH)
+	save_setting("video", key, value)
 
 func load_video_settings() -> Dictionary:
 	var video_settings := {}
