@@ -41,7 +41,7 @@ const OPTIONS := [
 	["show-mesh-tiles", "Debug tile overlay on the mesh cells (50%)"],
 	["show-collision-rectangles", "What blocks you (red) / shots only (orange)"],
 	["show-active-minions", "Minions thinking (green) vs waiting (grey)"],
-	["show-vision", "Your lit cells (green near, red far)"],
+	["show-vision", "Your light in levels: yellow bright, blue dim, nothing drawn = dark"],
 	["show-flow-field", "Flow field to you: tiles away + step direction"],
 	["show-system-time", "Time per system (minion AI, light)"],
 	["log-bodies-in-walls", "Log a creature on a wall / void / no-floor tile"],

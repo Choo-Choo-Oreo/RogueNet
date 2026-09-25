@@ -4,7 +4,7 @@ import json, os
 OUT = 'test/lab/development'
 FLOOR, WALL = 'floor_smooth_stone', 'wall_smooth_stone'
 TILE = {'.': FLOOR, 'L': 'floor_lava', '~': 'floor_water', 'A': 'floor_acid'}
-MINION = {'r': 'rat', 'R': 'rat_blind', 'T': 'rat_toothless', 'b': 'bat', 'B': 'bat_echo', 'h': 'hamster',
+MINION = {'r': 'rat', 'R': 'rat_blind', 'b': 'bat', 'B': 'bat_echo', 'h': 'hamster',
           'H': 'hamster_flying', 'D': 'hamster_demonic', 'e': 'leech', 'E': 'leech_flesh', 'w': 'wolf',
           'X': 'wolf_hellhound', 'S': 'skeleton_archer', 'g': 'wraith', 'M': 'minotaur'}
 
@@ -25,7 +25,7 @@ def cell(name, interior, door_x=None, door_w=2, doors=()):
 
 
 # ---- one cell per minion ----
-for n, l in [('rat', 'r'), ('rat_blind', 'R'), ('rat_toothless', 'T'), ('bat', 'b'), ('bat_echo', 'B'),
+for n, l in [('rat', 'r'), ('rat_blind', 'R'), ('bat', 'b'), ('bat_echo', 'B'),
              ('hamster', 'h'), ('hamster_flying', 'H'), ('hamster_demonic', 'D'), ('leech', 'e'),
              ('leech_flesh', 'E'), ('wolf', 'w'), ('wolf_hellhound', 'X'), ('skeleton_archer', 'S'),
              ('wraith', 'g')]:
@@ -226,7 +226,7 @@ cell('swarm_rats', swarm, door_w=3)
 # ---- hearing: a noise is a place to go and look at, not a player to chase ----
 # The player stands in the far bottom corner, more than the light's 8-tile radius from the noise, so the
 # rat cannot see the glow and find the player that way; only the noise can move it.
-# A blind rat (hearing range 8) far from a wall with one gap in it; the noise is a thrown rock's
+# A blind rat (hearing range 15) far from a wall with one gap in it; the noise is a thrown rock's
 # landing on the far side. It must walk through the gap to the spot, and never attack.
 cell('hearing_rock_behind_wall', [
     'R.....#........',
@@ -242,11 +242,11 @@ cell('hearing_rock_behind_wall', [
     '......#........',
     '......#........',
     '......#........'], door_x=11)
-# A blind rat (range 8) and a plain rat (range 3), each 7 tiles from one footstep. Only the blind
+# A blind rat (range 15) and a plain rat (range 3), each 7 tiles from one footstep. Only the blind
 # rat may come to look; the plain one must not react at all.
 cell('hearing_range', ['R.............r'] + ['...............'] * 12, door_x=6)
 # Muffling: a footstep 2 tiles from a plain rat (range 3) but through a wall (1 + 3 = 4 > 3): it
-# must not hear it, though the straight line is short. A blind rat (range 8) beside it hears it.
+# must not hear it, though the straight line is short. A blind rat (range 15) beside it hears it.
 cell('hearing_muffled_wall', ['.....r#........', '.....R#........'] + ['......#........'] * 11, door_x=11)
 
 
@@ -261,6 +261,13 @@ cell('pack_attack', _pack, door_x=6)
 # Patrol: one rat, alone in a room with a player at the far end (outside its sight and light).
 cell('patrol_herd', ['..w.....w.....w'] + ['...............'] * 25, door_x=6)
 cell('patrol_wanders', ['.......r.......'] + ['...............'] * 25, door_x=6)
+
+
+# ---- light: a creature your light reaches comes to look, if it can see ----
+# You stand still (no footsteps). A blind rat 4 tiles from you, lit: it must ignore the light (it
+# once reacted to it). A plain rat 7 tiles away: lit, but past its sight (5), so light is what
+# must make it notice you.
+cell('light_blind_ignores', ['...............'] * 3 + ['.......R.......'] + ['...............'] * 3 + ['r..............'] + ['...............'] * 5, door_x=11)
 
 
 # ---- what must be true (checked by test/sim/dev_sim.gd; keep a cell after its bug is fixed) ----
@@ -292,16 +299,19 @@ NO_HEAR = {'hearing_muffled_wall': ['rat'], 'hearing_range': ['rat'], 'pack_inve
 # sim then does NOT tell the others anything. ATTACKS: every creature of these ids must reach Attack.
 POKE = {'pack_attack': 'wolf'}
 ATTACKS = {'pack_attack': ['wolf']}
+# NOTICES: every creature of these ids must leave Patrol (here: light, with no sound and no help).
+NOTICES = {'light_blind_ignores': ['rat']}
+NO_HEAR['light_blind_ignores'] = ['rat_blind']
 # ALONE: the sim does not tell the creatures where the player is (like a noise cell, but no noise).
 # MOVES: a creature of this id must get at least this many tiles from where it started (patrol).
-ALONE = ['patrol_wanders', 'patrol_herd']
+ALONE = ['patrol_wanders', 'patrol_herd', 'light_blind_ignores']
 MOVES = {'patrol_wanders': {'rat': 3}, 'patrol_herd': {'wolf': 3}}
 # TOGETHER: at the end the creatures of these ids must all be within this many tiles of each other (a herd).
 TOGETHER = {'patrol_herd': ('wolf', 10)}
 
 # Where the player stands instead of at the door (interior column, row), for cells that test a
 # straight line to the creature. The sim and the Test Lab both use it for "step inside".
-PLAYER_AT = {'terrain_lava': (13, 1), 'terrain_water': (13, 1), 'terrain_acid': (13, 1), 'hearing_rock_behind_wall': (14, 12), 'hearing_muffled_wall': (14, 12), 'hearing_range': (7, 12), 'pack_investigate': (7, 12), 'pack_attack': (7, 12), 'patrol_wanders': (7, 25), 'patrol_herd': (7, 25)}
+PLAYER_AT = {'terrain_lava': (13, 1), 'terrain_water': (13, 1), 'terrain_acid': (13, 1), 'hearing_rock_behind_wall': (14, 12), 'hearing_muffled_wall': (14, 12), 'hearing_range': (7, 12), 'pack_investigate': (7, 12), 'pack_attack': (7, 12), 'patrol_wanders': (7, 25), 'patrol_herd': (7, 25), 'light_blind_ignores': (7, 7)}
 
 # The Minotaur is expected to be skipped here, so the cell may spawn fewer creatures than it pins.
 MAY_SKIP = ['bug1_no_room_for_boss']
@@ -370,13 +380,13 @@ NOTES = {
                       'Walkers must route round; flyers may cross. Anything wading through.'),
     'terrain_acid': ('An acid band with a stone way round.', 'Stand across the band.',
                      'Walkers should take the stone way round, not wade through the acid (a flyer may cross). Acid will become a damaging tile later.'),
-    'hearing_rock_behind_wall': ('A blind rat (hears 8 tiles, sees nothing) on one side of a wall with a gap; you are on the other side.',
+    'hearing_rock_behind_wall': ('A blind rat (hears 15 tiles, sees nothing) on one side of a wall with a gap; you are on the other side.',
                                  'Do NOT press Enter (that tells them where you are). Press N: a rock lands at the far side. Or throw one yourself: key 5, click the far side.',
                                  'The rat should go to the spot the sound came from (through the gap), not to you. "-> going to" in the readout shows where. It must not attack you.'),
-    'hearing_muffled_wall': ('A plain rat (hears 3) and a blind rat (hears 8) behind a solid wall; the noise spot is just across it.',
+    'hearing_muffled_wall': ('A plain rat (hears 3) and a blind rat (hears 15) behind a solid wall; the noise spot is just across it.',
                              'Do NOT press Enter. Tick show-sound, then press N: one footstep across the wall.',
                              'The tint should stop short at the wall for the plain rat: it must not react (2 tiles away, but 1 + 3 through the wall is more than 3). The blind rat should come to the wall.'),
-    'hearing_range': ('A blind rat (hears 8) and a plain rat (hears 3), 7 tiles either side of a spot near the top.',
+    'hearing_range': ('A blind rat (hears 15) and a plain rat (hears 3), 7 tiles either side of a spot near the top.',
                       'Do NOT press Enter. Press N: one footstep at the spot. Then walk about yourself: every step you take is a footstep.',
                       'Only the blind rat should come to look at the spot. The plain rat should ignore it.'),
     'pack_investigate': ('Three wolves (a pack) and a rat (not in it). Only the top-left wolf is close enough to hear a footstep.',
@@ -388,6 +398,9 @@ NOTES = {
     'patrol_wanders': ('One rat alone in a room; you stand at the far end, outside its sight and your light.',
                        'Do NOT press Enter. Just watch it for about 20 seconds.',
                        'It should walk to a few random spots (staying in the room), pausing between. Leave the room by the door: it should stop moving when no player is in or next to its room.'),
+    'light_blind_ignores': ('A blind rat 4 tiles from where you stand, and a plain rat 7 tiles away (past its sight, inside your light).',
+                            'Do NOT press Enter. Open the door, press backslash to step inside, and stand still.',
+                            'The plain rat should come to look (your light reached it). The blind rat must not move: it cannot see your light.'),
     'patrol_herd': ('Three wolves (a pack) spread along the top of a room; you stand at the far end.',
                     'Do NOT press Enter. Watch for about 30 seconds.',
                     'The wolves should wander as a group, staying close to each other, not each in a different direction.'),
@@ -491,7 +504,7 @@ def place(b, ox, oy, door_side):
                                    if c['name'] in NOISE_AT else None),
                       'alone': c['name'] in ALONE, 'together': TOGETHER.get(c['name'], []), 'moves': MOVES.get(c['name'], {}),
                       'poke': POKE.get(c['name'], ''), 'attacks': ATTACKS.get(c['name'], []),
-                      'hear': HEAR.get(c['name'], []), 'no_hear': NO_HEAR.get(c['name'], []),
+                      'hear': HEAR.get(c['name'], []), 'no_hear': NO_HEAR.get(c['name'], []), 'notices': NOTICES.get(c['name'], []),
                       'player_at': ({'x': ox + 1 + PLAYER_AT[c['name']][0], 'y': oy + 1 + PLAYER_AT[c['name']][1]}
                                     if c['name'] in PLAYER_AT else None),
                       'what': note[0], 'try': note[1], 'look': note[2]})

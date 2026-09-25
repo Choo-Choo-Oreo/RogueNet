@@ -72,7 +72,7 @@ func forget() -> void:
 ## Per-minion-type toggle, e.g. rat_blind's "senses": {"sight": false} JSON
 ## key -- keys match this node's own property names (touch/sight/hearing/
 ## smell/taste). A plain bool is shorthand for "enabled"; a dictionary (e.g.
-## rat_toothless's "senses": {"sight": {"range_tiles": 20.0}}) instead sets
+## rat_blind's "senses": {"hearing": {"range_tiles": 15.0}}) instead sets
 ## whichever @export properties of that sense it names, so this stays
 ## generic as more senses -- and more per-sense tuning -- come online.
 func apply_overrides(overrides: Dictionary) -> void:
@@ -93,6 +93,7 @@ func apply_overrides(overrides: Dictionary) -> void:
 ## lit is whether the target's real light (the same LightMap the local
 ## player's own vision uses, not an approximated radius) currently touches
 ## origin's tile -- being seen gives you away even without a clear line back.
+## Only a creature with sight notices it (a blind one ignores light).
 ## delta is the time since the last call (not necessarily a frame -- callers
 ## may throttle how often they call update()).
 func update(origin: Vector2, target: Node2D, is_blocked: Callable, lit: bool, delta: float) -> State:
@@ -115,7 +116,8 @@ func update(origin: Vector2, target: Node2D, is_blocked: Callable, lit: bool, de
 		last_trigger = direct
 		_active_timer = ACTIVE_ALERT_SECONDS
 		_active_tier = State.ATTACK
-	elif lit and state != State.ATTACK:
+	elif lit and sight.enabled and state != State.ATTACK:
+		# Noticing a light is seeing it: a creature without sight ignores it.
 		last_trigger = "light"
 		# The glow gives away where the light is: investigate that spot (once, not the player).
 		if state != State.INVESTIGATE or not is_instance_valid(investigate_marker):

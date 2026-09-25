@@ -6,6 +6,6 @@
 	"effect": {
 		"texture": "res://resources/gfx/effects/effects.melee/physical.bludgeoning.png",
 		"frame_count": 8,
-		"speed": 20.0
+		"speed": 10.0
 	}
 }

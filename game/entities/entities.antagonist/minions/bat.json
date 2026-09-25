@@ -10,13 +10,21 @@
 	"speed_tiles_per_second": 7.5,
 	"flying": true,
 	"actions": [{"action": "bite", "interval": 0.9}],
+	"senses": {
+		"_comment": "Sighted bat: ears first (13), eyes 8 in the dark, little nose.",
+		"touch": {"range_tiles": 1.0},
+		"sight": {"range_tiles": 8.0},
+		"hearing": {"range_tiles": 13.0},
+		"smell": {"range_tiles": 5.0},
+		"taste": {"range_tiles": 2.0}
+	},
 	"sprite_frames": {
 		"frame_size": [16, 16],
 		"animations": {
-			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/bat/bat/Bat-Down.png", "frame_count": 3, "speed": 20.0 },
-			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/bat/bat/Bat-Up.png", "frame_count": 3, "speed": 20.0 },
-			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/bat/bat/Bat-Left.png", "frame_count": 3, "speed": 20.0 },
-			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/bat/bat/Bat-Right.png", "frame_count": 3, "speed": 20.0 }
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/bat/bat/Bat-Down.png", "frame_count": 3, "speed": 10.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/bat/bat/Bat-Up.png", "frame_count": 3, "speed": 10.0 },
+			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/bat/bat/Bat-Left.png", "frame_count": 3, "speed": 10.0 },
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/bat/bat/Bat-Right.png", "frame_count": 3, "speed": 10.0 }
 		}
 	}
 }

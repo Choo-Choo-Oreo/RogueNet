@@ -20,7 +20,7 @@ const CELLS_FILE := "res://test/sim/dev_cells.json"
 const DEFAULT_CELLS := ["minion_minotaur", "bug1_spawn_fit", "bug1_no_room_for_boss", "bug1_hole_band",
 	"bug2_two_wide_gap", "bug2_one_wide_gap", "bug6_boss_blocks_gap", "bug3_smash_plain", "bug3_smash_door", "bug3_smash_pillar",
 	"bug4_corridor_archer", "bug4_open_archer", "bug5_boss_crowd", "terrain_lava", "terrain_water", "terrain_acid",
-	"hearing_rock_behind_wall", "hearing_range", "hearing_muffled_wall", "pack_investigate", "pack_attack", "patrol_wanders", "patrol_herd"]
+	"hearing_rock_behind_wall", "hearing_range", "hearing_muffled_wall", "pack_investigate", "pack_attack", "patrol_wanders", "patrol_herd", "light_blind_ignores"]
 const SAMPLE_SECONDS := 0.25
 ## A creature that moved less than this (tiles) over STALL_SECONDS while the player was farther
 ## than STALL_MIN_DISTANCE is reported as stalled.
@@ -317,7 +317,11 @@ func _finish() -> void:
 	for deaf in _cell.get("no_hear", []):
 		for w in _watch:
 			if str(w["id"]) == deaf and int(w["state"]) > 0:
-				problems.append("%s reacted to a noise it is too far away to hear" % w["id"])
+				problems.append("%s reacted, but nothing it can sense reached it" % w["id"])
+	for id in _cell.get("notices", []):
+		for w in _watch:
+			if str(w["id"]) == id and int(w["state"]) == 0:
+				problems.append("%s never noticed you" % w["id"])
 	if problems.is_empty():
 		print("  PASS ", _cell["name"])
 	else:

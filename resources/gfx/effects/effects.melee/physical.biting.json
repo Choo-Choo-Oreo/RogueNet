@@ -19,7 +19,7 @@
     "w": 16,
     "h": 16
    },
-   "duration": 50
+   "duration": 100
   },
   "physical.biting 1.aseprite": {
    "frame": {
@@ -40,7 +40,7 @@
     "w": 16,
     "h": 16
    },
-   "duration": 50
+   "duration": 100
   },
   "physical.biting 2.aseprite": {
    "frame": {
@@ -61,7 +61,7 @@
     "w": 16,
     "h": 16
    },
-   "duration": 50
+   "duration": 100
   },
   "physical.biting 3.aseprite": {
    "frame": {
@@ -82,7 +82,7 @@
     "w": 16,
     "h": 16
    },
-   "duration": 50
+   "duration": 100
   },
   "physical.biting 4.aseprite": {
    "frame": {
@@ -103,7 +103,7 @@
     "w": 16,
     "h": 16
    },
-   "duration": 50
+   "duration": 100
   },
   "physical.biting 5.aseprite": {
    "frame": {
@@ -124,7 +124,7 @@
     "w": 16,
     "h": 16
    },
-   "duration": 50
+   "duration": 100
   },
   "physical.biting 6.aseprite": {
    "frame": {
@@ -145,7 +145,7 @@
     "w": 16,
     "h": 16
    },
-   "duration": 50
+   "duration": 100
   },
   "physical.biting 7.aseprite": {
    "frame": {
@@ -166,7 +166,7 @@
     "w": 16,
     "h": 16
    },
-   "duration": 50
+   "duration": 100
   },
   "physical.biting 8.aseprite": {
    "frame": {
@@ -187,7 +187,7 @@
     "w": 16,
     "h": 16
    },
-   "duration": 50
+   "duration": 100
   },
   "physical.biting 9.aseprite": {
    "frame": {
@@ -208,7 +208,7 @@
     "w": 16,
     "h": 16
    },
-   "duration": 50
+   "duration": 100
   }
  },
  "meta": {

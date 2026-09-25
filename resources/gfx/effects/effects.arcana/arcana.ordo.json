@@ -19,7 +19,7 @@
     "w": 16,
     "h": 16
    },
-   "duration": 50
+   "duration": 100
   },
   "arcana.ordo 1.aseprite": {
    "frame": {
@@ -40,7 +40,7 @@
     "w": 16,
     "h": 16
    },
-   "duration": 50
+   "duration": 100
   },
   "arcana.ordo 2.aseprite": {
    "frame": {
@@ -61,7 +61,7 @@
     "w": 16,
     "h": 16
    },
-   "duration": 50
+   "duration": 100
   },
   "arcana.ordo 3.aseprite": {
    "frame": {
@@ -82,7 +82,7 @@
     "w": 16,
     "h": 16
    },
-   "duration": 50
+   "duration": 100
   },
   "arcana.ordo 4.aseprite": {
    "frame": {
@@ -103,7 +103,7 @@
     "w": 16,
     "h": 16
    },
-   "duration": 50
+   "duration": 100
   },
   "arcana.ordo 5.aseprite": {
    "frame": {
@@ -124,7 +124,7 @@
     "w": 16,
     "h": 16
    },
-   "duration": 50
+   "duration": 100
   },
   "arcana.ordo 6.aseprite": {
    "frame": {
@@ -145,7 +145,7 @@
     "w": 16,
     "h": 16
    },
-   "duration": 50
+   "duration": 100
   },
   "arcana.ordo 7.aseprite": {
    "frame": {
@@ -166,7 +166,7 @@
     "w": 16,
     "h": 16
    },
-   "duration": 150
+   "duration": 100
   }
  },
  "meta": {

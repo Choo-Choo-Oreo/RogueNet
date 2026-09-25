@@ -51,7 +51,6 @@ strong it is.
 | `leech_flesh` | beast | 6 | 1 Physical | none | Coloured to hide against flesh floors and walls. Meant to hunt by taste and touch; taste is not built, so today it is touch-only. |
 | `rat` | beast.rodent | 5 | 1 Physical | none | Uses the default move speed. |
 | `rat_blind` | beast.rodent | 5 | 1 Physical | none | Sight switched off. |
-| `rat_toothless` | beast.rodent | 5 | 1 Physical | none | Sight range overridden (see its file). |
 | `skeleton_archer` | undead.skeleton | 7 | 2 Physical, ranged (4 tiles) | open | Can open doors. |
 | `wolf` | beast.canine | 10 | 3 Physical | none | |
 | `wolf_hellhound` | beast.canine, demon | 9 | 3 Physical | none | Meant to track by smell; smell is not built yet. |

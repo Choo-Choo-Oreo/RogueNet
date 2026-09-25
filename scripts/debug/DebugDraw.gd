@@ -26,6 +26,8 @@ const ROLE_COLORS := {
 }
 const STATE_COLORS := [Color(0.6, 0.7, 0.9), Color(1.0, 0.9, 0.2), Color(1.0, 0.25, 0.25)]  # patrol, investigate, attack
 const STATE_NAMES := ["patrol", "investigate", "attack"]
+## Inspector text for a sense the creature does not have, or that is not built yet.
+const NO_SENSE_COLOR := Color(0.6, 0.6, 0.6)
 
 var _was_drawing := false
 var _light_map: LightMap = null
@@ -170,21 +172,16 @@ func _light() -> LightMap:
 		_light_map = get_parent().find_child("LightMap", true, false) as LightMap
 	return _light_map
 
-## The local player's flooded vision, in the 8px light cells: green = near,
-## red = far edge of the light.
+## The local player's light in levels (LightMap.Level), in the 8px light cells: yellow = bright,
+## blue = dim, nothing drawn = dark.
 func _draw_vision() -> void:
 	var light := _light()
-	if light == null or light._local == null:
+	if light == null:
 		return
-	var cells: Array = light._local.reached
-	var cost: Dictionary = light._local.cost
-	var far := 1
-	for cell in cells:
-		far = maxi(far, int(cost.get(cell, 0)))
-	for cell in cells:
-		var t := float(cost.get(cell, 0)) / far
-		var color := Color(0.3, 1.0, 0.4).lerp(Color(1.0, 0.3, 0.3), t)
-		draw_rect(Rect2(Vector2(cell) * LightMap.CELL, Vector2(LightMap.CELL, LightMap.CELL)), Color(color, 0.2), true)
+	var levels := light.local_levels()
+	for cell in levels:
+		var color := Color(1.0, 0.9, 0.3, 0.25) if levels[cell] == LightMap.Level.BRIGHT else Color(0.3, 0.5, 1.0, 0.25)
+		draw_rect(Rect2(Vector2(cell) * LightMap.CELL, Vector2(LightMap.CELL, LightMap.CELL)), color, true)
 
 ## The shared walking-distance field minions follow toward the local player:
 ## the number is tiles to the player, the line points along the step they take.
@@ -198,6 +195,9 @@ func _draw_flow_field() -> void:
 	var field: Dictionary = FlowField._fields.get([player.get_instance_id(), 1], {})
 	var distances: Dictionary = field.get("distances", {})
 	var directions: Dictionary = field.get("terrain_directions", field.get("directions", {}))
+	if distances.is_empty() and directions.is_empty():
+		_label(player.global_position + Vector2(-8, -6), "no flow field: nothing is chasing you", Color(1.0, 0.9, 0.3))
+		return
 	var tiles := _visible_tiles()
 	for tile in (distances if not distances.is_empty() else directions):
 		if not tiles.has_point(tile):
@@ -452,21 +452,30 @@ func _inspect_lines(minion: Node) -> Array:
 	if state != 0:
 		head += "  %.1fs left  <- %s" % [senses._active_timer, senses.last_trigger]
 	lines.append([head, STATE_COLORS[state]])
+	# One block per sense, shown only while that sense's show- toggle is on. "none" = this
+	# creature does not have the sense (its JSON turns it off).
 	var target = minion._target
 	var sight := senses.sight
-	if not sight.enabled:
-		lines.append(["sight: off", Color(0.6, 0.6, 0.6)])
-	elif is_instance_valid(target):
-		var d: float = minion.global_position.distance_to(target.global_position) / TILE
-		var block := _sight_block(minion, target)
-		var why := "too far" if d > sight.range_tiles else ("clear, sees you" if block == LineOfSight.CLEAR else "blocked at (%d,%d)" % [block.x, block.y])
-		lines.append(["sight: range %.0f, you %.1f tiles, %s" % [sight.range_tiles, d, why], SenseSight.DEBUG_COLOR])
-	lines.append(["light: %s" % ("lit by your light" if minion.debug_lit else "dark"), Color(1.0, 0.8, 0.5)])
-	lines.append(["touch: %s" % ("on" if senses.touch.enabled else "off"), SenseTouch.DEBUG_COLOR])
+	if DebugState.on("show-sight"):
+		if not sight.enabled:
+			lines.append(["sight: none (blind, ignores light)", NO_SENSE_COLOR])
+		else:
+			if is_instance_valid(target):
+				var d: float = minion.global_position.distance_to(target.global_position) / TILE
+				var block := _sight_block(minion, target)
+				var why := "too far" if d > sight.range_tiles else ("clear, sees you" if block == LineOfSight.CLEAR else "blocked at (%d,%d)" % [block.x, block.y])
+				lines.append(["sight: range %.0f, you %.1f tiles, %s" % [sight.range_tiles, d, why], SenseSight.DEBUG_COLOR])
+			lines.append(["light: %s" % ("lit by your light" if minion.debug_lit else "dark"), Color(1.0, 0.8, 0.5)])
+	if DebugState.on("show-touch"):
+		lines.append(["touch: %s" % ("has it" if senses.touch.enabled else "none"), SenseTouch.DEBUG_COLOR if senses.touch.enabled else NO_SENSE_COLOR])
 	var hearing := senses.hearing
-	var heard := "  last sound spent %.1f" % senses.last_heard_cost if senses.last_heard_cost >= 0.0 else ""
-	lines.append(["hearing: %s%s" % ["budget %.0f step / %.0f rock" % [hearing.budget(1.0), hearing.budget(3.0)] if hearing.enabled else "off", heard], SenseHearing.DEBUG_COLOR])
-	lines.append(["smell, taste: not built", Color(0.6, 0.6, 0.6)])
+	if DebugState.on("show-sound"):
+		var heard := "  last sound spent %.1f" % senses.last_heard_cost if senses.last_heard_cost >= 0.0 else ""
+		lines.append(["hearing: %s%s" % ["budget %.0f step / %.0f rock" % [hearing.budget(1.0), hearing.budget(3.0)] if hearing.enabled else "none", heard], SenseHearing.DEBUG_COLOR if hearing.enabled else NO_SENSE_COLOR])
+	if DebugState.on("show-smell"):
+		lines.append(["smell: %s (not built)" % ("has it" if senses.smell.enabled else "none"), NO_SENSE_COLOR])
+	if DebugState.on("show-taste"):
+		lines.append(["taste: %s (not built)" % ("has it" if senses.taste.enabled else "none"), NO_SENSE_COLOR])
 	if state == 1 and is_instance_valid(senses.investigate_marker):
 		var spot := Vector2i((senses.investigate_marker.global_position / TILE).floor())
 		lines.append(["going to (%d,%d)" % [spot.x, spot.y], STATE_COLORS[1]])

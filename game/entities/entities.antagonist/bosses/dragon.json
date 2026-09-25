@@ -9,6 +9,14 @@
 	"resistances": {},
 	"speed_tiles_per_second": 1.5,
 	"actions": [{ "action": "bite", "amount": 12, "interval": 1.5, "type": "Physical.Piercing" }, { "action": "bludgeon", "amount": 10 }],
+	"senses": {
+		"_comment": "Dragon: eagle eyes are its standout (20), a strong nose (15), ears 10.",
+		"touch": {"range_tiles": 1.0},
+		"sight": {"range_tiles": 20.0},
+		"hearing": {"range_tiles": 10.0},
+		"smell": {"range_tiles": 15.0},
+		"taste": {"range_tiles": 5.0}
+	},
 	"sprite_frames": {
 		"frame_size": [112, 112],
 		"animations": {

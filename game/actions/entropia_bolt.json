@@ -7,7 +7,7 @@
 	"effect": {
 		"texture": "res://resources/gfx/effects/effects.arcana/arcana.entropia.png",
 		"frame_count": 8,
-		"speed": 16.0,
+		"speed": 10.0,
 		"anchor": "target"
 	},
 	"target_mode": "ranged"

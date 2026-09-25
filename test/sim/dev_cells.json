@@ -1,6 +1,6 @@
 {
- "hub": "Development_Hub_349x61",
- "width": 349,
+ "hub": "Development_Hub_357x61",
+ "width": 357,
  "height": 61,
  "cells": [
   {
@@ -32,13 +32,14 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
    "what": "rat alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
   },
   {
-   "name": "minion_rat_toothless",
+   "name": "minion_bat",
    "door": {
     "x": 16,
     "y": 27
@@ -66,13 +67,14 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
-   "what": "rat_toothless alone in a plain room.",
+   "what": "bat alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
   },
   {
-   "name": "minion_bat_echo",
+   "name": "minion_hamster",
    "door": {
     "x": 27,
     "y": 27
@@ -100,13 +102,14 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
-   "what": "bat_echo alone in a plain room.",
+   "what": "hamster alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
   },
   {
-   "name": "minion_hamster_flying",
+   "name": "minion_hamster_demonic",
    "door": {
     "x": 38,
     "y": 27
@@ -134,13 +137,14 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
-   "what": "hamster_flying alone in a plain room.",
+   "what": "hamster_demonic alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
   },
   {
-   "name": "minion_leech",
+   "name": "minion_leech_flesh",
    "door": {
     "x": 49,
     "y": 27
@@ -168,13 +172,14 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
-   "what": "leech alone in a plain room.",
+   "what": "leech_flesh alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
   },
   {
-   "name": "minion_wolf",
+   "name": "minion_wolf_hellhound",
    "door": {
     "x": 60,
     "y": 27
@@ -202,13 +207,14 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
-   "what": "wolf alone in a plain room.",
+   "what": "wolf_hellhound alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
   },
   {
-   "name": "minion_skeleton_archer",
+   "name": "minion_wraith",
    "door": {
     "x": 71,
     "y": 27
@@ -236,13 +242,14 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
-   "what": "skeleton_archer alone in a plain room.",
+   "what": "wraith alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
   },
   {
-   "name": "minion_minotaur",
+   "name": "bug1_spawn_fit",
    "door": {
     "x": 83,
     "y": 27
@@ -258,7 +265,7 @@
     "h": 9
    },
    "reach": [
-    "big"
+    "rat"
    ],
    "may_skip": false,
    "zone_changes_max": -1,
@@ -272,29 +279,32 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
-   "what": "minotaur alone in a plain room.",
-   "try": "Open the door, then walk up to it, away from it and round it.",
-   "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
+   "what": "The Minotaur is pinned in a 1-wide nook it cannot stand in, and a rat sits beside a hole in the floor.",
+   "try": "Let them come for you.",
+   "look": "The Minotaur is moved to a free 2x2 spot, never left inside a wall. The rat never walks on the hole."
   },
   {
-   "name": "bug1_no_room_for_boss",
+   "name": "bug1_hole_band",
    "door": {
-    "x": 93,
+    "x": 98,
     "y": 27
    },
    "entry": {
-    "x": 93,
+    "x": 98,
     "y": 25
    },
    "rect": {
     "x": 91,
-    "y": 13,
-    "w": 27,
-    "h": 15
+    "y": 15,
+    "w": 17,
+    "h": 13
    },
-   "reach": [],
-   "may_skip": true,
+   "reach": [
+    "rat"
+   ],
+   "may_skip": false,
    "zone_changes_max": -1,
    "wade_max": -1,
    "index": 16,
@@ -306,23 +316,24 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
-   "what": "The Minotaur is pinned in a sealed 1-wide corridor with no 2x2 spot nearby.",
-   "try": "Just look inside; nothing should be there.",
-   "look": "A Minotaur exists here (it must be skipped). The debug log (F4) should say \"No room for a 2x2\"."
+   "what": "A chasm across the room with a bridge at one side and a rat on each side.",
+   "try": "Stand opposite a rat and watch it cross.",
+   "look": "A rat walking on the holes instead of using the bridge."
   },
   {
    "name": "bug2_one_wide_gap",
    "door": {
-    "x": 130,
+    "x": 120,
     "y": 27
    },
    "entry": {
-    "x": 130,
+    "x": 120,
     "y": 25
    },
    "rect": {
-    "x": 118,
+    "x": 108,
     "y": 19,
     "w": 17,
     "h": 9
@@ -334,7 +345,7 @@
    "may_skip": false,
    "zone_changes_max": -1,
    "wade_max": -1,
-   "index": 19,
+   "index": 18,
    "noise_at": null,
    "alone": false,
    "together": [],
@@ -343,6 +354,7 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
    "what": "The same, but the gap is 1 wide, so the Minotaur cannot fit.",
    "try": "Stand past the gap, in line with it, and press Enter.",
@@ -351,15 +363,15 @@
   {
    "name": "bug3_smash_plain",
    "door": {
-    "x": 147,
+    "x": 137,
     "y": 27
    },
    "entry": {
-    "x": 147,
+    "x": 137,
     "y": 25
    },
    "rect": {
-    "x": 135,
+    "x": 125,
     "y": 21,
     "w": 17,
     "h": 7
@@ -370,7 +382,7 @@
    "may_skip": false,
    "zone_changes_max": -1,
    "wade_max": -1,
-   "index": 21,
+   "index": 20,
    "noise_at": null,
    "alone": false,
    "together": [],
@@ -379,6 +391,7 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
    "what": "The Minotaur behind a solid wall with no way round.",
    "try": "Stand on the far side and wait.",
@@ -387,15 +400,15 @@
   {
    "name": "bug3_smash_pillar",
    "door": {
-    "x": 164,
+    "x": 154,
     "y": 27
    },
    "entry": {
-    "x": 164,
+    "x": 154,
     "y": 25
    },
    "rect": {
-    "x": 152,
+    "x": 142,
     "y": 19,
     "w": 17,
     "h": 9
@@ -406,7 +419,7 @@
    "may_skip": false,
    "zone_changes_max": -1,
    "wade_max": -1,
-   "index": 23,
+   "index": 22,
    "noise_at": null,
    "alone": false,
    "together": [],
@@ -415,6 +428,7 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
    "what": "The Minotaur among pillars, with a way round.",
    "try": "Stand behind the pillars.",
@@ -423,15 +437,15 @@
   {
    "name": "bug4_open_archer",
    "door": {
-    "x": 181,
+    "x": 171,
     "y": 27
    },
    "entry": {
-    "x": 181,
+    "x": 171,
     "y": 25
    },
    "rect": {
-    "x": 169,
+    "x": 159,
     "y": 19,
     "w": 17,
     "h": 9
@@ -442,6 +456,41 @@
    "may_skip": false,
    "zone_changes_max": -1,
    "wade_max": -1,
+   "index": 24,
+   "noise_at": null,
+   "alone": false,
+   "together": [],
+   "moves": {},
+   "poke": "",
+   "attacks": [],
+   "hear": [],
+   "no_hear": [],
+   "notices": [],
+   "player_at": null,
+   "what": "An archer among rats in the open.",
+   "try": "Stand at the far side.",
+   "look": "The archer holds back and shoots while the rats run past it."
+  },
+  {
+   "name": "bug5_boss_crowd",
+   "door": {
+    "x": 183,
+    "y": 27
+   },
+   "entry": {
+    "x": 183,
+    "y": 25
+   },
+   "rect": {
+    "x": 176,
+    "y": 17,
+    "w": 17,
+    "h": 11
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": 2,
+   "wade_max": -1,
    "index": 25,
    "noise_at": null,
    "alone": false,
@@ -451,26 +500,27 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
-   "what": "An archer among rats in the open.",
-   "try": "Stand at the far side.",
-   "look": "The archer holds back and shoots while the rats run past it."
+   "what": "The Minotaur idling among rats.",
+   "try": "Watch from the door without waking it, then step in.",
+   "look": "Rats jittering in and out of the Minotaur's way while it stands or turns."
   },
   {
-   "name": "manual_boss_chase_arena",
+   "name": "manual_corridor_swap",
    "door": {
-    "x": 199,
+    "x": 218,
     "y": 27
    },
    "entry": {
-    "x": 199,
+    "x": 218,
     "y": 25
    },
    "rect": {
-    "x": 186,
-    "y": 11,
+    "x": 193,
+    "y": 19,
     "w": 29,
-    "h": 17
+    "h": 9
    },
    "reach": [],
    "may_skip": false,
@@ -485,25 +535,26 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
-   "what": "A pillared arena with the Minotaur and its crowd.",
-   "try": "Run circles round the pillars so they chase you.",
-   "look": "Bug 5: rats jittering near the Minotaur. Archers should hold back and shoot. Anything standing in a wall."
+   "what": "A long 1-wide corridor: an archer with four rats behind it.",
+   "try": "Enter from the far end.",
+   "look": "Bug 4: the archer and rats should walk past each other. Say if the swap reads badly."
   },
   {
-   "name": "manual_minotaur_corners",
+   "name": "manual_smash_or_walk",
    "door": {
-    "x": 237,
+    "x": 240,
     "y": 27
    },
    "entry": {
-    "x": 237,
+    "x": 240,
     "y": 25
    },
    "rect": {
-    "x": 215,
+    "x": 222,
     "y": 17,
-    "w": 25,
+    "w": 22,
     "h": 11
    },
    "reach": [],
@@ -519,23 +570,24 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
-   "what": "Pillars with 1-wide gaps (Minotaur cannot use them) and open bands (2+).",
-   "try": "Run the Minotaur through the pillars, changing side often.",
-   "look": "The Minotaur standing in a wall or clipping a corner. (Screenshot it and note the tile from F4.)"
+   "what": "A thick wall with a long way round along the bottom.",
+   "try": "Stand on the far side of the wall, then walk around it once.",
+   "look": "Decide what it should do: walk round, smash, or both. Right now it walks to the wall, loses its target and never smashes."
   },
   {
-   "name": "terrain_lava",
+   "name": "terrain_water",
    "door": {
-    "x": 252,
+    "x": 256,
     "y": 27
    },
    "entry": {
-    "x": 252,
+    "x": 256,
     "y": 25
    },
    "rect": {
-    "x": 240,
+    "x": 244,
     "y": 20,
     "w": 17,
     "h": 8
@@ -553,34 +605,35 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": {
-    "x": 254,
+    "x": 258,
     "y": 22
    },
-   "what": "A lava band with a stone way round.",
+   "what": "A water band with a stone way round.",
    "try": "Stand across the band.",
-   "look": "Walkers must route round; flyers may cross. Anything walking through lava."
+   "look": "Walkers must route round; flyers may cross. Anything wading through."
   },
   {
-   "name": "terrain_acid",
+   "name": "doors_widths",
    "door": {
-    "x": 269,
+    "x": 268,
     "y": 27
    },
    "entry": {
-    "x": 269,
+    "x": 268,
     "y": 25
    },
    "rect": {
-    "x": 257,
-    "y": 20,
+    "x": 261,
+    "y": 19,
     "w": 17,
-    "h": 8
+    "h": 9
    },
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
-   "wade_max": 0,
+   "wade_max": -1,
    "index": 33,
    "noise_at": null,
    "alone": false,
@@ -590,28 +643,26 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
-   "player_at": {
-    "x": 271,
-    "y": 22
-   },
-   "what": "An acid band with a stone way round.",
-   "try": "Stand across the band.",
-   "look": "Walkers should take the stone way round, not wade through the acid (a flyer may cross). Acid will become a damaging tile later."
+   "notices": [],
+   "player_at": null,
+   "what": "Minotaur, archer, rat and wraith behind 1, 2 and 3 wide wooden doors.",
+   "try": "Open each door and step back.",
+   "look": "The Minotaur cannot use the 1-wide door; everyone else should get out of theirs."
   },
   {
-   "name": "swarm_rats",
+   "name": "hearing_rock_behind_wall",
    "door": {
-    "x": 284,
+    "x": 290,
     "y": 27
    },
    "entry": {
-    "x": 284,
+    "x": 290,
     "y": 25
    },
    "rect": {
-    "x": 274,
+    "x": 278,
     "y": 13,
-    "w": 23,
+    "w": 17,
     "h": 15
    },
    "reach": [],
@@ -619,31 +670,41 @@
    "zone_changes_max": -1,
    "wade_max": -1,
    "index": 35,
-   "noise_at": null,
+   "noise_at": {
+    "x": 291,
+    "y": 15,
+    "loudness": 3.0
+   },
    "alone": false,
    "together": [],
    "moves": {},
    "poke": "",
    "attacks": [],
-   "hear": [],
+   "hear": [
+    "rat_blind"
+   ],
    "no_hear": [],
-   "player_at": null,
-   "what": "About 60 rats in one room.",
-   "try": "Open the door and fight or run.",
-   "look": "Frame rate (F4 shows it) dropping badly, or rats stuck in a pile."
+   "notices": [],
+   "player_at": {
+    "x": 293,
+    "y": 26
+   },
+   "what": "A blind rat (hears 15 tiles, sees nothing) on one side of a wall with a gap; you are on the other side.",
+   "try": "Do NOT press Enter (that tells them where you are). Press N: a rock lands at the far side. Or throw one yourself: key 5, click the far side.",
+   "look": "The rat should go to the spot the sound came from (through the gap), not to you. \"-> going to\" in the readout shows where. It must not attack you."
   },
   {
-   "name": "hearing_range",
+   "name": "hearing_muffled_wall",
    "door": {
-    "x": 304,
+    "x": 307,
     "y": 27
    },
    "entry": {
-    "x": 304,
+    "x": 307,
     "y": 25
    },
    "rect": {
-    "x": 297,
+    "x": 295,
     "y": 13,
     "w": 17,
     "h": 15
@@ -654,8 +715,8 @@
    "wade_max": -1,
    "index": 37,
    "noise_at": {
-    "x": 305,
-    "y": 15,
+    "x": 303,
+    "y": 14,
     "loudness": 1.0
    },
    "alone": false,
@@ -669,26 +730,27 @@
    "no_hear": [
     "rat"
    ],
+   "notices": [],
    "player_at": {
-    "x": 305,
+    "x": 310,
     "y": 26
    },
-   "what": "A blind rat (hears 8) and a plain rat (hears 3), 7 tiles either side of a spot near the top.",
-   "try": "Do NOT press Enter. Press N: one footstep at the spot. Then walk about yourself: every step you take is a footstep.",
-   "look": "Only the blind rat should come to look at the spot. The plain rat should ignore it."
+   "what": "A plain rat (hears 3) and a blind rat (hears 15) behind a solid wall; the noise spot is just across it.",
+   "try": "Do NOT press Enter. Tick show-sound, then press N: one footstep across the wall.",
+   "look": "The tint should stop short at the wall for the plain rat: it must not react (2 tiles away, but 1 + 3 through the wall is more than 3). The blind rat should come to the wall."
   },
   {
-   "name": "pack_investigate",
+   "name": "pack_attack",
    "door": {
-    "x": 321,
+    "x": 319,
     "y": 27
    },
    "entry": {
-    "x": 321,
+    "x": 319,
     "y": 25
    },
    "rect": {
-    "x": 314,
+    "x": 312,
     "y": 13,
     "w": 17,
     "h": 15
@@ -698,42 +760,39 @@
    "zone_changes_max": -1,
    "wade_max": -1,
    "index": 39,
-   "noise_at": {
-    "x": 318,
-    "y": 15,
-    "loudness": 1.0
-   },
+   "noise_at": null,
    "alone": false,
    "together": [],
    "moves": {},
-   "poke": "",
-   "attacks": [],
-   "hear": [
+   "poke": "wolf",
+   "attacks": [
     "wolf"
    ],
+   "hear": [],
    "no_hear": [
     "rat"
    ],
+   "notices": [],
    "player_at": {
-    "x": 322,
+    "x": 320,
     "y": 26
    },
-   "what": "Three wolves (a pack) and a rat (not in it). Only the top-left wolf is close enough to hear a footstep.",
-   "try": "Do NOT press Enter. Press N: one footstep beside the top-left wolf.",
-   "look": "All three wolves should walk to the footstep (the readout says \"-> going to\"). The rat must ignore it."
+   "what": "The same wolves and rat. The top-left wolf is shot from the dark (the sim pokes it).",
+   "try": "Do NOT press Enter. Wake one wolf yourself: open the door, press the backslash key to step inside, walk toward the top-left wolf until it attacks you.",
+   "look": "When one wolf goes to Attack, every wolf attacks you. The rat should not care."
   },
   {
-   "name": "patrol_herd",
+   "name": "patrol_wanders",
    "door": {
-    "x": 338,
+    "x": 336,
     "y": 27
    },
    "entry": {
-    "x": 338,
+    "x": 336,
     "y": 25
    },
    "rect": {
-    "x": 331,
+    "x": 329,
     "y": 0,
     "w": 17,
     "h": 28
@@ -745,24 +804,22 @@
    "index": 41,
    "noise_at": null,
    "alone": true,
-   "together": [
-    "wolf",
-    10
-   ],
+   "together": [],
    "moves": {
-    "wolf": 3
+    "rat": 3
    },
    "poke": "",
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": {
-    "x": 339,
+    "x": 337,
     "y": 26
    },
-   "what": "Three wolves (a pack) spread along the top of a room; you stand at the far end.",
-   "try": "Do NOT press Enter. Watch for about 30 seconds.",
-   "look": "The wolves should wander as a group, staying close to each other, not each in a different direction."
+   "what": "One rat alone in a room; you stand at the far end, outside its sight and your light.",
+   "try": "Do NOT press Enter. Just watch it for about 20 seconds.",
+   "look": "It should walk to a few random spots (staying in the room), pausing between. Leave the room by the door: it should stop moving when no player is in or next to its room."
   },
   {
    "name": "minion_rat_blind",
@@ -793,13 +850,14 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
    "what": "rat_blind alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
   },
   {
-   "name": "minion_bat",
+   "name": "minion_bat_echo",
    "door": {
     "x": 16,
     "y": 33
@@ -827,13 +885,14 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
-   "what": "bat alone in a plain room.",
+   "what": "bat_echo alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
   },
   {
-   "name": "minion_hamster",
+   "name": "minion_hamster_flying",
    "door": {
     "x": 27,
     "y": 33
@@ -861,13 +920,14 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
-   "what": "hamster alone in a plain room.",
+   "what": "hamster_flying alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
   },
   {
-   "name": "minion_hamster_demonic",
+   "name": "minion_leech",
    "door": {
     "x": 38,
     "y": 33
@@ -895,13 +955,14 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
-   "what": "hamster_demonic alone in a plain room.",
+   "what": "leech alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
   },
   {
-   "name": "minion_leech_flesh",
+   "name": "minion_wolf",
    "door": {
     "x": 49,
     "y": 33
@@ -929,13 +990,14 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
-   "what": "leech_flesh alone in a plain room.",
+   "what": "wolf alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
   },
   {
-   "name": "minion_wolf_hellhound",
+   "name": "minion_skeleton_archer",
    "door": {
     "x": 60,
     "y": 33
@@ -963,28 +1025,31 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
-   "what": "wolf_hellhound alone in a plain room.",
+   "what": "skeleton_archer alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
   },
   {
-   "name": "minion_wraith",
+   "name": "minion_minotaur",
    "door": {
-    "x": 71,
+    "x": 72,
     "y": 33
    },
    "entry": {
-    "x": 71,
+    "x": 72,
     "y": 35
    },
    "rect": {
     "x": 67,
     "y": 33,
-    "w": 11,
-    "h": 7
+    "w": 13,
+    "h": 9
    },
-   "reach": [],
+   "reach": [
+    "big"
+   ],
    "may_skip": false,
    "zone_changes_max": -1,
    "wade_max": -1,
@@ -997,31 +1062,30 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
-   "what": "wraith alone in a plain room.",
+   "what": "minotaur alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
    "look": "It should notice you, chase or shoot as it is meant to, and never stand in a wall."
   },
   {
-   "name": "bug1_spawn_fit",
+   "name": "bug1_no_room_for_boss",
    "door": {
-    "x": 83,
+    "x": 82,
     "y": 33
    },
    "entry": {
-    "x": 83,
+    "x": 82,
     "y": 35
    },
    "rect": {
-    "x": 78,
+    "x": 80,
     "y": 33,
-    "w": 13,
-    "h": 9
+    "w": 27,
+    "h": 15
    },
-   "reach": [
-    "rat"
-   ],
-   "may_skip": false,
+   "reach": [],
+   "may_skip": true,
    "zone_changes_max": -1,
    "wade_max": -1,
    "index": 15,
@@ -1033,28 +1097,30 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
-   "what": "The Minotaur is pinned in a 1-wide nook it cannot stand in, and a rat sits beside a hole in the floor.",
-   "try": "Let them come for you.",
-   "look": "The Minotaur is moved to a free 2x2 spot, never left inside a wall. The rat never walks on the hole."
+   "what": "The Minotaur is pinned in a sealed 1-wide corridor with no 2x2 spot nearby.",
+   "try": "Just look inside; nothing should be there.",
+   "look": "A Minotaur exists here (it must be skipped). The debug log (F4) should say \"No room for a 2x2\"."
   },
   {
-   "name": "bug1_hole_band",
+   "name": "bug2_two_wide_gap",
    "door": {
-    "x": 98,
+    "x": 119,
     "y": 33
    },
    "entry": {
-    "x": 98,
+    "x": 119,
     "y": 35
    },
    "rect": {
-    "x": 91,
+    "x": 107,
     "y": 33,
     "w": 17,
-    "h": 13
+    "h": 9
    },
    "reach": [
+    "big",
     "rat"
    ],
    "may_skip": false,
@@ -1069,43 +1135,7 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
-   "player_at": null,
-   "what": "A chasm across the room with a bridge at one side and a rat on each side.",
-   "try": "Stand opposite a rat and watch it cross.",
-   "look": "A rat walking on the holes instead of using the bridge."
-  },
-  {
-   "name": "bug2_two_wide_gap",
-   "door": {
-    "x": 120,
-    "y": 33
-   },
-   "entry": {
-    "x": 120,
-    "y": 35
-   },
-   "rect": {
-    "x": 108,
-    "y": 33,
-    "w": 17,
-    "h": 9
-   },
-   "reach": [
-    "big",
-    "rat"
-   ],
-   "may_skip": false,
-   "zone_changes_max": -1,
-   "wade_max": -1,
-   "index": 18,
-   "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
-   "poke": "",
-   "attacks": [],
-   "hear": [],
-   "no_hear": [],
+   "notices": [],
    "player_at": null,
    "what": "A rat and the Minotaur chase you through a 2-wide gap.",
    "try": "Stand past the gap and wait.",
@@ -1114,15 +1144,15 @@
   {
    "name": "bug6_boss_blocks_gap",
    "door": {
-    "x": 137,
+    "x": 136,
     "y": 33
    },
    "entry": {
-    "x": 137,
+    "x": 136,
     "y": 35
    },
    "rect": {
-    "x": 125,
+    "x": 124,
     "y": 33,
     "w": 17,
     "h": 9
@@ -1133,7 +1163,7 @@
    "may_skip": false,
    "zone_changes_max": -1,
    "wade_max": -1,
-   "index": 20,
+   "index": 19,
    "noise_at": null,
    "alone": false,
    "together": [],
@@ -1142,6 +1172,7 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
    "what": "An unbreakable wall with a 1-wide gap. The Minotaur stands right in front of the gap (it cannot fit through), rats behind it.",
    "try": "Stand on the far side of the wall, in line with the gap, and press Enter.",
@@ -1150,15 +1181,15 @@
   {
    "name": "bug3_smash_door",
    "door": {
-    "x": 154,
+    "x": 153,
     "y": 33
    },
    "entry": {
-    "x": 154,
+    "x": 153,
     "y": 35
    },
    "rect": {
-    "x": 142,
+    "x": 141,
     "y": 33,
     "w": 17,
     "h": 7
@@ -1169,7 +1200,7 @@
    "may_skip": false,
    "zone_changes_max": -1,
    "wade_max": -1,
-   "index": 22,
+   "index": 21,
    "noise_at": null,
    "alone": false,
    "together": [],
@@ -1178,6 +1209,7 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
    "what": "The Minotaur behind a closed door.",
    "try": "Stand on the far side.",
@@ -1186,15 +1218,15 @@
   {
    "name": "bug4_corridor_archer",
    "door": {
-    "x": 173,
+    "x": 172,
     "y": 33
    },
    "entry": {
-    "x": 173,
+    "x": 172,
     "y": 35
    },
    "rect": {
-    "x": 159,
+    "x": 158,
     "y": 33,
     "w": 19,
     "h": 9
@@ -1205,7 +1237,7 @@
    "may_skip": false,
    "zone_changes_max": -1,
    "wade_max": -1,
-   "index": 24,
+   "index": 23,
    "noise_at": null,
    "alone": false,
    "together": [],
@@ -1214,30 +1246,31 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
    "what": "An archer with rats queued behind it in a 1-wide corridor.",
    "try": "Stand at the far end.",
    "look": "The archer and the rats should trade places until the rats reach you. Someone stuck, or a swap that looks like a jump."
   },
   {
-   "name": "bug5_boss_crowd",
+   "name": "manual_boss_chase_arena",
    "door": {
-    "x": 185,
+    "x": 190,
     "y": 33
    },
    "entry": {
-    "x": 185,
+    "x": 190,
     "y": 35
    },
    "rect": {
-    "x": 178,
+    "x": 177,
     "y": 33,
-    "w": 17,
-    "h": 11
+    "w": 29,
+    "h": 17
    },
    "reach": [],
    "may_skip": false,
-   "zone_changes_max": 2,
+   "zone_changes_max": -1,
    "wade_max": -1,
    "index": 26,
    "noise_at": null,
@@ -1248,26 +1281,27 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
-   "what": "The Minotaur idling among rats.",
-   "try": "Watch from the door without waking it, then step in.",
-   "look": "Rats jittering in and out of the Minotaur's way while it stands or turns."
+   "what": "A pillared arena with the Minotaur and its crowd.",
+   "try": "Run circles round the pillars so they chase you.",
+   "look": "Bug 5: rats jittering near the Minotaur. Archers should hold back and shoot. Anything standing in a wall."
   },
   {
-   "name": "manual_corridor_swap",
+   "name": "manual_minotaur_corners",
    "door": {
-    "x": 220,
+    "x": 228,
     "y": 33
    },
    "entry": {
-    "x": 220,
+    "x": 228,
     "y": 35
    },
    "rect": {
-    "x": 195,
+    "x": 206,
     "y": 33,
-    "w": 29,
-    "h": 9
+    "w": 25,
+    "h": 11
    },
    "reach": [],
    "may_skip": false,
@@ -1282,31 +1316,32 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
-   "what": "A long 1-wide corridor: an archer with four rats behind it.",
-   "try": "Enter from the far end.",
-   "look": "Bug 4: the archer and rats should walk past each other. Say if the swap reads badly."
+   "what": "Pillars with 1-wide gaps (Minotaur cannot use them) and open bands (2+).",
+   "try": "Run the Minotaur through the pillars, changing side often.",
+   "look": "The Minotaur standing in a wall or clipping a corner. (Screenshot it and note the tile from F4.)"
   },
   {
-   "name": "manual_smash_or_walk",
+   "name": "terrain_lava",
    "door": {
-    "x": 242,
+    "x": 243,
     "y": 33
    },
    "entry": {
-    "x": 242,
+    "x": 243,
     "y": 35
    },
    "rect": {
-    "x": 224,
+    "x": 231,
     "y": 33,
-    "w": 22,
-    "h": 11
+    "w": 17,
+    "h": 8
    },
    "reach": [],
    "may_skip": false,
    "zone_changes_max": -1,
-   "wade_max": -1,
+   "wade_max": 0,
    "index": 30,
    "noise_at": null,
    "alone": false,
@@ -1316,23 +1351,27 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
-   "player_at": null,
-   "what": "A thick wall with a long way round along the bottom.",
-   "try": "Stand on the far side of the wall, then walk around it once.",
-   "look": "Decide what it should do: walk round, smash, or both. Right now it walks to the wall, loses its target and never smashes."
+   "notices": [],
+   "player_at": {
+    "x": 245,
+    "y": 35
+   },
+   "what": "A lava band with a stone way round.",
+   "try": "Stand across the band.",
+   "look": "Walkers must route round; flyers may cross. Anything walking through lava."
   },
   {
-   "name": "terrain_water",
+   "name": "terrain_acid",
    "door": {
-    "x": 258,
+    "x": 260,
     "y": 33
    },
    "entry": {
-    "x": 258,
+    "x": 260,
     "y": 35
    },
    "rect": {
-    "x": 246,
+    "x": 248,
     "y": 33,
     "w": 17,
     "h": 8
@@ -1350,29 +1389,30 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": {
-    "x": 260,
+    "x": 262,
     "y": 35
    },
-   "what": "A water band with a stone way round.",
+   "what": "An acid band with a stone way round.",
    "try": "Stand across the band.",
-   "look": "Walkers must route round; flyers may cross. Anything wading through."
+   "look": "Walkers should take the stone way round, not wade through the acid (a flyer may cross). Acid will become a damaging tile later."
   },
   {
-   "name": "doors_widths",
+   "name": "swarm_rats",
    "door": {
-    "x": 270,
+    "x": 275,
     "y": 33
    },
    "entry": {
-    "x": 270,
+    "x": 275,
     "y": 35
    },
    "rect": {
-    "x": 263,
+    "x": 265,
     "y": 33,
-    "w": 17,
-    "h": 9
+    "w": 23,
+    "h": 15
    },
    "reach": [],
    "may_skip": false,
@@ -1387,23 +1427,24 @@
    "attacks": [],
    "hear": [],
    "no_hear": [],
+   "notices": [],
    "player_at": null,
-   "what": "Minotaur, archer, rat and wraith behind 1, 2 and 3 wide wooden doors.",
-   "try": "Open each door and step back.",
-   "look": "The Minotaur cannot use the 1-wide door; everyone else should get out of theirs."
+   "what": "About 60 rats in one room.",
+   "try": "Open the door and fight or run.",
+   "look": "Frame rate (F4 shows it) dropping badly, or rats stuck in a pile."
   },
   {
-   "name": "hearing_rock_behind_wall",
+   "name": "hearing_range",
    "door": {
-    "x": 292,
+    "x": 295,
     "y": 33
    },
    "entry": {
-    "x": 292,
+    "x": 295,
     "y": 35
    },
    "rect": {
-    "x": 280,
+    "x": 288,
     "y": 33,
     "w": 17,
     "h": 15
@@ -1414,51 +1455,8 @@
    "wade_max": -1,
    "index": 36,
    "noise_at": {
-    "x": 293,
+    "x": 296,
     "y": 35,
-    "loudness": 3.0
-   },
-   "alone": false,
-   "together": [],
-   "moves": {},
-   "poke": "",
-   "attacks": [],
-   "hear": [
-    "rat_blind"
-   ],
-   "no_hear": [],
-   "player_at": {
-    "x": 295,
-    "y": 46
-   },
-   "what": "A blind rat (hears 8 tiles, sees nothing) on one side of a wall with a gap; you are on the other side.",
-   "try": "Do NOT press Enter (that tells them where you are). Press N: a rock lands at the far side. Or throw one yourself: key 5, click the far side.",
-   "look": "The rat should go to the spot the sound came from (through the gap), not to you. \"-> going to\" in the readout shows where. It must not attack you."
-  },
-  {
-   "name": "hearing_muffled_wall",
-   "door": {
-    "x": 309,
-    "y": 33
-   },
-   "entry": {
-    "x": 309,
-    "y": 35
-   },
-   "rect": {
-    "x": 297,
-    "y": 33,
-    "w": 17,
-    "h": 15
-   },
-   "reach": [],
-   "may_skip": false,
-   "zone_changes_max": -1,
-   "wade_max": -1,
-   "index": 38,
-   "noise_at": {
-    "x": 305,
-    "y": 34,
     "loudness": 1.0
    },
    "alone": false,
@@ -1472,26 +1470,27 @@
    "no_hear": [
     "rat"
    ],
+   "notices": [],
    "player_at": {
-    "x": 312,
+    "x": 296,
     "y": 46
    },
-   "what": "A plain rat (hears 3) and a blind rat (hears 8) behind a solid wall; the noise spot is just across it.",
-   "try": "Do NOT press Enter. Tick show-sound, then press N: one footstep across the wall.",
-   "look": "The tint should stop short at the wall for the plain rat: it must not react (2 tiles away, but 1 + 3 through the wall is more than 3). The blind rat should come to the wall."
+   "what": "A blind rat (hears 15) and a plain rat (hears 3), 7 tiles either side of a spot near the top.",
+   "try": "Do NOT press Enter. Press N: one footstep at the spot. Then walk about yourself: every step you take is a footstep.",
+   "look": "Only the blind rat should come to look at the spot. The plain rat should ignore it."
   },
   {
-   "name": "pack_attack",
+   "name": "pack_investigate",
    "door": {
-    "x": 321,
+    "x": 312,
     "y": 33
    },
    "entry": {
-    "x": 321,
+    "x": 312,
     "y": 35
    },
    "rect": {
-    "x": 314,
+    "x": 305,
     "y": 33,
     "w": 17,
     "h": 15
@@ -1500,42 +1499,90 @@
    "may_skip": false,
    "zone_changes_max": -1,
    "wade_max": -1,
-   "index": 40,
-   "noise_at": null,
+   "index": 38,
+   "noise_at": {
+    "x": 309,
+    "y": 35,
+    "loudness": 1.0
+   },
    "alone": false,
    "together": [],
    "moves": {},
-   "poke": "wolf",
-   "attacks": [
+   "poke": "",
+   "attacks": [],
+   "hear": [
     "wolf"
    ],
-   "hear": [],
    "no_hear": [
     "rat"
    ],
+   "notices": [],
    "player_at": {
-    "x": 322,
+    "x": 313,
     "y": 46
    },
-   "what": "The same wolves and rat. The top-left wolf is shot from the dark (the sim pokes it).",
-   "try": "Do NOT press Enter. Wake one wolf yourself: open the door, press the backslash key to step inside, walk toward the top-left wolf until it attacks you.",
-   "look": "When one wolf goes to Attack, every wolf attacks you. The rat should not care."
+   "what": "Three wolves (a pack) and a rat (not in it). Only the top-left wolf is close enough to hear a footstep.",
+   "try": "Do NOT press Enter. Press N: one footstep beside the top-left wolf.",
+   "look": "All three wolves should walk to the footstep (the readout says \"-> going to\"). The rat must ignore it."
   },
   {
-   "name": "patrol_wanders",
+   "name": "patrol_herd",
    "door": {
-    "x": 338,
+    "x": 329,
     "y": 33
    },
    "entry": {
-    "x": 338,
+    "x": 329,
     "y": 35
    },
    "rect": {
-    "x": 331,
+    "x": 322,
     "y": 33,
     "w": 17,
     "h": 28
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "wade_max": -1,
+   "index": 40,
+   "noise_at": null,
+   "alone": true,
+   "together": [
+    "wolf",
+    10
+   ],
+   "moves": {
+    "wolf": 3
+   },
+   "poke": "",
+   "attacks": [],
+   "hear": [],
+   "no_hear": [],
+   "notices": [],
+   "player_at": {
+    "x": 330,
+    "y": 59
+   },
+   "what": "Three wolves (a pack) spread along the top of a room; you stand at the far end.",
+   "try": "Do NOT press Enter. Watch for about 30 seconds.",
+   "look": "The wolves should wander as a group, staying close to each other, not each in a different direction."
+  },
+  {
+   "name": "light_blind_ignores",
+   "door": {
+    "x": 351,
+    "y": 33
+   },
+   "entry": {
+    "x": 351,
+    "y": 35
+   },
+   "rect": {
+    "x": 339,
+    "y": 33,
+    "w": 17,
+    "h": 15
    },
    "reach": [],
    "may_skip": false,
@@ -1545,20 +1592,23 @@
    "noise_at": null,
    "alone": true,
    "together": [],
-   "moves": {
-    "rat": 3
-   },
+   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
-   "no_hear": [],
+   "no_hear": [
+    "rat_blind"
+   ],
+   "notices": [
+    "rat"
+   ],
    "player_at": {
-    "x": 339,
-    "y": 59
+    "x": 347,
+    "y": 41
    },
-   "what": "One rat alone in a room; you stand at the far end, outside its sight and your light.",
-   "try": "Do NOT press Enter. Just watch it for about 20 seconds.",
-   "look": "It should walk to a few random spots (staying in the room), pausing between. Leave the room by the door: it should stop moving when no player is in or next to its room."
+   "what": "A blind rat 4 tiles from where you stand, and a plain rat 7 tiles away (past its sight, inside your light).",
+   "try": "Do NOT press Enter. Open the door, press backslash to step inside, and stand still.",
+   "look": "The plain rat should come to look (your light reached it). The blind rat must not move: it cannot see your light."
   }
  ]
 }

@@ -11,16 +11,20 @@
 	"speed_tiles_per_second": 6.5,
 	"actions": [{"action": "bite", "amount": 3}],
 	"senses": {
-		"_comment": "TODO senses: SenseSmell is a stub that never detects yet (scent-trail tracking not built). Until then this minion only finds players via Sight and Touch. Flags here only toggle 'enabled' on the sense nodes.",
-		"smell": true
+		"_comment": "Demon tracker: smell 30 is its standout (scent trails, not built yet), ears 12, eyes 9.",
+		"touch": {"range_tiles": 1.0},
+		"sight": {"range_tiles": 9.0},
+		"hearing": {"range_tiles": 12.0},
+		"smell": {"range_tiles": 30.0},
+		"taste": {"range_tiles": 4.0}
 	},
 	"sprite_frames": {
 		"frame_size": [16, 16],
 		"animations": {
-			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf.hellhound/Wolf-Down.png", "frame_count": 3, "speed": 20.0 },
-			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf.hellhound/Wolf-Up.png", "frame_count": 3, "speed": 20.0 },
-			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf.hellhound/Wolf-Left.png", "frame_count": 3, "speed": 20.0 },
-			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf.hellhound/Wolf-Right.png", "frame_count": 3, "speed": 20.0 }
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf.hellhound/Wolf-Down.png", "frame_count": 3, "speed": 10.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf.hellhound/Wolf-Up.png", "frame_count": 3, "speed": 10.0 },
+			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf.hellhound/Wolf-Left.png", "frame_count": 3, "speed": 10.0 },
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf.hellhound/Wolf-Right.png", "frame_count": 3, "speed": 10.0 }
 		}
 	}
 }

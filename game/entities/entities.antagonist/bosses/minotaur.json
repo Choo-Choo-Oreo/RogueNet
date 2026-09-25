@@ -10,6 +10,14 @@
 	"resistances": {},
 	"speed_tiles_per_second": 3.0,
 	"actions": ["bludgeon", "wall_smash"],
+	"senses": {
+		"_comment": "Bull of the maze: nose first (15), ears 10, poor eyes 6.",
+		"touch": {"range_tiles": 1.0},
+		"sight": {"range_tiles": 6.0},
+		"hearing": {"range_tiles": 10.0},
+		"smell": {"range_tiles": 15.0},
+		"taste": {"range_tiles": 4.0}
+	},
 	"sprite_frames": {
 		"frame_size": [32, 32],
 		"animations": {

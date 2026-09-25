@@ -16,7 +16,7 @@ static func build(data: Dictionary) -> SpriteFrames:
 		var frame_count: int = anim.get("frame_count", 1)
 		frames.add_animation(anim_name)
 		frames.set_animation_loop(anim_name, anim.get("loop", true))
-		frames.set_animation_speed(anim_name, anim.get("speed", 20.0))
+		frames.set_animation_speed(anim_name, anim.get("speed", 10.0))
 		for i in range(frame_count):
 			var region := Rect2(i * frame_size.x, 0, frame_size.x, frame_size.y)
 			var atlas := AtlasTexture.new()

@@ -30,10 +30,10 @@ The filename (minus `.json`) is the minion's id, used everywhere else
 	"sprite_frames": {
 		"frame_size": [16, 16],
 		"animations": {
-			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/rat/rat/Rat-Down.png", "frame_count": 2, "speed": 20.0 },
-			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/rat/rat/Rat-Up.png", "frame_count": 2, "speed": 20.0 },
-			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/rat/rat/Rat-Left.png", "frame_count": 2, "speed": 20.0 },
-			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/rat/rat/Rat-Right.png", "frame_count": 2, "speed": 20.0 }
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/rat/rat/Rat-Down.png", "frame_count": 2, "speed": 10.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/rat/rat/Rat-Up.png", "frame_count": 2, "speed": 10.0 },
+			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/rat/rat/Rat-Left.png", "frame_count": 2, "speed": 10.0 },
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/rat/rat/Rat-Right.png", "frame_count": 2, "speed": 10.0 }
 		}
 	}
 }

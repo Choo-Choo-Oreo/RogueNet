@@ -1,10 +1,11 @@
 class_name SenseTaste
 extends Node
 
-## Not developed yet -- range 0, no design given. Always passes (never
-## detects).
+## Not developed yet -- no design given. Always passes (never detects).
 
 @export var enabled: bool = true
+## Fallback only (below average): every creature JSON defines its own. Not used until taste is built.
+@export var range_tiles: float = 3.0
 
 func detects(_origin: Vector2, _target: Node2D) -> bool:
 	return false

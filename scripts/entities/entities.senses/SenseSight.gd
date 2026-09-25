@@ -7,7 +7,8 @@ extends Node
 ## line) is handled separately in MinionSenses, against the actual LightMap
 ## instead of an approximated radius here.
 @export var enabled: bool = true
-@export var range_tiles: float = 6.0
+## Fallback only (below average): every creature JSON defines its own.
+@export var range_tiles: float = 3.0
 @export var tile_size: float = 16.0
 
 func detects(origin: Vector2, target: Node2D, is_blocked: Callable) -> bool:

@@ -120,10 +120,13 @@ func _process_inner() -> void:
 ## True if any of this tile's four half-tile (CELL) cells are part of the
 ## local player's currently-flooded vision. Used by minion spawning to decide
 ## whether a spawn cell is still in view (skip it) or safe to roll into.
+## Only cells the light actually shows count (not the dark fringe past its edge, see _level).
 func is_tile_lit(tile: Vector2i) -> bool:
+	var gap := _gap(_local)
 	for dy in 2:
 		for dx in 2:
-			if _local.reached.has(tile * 2 + Vector2i(dx, dy)):
+			var cell := tile * 2 + Vector2i(dx, dy)
+			if _local.cost.has(cell) and _level(_fraction(_local, cell, gap)) != Level.DARK:
 				return true
 	return false
 
@@ -202,19 +205,49 @@ func _scan_glow_sources(tiles: Rect2i) -> void:
 
 func _paint(light: Light) -> void:
 	var image := light.image
-	var light_pos := light.light_pos
 	image.fill(Color(1, 0, 0, 1))
-	var gap := ((Vector2(light.last_origin) + Vector2(0.5, 0.5)) * CELL - light_pos).length()
+	var gap := _gap(light)
 	for cell in light.reached:
 		var pixel := cell - light.top_left
 		if pixel.x < 0 or pixel.y < 0 or pixel.x >= image.get_width() or pixel.y >= image.get_height():
 			continue
-		var centre := (Vector2(cell) + Vector2(0.5, 0.5)) * CELL
-		var straight := (centre - light_pos).length()
-		var walked: float = light.cost[cell] * CELL / (STRAIGHT * 1.0824) - gap
-		var fraction := maxf(straight, walked) / light_radius
-		image.set_pixelv(pixel, Color(minf(fraction, 1.0), 0, 0, 1))
+		image.set_pixelv(pixel, Color(_fraction(light, cell, gap), 0, 0, 1))
 	light.texture.update(image)
+
+## How far out a lit cell is: 0 at the light, 1 at the edge of light_radius (farther of the
+## straight line and the way round walls). What the darkness is shaded by, and what levels use.
+func _fraction(light: Light, cell: Vector2i, gap: float) -> float:
+	var centre := (Vector2(cell) + Vector2(0.5, 0.5)) * CELL
+	var straight := (centre - light.light_pos).length()
+	var walked: float = light.cost[cell] * CELL / (STRAIGHT * 1.0824) - gap
+	return minf(maxf(straight, walked) / light_radius, 1.0)
+
+func _gap(light: Light) -> float:
+	return ((Vector2(light.last_origin) + Vector2(0.5, 0.5)) * CELL - light.light_pos).length()
+
+## Light levels, for seeing by: BRIGHT out to BRIGHT_FRACTION of light_radius, DIM from there
+## to the edge, DARK where the light does not reach.
+enum Level { DARK, DIM, BRIGHT }
+const BRIGHT_FRACTION := 0.5
+
+## Every cell (CELL-sized) the local player's light reaches, with its Level.
+func local_levels() -> Dictionary:
+	var levels := {}
+	if _local == null:
+		return levels
+	var gap := _gap(_local)
+	for cell in _local.reached:
+		var level := _level(_fraction(_local, cell, gap))
+		if level != Level.DARK:
+			levels[cell] = level
+	return levels
+
+## The flood runs a little past light_radius (PATH_SLACK, and one cell of rounding); those cells
+## are painted fully dark (fraction 1), so they are DARK here too.
+static func _level(fraction: float) -> Level:
+	if fraction >= 1.0:
+		return Level.DARK
+	return Level.BRIGHT if fraction <= BRIGHT_FRACTION else Level.DIM
 
 func _paint_glow() -> void:
 	_glow_image.fill(Color(0, 0, 0, 1))

@@ -6,6 +6,8 @@ extends Node
 ## memory). Always passes (never detects) until that's built.
 
 @export var enabled: bool = true
+## Fallback only (below average): every creature JSON defines its own. Not used until smell is built.
+@export var range_tiles: float = 3.0
 
 func detects(_origin: Vector2, _target: Node2D) -> bool:
 	return false

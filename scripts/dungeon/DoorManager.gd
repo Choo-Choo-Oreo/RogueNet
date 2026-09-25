@@ -33,12 +33,16 @@ const OVERLAY_Z := 1800
 const LAYER_INTERVAL := 0.05
 const CLOSE_DELAY := 2.0
 const CHECK_INTERVAL := 0.25
+## Animation cap (docs/ART_TODO.md: 10 fps): a leaf shows a new frame at most every
+## 0.1 s. Only the picture steps; the open timing (open_seconds) is unchanged.
+const ANIM_STEP := 0.1
 
 var _art := {}       # "type:width:tier:wall" -> {"layers": [{"texture": CanvasTexture, "animated": bool, "overlay": bool}], "pieces": Dictionary, "frames": int, "frame_size": Vector2i, "own_cell_row": int}
 var _visuals: Array = []  # [{"door": Door, "sprites": Array, "frame": float, "shown": int}]
 var _empty_for := {}  # door id -> seconds nobody has been near it
 var _check_left := 0.0
 var _layer_left := 0.0
+var _anim_left := 0.0
 
 func build() -> void:
 	for door: DoorRegistry.Door in DoorRegistry.doors:
@@ -152,6 +156,10 @@ func _process(delta: float) -> void:
 	if _layer_left <= 0.0:
 		_layer_left = LAYER_INTERVAL
 		_update_layering()
+	_anim_left -= delta
+	var anim_tick := _anim_left <= 0.0
+	if anim_tick:
+		_anim_left = ANIM_STEP
 	for visual in _visuals:
 		var door: DoorRegistry.Door = visual["door"]
 		var last: float = _art[_art_key(door)]["frames"] - 1
@@ -159,7 +167,7 @@ func _process(delta: float) -> void:
 		if visual["frame"] != target:
 			visual["frame"] = move_toward(visual["frame"], target, delta * last / maxf(door.open_seconds, 0.01))
 		var frame := roundi(visual["frame"])
-		if frame != visual["shown"]:
+		if frame != visual["shown"] and (anim_tick or visual["frame"] == target):
 			_show_frame(visual, frame)
 	if _is_authority():
 		_check_left -= delta

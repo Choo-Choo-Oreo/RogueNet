@@ -9,16 +9,20 @@
 	"resistances": {},
 	"actions": [{"action": "bite", "interval": 1.2}],
 	"senses": {
+		"_comment": "Blind: hearing is its best sense (15); a rat's nose (10) backs it up. Ignores light.",
+		"touch": {"range_tiles": 1.0},
 		"sight": false,
-		"hearing": {"range_tiles": 8.0}
+		"hearing": {"range_tiles": 15.0},
+		"smell": {"range_tiles": 10.0},
+		"taste": {"range_tiles": 3.0}
 	},
 	"sprite_frames": {
 		"frame_size": [16, 16],
 		"animations": {
-			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/rat/rat.blind/Rat-Down.png", "frame_count": 2, "speed": 20.0 },
-			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/rat/rat.blind/Rat-Up.png", "frame_count": 2, "speed": 20.0 },
-			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/rat/rat.blind/Rat-Left.png", "frame_count": 2, "speed": 20.0 },
-			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/rat/rat.blind/Rat-Right.png", "frame_count": 2, "speed": 20.0 }
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/rat/rat.blind/Rat-Down.png", "frame_count": 2, "speed": 10.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/rat/rat.blind/Rat-Up.png", "frame_count": 2, "speed": 10.0 },
+			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/rat/rat.blind/Rat-Left.png", "frame_count": 2, "speed": 10.0 },
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/rat/rat.blind/Rat-Right.png", "frame_count": 2, "speed": 10.0 }
 		}
 	}
 }

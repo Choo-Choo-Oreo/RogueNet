@@ -11,15 +11,20 @@
 	"speed_tiles_per_second": 4.0,
 	"actions": ["perditio_touch"],
 	"senses": {
-		"_comment": "TODO senses: intended to see through walls in a short radius. No sense supports that yet, so it uses default Sight and Touch for now."
+		"_comment": "Ghost: sight 12, hearing 5, no nose or tongue. TODO: meant to see through walls in a short radius; no sense supports that yet.",
+		"touch": {"range_tiles": 1.0},
+		"sight": {"range_tiles": 12.0},
+		"hearing": {"range_tiles": 5.0},
+		"smell": false,
+		"taste": false
 	},
 	"sprite_frames": {
 		"frame_size": [16, 16],
 		"animations": {
-			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wraith/wraith/Wraith-Down.png", "frame_count": 3, "speed": 20.0 },
-			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wraith/wraith/Wraith-Up.png", "frame_count": 3, "speed": 20.0 },
-			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wraith/wraith/Wraith-Left.png", "frame_count": 3, "speed": 20.0 },
-			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wraith/wraith/Wraith-Right.png", "frame_count": 3, "speed": 20.0 }
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wraith/wraith/Wraith-Down.png", "frame_count": 3, "speed": 10.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wraith/wraith/Wraith-Up.png", "frame_count": 3, "speed": 10.0 },
+			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wraith/wraith/Wraith-Left.png", "frame_count": 3, "speed": 10.0 },
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wraith/wraith/Wraith-Right.png", "frame_count": 3, "speed": 10.0 }
 		}
 	}
 }

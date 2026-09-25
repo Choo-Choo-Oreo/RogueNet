@@ -299,7 +299,7 @@ Frames are 16x16, in strips. What exists:
 ## 4. Minions and bosses
 
 Updated 2026-09-24: 14 minion files in `game/entities/entities.antagonist/minions/` across 7 species, all
-with four directions (Down, Up, Left, Right) and a walk cycle only: rat (plus blind and toothless), bat (plus echo),
+with four directions (Down, Up, Left, Right) and a walk cycle only: rat (plus blind), bat (plus echo),
 hamster (plus demonic and flying), leech (plus flesh), wolf (plus hellhound), skeleton archer and wraith.
 The rest of the roster isn't designed, so anything not listed is **(decide first)**. Orea does not draw
 monsters, so this section is Silvery Foxy's or a teammate's. These are the obvious candidates per biome:

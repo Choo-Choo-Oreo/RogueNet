@@ -49,7 +49,7 @@ Acts on instinct: no tools, no magic, not dead, not infernal.
 | Tag | Meaning | Minions |
 |---|---|---|
 | `beast` (plain) | An animal that has no secondary category yet. | bat, bat_echo, leech, leech_flesh, dragon, spider, minotaur |
-| `beast.rodent` | Rats and hamsters. | rat, rat_blind, rat_toothless, hamster, hamster_flying, hamster_demonic |
+| `beast.rodent` | Rats and hamsters. | rat, rat_blind, hamster, hamster_flying, hamster_demonic |
 | `beast.canine` | Wolves and dogs. | wolf, wolf_hellhound |
 
 ### `undead`: dead things that still move
@@ -90,7 +90,6 @@ Add it *on top of* the creature's own tag. It has no secondary category yet.
 | ogre | giant |
 | rat | beast.rodent |
 | rat_blind | beast.rodent |
-| rat_toothless | beast.rodent |
 | skeleton_archer | undead.skeleton |
 | spider | beast |
 | wolf | beast.canine |

@@ -1,0 +1,6 @@
+{
+	"name": "Sword",
+	"slot": "main_hand",
+	"art": "res://resources/gfx/fallbacks/FallbackSword",
+	"icon": "res://resources/gfx/fallbacks/fallback_sword.png"
+}

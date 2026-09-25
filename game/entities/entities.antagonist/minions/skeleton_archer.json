@@ -10,13 +10,21 @@
 	"resistances": {},
 	"speed_tiles_per_second": 4.0,
 	"actions": ["arrow_shot"],
+	"senses": {
+		"_comment": "Archer: sight 15 is its best sense (shoots across a room). A skeleton has no nose or tongue; ears 6.",
+		"touch": {"range_tiles": 1.0},
+		"sight": {"range_tiles": 15.0},
+		"hearing": {"range_tiles": 6.0},
+		"smell": false,
+		"taste": false
+	},
 	"sprite_frames": {
 		"frame_size": [16, 16],
 		"animations": {
-			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/skeleton/skeleton.archer/SkeletonArcher-Down.png", "frame_count": 4, "speed": 20.0 },
-			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/skeleton/skeleton.archer/SkeletonArcher-Up.png", "frame_count": 4, "speed": 20.0 },
-			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/skeleton/skeleton.archer/SkeletonArcher-Left.png", "frame_count": 4, "speed": 20.0 },
-			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/skeleton/skeleton.archer/SkeletonArcher-Right.png", "frame_count": 4, "speed": 20.0 }
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/skeleton/skeleton.archer/SkeletonArcher-Down.png", "frame_count": 4, "speed": 10.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/skeleton/skeleton.archer/SkeletonArcher-Up.png", "frame_count": 4, "speed": 10.0 },
+			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/skeleton/skeleton.archer/SkeletonArcher-Left.png", "frame_count": 4, "speed": 10.0 },
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/skeleton/skeleton.archer/SkeletonArcher-Right.png", "frame_count": 4, "speed": 10.0 }
 		}
 	}
 }

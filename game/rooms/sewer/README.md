@@ -116,7 +116,7 @@ The 111 rooms have 512 spawn cells between them.
   - `maze` 0.6
   - `killzone` 0.5
   - `peaceful` 0.7
-- `monsters`: rat 3, blind rat 2, toothless rat 2, leech 1. Every minion but the
+- `monsters`: rat 3, blind rat 2, leech 1. Every minion but the
   leech is a `beast.rodent`.
 - `music`: Groovy.
 

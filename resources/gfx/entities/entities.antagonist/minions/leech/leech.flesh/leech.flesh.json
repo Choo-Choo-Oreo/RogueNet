@@ -2,10 +2,10 @@
 	"sprite_frames": {
 		"frame_size": [16, 16],
 		"animations": {
-			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/leech/leech.flesh/Leech-Down.png", "frame_count": 3, "speed": 20.0 },
-			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/leech/leech.flesh/Leech-Up.png", "frame_count": 3, "speed": 20.0 },
-			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/leech/leech.flesh/Leech-Left.png", "frame_count": 3, "speed": 20.0 },
-			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/leech/leech.flesh/Leech-Right.png", "frame_count": 3, "speed": 20.0 }
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/leech/leech.flesh/Leech-Down.png", "frame_count": 3, "speed": 10.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/leech/leech.flesh/Leech-Up.png", "frame_count": 3, "speed": 10.0 },
+			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/leech/leech.flesh/Leech-Left.png", "frame_count": 3, "speed": 10.0 },
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/leech/leech.flesh/Leech-Right.png", "frame_count": 3, "speed": 10.0 }
 		}
 	}
 }

@@ -8,6 +8,7 @@ extends Node
 ## many open tiles away it hears a footstep (loudness 1.0); a thrown rock (3.0) carries three
 ## times as far. A blind rat has a big range.
 ## What a hit does is MinionSenses.hear(): the creature goes to look at where the noise was.
+## Fallback only (below average): every creature JSON defines its own.
 const DEFAULT_RANGE_TILES := 3.0
 @export var enabled: bool = true
 @export var range_tiles: float = DEFAULT_RANGE_TILES

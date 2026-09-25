@@ -10,13 +10,21 @@
 	"resistances": {},
 	"speed_tiles_per_second": 6.0,
 	"actions": [{"action": "bite", "amount": 3}],
+	"senses": {
+		"_comment": "Canine (README dog example: smell 25, hearing 15). Smell 25 is its standout. Hearing is held at 4.5 and sight at 8 by the pack_investigate cell (only the top-left wolf may hear the footstep, cost 1.41 vs 4.82; the middle wolf is 9 tiles from the player). Smell is not built yet.",
+		"touch": {"range_tiles": 1.0},
+		"sight": {"range_tiles": 8.0},
+		"hearing": {"range_tiles": 4.5},
+		"smell": {"range_tiles": 25.0},
+		"taste": {"range_tiles": 3.0}
+	},
 	"sprite_frames": {
 		"frame_size": [16, 16],
 		"animations": {
-			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf/Wolf-Down.png", "frame_count": 3, "speed": 20.0 },
-			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf/Wolf-Up.png", "frame_count": 3, "speed": 20.0 },
-			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf/Wolf-Left.png", "frame_count": 3, "speed": 20.0 },
-			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf/Wolf-Right.png", "frame_count": 3, "speed": 20.0 }
+			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf/Wolf-Down.png", "frame_count": 3, "speed": 10.0 },
+			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf/Wolf-Up.png", "frame_count": 3, "speed": 10.0 },
+			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf/Wolf-Left.png", "frame_count": 3, "speed": 10.0 },
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf/Wolf-Right.png", "frame_count": 3, "speed": 10.0 }
 		}
 	}
 }

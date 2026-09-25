@@ -7,7 +7,7 @@ extends SceneTree
 ##
 ##   godot --headless -s res://test/sim/debug_senses.gd
 
-const OPTIONS := ["show-sight", "show-sound", "show-touch", "show-smell", "show-taste", "show-minion-inspector"]
+const OPTIONS := ["show-sight", "show-sound", "show-touch", "show-smell", "show-taste", "show-minion-inspector", "show-vision", "show-flow-field"]
 const RUN_FRAMES := 300
 
 var _frames := 0
