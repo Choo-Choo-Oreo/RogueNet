@@ -1,0 +1,7 @@
+{
+	"name": "Infernal gauntlets",
+	"slot": "gloves",
+	"set": "infernal",
+	"art": "res://resources/gfx/gear/gloves/infernal/InfernalGauntlets",
+	"icon": "res://resources/gfx/ui/icons/items/infernal_gauntlets.png"
+}

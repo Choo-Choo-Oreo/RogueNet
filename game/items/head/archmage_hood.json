@@ -1,0 +1,7 @@
+{
+	"name": "Archmage's hood",
+	"slot": "head",
+	"set": "archmage",
+	"art": "res://resources/gfx/gear/helmets/archmage/ArchmageHood",
+	"icon": "res://resources/gfx/ui/icons/items/archmage_hood.png"
+}

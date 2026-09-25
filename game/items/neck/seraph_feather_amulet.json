@@ -1,0 +1,7 @@
+{
+	"name": "Seraph feather",
+	"slot": "neck",
+	"set": "seraph",
+	"art": "res://resources/gfx/gear/amulets/seraph/SeraphFeatherAmulet",
+	"icon": "res://resources/gfx/ui/icons/items/seraph_feather_amulet.png"
+}

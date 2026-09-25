@@ -1,0 +1,7 @@
+{
+	"name": "Seraph vestment",
+	"slot": "chest",
+	"set": "seraph",
+	"art": "res://resources/gfx/gear/chest/seraph/SeraphVestment",
+	"icon": "res://resources/gfx/ui/icons/items/seraph_vestment.png"
+}

@@ -1,0 +1,7 @@
+{
+	"name": "Archmage's slippers",
+	"slot": "feet",
+	"set": "archmage",
+	"art": "res://resources/gfx/gear/feet/archmage/ArchmageSlippers",
+	"icon": "res://resources/gfx/ui/icons/items/archmage_slippers.png"
+}

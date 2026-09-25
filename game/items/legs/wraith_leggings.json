@@ -1,0 +1,7 @@
+{
+	"name": "Wraith leggings",
+	"slot": "legs",
+	"set": "wraith",
+	"art": "res://resources/gfx/gear/legs/wraith/WraithLeggings",
+	"icon": "res://resources/gfx/ui/icons/items/wraith_leggings.png"
+}

@@ -1,0 +1,7 @@
+{
+	"name": "Seraph aegis",
+	"slot": "off_hand",
+	"set": "seraph",
+	"art": "res://resources/gfx/gear/off_hand/seraph/SeraphAegis",
+	"icon": "res://resources/gfx/ui/icons/items/seraph_aegis.png"
+}

@@ -1,0 +1,7 @@
+{
+	"name": "Infernal greaves",
+	"slot": "legs",
+	"set": "infernal",
+	"art": "res://resources/gfx/gear/legs/infernal/InfernalGreaves",
+	"icon": "res://resources/gfx/ui/icons/items/infernal_greaves.png"
+}

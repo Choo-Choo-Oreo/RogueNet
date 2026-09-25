@@ -1,0 +1,7 @@
+{
+	"name": "Bonebow",
+	"slot": "main_hand",
+	"set": "wraith",
+	"art": "res://resources/gfx/gear/main_hand/wraith/WraithBonebow",
+	"icon": "res://resources/gfx/ui/icons/items/wraith_bonebow.png"
+}
