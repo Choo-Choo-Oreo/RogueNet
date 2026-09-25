@@ -274,7 +274,7 @@ and take readings with F5 (`show-minion-state`) off, since item 7 alone draws 52
 - [✗] 11. High in multiplayer. Every moving minion sends one RPC per frame per peer (`MinionController` 318 -> `NetworkSync` 481-492), and parked minions send once a second. Batch them into one packed message at 10-20 Hz; send tile and state on change
 - [✗] 12. Medium. `LightMap` refills its 81x81 image and re-uploads the texture every frame per moving lit player (up to 4). Paint only when the cell changes
 - [✓] 13. Low-medium. `LightMap` clears `_blocked_cache` on every flood; only needed on a door change or broken tile — done 2026-09-25: cleared on `DoorRegistry.version` change and `bake_glow` only (`blocks_light`, shared with `PlayerVision`)
-- [✗] 14. Medium. `Sound.flood` allocates a new array per heap push and pop, and calls `hearing_budget` on every minion per footstep. Packed heap; distance filter first
+- [✗] 14. Medium. `SoundSpread.flood` (was `Sound.flood`, now on quads: 4x the cells) allocates a new array per heap push and pop, and `Sound.make` asks every minion for `hearing_threshold` per footstep. Packed heap; distance filter first
 - [✗] 15. Medium, memory. `FlowField` keeps one field per noise marker until a door changes or a new dungeon loads. Drop fields whose target is gone
 - [✗] 16. Medium, load time. Each spawned minion runs `find_child("LightMap")` over a scene that already holds every rat (`MinionController` line 223). Pass it in from the spawner
 - [✗] 17. Medium, load time. Per spawned minion: `SpriteFramesLoader.build` (new SpriteFrames and 8 AtlasTextures) and a new collision shape. Cache per minion type and size. (Its TileTypeRegistry JSON parse per minion is gone: `TileSolid` looks the void id up once.)
@@ -330,10 +330,21 @@ Duplication:
 - [✗] Client bug (2026-09-25 playtest): the client sees his own light without a torch equipped. Not found by reading the code. Check: is the starter fallback torch worn (equipment panel), a big circle or only the 8 touch tiles, does it stay away from the host
 - [✗] Client bug (2026-09-25 playtest): the client can't see his own walk animation; others' animate for him. Not known if older than today. Check: one frozen frame or tile jumps, does his gear animate
 - [✗] Look in game: touch dimness (`light_smooth.gdshader` `touch_fraction` 0.6, a look, not a rule), lava seen far off, sight edge at 16 tiles
-- [✗] Hearing 8 for adventurers is in `adventurer.json` but nothing reads it yet (sound parked)
+- [✗] Adventurer hearing (`threshold_db` 22 in `adventurer.json`) is not read yet: step 3 of the sound plan below
 - [✓] `cells` no longer reaches into players for light and vision: `PlayerController` registers a `Viewer` (`scripts/cells/Viewer.gd`: position, held light, sight, touch, ghost, is_local) that `LightMap` and `PlayerVision` read; their `player_root` export is gone
 - [✓] New adventurers start wearing `starter_kits.json` `worn` (fallback sword + fallback torch; kits moved under `bag`); the sword kit still puts a second fallback sword in the bag
 - [✓] Folder rule: `SurroundSectors.gd` moved to `scripts/entities/entities.antagonist/minions/ai/` (minion AI, finds players via `PlayerLookup`); the tile occupancy index and step reservations moved from `GridMover` to `scripts/cells/Occupancy.gd` (`Occupancy.occupants`, `Occupancy.reserved`; `DoorManager` uses it; a dying player's `GridMover.become_ghost()` stops them blocking)
+
+
+## Sound in dB (2026-09-25, Orea's plan)
+
+- [✓] Voice chat: ghosts and the living are two channels in a mission (ghosts hear only ghosts, from anywhere; the living hear the living from where the speaker stands, `SoundPlayer.HEARING_DISTANCE` for now); a ghost's voice makes no noise. Needs the two-player test
+- [✓] Silvery's `SoundPlayer` (`scripts/util/`) and `CombatSounds` (`scripts/actions/`) and all of `resources/sfx` pulled from `silvery/art-and-gear`, not wired yet (their callers stay on that branch)
+- [✓] 1. Sound spreads in dB over the 8px quads: `scripts/cells/SoundSpread.gd` (air 1 dB per tile, wall 35, closed door 20, bending round a wall or door 3 per 90 degrees). `Sound.make` keeps the minion side. Hearing is `threshold_db` (quietest level heard, lower is keener; `30 - old range_tiles`, wolf 27 for `pack_investigate`). Footstep 30 dB (`PlayerController.FOOTSTEP_DB`), rock 55 (`throw_rock.json` `loudness_db`), voice 30 to 70 (`VoiceChat.voice_db`). `hearing_muffled_wall` now uses a rock: no footstep gets through a wall. GUT `test_sound_flood.gd` rewritten
+- [✓] 2. Players hear: each machine floods a sound for its own adventurer (`Viewer.hearing`, adventurer.json `threshold_db` 22; `Sound.lost_to_local`, the flood stops once it reaches their ears); only what you hear plays, as much quieter as the dB lost (`Sound.play_heard`, SoundPlayer's `heard` option: no camera fade, no off-screen skip). No host broadcast needed: effects and voice already reach every peer, and footsteps/rocks have no sound file yet. Voice uses it (re-flooded per speaker every 0.25 s). Needs the two-player test
+- [✗] 3. Wire `CombatSounds` (attack, hurt, impact, death, voice) through step 2
+- [✗] `resources/sfx/combat/` and `sfx/ui/` (Silvery's) do not follow the STRUCTURE tree (`sfx/entities/...`, `sfx/effects/<family>`); proposal in the 2026-09-25 session, awaiting Orea
+- [✓] Voice chat as noise is in (dB from the mic level); walls muffle what players hear of each other's voices (step 2)
 
 ## Dead code and duplication audit, round 2 (2026-09-25: one agent, symbol index + structural diff)
 
@@ -362,7 +373,7 @@ Duplications (single home in brackets):
 - [✓] In-file: `DungeonMaker._cell_in_bounds` bypassed at 1750, 1777, 1803, 1859, 2389 and the undo block duplicated (1762-1772, 1878-1888); `DungeonAssembler` connector sort (514, 661) and Placement setup (487-501, 532-543) — done: `_cell_in_bounds` everywhere, `_push_tile_undo`, `DungeonAssembler._joined` / `_connector_before`
 - [✗] The five sense scripts share `enabled`, `range_tiles`, `DEBUG_COLOR`, `debug_draw` with no base class; Smell and Taste are identical stubs [a `Sense` base] — left: Orea is holding off on the senses (2026-09-25)
 
-Look alike, keep apart: `DungeonMaker._line_cells` vs `LineOfSight.blocked_at`; the two `_nearest_player`s (debug includes ghosts); player vs minion `take_damage`; `Sound.flood` / `LightFlood` / `FlowField` (different costs; only `_flood_glow` is a real copy).
+Look alike, keep apart: `DungeonMaker._line_cells` vs `LineOfSight.blocked_at`; the two `_nearest_player`s (debug includes ghosts); player vs minion `take_damage`; `SoundSpread.flood` / `LightFlood` / `FlowField` (different costs; only `_flood_glow` is a real copy).
 
 ## Multiplayer and structure
 

@@ -9,7 +9,7 @@
 	"senses": {
 		"touch": {"range_tiles": 1.0},
 		"sight": {"range_tiles": 16.0},
-		"hearing": {"range_tiles": 8.0},
+		"hearing": {"threshold_db": 22.0},
 		"smell": false,
 		"taste": false
 	}

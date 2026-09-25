@@ -27,6 +27,14 @@ func test_player_senses_come_from_adventurer_json() -> void:
 	player._senses = senses
 	for sense in senses:
 		var entry = senses[sense]
-		var want: float = entry["range_tiles"] if entry is Dictionary else 0.0
+		# Hearing is a dB threshold (threshold_db), not a range: no range_tiles, range 0.
+		var want: float = entry.get("range_tiles", 0.0) if entry is Dictionary else 0.0
 		assert_eq(player.sense_range(sense), want, sense)
 	assert_eq(player.sense_range("sixth"), 0.0, "an unknown sense is one it doesn't have")
+
+func test_player_hearing_is_a_threshold_from_adventurer_json() -> void:
+	var player: PlayerController = autofree(preload("res://scenes/entities/PlayerController.tscn").instantiate())
+	player._senses = JsonOnloading.load_dict(PlayerController.ADVENTURER_DATA_PATH)["senses"]
+	assert_eq(player.hearing_threshold(), float(player._senses["hearing"]["threshold_db"]))
+	player._senses = {"hearing": false}
+	assert_eq(player.hearing_threshold(), INF, "no hearing: deaf")

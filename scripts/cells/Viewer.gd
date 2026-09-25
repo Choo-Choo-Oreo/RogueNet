@@ -16,6 +16,8 @@ var light := {}
 ## Sense ranges in tiles, 0 for a sense it doesn't have.
 var sight := 0.0
 var touch := 0.0
+## The quietest sound it hears in dB (SenseHearing.threshold_db); INF when it is deaf.
+var hearing := INF
 var ghost := false
 ## This machine's own player.
 var is_local := false

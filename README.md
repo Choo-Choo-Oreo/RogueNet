@@ -50,15 +50,17 @@ Notes:
   ranged effects, `destroy_tiles` shape) are described in `game/actions/README.md`.
 - `senses` (optional) overrides which detection senses are enabled, e.g.
   `"senses": { "hearing": false }`, or sets a sense's numbers, e.g.
-  `"senses": { "hearing": { "range_tiles": 8.0 } }`. `touch`, `sight` and `hearing` are
-  implemented; `smell`/`taste` exist but always report no detection. Hearing is by event:
-  a noise (loudness 1 to 10: a player's footstep 1, a thrown rock landing 3) spreads tile by
-  tile and each tile spends some of it (its `muffle`: floor 1, wall 3, closed door 3). A
-  minion's budget is `range_tiles * loudness` (default range 3); it hears the noise when the
-  cheapest path from the noise to it costs no more than that, and it investigates the *spot*
-  of the noise, not the player. Debug toggle `show-sound` draws each noise's spread.
-  How long to make a sense's range: see "Sense ranges" in `game/entities/README.md`
-  (15 tiles is the high end, not a default or a hard cap).
+  `"senses": { "sight": { "range_tiles": 8.0 } }`. `touch`, `sight` and `hearing` are
+  implemented; `smell`/`taste` exist but always report no detection. Hearing is by event and
+  in decibels: a noise (a player's footstep 30 dB, a thrown rock landing 55, a voice 30 to 70)
+  spreads across the 8px quads and loses dB on the way: each tile's `muffle` (floor 1, wall
+  35, closed door 20 per tile) and 3 more for bending round a corner
+  (`scripts/cells/SoundSpread.gd`). Hearing is `{"threshold_db": n}`, the quietest level the
+  creature hears (default 27; lower is keener): it hears the noise when at least that much is
+  left where it stands, and it investigates the *spot* of the noise, not the player. Across
+  open floor a footstep carries `30 - threshold_db` tiles. Debug toggle `show-sound` draws
+  each noise's spread. How long to make a sense's range: see "Sense ranges" in
+  `game/entities/README.md` (15 tiles is the high end, not a default or a hard cap).
 - `pack` (optional) — a pack id (any name; the wolves use `"wolf"`). Minions of one pack in the
   same room (and within 16 tiles) share alarms:
   when one goes to Investigate the rest go to the same spot, when one goes to Attack they all
@@ -206,8 +208,8 @@ JSON. DungeonMaker keeps it when re-saving.)
 }
 ```
 
-- `muffle` (optional) — how much of a sound's budget crossing this tile spends. Leave it out
-  for the default: 3 for `"category": "wall"`, 1 for a floor. Set it only on a tile that
+- `muffle` (optional) — how many dB a sound loses crossing this tile. Leave it out
+  for the default: 35 for `"category": "wall"`, 1 for a floor. Set it only on a tile that
   differs (a thick bedrock wall, a carpet that deadens footsteps).
 - A new tile still needs a matching entry added to `game/tile_registry.json`
   to actually be usable from room JSON.

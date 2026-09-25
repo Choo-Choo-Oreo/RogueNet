@@ -14,7 +14,7 @@
 		"_comment": "Bull of the maze: nose first (15), ears 10, poor eyes 6.",
 		"touch": {"range_tiles": 1.0},
 		"sight": {"range_tiles": 6.0},
-		"hearing": {"range_tiles": 10.0},
+		"hearing": {"threshold_db": 20.0},
 		"smell": {"range_tiles": 15.0},
 		"taste": {"range_tiles": 4.0}
 	},

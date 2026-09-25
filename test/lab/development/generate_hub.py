@@ -270,6 +270,20 @@ cell('patrol_wanders', ['.......r.......'] + ['...............'] * 25, door_x=6)
 cell('light_blind_ignores', ['...............'] * 3 + ['.......R.......'] + ['...............'] * 3 + ['r..............'] + ['...............'] * 5, door_x=11)
 
 
+# ---- voice: fake teammates talking without a break, to walk up to and listen (Test Lab only) ----
+# The talker stands left of a wall with the open side below it: walk up in the open, stand behind
+# the wall (35 dB off), or come round its end (a corner).
+_voice = ['...............'] + ['.......#.......'] * 6 + ['...............'] * 6
+for _n in ('voice_whisper', 'voice_talk', 'voice_yell'):
+    cell(_n, _voice, door_x=11)
+# Records you whispering, talking and yelling, to compare what the game makes of it.
+cell('voice_mic_check', ['.........'] * 5)
+# Where each fake talker stands (interior column, row) and how loud it talks, in dB like every
+# sound: 30 a whisper and 70 a yell (VoiceChat.WHISPER_DB, YELL_DB), 50 plain talking.
+VOICE_AT = {'voice_whisper': (3, 2, 30.0), 'voice_talk': (3, 2, 50.0), 'voice_yell': (3, 2, 70.0)}
+MIC_CHECK = ['voice_mic_check']
+
+
 # ---- what must be true (checked by test/sim/dev_sim.gd; keep a cell after its bug is fixed) ----
 # Creatures named here must get within 3 tiles of the player once the door is open. "big" is any
 # 2x2 body. Every cell also fails if any creature ever stands on a wall, void or no-floor tile.
@@ -287,12 +301,12 @@ REACH = {
     'bug4_open_archer': ['rat'],
 }
 
-# A noise the sim (and the Test Lab's N key) makes in a cell: (interior column, row, loudness). 1.0
-# is a footstep, 3.0 a thrown rock. The sim then does NOT tell the creatures where the player is,
+# A noise the sim (and the Test Lab's N key) makes in a cell: (interior column, row, dB). 30 is
+# a footstep (PlayerController.FOOTSTEP_DB), 55 a thrown rock (game/actions/throw_rock.json). The sim then does NOT tell the creatures where the player is,
 # so only hearing can move them. HEAR: must get within 3 tiles of the noise and never attack.
 # NO_HEAR: must not react at all (never leave Patrol).
-NOISE_AT = {'hearing_rock_behind_wall': (12, 1, 3.0), 'hearing_range': (7, 1, 1.0),
-            'pack_investigate': (3, 1, 1.0), 'hearing_muffled_wall': (7, 0, 1.0)}
+NOISE_AT = {'hearing_rock_behind_wall': (12, 1, 55.0), 'hearing_range': (7, 1, 30.0),
+            'pack_investigate': (3, 1, 30.0), 'hearing_muffled_wall': (7, 0, 55.0)}
 HEAR = {'hearing_muffled_wall': ['rat_blind'], 'hearing_rock_behind_wall': ['rat_blind'], 'hearing_range': ['rat_blind'], 'pack_investigate': ['wolf']}
 NO_HEAR = {'hearing_muffled_wall': ['rat'], 'hearing_range': ['rat'], 'pack_investigate': ['rat'], 'pack_attack': ['rat']}
 # POKE: the first creature of this id is hit (as if shot from the dark) and goes to Attack; the
@@ -311,7 +325,8 @@ TOGETHER = {'patrol_herd': ('wolf', 10)}
 
 # Where the player stands instead of at the door (interior column, row), for cells that test a
 # straight line to the creature. The sim and the Test Lab both use it for "step inside".
-PLAYER_AT = {'terrain_lava': (13, 1), 'terrain_water': (13, 1), 'terrain_acid': (13, 1), 'hearing_rock_behind_wall': (14, 12), 'hearing_muffled_wall': (14, 12), 'hearing_range': (7, 12), 'pack_investigate': (7, 12), 'pack_attack': (7, 12), 'patrol_wanders': (7, 25), 'patrol_herd': (7, 25), 'light_blind_ignores': (7, 7)}
+PLAYER_AT = {'terrain_lava': (13, 1), 'terrain_water': (13, 1), 'terrain_acid': (13, 1), 'hearing_rock_behind_wall': (14, 12), 'hearing_muffled_wall': (14, 12), 'hearing_range': (7, 12), 'pack_investigate': (7, 12), 'pack_attack': (7, 12), 'patrol_wanders': (7, 25), 'patrol_herd': (7, 25), 'light_blind_ignores': (7, 7),
+             'voice_whisper': (13, 11), 'voice_talk': (13, 11), 'voice_yell': (13, 11)}
 
 # The Minotaur is expected to be skipped here, so the cell may spawn fewer creatures than it pins.
 MAY_SKIP = ['bug1_no_room_for_boss']
@@ -383,9 +398,9 @@ NOTES = {
     'hearing_rock_behind_wall': ('A blind rat (hears 15 tiles, sees nothing) on one side of a wall with a gap; you are on the other side.',
                                  'Do NOT press Enter (that tells them where you are). Press N: a rock lands at the far side. Or throw one yourself: key 5, click the far side.',
                                  'The rat should go to the spot the sound came from (through the gap), not to you. "-> going to" in the readout shows where. It must not attack you.'),
-    'hearing_muffled_wall': ('A plain rat (hears 3) and a blind rat (hears 15) behind a solid wall; the noise spot is just across it.',
-                             'Do NOT press Enter. Tick show-sound, then press N: one footstep across the wall.',
-                             'The tint should stop short at the wall for the plain rat: it must not react (2 tiles away, but 1 + 3 through the wall is more than 3). The blind rat should come to the wall.'),
+    'hearing_muffled_wall': ('A plain rat (hears from 27 dB) and a blind rat (hears from 15 dB) behind a solid wall; the noise spot is just across it.',
+                             'Do NOT press Enter. Tick show-sound, then press N: a rock (55 dB) lands across the wall.',
+                             'The wall takes about 36 dB off: the plain rat must not react (about 19 dB left, under its 27). The blind rat (15) should come to the wall. No footstep gets through a wall.'),
     'hearing_range': ('A blind rat (hears 15) and a plain rat (hears 3), 7 tiles either side of a spot near the top.',
                       'Do NOT press Enter. Press N: one footstep at the spot. Then walk about yourself: every step you take is a footstep.',
                       'Only the blind rat should come to look at the spot. The plain rat should ignore it.'),
@@ -407,6 +422,16 @@ NOTES = {
     'doors_widths': ('Minotaur, archer, rat and wraith behind 1, 2 and 3 wide wooden doors.',
                      'Open each door and step back.',
                      'The Minotaur cannot use the 1-wide door; everyone else should get out of theirs.'),
+    'voice_whisper': ('A fake teammate whispering (30 dB) without a break, left of a wall. It sounds like a buzz, as quiet as a real whisper comes off the mic.',
+                      'Open the door, press backslash to step inside, and walk up to it: in the open, behind the wall, round the end of the wall.',
+                      'You hear from 22 dB, so a whisper carries 8 tiles over open floor and never through the wall. The readout shows what reaches you.'),
+    'voice_talk': ('The same, talking (50 dB).', 'Walk up to it the same way.',
+                   'Heard across the room (28 tiles in the open) and round the end of the wall (quieter), but not through it (35 dB off leaves about 10).'),
+    'voice_yell': ('The same, yelling (70 dB).', 'Walk up to it the same way.',
+                   'Heard through the wall, quieter than in the open. Say if the loudness feels wrong anywhere.'),
+    'voice_mic_check': ('Records your own voice (Steam must be running) to see what dB the game makes of it.',
+                        'Press M: it turns your mic on and asks you to whisper, then talk, then yell, a few seconds each.',
+                        'The table compares, for each: what minions hear (the game), the loudness of the recording, and the target (30 / 50 / 70). The takes are saved as WAVs you can play back.'),
     'swarm_rats': ('About 60 rats in one room.', 'Open the door and fight or run.',
                    'Frame rate (F4 shows it) dropping badly, or rats stuck in a pile.'),
 }
@@ -500,11 +525,14 @@ def place(b, ox, oy, door_side):
                       'zone_changes_max': ZONE_CHANGES_MAX.get(c['name'], -1),
                       'wade_max': WADE_MAX.get(c['name'], -1),
                       'index': [k['name'] for k in cells].index(c['name']),
-                      'noise_at': ({'x': ox + 1 + NOISE_AT[c['name']][0], 'y': oy + 1 + NOISE_AT[c['name']][1], 'loudness': NOISE_AT[c['name']][2]}
+                      'noise_at': ({'x': ox + 1 + NOISE_AT[c['name']][0], 'y': oy + 1 + NOISE_AT[c['name']][1], 'db': NOISE_AT[c['name']][2]}
                                    if c['name'] in NOISE_AT else None),
                       'alone': c['name'] in ALONE, 'together': TOGETHER.get(c['name'], []), 'moves': MOVES.get(c['name'], {}),
                       'poke': POKE.get(c['name'], ''), 'attacks': ATTACKS.get(c['name'], []),
                       'hear': HEAR.get(c['name'], []), 'no_hear': NO_HEAR.get(c['name'], []), 'notices': NOTICES.get(c['name'], []),
+                      'voice_at': ({'x': ox + 1 + VOICE_AT[c['name']][0], 'y': oy + 1 + VOICE_AT[c['name']][1], 'db': VOICE_AT[c['name']][2]}
+                                   if c['name'] in VOICE_AT else None),
+                      'mic_check': c['name'] in MIC_CHECK,
                       'player_at': ({'x': ox + 1 + PLAYER_AT[c['name']][0], 'y': oy + 1 + PLAYER_AT[c['name']][1]}
                                     if c['name'] in PLAYER_AT else None),
                       'what': note[0], 'try': note[1], 'look': note[2]})

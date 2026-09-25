@@ -9,10 +9,10 @@
 	"resistances": {},
 	"actions": [{"action": "bite", "interval": 1.2}],
 	"senses": {
-		"_comment": "Scavenger: nose first (13). Sight 5 and hearing 3 stay small: the light_blind_ignores (sight < 7) and hearing_range / hearing_muffled_wall (hearing < 4) cells depend on it.",
+		"_comment": "Scavenger: nose first (13). Sight 5 and hearing (threshold 27 dB, a footstep from 3 tiles) stay small: the light_blind_ignores (sight < 7) and hearing_range / hearing_muffled_wall (threshold > 26) cells depend on it.",
 		"touch": {"range_tiles": 1.0},
 		"sight": {"range_tiles": 5.0},
-		"hearing": {"range_tiles": 3.0},
+		"hearing": {"threshold_db": 27.0},
 		"smell": {"range_tiles": 13.0},
 		"taste": {"range_tiles": 3.0}
 	},

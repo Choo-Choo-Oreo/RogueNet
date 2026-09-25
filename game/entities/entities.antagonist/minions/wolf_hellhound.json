@@ -14,7 +14,7 @@
 		"_comment": "Demon tracker: smell 30 is its standout (scent trails, not built yet), ears 12, eyes 9.",
 		"touch": {"range_tiles": 1.0},
 		"sight": {"range_tiles": 9.0},
-		"hearing": {"range_tiles": 12.0},
+		"hearing": {"threshold_db": 18.0},
 		"smell": {"range_tiles": 30.0},
 		"taste": {"range_tiles": 4.0}
 	},

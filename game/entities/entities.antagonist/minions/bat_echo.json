@@ -10,10 +10,10 @@
 	"speed_tiles_per_second": 7.5,
 	"actions": [{"action": "bite", "interval": 0.9}],
 	"senses": {
-		"_comment": "Blind echolocator: hearing (sonar) is its best sense at 15; ignores light.",
+		"_comment": "Blind echolocator: hearing (sonar) is its best sense (threshold 15 dB, a footstep from 15 tiles); ignores light.",
 		"touch": {"range_tiles": 1.0},
 		"sight": false,
-		"hearing": {"range_tiles": 15.0},
+		"hearing": {"threshold_db": 15.0},
 		"smell": {"range_tiles": 5.0},
 		"taste": {"range_tiles": 2.0}
 	},

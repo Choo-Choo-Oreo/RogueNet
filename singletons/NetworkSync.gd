@@ -748,13 +748,13 @@ func _resolve_taunt(player_id: int, radius_tiles: float, duration: float, max_ta
 
 # Noise (footsteps, a landing rock): like a taunt, minion AI only runs on the host, so a
 # client's noise is a request to it. Sound.make tells every minion that can hear the spot.
-func report_noise(position: Vector2, loudness: float) -> void:
-	ask_host(request_noise, [position, loudness])
+func report_noise(position: Vector2, db: float) -> void:
+	ask_host(request_noise, [position, db])
 
 @rpc("any_peer", "unreliable")
-func request_noise(position: Vector2, loudness: float) -> void:
+func request_noise(position: Vector2, db: float) -> void:
 	if is_host():
-		Sound.make(get_tree(), position, loudness)
+		Sound.make(get_tree(), position, db)
 
 # Minion-on-player damage only ever originates on the host (only the host ever
 # runs minion AI/attacks), so this is a straight broadcast, no any_peer report

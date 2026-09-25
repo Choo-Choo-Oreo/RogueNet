@@ -10,10 +10,10 @@
 	"speed_tiles_per_second": 5.0,
 	"actions": ["bite"],
 	"senses": {
-		"_comment": "Poor eyes, big nose and ears: smell 14 is its best sense, hearing 8.",
+		"_comment": "Poor eyes, big nose and ears: smell 14 is its best sense, hearing threshold 22 dB (a footstep from 8 tiles).",
 		"touch": {"range_tiles": 1.0},
 		"sight": {"range_tiles": 4.0},
-		"hearing": {"range_tiles": 8.0},
+		"hearing": {"threshold_db": 22.0},
 		"smell": {"range_tiles": 14.0},
 		"taste": {"range_tiles": 3.0}
 	},

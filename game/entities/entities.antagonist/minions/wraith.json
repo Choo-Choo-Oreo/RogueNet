@@ -11,10 +11,10 @@
 	"speed_tiles_per_second": 4.0,
 	"actions": ["perditio_touch"],
 	"senses": {
-		"_comment": "Ghost: sight 12, hearing 5, no nose or tongue. TODO: meant to see through walls in a short radius; no sense supports that yet.",
+		"_comment": "Ghost: sight 12, hearing threshold 25 dB (a footstep from 5 tiles), no nose or tongue. TODO: meant to see through walls in a short radius; no sense supports that yet.",
 		"touch": {"range_tiles": 1.0},
 		"sight": {"range_tiles": 12.0},
-		"hearing": {"range_tiles": 5.0},
+		"hearing": {"threshold_db": 25.0},
 		"smell": false,
 		"taste": false
 	},

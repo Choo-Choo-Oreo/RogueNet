@@ -1,8 +1,8 @@
 extends GutTest
 
-## VoiceChat: how loud a player talks (RMS in dB) as a noise loudness for minions' hearing, from
-## MIN_VOICE_LOUDNESS at QUIET_DB to MAX_VOICE_LOUDNESS at LOUD_DB. The voice here is a made-up
-## sine wave; a sine's RMS is its peak / sqrt(2), about 3 dB under it.
+## VoiceChat: how loud a player talks (RMS in dB under the mic's limit) as a noise in the
+## dungeon for minions' hearing: MIC_TO_WORLD_DB louder, kept between WHISPER_DB and YELL_DB.
+## The voice here is a made-up sine wave; a sine's RMS is its peak / sqrt(2), about 3 dB under it.
 
 const VoiceChat := preload("res://singletons/VoiceChat.gd")
 
@@ -15,20 +15,18 @@ func _tone(amplitude: float) -> PackedByteArray:
 	return pcm
 
 func test_level_is_rms_in_db() -> void:
-	assert_almost_eq(VoiceChat._level_db(_tone(0.08)), -25.0, 0.5)
+	assert_almost_eq(VoiceChat.mic_level_db(_tone(0.08)), -25.0, 0.5)
 
 func test_peaking_the_mic_counts_as_zero_db() -> void:
-	assert_eq(VoiceChat._level_db(_tone(3.0)), 0.0)
+	assert_eq(VoiceChat.mic_level_db(_tone(3.0)), 0.0)
 
 func test_silence_has_no_level() -> void:
-	assert_eq(VoiceChat._level_db(PackedByteArray()), -INF)
+	assert_eq(VoiceChat.mic_level_db(PackedByteArray()), -INF)
 
-func test_loudness_runs_from_quiet_to_loud() -> void:
-	assert_eq(VoiceChat.voice_loudness(VoiceChat.QUIET_DB), VoiceChat.MIN_VOICE_LOUDNESS)
-	assert_eq(VoiceChat.voice_loudness(VoiceChat.LOUD_DB), VoiceChat.MAX_VOICE_LOUDNESS)
-	var middle := (VoiceChat.QUIET_DB + VoiceChat.LOUD_DB) / 2.0
-	assert_almost_eq(VoiceChat.voice_loudness(middle), (VoiceChat.MIN_VOICE_LOUDNESS + VoiceChat.MAX_VOICE_LOUDNESS) / 2.0, 0.001)
+func test_voice_is_the_mic_level_moved_into_the_dungeon() -> void:
+	assert_eq(VoiceChat.voice_db(VoiceChat.QUIET_DB), VoiceChat.WHISPER_DB, "the quietest voice that counts is a whisper")
+	assert_almost_eq(VoiceChat.voice_db(-25.0), -25.0 + VoiceChat.MIC_TO_WORLD_DB, 0.001)
 
-func test_loudness_stays_in_range() -> void:
-	assert_eq(VoiceChat.voice_loudness(-100.0), VoiceChat.MIN_VOICE_LOUDNESS, "a whisper under QUIET_DB")
-	assert_eq(VoiceChat.voice_loudness(0.0), VoiceChat.MAX_VOICE_LOUDNESS, "a yell over LOUD_DB")
+func test_voice_stays_between_whisper_and_yell() -> void:
+	assert_eq(VoiceChat.voice_db(-100.0), VoiceChat.WHISPER_DB, "hiss under QUIET_DB")
+	assert_eq(VoiceChat.voice_db(0.0), VoiceChat.YELL_DB, "peaking the mic")

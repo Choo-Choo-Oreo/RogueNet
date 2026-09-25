@@ -11,6 +11,8 @@ extends CanvasLayer
 ##   \  or F8       step inside the cell     Backspace / F9 reset cell (rebuild)
 ##   N  or F5       make the cell's noise    (a footstep or a rock landing where the cell says; see NOISE_AT)
 ##   /  or F10      copy bug report          F3             hide / show this panel
+##   M              start the mic check      (only in voice_mic_check, see LabMicCheck)
+## A voice_* cell has a fake teammate talking in it (LabVoice) while you are at that cell.
 ## Every key is also a button. It removes itself if you leave the dungeon.
 
 const CELLS_FILE := "res://test/sim/dev_cells.json"
@@ -30,6 +32,8 @@ var _readout: Label
 var _next_refresh := 0.0
 var _track := {}  # creature -> {pos, moved}
 var _started_msec := 0
+var _voice: LabVoice  # the fake talker of a voice_* cell (voice_at), null elsewhere
+var _mic: LabMicCheck  # the mic check of voice_mic_check, null elsewhere
 
 func _ready() -> void:
 	layer = 60
@@ -83,6 +87,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		KEY_F9, KEY_BACKSPACE: _reset()
 		KEY_F10, KEY_SLASH: _copy_report()
 		KEY_F3: _box.visible = not _box.visible
+		KEY_M: _start_mic_check()
 
 func _process(_delta: float) -> void:
 	var scene := get_tree().current_scene
@@ -132,6 +137,29 @@ func _goto(i: int) -> void:
 	if not (c["reach"] as Array).is_empty():
 		checks = "\n[b]Sim expects[/b] " + ", ".join(c["reach"]) + " to get within 3 tiles of you."
 	_info.text = "[i]%s[/i]\n\n[b]What it is[/b] %s\n[b]Try[/b] %s\n[b]Look for[/b] %s%s" % [kind, c["what"], c["try"], c["look"], checks]
+	_set_up_voice(c)
+
+func _start_mic_check() -> void:
+	if is_instance_valid(_mic):
+		_mic.start()
+
+## The fake talker (in the dungeon scene, so a reset rebuilds it) and the mic check: only at
+## the cell that has one.
+func _set_up_voice(c: Dictionary) -> void:
+	if is_instance_valid(_voice):
+		_voice.queue_free()
+	if is_instance_valid(_mic):
+		_mic.queue_free()
+	_voice = null
+	_mic = null
+	if c.get("voice_at") != null:
+		_voice = LabVoice.new()
+		_voice.db = float(c["voice_at"]["db"])
+		get_tree().current_scene.add_child(_voice)
+		_voice.global_position = (Vector2(_world(c["voice_at"])) + Vector2(0.5, 0.5)) * _player.grid_mover.tile_size
+	if c.get("mic_check", false):
+		_mic = LabMicCheck.new()
+		add_child(_mic)
 
 func _is_regression(c: Dictionary) -> bool:
 	return str(c["name"]).begins_with("bug") or not (c["reach"] as Array).is_empty()
@@ -165,12 +193,12 @@ func _make_noise() -> void:
 	var c: Dictionary = _cells[_index]
 	var ts: int = _player.grid_mover.tile_size
 	var at: Vector2 = _player.global_position
-	var loudness := 3.0
+	var db: float = ActionIndex.resolve(["throw_rock"])[0].get("loudness_db", 0.0)
 	if c.get("noise_at") != null:
 		at = (Vector2(_world(c["noise_at"])) + Vector2(0.5, 0.5)) * ts
-		loudness = float(c["noise_at"]["loudness"])
-	NetworkSync.report_noise(at, loudness)
-	DebugLog.add("Test Lab: noise (loudness %.0f) at %s" % [loudness, Vector2i((at / ts).floor())])
+		db = float(c["noise_at"]["db"])
+	NetworkSync.report_noise(at, db)
+	DebugLog.add("Test Lab: noise (%.0f dB) at %s" % [db, Vector2i((at / ts).floor())])
 
 func _cell_rect() -> Rect2i:
 	var r: Dictionary = _cells[_index]["rect"]
@@ -220,6 +248,12 @@ func _refresh_readout() -> void:
 	if _cells.is_empty() or _player == null:
 		return
 	var lines := _lines()
+	if is_instance_valid(_voice):
+		var reaches := "under your hearing" if _voice.heard_volume_db == VoiceChat.SILENT_DB else "reaches you at %.0f dB" % (_voice.db + _voice.heard_volume_db)
+		lines.append("talker at %s: %.0f dB, %s (you hear from %.0f)" % [_tile_of(_voice), _voice.db, reaches, _player.viewer.hearing])
+	if is_instance_valid(_mic):
+		lines.append(_mic.status)
+		lines.append_array(_mic.results)
 	_readout.text = "You: %s\n%s" % [_tile_of(_player), "\n".join(lines) if not lines.is_empty() else "(no creatures in this cell)"]
 
 func _copy_report() -> void:

@@ -169,7 +169,7 @@ func _begin_run() -> void:
 	# A hearing cell is left alone: only its noise (made here, like a thrown rock or a footstep) may move them.
 	if noise != null:
 		_noise_pos = (Vector2(_world_tile(noise)) + Vector2(0.5, 0.5)) * tile_size
-		root.get_node("NetworkSync").report_noise(_noise_pos, float(noise["loudness"]))
+		root.get_node("NetworkSync").report_noise(_noise_pos, float(noise["db"]))
 	elif _cell.get("poke", "") != "":
 		for w in _watch:
 			if str(w["id"]) == _cell["poke"]:

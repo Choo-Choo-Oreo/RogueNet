@@ -14,7 +14,7 @@
 		"_comment": "Flies, so it looks down on the room: sight 11 leads, nose 9 and ears 6 lower than a ground hamster's.",
 		"touch": {"range_tiles": 1.0},
 		"sight": {"range_tiles": 11.0},
-		"hearing": {"range_tiles": 6.0},
+		"hearing": {"threshold_db": 24.0},
 		"smell": {"range_tiles": 9.0},
 		"taste": {"range_tiles": 2.0}
 	},

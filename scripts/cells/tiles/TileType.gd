@@ -25,8 +25,8 @@ const TERRAIN_SPEED := {
 @export var overlay_texture: Texture2D
 @export_range(0.0, 1.0) var overlay_density := 0.2
 
-## How much a sound spends crossing this tile (Sound.flood): JSON "muffle", or 3 for a wall and
-## 1 for a floor when the JSON leaves it out.
+## How many dB a sound loses crossing this tile (SoundSpread): JSON "muffle", or
+## SoundSpread.WALL_DB_PER_TILE for a wall and AIR_DB_PER_TILE for a floor when the JSON leaves it out.
 @export var muffle := 1.0
 
 @export var glow_radius := 0.0
@@ -59,7 +59,7 @@ func load_from_data(data: Dictionary) -> void:
 	orientable = data.get("orientable", false)
 	glow_radius = data.get("glow_radius", 0.0)
 	overlay_density = data.get("overlay_density", 0.2)
-	muffle = float(data.get("muffle", 3.0 if category == Category.WALL else 1.0))
+	muffle = float(data.get("muffle", SoundSpread.WALL_DB_PER_TILE if category == Category.WALL else SoundSpread.AIR_DB_PER_TILE))
 
 func load_from_file(path: String) -> void:
 	load_from_data(JsonOnloading.load_dict(path))

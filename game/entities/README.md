@@ -23,5 +23,7 @@ The average room is about 15 x 14 tiles, so 15 is roughly "across a room".
 - A creature's best sense sits near 15.
 - A standout sense can go past it. 15 is not a hard maximum.
 
-Example: a dog smells at 25 and hears at 15, and everything else is lower. The `senses`
-format itself is in the root `README.md`.
+Example: a dog smells at 25 and hears at 15, and everything else is lower. Hearing is written
+as a dB threshold, not tiles: a footstep (30 dB) carries `30 - threshold_db` tiles of open
+floor, so hearing 15 tiles is `threshold_db` 15 and hearing 3 is 27. The `senses` format
+itself is in the root `README.md`.

@@ -14,7 +14,7 @@
 		"_comment": "Archer: sight 15 is its best sense (shoots across a room). A skeleton has no nose or tongue; ears 6.",
 		"touch": {"range_tiles": 1.0},
 		"sight": {"range_tiles": 15.0},
-		"hearing": {"range_tiles": 6.0},
+		"hearing": {"threshold_db": 24.0},
 		"smell": false,
 		"taste": false
 	},

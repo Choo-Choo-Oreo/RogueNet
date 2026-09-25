@@ -10,10 +10,10 @@
 	"speed_tiles_per_second": 3.5,
 	"actions": [{ "action": "bite", "amount": 8, "interval": 1.2, "type": "Physical.Piercing" }],
 	"senses": {
-		"_comment": "Feels vibration: hearing 15 is its best sense, many eyes 10, little nose.",
+		"_comment": "Feels vibration: hearing (threshold 15 dB, a footstep from 15 tiles) is its best sense, many eyes 10, little nose.",
 		"touch": {"range_tiles": 1.0},
 		"sight": {"range_tiles": 10.0},
-		"hearing": {"range_tiles": 15.0},
+		"hearing": {"threshold_db": 15.0},
 		"smell": {"range_tiles": 4.0},
 		"taste": {"range_tiles": 3.0}
 	},

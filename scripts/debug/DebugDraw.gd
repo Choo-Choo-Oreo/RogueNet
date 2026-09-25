@@ -369,8 +369,8 @@ func _draw_senses() -> void:
 			draw_line(centre, minion.senses.investigate_marker.global_position, Color(SenseHearing.DEBUG_COLOR, 0.8), 1.0)
 
 ## The number behind each ring, written on the ring at its point closest to the player (straight
-## up when there is none): sight range in tiles; on each hearing ring its loudness (1 footstep,
-## 3 rock, up to Sound.LOUDNESS_MAX).
+## up when there is none): sight range in tiles; on each hearing ring the source level in dB
+## it stands for (a footstep is 30, a rock 55).
 func _label_rings(minion: Node, shown: Array[String], centre: Vector2) -> void:
 	var senses: MinionSenses = minion.senses
 	var toward := Vector2.UP
@@ -380,8 +380,8 @@ func _label_rings(minion: Node, shown: Array[String], centre: Vector2) -> void:
 	if "sight" in shown and senses.sight.enabled:
 		_label(centre + toward * senses.sight.range_tiles * TILE, "sight %.0f" % senses.sight.range_tiles, SenseSight.DEBUG_COLOR)
 	if "hearing" in shown and senses.hearing.enabled:
-		for loudness in range(Sound.LOUDNESS_MIN, Sound.LOUDNESS_MAX + 1):
-			_label(centre + toward * senses.hearing.budget(loudness) * TILE, str(loudness), SenseHearing.DEBUG_COLOR)
+		for db in senses.hearing.debug_ring_levels():
+			_label(centre + toward * senses.hearing.reach_tiles(db) * TILE, "%d dB" % db, SenseHearing.DEBUG_COLOR)
 
 func _nearest_player(from: Vector2) -> Node2D:
 	var best: Node2D = null
@@ -411,20 +411,20 @@ func _sight_block(minion: Node, target: Node2D) -> Vector2i:
 	var to := Vector2i((target.global_position / TILE).floor())
 	return LineOfSight.blocked_at(from, to, minion.grid_mover.blocks_sight)
 
-## Each recent sound's spread (Sound.flood), tinted by how much of a footstep-hearer's budget is
-## left there: bright at the source, faint at the edge; fades out over Sound.SHOW_SECONDS. Walls
-## show up as the tint stopping short. Plus every noise spot (Sound markers, with seconds left).
+## Each recent sound's spread (SoundSpread, per 8px quad), tinted by how loud it still is there:
+## bright at the source, faint down at SoundSpread.FLOOR_DB; fades out over Sound.SHOW_SECONDS.
+## Walls show up as the tint dropping sharply. Plus every noise spot (Sound markers, with seconds left).
 func _draw_sound() -> void:
 	var now := Time.get_ticks_msec()
 	while not Sound.recent.is_empty() and now - int(Sound.recent[0]["msec"]) > Sound.SHOW_SECONDS * 1000.0:
 		Sound.recent.pop_front()
 	for sound in Sound.recent:
 		var fade := 1.0 - (now - int(sound["msec"])) / (Sound.SHOW_SECONDS * 1000.0)
-		var budget: float = sound["budget"]
-		var cells: Dictionary = sound["cells"]
-		for cell in cells:
-			var left := 1.0 - float(cells[cell]) / budget
-			draw_rect(Rect2(Vector2(cell) * TILE, Vector2(TILE, TILE)), Color(SenseHearing.DEBUG_COLOR, 0.5 * left * fade), true)
+		var span := maxf(float(sound["db"]) - SoundSpread.FLOOR_DB, 1.0)
+		var levels: Dictionary = sound["levels"]
+		for quad in levels:
+			var left := clampf((float(levels[quad]) - SoundSpread.FLOOR_DB) / span, 0.0, 1.0)
+			draw_rect(Rect2(Vector2(quad) * SoundSpread.QUAD, Vector2(SoundSpread.QUAD, SoundSpread.QUAD)), Color(SenseHearing.DEBUG_COLOR, 0.5 * left * fade), true)
 	if not Sound.recent.is_empty():
 		_label_sound(Sound.recent.back())
 	for marker: Node2D in get_tree().get_nodes_in_group(Sound.GROUP):
@@ -435,26 +435,27 @@ func _draw_sound() -> void:
 		_label(at + Vector2(-8, -6), "noise %.0fs" % seconds_left, SenseHearing.DEBUG_COLOR)
 
 ## The numbers of the newest sound only (older ones would write over each other): on each tile
-## the cost the sound spent to get there, at the source its loudness, and on every minion that
-## was close enough to check "cost <= budget, heard" or "cost > budget, missed".
+## the dB left in its top-left quad, at the source its level, and on every minion that was close
+## enough to check "level >= threshold, heard" or "level < threshold, missed".
 func _label_sound(sound: Dictionary) -> void:
-	var cells: Dictionary = sound["cells"]
+	var levels: Dictionary = sound["levels"]
 	var tiles := _visible_tiles()
-	for cell: Vector2i in cells:
-		if tiles.has_point(cell):
-			_label(Vector2(cell) * TILE + Vector2(2, 6), "%.1f" % cells[cell], Color(1, 1, 1, 0.8))
+	for quad: Vector2i in levels:
+		var tile := Vector2i(floori(quad.x / 2.0), floori(quad.y / 2.0))
+		if quad == tile * 2 and tiles.has_point(tile):
+			_label(Vector2(tile) * TILE + Vector2(2, 6), "%.0f" % levels[quad], Color(1, 1, 1, 0.8))
 	var source: Vector2i = sound["source"]
-	_label(Vector2(source) * TILE + Vector2(-4, -2), "loud %.0f" % sound["loudness"], SenseHearing.DEBUG_COLOR)
+	_label(Vector2(source) * SoundSpread.QUAD + Vector2(-4, -2), "%.0f dB" % sound["db"], SenseHearing.DEBUG_COLOR)
 	for sum in sound["sums"]:
 		var at: Vector2 = sum[0] + Vector2(-4, TILE + 4)
-		var cost: float = sum[1]
-		var budget: float = sum[2]
-		if cost <= budget:
-			_label(at, "%.1f <= %.0f heard" % [cost, budget], Color(0.3, 1.0, 0.4))
-		elif cost == INF:
-			_label(at, "past the flood > %.0f missed" % budget, Color(1.0, 0.3, 0.3))
+		var level: float = sum[1]
+		var threshold: float = sum[2]
+		if level >= threshold:
+			_label(at, "%.1f >= %.0f heard" % [level, threshold], Color(0.3, 1.0, 0.4))
+		elif level == -INF:
+			_label(at, "past the flood < %.0f missed" % threshold, Color(1.0, 0.3, 0.3))
 		else:
-			_label(at, "%.1f > %.0f missed" % [cost, budget], Color(1.0, 0.3, 0.3))
+			_label(at, "%.1f < %.0f missed" % [level, threshold], Color(1.0, 0.3, 0.3))
 
 ## The minion under the mouse (within 2 tiles): a panel with each thing it is tracking on its
 ## own line, instead of everything stacked over every minion.
@@ -503,8 +504,8 @@ func _inspect_lines(minion: Node) -> Array:
 		lines.append(["touch: %s" % ("has it" if senses.touch.enabled else "none"), SenseTouch.DEBUG_COLOR if senses.touch.enabled else NO_SENSE_COLOR])
 	var hearing := senses.hearing
 	if DebugState.on("show-sound"):
-		var heard := "  last sound spent %.1f" % senses.last_heard_cost if senses.last_heard_cost >= 0.0 else ""
-		lines.append(["hearing: %s%s" % ["budget %.0f step / %.0f rock" % [hearing.budget(1.0), hearing.budget(3.0)] if hearing.enabled else "none", heard], SenseHearing.DEBUG_COLOR if hearing.enabled else NO_SENSE_COLOR])
+		var heard := "  last sound %.1f dB" % senses.last_heard_db if senses.last_heard_db > -INF else ""
+		lines.append(["hearing: %s%s" % ["from %.0f dB (a step %.0f tiles)" % [hearing.threshold_db, hearing.reach_tiles(PlayerController.FOOTSTEP_DB)] if hearing.enabled else "none", heard], SenseHearing.DEBUG_COLOR if hearing.enabled else NO_SENSE_COLOR])
 	if DebugState.on("show-smell"):
 		lines.append(["smell: %s (not built)" % ("has it" if senses.smell.enabled else "none"), NO_SENSE_COLOR])
 	if DebugState.on("show-taste"):

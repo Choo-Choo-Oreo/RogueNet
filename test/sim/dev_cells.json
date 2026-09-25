@@ -1,6 +1,6 @@
 {
- "hub": "Development_Hub_357x61",
- "width": 357,
+ "hub": "Development_Hub_385x61",
+ "width": 385,
  "height": 61,
  "cells": [
   {
@@ -33,6 +33,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "rat alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
@@ -68,6 +70,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "bat alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
@@ -103,6 +107,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "hamster alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
@@ -138,6 +144,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "hamster_demonic alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
@@ -173,6 +181,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "leech_flesh alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
@@ -208,6 +218,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "wolf_hellhound alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
@@ -243,6 +255,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "wraith alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
@@ -280,6 +294,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "The Minotaur is pinned in a 1-wide nook it cannot stand in, and a rat sits beside a hole in the floor.",
    "try": "Let them come for you.",
@@ -317,6 +333,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "A chasm across the room with a bridge at one side and a rat on each side.",
    "try": "Stand opposite a rat and watch it cross.",
@@ -355,6 +373,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "The same, but the gap is 1 wide, so the Minotaur cannot fit.",
    "try": "Stand past the gap, in line with it, and press Enter.",
@@ -392,6 +412,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "The Minotaur behind a solid wall with no way round.",
    "try": "Stand on the far side and wait.",
@@ -429,6 +451,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "The Minotaur among pillars, with a way round.",
    "try": "Stand behind the pillars.",
@@ -466,6 +490,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "An archer among rats in the open.",
    "try": "Stand at the far side.",
@@ -501,6 +527,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "The Minotaur idling among rats.",
    "try": "Watch from the door without waking it, then step in.",
@@ -536,6 +564,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "A long 1-wide corridor: an archer with four rats behind it.",
    "try": "Enter from the far end.",
@@ -571,6 +601,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "A thick wall with a long way round along the bottom.",
    "try": "Stand on the far side of the wall, then walk around it once.",
@@ -606,6 +638,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": {
     "x": 258,
     "y": 22
@@ -644,6 +678,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "Minotaur, archer, rat and wraith behind 1, 2 and 3 wide wooden doors.",
    "try": "Open each door and step back.",
@@ -673,7 +709,7 @@
    "noise_at": {
     "x": 291,
     "y": 15,
-    "loudness": 3.0
+    "db": 55.0
    },
    "alone": false,
    "together": [],
@@ -685,6 +721,8 @@
    ],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": {
     "x": 293,
     "y": 26
@@ -717,7 +755,7 @@
    "noise_at": {
     "x": 303,
     "y": 14,
-    "loudness": 1.0
+    "db": 55.0
    },
    "alone": false,
    "together": [],
@@ -731,13 +769,15 @@
     "rat"
    ],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": {
     "x": 310,
     "y": 26
    },
-   "what": "A plain rat (hears 3) and a blind rat (hears 15) behind a solid wall; the noise spot is just across it.",
-   "try": "Do NOT press Enter. Tick show-sound, then press N: one footstep across the wall.",
-   "look": "The tint should stop short at the wall for the plain rat: it must not react (2 tiles away, but 1 + 3 through the wall is more than 3). The blind rat should come to the wall."
+   "what": "A plain rat (hears from 27 dB) and a blind rat (hears from 15 dB) behind a solid wall; the noise spot is just across it.",
+   "try": "Do NOT press Enter. Tick show-sound, then press N: a rock (55 dB) lands across the wall.",
+   "look": "The wall takes about 36 dB off: the plain rat must not react (about 19 dB left, under its 27). The blind rat (15) should come to the wall. No footstep gets through a wall."
   },
   {
    "name": "pack_attack",
@@ -773,6 +813,8 @@
     "rat"
    ],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": {
     "x": 320,
     "y": 26
@@ -813,6 +855,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": {
     "x": 337,
     "y": 26
@@ -820,6 +864,94 @@
    "what": "One rat alone in a room; you stand at the far end, outside its sight and your light.",
    "try": "Do NOT press Enter. Just watch it for about 20 seconds.",
    "look": "It should walk to a few random spots (staying in the room), pausing between. Leave the room by the door: it should stop moving when no player is in or next to its room."
+  },
+  {
+   "name": "voice_whisper",
+   "door": {
+    "x": 358,
+    "y": 27
+   },
+   "entry": {
+    "x": 358,
+    "y": 25
+   },
+   "rect": {
+    "x": 346,
+    "y": 13,
+    "w": 17,
+    "h": 15
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "wade_max": -1,
+   "index": 43,
+   "noise_at": null,
+   "alone": false,
+   "together": [],
+   "moves": {},
+   "poke": "",
+   "attacks": [],
+   "hear": [],
+   "no_hear": [],
+   "notices": [],
+   "voice_at": {
+    "x": 350,
+    "y": 16,
+    "db": 30.0
+   },
+   "mic_check": false,
+   "player_at": {
+    "x": 360,
+    "y": 25
+   },
+   "what": "A fake teammate whispering (30 dB) without a break, left of a wall. It sounds like a buzz, as quiet as a real whisper comes off the mic.",
+   "try": "Open the door, press backslash to step inside, and walk up to it: in the open, behind the wall, round the end of the wall.",
+   "look": "You hear from 22 dB, so a whisper carries 8 tiles over open floor and never through the wall. The readout shows what reaches you."
+  },
+  {
+   "name": "voice_yell",
+   "door": {
+    "x": 375,
+    "y": 27
+   },
+   "entry": {
+    "x": 375,
+    "y": 25
+   },
+   "rect": {
+    "x": 363,
+    "y": 13,
+    "w": 17,
+    "h": 15
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "wade_max": -1,
+   "index": 45,
+   "noise_at": null,
+   "alone": false,
+   "together": [],
+   "moves": {},
+   "poke": "",
+   "attacks": [],
+   "hear": [],
+   "no_hear": [],
+   "notices": [],
+   "voice_at": {
+    "x": 367,
+    "y": 16,
+    "db": 70.0
+   },
+   "mic_check": false,
+   "player_at": {
+    "x": 377,
+    "y": 25
+   },
+   "what": "The same, yelling (70 dB).",
+   "try": "Walk up to it the same way.",
+   "look": "Heard through the wall, quieter than in the open. Say if the loudness feels wrong anywhere."
   },
   {
    "name": "minion_rat_blind",
@@ -851,6 +983,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "rat_blind alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
@@ -886,6 +1020,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "bat_echo alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
@@ -921,6 +1057,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "hamster_flying alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
@@ -956,6 +1094,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "leech alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
@@ -991,6 +1131,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "wolf alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
@@ -1026,6 +1168,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "skeleton_archer alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
@@ -1063,6 +1207,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "minotaur alone in a plain room.",
    "try": "Open the door, then walk up to it, away from it and round it.",
@@ -1098,6 +1244,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "The Minotaur is pinned in a sealed 1-wide corridor with no 2x2 spot nearby.",
    "try": "Just look inside; nothing should be there.",
@@ -1136,6 +1284,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "A rat and the Minotaur chase you through a 2-wide gap.",
    "try": "Stand past the gap and wait.",
@@ -1173,6 +1323,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "An unbreakable wall with a 1-wide gap. The Minotaur stands right in front of the gap (it cannot fit through), rats behind it.",
    "try": "Stand on the far side of the wall, in line with the gap, and press Enter.",
@@ -1210,6 +1362,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "The Minotaur behind a closed door.",
    "try": "Stand on the far side.",
@@ -1247,6 +1401,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "An archer with rats queued behind it in a 1-wide corridor.",
    "try": "Stand at the far end.",
@@ -1282,6 +1438,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "A pillared arena with the Minotaur and its crowd.",
    "try": "Run circles round the pillars so they chase you.",
@@ -1317,6 +1475,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "Pillars with 1-wide gaps (Minotaur cannot use them) and open bands (2+).",
    "try": "Run the Minotaur through the pillars, changing side often.",
@@ -1352,6 +1512,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": {
     "x": 245,
     "y": 35
@@ -1390,6 +1552,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": {
     "x": 262,
     "y": 35
@@ -1428,6 +1592,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": null,
    "what": "About 60 rats in one room.",
    "try": "Open the door and fight or run.",
@@ -1457,7 +1623,7 @@
    "noise_at": {
     "x": 296,
     "y": 35,
-    "loudness": 1.0
+    "db": 30.0
    },
    "alone": false,
    "together": [],
@@ -1471,6 +1637,8 @@
     "rat"
    ],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": {
     "x": 296,
     "y": 46
@@ -1503,7 +1671,7 @@
    "noise_at": {
     "x": 309,
     "y": 35,
-    "loudness": 1.0
+    "db": 30.0
    },
    "alone": false,
    "together": [],
@@ -1517,6 +1685,8 @@
     "rat"
    ],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": {
     "x": 313,
     "y": 46
@@ -1560,6 +1730,8 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": {
     "x": 330,
     "y": 59
@@ -1602,6 +1774,8 @@
    "notices": [
     "rat"
    ],
+   "voice_at": null,
+   "mic_check": false,
    "player_at": {
     "x": 347,
     "y": 41
@@ -1609,6 +1783,87 @@
    "what": "A blind rat 4 tiles from where you stand, and a plain rat 7 tiles away (past its sight, inside your light).",
    "try": "Do NOT press Enter. Open the door, press backslash to step inside, and stand still.",
    "look": "The plain rat should come to look (your light reached it). The blind rat must not move: it cannot see your light."
+  },
+  {
+   "name": "voice_talk",
+   "door": {
+    "x": 368,
+    "y": 33
+   },
+   "entry": {
+    "x": 368,
+    "y": 35
+   },
+   "rect": {
+    "x": 356,
+    "y": 33,
+    "w": 17,
+    "h": 15
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "wade_max": -1,
+   "index": 44,
+   "noise_at": null,
+   "alone": false,
+   "together": [],
+   "moves": {},
+   "poke": "",
+   "attacks": [],
+   "hear": [],
+   "no_hear": [],
+   "notices": [],
+   "voice_at": {
+    "x": 360,
+    "y": 36,
+    "db": 50.0
+   },
+   "mic_check": false,
+   "player_at": {
+    "x": 370,
+    "y": 45
+   },
+   "what": "The same, talking (50 dB).",
+   "try": "Walk up to it the same way.",
+   "look": "Heard across the room (28 tiles in the open) and round the end of the wall (quieter), but not through it (35 dB off leaves about 10)."
+  },
+  {
+   "name": "voice_mic_check",
+   "door": {
+    "x": 377,
+    "y": 33
+   },
+   "entry": {
+    "x": 377,
+    "y": 35
+   },
+   "rect": {
+    "x": 373,
+    "y": 33,
+    "w": 11,
+    "h": 7
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "wade_max": -1,
+   "index": 46,
+   "noise_at": null,
+   "alone": false,
+   "together": [],
+   "moves": {},
+   "poke": "",
+   "attacks": [],
+   "hear": [],
+   "no_hear": [],
+   "notices": [],
+   "voice_at": null,
+   "mic_check": true,
+   "player_at": null,
+   "what": "Records your own voice (Steam must be running) to see what dB the game makes of it.",
+   "try": "Press M: it turns your mic on and asks you to whisper, then talk, then yell, a few seconds each.",
+   "look": "The table compares, for each: what minions hear (the game), the loudness of the recording, and the target (30 / 50 / 70). The takes are saved as WAVs you can play back."
   }
  ]
 }

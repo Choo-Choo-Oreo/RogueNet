@@ -1,17 +1,15 @@
 class_name Sound
 extends RefCounted
 
-## A sound in the dungeon: a footstep, a thrown rock landing. Host only (minion AI only runs
-## there; NetworkSync.report_noise gets a client's noise to it). Every minion that hears it is
-## told to go and look at it.
+## A sound in the dungeon: a footstep, a thrown rock landing, a voice. make() is host only
+## (minion AI only runs there; NetworkSync.report_noise gets a client's noise to it): every
+## minion that hears it is told to go and look at it. What players hear is lost_to_local /
+## play_heard, run on each machine for its own adventurer.
 ##
-## How far a sound gets:
-##   budget = the listener's hearing range_tiles * loudness
-##   cost   = the cheapest sum of `muffle` over the tiles between the sound and the listener
-##            (floor 1, wall 3, closed door DOOR_MUFFLE; a diagonal step costs 1.41x)
-##   heard when cost <= budget
-## The costs come from one flood fill per sound (flood), spread only as far as the biggest
-## budget among the minions close enough to possibly hear it.
+## How far a sound gets is SoundSpread's (dB lost per quad, walls and doors muffle, corners
+## cost a little). A minion hears it when the level left where it stands is at least its
+## hearing threshold (SenseHearing.threshold_db). The flood only runs as far down as the
+## lowest threshold among the minions close enough to possibly hear it.
 ##
 ## Going to look needs somewhere to go, and pathing wants a node, so a noise becomes a
 ## marker: a bare Node2D left where it was made for MARKER_SECONDS. Minions share markers
@@ -25,132 +23,81 @@ const MARKER_SECONDS := 15.0
 const REUSE_TILES := 2.0
 const TILE_SIZE := 16.0
 
-## Loudness is clamped to this scale: 1 a footstep, 3 a thrown rock, 10 the loudest there is.
-const LOUDNESS_MIN := 1
-const LOUDNESS_MAX := 10
+## Sound levels are clamped to this: a footstep is PlayerController.FOOTSTEP_DB, a thrown rock
+## its action's `loudness_db`, a voice VoiceChat.voice_db.
+const LOUDEST_DB := 90.0
 
-## A closed door muffles like a wall (an open door is plain floor).
-const DOOR_MUFFLE := 3.0
-const DIAGONAL := 1.41421
-## Debug (show-sound): the last floods, each {"cells": {cell: cost}, "budget", "msec"}.
+## Debug (show-sound): the last floods, each {"levels": {quad: dB}, "db", "source", "sums", "msec"}.
 const SHOW_SECONDS := 2.0
 static var recent: Array = []
 
-static func make(tree: SceneTree, position: Vector2, loudness: float) -> void:
-	loudness = clampf(loudness, LOUDNESS_MIN, LOUDNESS_MAX)
-	# The path cost is never less than the straight-line distance, so a minion farther away
-	# than its budget cannot hear it and is skipped before the flood.
+static func make(tree: SceneTree, position: Vector2, db: float) -> void:
+	db = clampf(db, 0.0, LOUDEST_DB)
+	# Every step loses at least AIR_DB_PER_TILE per tile of straight-line distance, so a minion
+	# farther away than its spare dB allows cannot hear it and is skipped before the flood.
 	var listeners: Array = []
-	var reach := 0.0
+	var quietest := INF
 	for minion in tree.get_nodes_in_group("antagonist"):
-		if not minion.has_method("hearing_budget"):
+		if not minion.has_method("hearing_threshold"):
 			continue
-		var budget: float = minion.hearing_budget(loudness)
-		if budget > 0.0 and minion.global_position.distance_to(position) <= (budget + minion.size_tiles) * TILE_SIZE:
-			listeners.append([minion, budget])
-			reach = maxf(reach, budget)
+		var threshold: float = minion.hearing_threshold()
+		var spare_tiles := (db - threshold) / SoundSpread.AIR_DB_PER_TILE
+		if spare_tiles >= 0.0 and minion.global_position.distance_to(position) <= (spare_tiles + minion.size_tiles) * TILE_SIZE:
+			listeners.append([minion, threshold])
+			quietest = minf(quietest, threshold)
 	var showing := DebugState.on("show-sound")
 	if listeners.is_empty() and not showing:
 		return
-	var shown_budget := SenseHearing.DEFAULT_RANGE_TILES * loudness
 	if showing:
-		reach = maxf(reach, shown_budget)
-	var source := Vector2i((position / TILE_SIZE).floor())
-	var costs := flood(source, reach, _muffle_reader(tree))
-	# Each listener's sum, kept for the debug labels: [where it stood, cost, its budget].
+		quietest = minf(quietest, SoundSpread.FLOOR_DB)
+	var source := SoundSpread.quad_at(position)
+	var levels := SoundSpread.flood(source, db, quietest, SoundSpread.reader(tree))
+	# Each listener's level, kept for the debug labels: [where it stood, level, its threshold].
 	var sums: Array = []
 	if showing:
-		recent.append({"cells": costs, "budget": maxf(reach, shown_budget), "loudness": loudness, "source": source, "sums": sums, "msec": Time.get_ticks_msec()})
+		recent.append({"levels": levels, "db": db, "source": source, "sums": sums, "msec": Time.get_ticks_msec()})
 		while recent.size() > 8:
 			recent.pop_front()
 	var marker: Node2D = null
 	for entry in listeners:
 		var minion = entry[0]
-		var cost := INF
-		for cell in minion.grid_mover.footprint_tiles(Vector2i((minion.global_position / TILE_SIZE).floor())):
-			cost = minf(cost, costs.get(cell, INF))
+		var tile := Vector2i((minion.global_position / TILE_SIZE).floor())
+		var level := SoundSpread.level_at(levels, tile, minion.grid_mover.footprint)
 		if showing:
-			sums.append([minion.global_position, cost, entry[1]])
-		if cost > entry[1]:
+			sums.append([minion.global_position, level, entry[1]])
+		if level < entry[1]:
 			continue
 		if marker == null:
 			marker = marker_at(tree, position)
 			if marker == null:
 				return
-		minion.hear_noise(marker, cost)
+		minion.hear_noise(marker, level)
 
-## The cost (budget spent) of every tile a sound from `source` reaches without spending more
-## than `budget`. Dijkstra: each step pays the muffle of the tile it enters (INF = sound cannot
-## enter, e.g. outside the map); a diagonal step pays DIAGONAL times that.
-static func flood(source: Vector2i, budget: float, muffle: Callable) -> Dictionary:
-	var costs := {source: 0.0}
-	var heap: Array = [[0.0, source]]
-	while not heap.is_empty():
-		var top: Array = _heap_pop(heap)
-		var cell: Vector2i = top[1]
-		if top[0] > costs[cell]:
-			continue
-		for x in range(-1, 2):
-			for y in range(-1, 2):
-				if x == 0 and y == 0:
-					continue
-				var next := cell + Vector2i(x, y)
-				var step: float = muffle.call(next) * (DIAGONAL if x != 0 and y != 0 else 1.0)
-				var cost: float = top[0] + step
-				if cost <= budget and cost < costs.get(next, INF):
-					costs[next] = cost
-					_heap_push(heap, [cost, next])
-	return costs
+## What players hear: the same spread, run on each machine for its own adventurer (Viewer.local,
+## threshold Viewer.hearing). The dB a sound made at `position` loses on its way to them, or
+## INF when a sound of `db` would arrive quieter than they hear (or there is nobody to hear).
+static func lost_to_local(tree: SceneTree, position: Vector2, db: float) -> float:
+	var me := Viewer.local()
+	if me == null or db < me.hearing:
+		return INF
+	var tile := Vector2i((me.position / TILE_SIZE).floor())
+	if me.position.distance_to(position) > ((db - me.hearing) / SoundSpread.AIR_DB_PER_TILE + 1.0) * TILE_SIZE:
+		return INF
+	var ears := SoundSpread.quads_of(tile)
+	var levels := SoundSpread.flood(SoundSpread.quad_at(position), db, me.hearing, SoundSpread.reader(tree), ears)
+	return db - SoundSpread.level_at(levels, tile)
 
-## Muffle read straight from the dungeon's tile layers: a closed door, else the wall tile's,
-## else the floor tile's; a cell with no floor at all is outside the map (INF).
-static func _muffle_reader(tree: SceneTree) -> Callable:
-	var scene := tree.current_scene
-	var walls: TileMapLayer = scene.find_child("WallData", true, false) if scene else null
-	var floors: TileMapLayer = scene.find_child("FloorData", true, false) if scene else null
-	var tiles := TileType.by_id()
-	return func(cell: Vector2i) -> float:
-		if DoorRegistry.closed_door_at(cell) != null:
-			return DOOR_MUFFLE
-		var wall_id := walls.get_cell_source_id(cell) if walls else -1
-		if wall_id != -1:
-			return tiles[wall_id].muffle if tiles.has(wall_id) else 3.0
-		var floor_id := floors.get_cell_source_id(cell) if floors else 0
-		if floor_id == -1:
-			return INF
-		return tiles[floor_id].muffle if tiles.has(floor_id) else 1.0
-
-static func _heap_push(heap: Array, item: Array) -> void:
-	heap.append(item)
-	var i := heap.size() - 1
-	while i > 0:
-		@warning_ignore("integer_division")  # whole index on purpose
-		var parent := (i - 1) / 2
-		if heap[parent][0] <= heap[i][0]:
-			break
-		var swap = heap[parent]
-		heap[parent] = heap[i]
-		heap[i] = swap
-		i = parent
-
-static func _heap_pop(heap: Array) -> Array:
-	var top: Array = heap[0]
-	var last: Array = heap.pop_back()
-	if not heap.is_empty():
-		heap[0] = last
-		var i := 0
-		while true:
-			var smallest := i
-			for child in [i * 2 + 1, i * 2 + 2]:
-				if child < heap.size() and heap[child][0] < heap[smallest][0]:
-					smallest = child
-			if smallest == i:
-				break
-			var swap = heap[smallest]
-			heap[smallest] = heap[i]
-			heap[i] = swap
-			i = smallest
-	return top
+## Plays `path` (SoundPlayer) as a sound of `db` made at `position`: only if this machine's
+## adventurer hears it, as much quieter as the dB it lost on the way (walls, doors, distance).
+static func play_heard(from: Node, path: String, position: Vector2, db: float, options: Dictionary = {}) -> Node:
+	var lost := lost_to_local(from.get_tree(), position, db)
+	if lost == INF:
+		return null
+	var heard := options.duplicate()
+	heard["volume_db"] = float(heard.get("volume_db", 0.0)) - lost
+	heard["at"] = position
+	heard["heard"] = true
+	return SoundPlayer.play(from, path, heard)
 
 ## The live marker within REUSE_TILES of `position` (kept alive another MARKER_SECONDS), or a
 ## new one there. Null when there is no scene to put it in.

@@ -36,8 +36,8 @@ var investigate_marker: Node2D
 ## Which sense last raised the alert, for the debug overlay: "touch", "sight", "smell", "taste",
 ## "hearing", "light" (lit by the player's glow), "hit", "pack" (a packmate raised the alarm) or "" (nothing yet / gave up).
 var last_trigger := ""
-## How much of its hearing budget the last sound it heard had spent getting here (debug inspector).
-var last_heard_cost := -1.0
+## The level (dB) the last sound it heard still had here (debug inspector); -INF before any.
+var last_heard_db := -INF
 
 ## Getting hit always means the minion now knows roughly where its attacker
 ## is, even with no direct sense of them (e.g. shot from off-screen or from
@@ -72,7 +72,7 @@ func forget() -> void:
 ## Per-minion-type toggle, e.g. rat_blind's "senses": {"sight": false} JSON
 ## key -- keys match this node's own property names (touch/sight/hearing/
 ## smell/taste). A plain bool is shorthand for "enabled"; a dictionary (e.g.
-## rat_blind's "senses": {"hearing": {"range_tiles": 15.0}}) instead sets
+## rat_blind's "senses": {"hearing": {"threshold_db": 15.0}}) instead sets
 ## whichever @export properties of that sense it names, so this stays
 ## generic as more senses -- and more per-sense tuning -- come online.
 func apply_overrides(overrides: Dictionary) -> void:

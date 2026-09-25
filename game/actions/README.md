@@ -34,7 +34,7 @@ walks) and for the player (the order is the hotbar slot).
 | `effect` | A picture played when it is used: `texture`, `frame_count`, `speed`, `anchor`. A `projectile` adds `projectile` (a flying sprite) plus `attacker` and `target` animations. |
 | `shape` | For `destroy_tiles`: breaks the walls inside it (`line` with `length` and `width`, or `circle` with `radius`), leaving floor. Never breaks `barrier_*` tiles. |
 | `radius_tiles`, `duration`, `max_targets` | For `taunt`: forces minions within the radius (nearest `max_targets`) onto the user for `duration` seconds. |
-| `loudness` | For `throw`: how far the landing carries, in multiples of a footstep (`SenseHearing`), 1 to 10 (outside that it is clamped). It flies at most `range_tiles` and stops short of a wall. |
+| `loudness_db` | For `throw`: how loud the landing is, in dB (a footstep is 30, a yell about 70; at most 90). Open floor takes 1 dB off per tile, a wall tile 35, a closed door 20; a creature hears it if what is left reaches its hearing `threshold_db`. No value: a silent landing. It flies at most `range_tiles` and stops short of a wall. |
 | `needs_sight`, `only_through_walls` | Minion firing rules. The second fires only while a wall is between it and its target. |
 
 ## Every action
@@ -49,6 +49,6 @@ walks) and for the player (the order is the hotbar slot).
 | `entropia_bolt` | 2 Entropia, ranged, 4 tiles. | hamster_demonic, the player |
 | `wall_smash` | Breaks walls in a 3x2 line, 6 s, only through walls. | minotaur, ogre |
 | `taunt` | Pulls minions within 6 tiles for 4 s, 12 s cooldown. | the player |
-| `throw_rock` | Throws a rock up to 8 tiles; the landing is a noise (loudness 3) minions investigate. 1.5 s. The picture is the arrow, a placeholder (no rock art yet). | the player (slot 5) |
+| `throw_rock` | Throws a rock up to 8 tiles; the landing is a 55 dB noise minions investigate. 1.5 s. The picture is the arrow, a placeholder (no rock art yet). | the player (slot 5) |
 
 Costs (ammo, magic, stamina) are not built.

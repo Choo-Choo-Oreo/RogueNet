@@ -9,10 +9,10 @@
 	"resistances": {},
 	"actions": [{"action": "bite", "interval": 1.2}],
 	"senses": {
-		"_comment": "Blind: hearing is its best sense (15); a rat's nose (10) backs it up. Ignores light.",
+		"_comment": "Blind: hearing is its best sense (threshold 15 dB, a footstep from 15 tiles); a rat's nose (10) backs it up. Ignores light.",
 		"touch": {"range_tiles": 1.0},
 		"sight": false,
-		"hearing": {"range_tiles": 15.0},
+		"hearing": {"threshold_db": 15.0},
 		"smell": {"range_tiles": 10.0},
 		"taste": {"range_tiles": 3.0}
 	},

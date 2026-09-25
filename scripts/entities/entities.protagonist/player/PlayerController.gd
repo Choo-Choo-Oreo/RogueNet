@@ -55,15 +55,22 @@ func _load_adventurer_data() -> void:
 	_senses = data.get("senses", {})
 	viewer.sight = sense_range("sight")
 	viewer.touch = sense_range("touch")
+	viewer.hearing = hearing_threshold()
 	_update_attacks()
 
-## adventurer.json "senses": sense -> {"range_tiles": n}, or false for one it doesn't have.
+## adventurer.json "senses": sense -> {"range_tiles": n} (hearing: {"threshold_db": n}), or
+## false for one it doesn't have.
 var _senses := {}
 
 ## A sense's range in tiles; 0 when the adventurer doesn't have that sense.
 func sense_range(sense: String) -> float:
 	var entry = _senses.get(sense, false)
 	return float(entry.get("range_tiles", 0.0)) if entry is Dictionary else 0.0
+
+## The quietest sound this adventurer hears, in dB (like a minion's, SenseHearing); INF when deaf.
+func hearing_threshold() -> float:
+	var entry = _senses.get("hearing", false)
+	return float(entry.get("threshold_db", SenseHearing.DEFAULT_THRESHOLD_DB)) if entry is Dictionary else INF
 
 ## What the map's light and vision know about this adventurer (cells never reads the player).
 var viewer := Viewer.new()
@@ -104,12 +111,12 @@ func take_damage(amount: int, type: String = "") -> void:
 ## the party fits the usual sense of "ghost" better than freezing in place.
 ## Each step into a new tile is a noise minions can hear (Sound, SenseHearing). Only the
 ## player's own machine reports it; a ghost or a debug-unseen player is silent.
-const FOOTSTEP_LOUDNESS := 1.0
+const FOOTSTEP_DB := 30.0
 
 func _on_stepped(tile: Vector2i) -> void:
 	if not is_multiplayer_authority() or stats.is_ghost or DebugState.unseen:
 		return
-	NetworkSync.report_noise((Vector2(tile) + Vector2(0.5, 0.5)) * grid_mover.tile_size, FOOTSTEP_LOUDNESS)
+	NetworkSync.report_noise((Vector2(tile) + Vector2(0.5, 0.5)) * grid_mover.tile_size, FOOTSTEP_DB)
 
 func _on_died() -> void:
 	if _is_dead:

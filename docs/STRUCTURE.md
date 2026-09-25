@@ -208,8 +208,8 @@ changes tiles but it is not tile code.
 
 **`scripts/cells/`** The map's data: what each cell holds and knows. That is what is in it
 (a creature, a door, a wall, floor or no floor), the scent trail, and the light. Because it
-is the data that spreads from cell to cell, the flooding lives here (light flood, flow
-fields, pathfinding, line of sight), and later ongoing spreading
+is the data that spreads from cell to cell, the flooding lives here (light flood, sound
+spread, flow fields, pathfinding, line of sight), and later ongoing spreading
 (liquid, fire) would join it. It is a foundation layer: entities and dungeon code ask it
 questions ("what blocks a step here?", "who is standing here?"), and it never calls back
 into them. Bodies register themselves into it, so it does not scan the creature groups.

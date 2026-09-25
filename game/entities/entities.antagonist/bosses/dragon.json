@@ -13,7 +13,7 @@
 		"_comment": "Dragon: eagle eyes are its standout (20), a strong nose (15), ears 10.",
 		"touch": {"range_tiles": 1.0},
 		"sight": {"range_tiles": 20.0},
-		"hearing": {"range_tiles": 10.0},
+		"hearing": {"threshold_db": 20.0},
 		"smell": {"range_tiles": 15.0},
 		"taste": {"range_tiles": 5.0}
 	},

@@ -1113,15 +1113,16 @@ func join_pack_investigation(marker: Node2D) -> void:
 	senses.hear(marker, "pack")
 	_wake_up()
 
-## Noise entry points (host-side, from Sound.make): whether this minion's ears reach the
-## spot, and the order to go and look at its marker. Ignored while it is already attacking.
-func hearing_budget(loudness: float) -> float:
-	return senses.hearing.budget(loudness) if is_multiplayer_authority() else 0.0
+## Noise entry points (host-side, from Sound.make): the quietest sound this minion hears
+## (INF: none, e.g. on a machine that doesn't run it), and the order to go and look at a
+## marker. Ignored while it is already attacking.
+func hearing_threshold() -> float:
+	return senses.hearing.threshold() if is_multiplayer_authority() else INF
 
-## `cost` is how much of its budget the sound spent getting here (Sound.flood), for the inspector.
-func hear_noise(marker: Node2D, cost := 0.0) -> void:
+## `db` is the level the sound still had here (SoundSpread), for the inspector.
+func hear_noise(marker: Node2D, db := 0.0) -> void:
 	senses.hear(marker)
-	senses.last_heard_cost = cost
+	senses.last_heard_db = db
 	_wake_up()
 
 ## Taunt entry point (host-side, called from NetworkSync). Hard-locks onto

@@ -2,7 +2,7 @@
 	"verb": "throw",
 	"interval": 1.5,
 	"range_tiles": 8,
-	"loudness": 3.0,
+	"loudness_db": 55.0,
 	"effect": {
 		"projectile": "res://resources/gfx/entities/entities.projectiles/arrow/Arrow.png"
 	},
