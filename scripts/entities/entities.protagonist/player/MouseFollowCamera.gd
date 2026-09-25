@@ -24,12 +24,14 @@ func _process(delta: float) -> void:
 	if DebugState.free_cam != top_level:
 		_set_free(DebugState.free_cam)
 	if top_level:
-		var dir := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+		var dir := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 		# Divided by zoom so the pan feels the same speed at any zoom level.
 		global_position += dir * free_cam_speed * delta / zoom.x
 		return
 	var owner_global: Vector2 = get_parent().global_position
-	var mouse_world := get_global_mouse_position()
+	# The aim point: the mouse, or the left stick on a controller (PlayerController.aim_position).
+	var parent := get_parent()
+	var mouse_world: Vector2 = parent.aim_position() if parent.has_method("aim_position") else get_global_mouse_position()
 	var to_mouse := (mouse_world - owner_global) * mouse_weight
 	if to_mouse.length() > max_offset:
 		to_mouse = to_mouse.normalized() * max_offset

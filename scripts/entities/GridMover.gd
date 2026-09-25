@@ -13,8 +13,6 @@ extends Node
 @onready var wall_data: TileMapLayer = get_tree().current_scene.find_child("WallData", true, false)
 @onready var floor_data: TileMapLayer = get_tree().current_scene.find_child("FloorData", true, false)
 
-@onready var _void_source_id: int = TileTypeRegistry.new().get_id("floor_void")
-
 ## Emitted when a step finishes, with the tile stepped onto. Not for teleports.
 signal stepped(tile: Vector2i)
 
@@ -44,6 +42,35 @@ var _floor_speed := {}
 
 func _ready() -> void:
 	_build_floor_speeds()
+	set_process(false)  # only runs while gliding to a network position (follow_network)
+
+## A position another machine sent (NetworkSync, once a tick): the body glides there over
+## one tick instead of jumping, so remote players and minions look as smooth as local ones.
+## A jump of more than NET_SNAP_TILES (a teleport, a respawn) is not smoothed.
+const NET_SNAP_TILES := 3.0
+var _net_from := Vector2.ZERO
+var _net_to := Vector2.ZERO
+var _net_left := 0.0
+
+func follow_network(pos: Vector2) -> void:
+	note_move("network")
+	if _body.global_position.distance_to(pos) > NET_SNAP_TILES * tile_size:
+		_body.global_position = pos
+		_net_left = 0.0
+		set_process(false)
+		return
+	_net_from = _body.global_position
+	_net_to = pos
+	_net_left = GameTick.TICK_SECONDS
+	set_process(true)
+
+func _process(delta: float) -> void:
+	_net_left -= delta
+	if _net_left <= 0.0:
+		_body.global_position = _net_to
+		set_process(false)
+		return
+	_body.global_position = _net_to.lerp(_net_from, _net_left / GameTick.TICK_SECONDS)
 
 func _build_floor_speeds() -> void:
 	var tiles := TileType.by_id()
@@ -93,6 +120,34 @@ func _no_clip() -> bool:
 
 var _tween: Tween
 
+## For movers run on the game tick (minions, see MinionController): a step ends on the
+## first tick at or past step_due (game seconds) rather than on the tween's last frame,
+## so the mover never waits a tick to take its next step. A step taken right away starts
+## where the last one was due, so rounding to ticks never slows a mover down: over many
+## steps it keeps its exact speed. Players move per frame and leave this off.
+var on_tick := false:
+	set(value):
+		on_tick = value
+		if on_tick and not GameTick.steps_due.is_connected(_on_steps_due):
+			GameTick.steps_due.connect(_on_steps_due)
+var step_due := 0.0
+var _finish_step := Callable()
+
+func _on_steps_due(_tick: int) -> void:
+	if not is_inside_tree():  # leaving with a scene change, not freed yet
+		return
+	if is_moving and GameTick.seconds() >= step_due - 0.0001:
+		finish_step()
+
+## Ends the step in progress now: the body lands on its tile (the tween had at most a
+## frame left) and `stepped` is emitted.
+func finish_step() -> void:
+	if not is_moving:
+		return
+	if _tween != null and _tween.is_valid():
+		_tween.kill()
+	_finish_step.call()
+
 ## How this body last got where it is, for the debug body sweep (BodySweep): kind is
 ## "step", "teleport" or "network" (a position a peer sent), dir the step, msec when.
 var last_move := {"kind": "", "dir": Vector2.ZERO, "msec": 0}
@@ -101,17 +156,9 @@ func note_move(kind: String, dir: Vector2 = Vector2.ZERO) -> void:
 	last_move = {"kind": kind, "dir": dir, "msec": Time.get_ticks_msec()}
 
 ## Debug (BodySweep): why a body should not be standing on `tile` -- "wall", "void" or
-## "no floor" -- or "" if it is fine. Reads the layers directly, so it also catches a
-## cell with no floor at all, which _is_blocked lets through.
+## "no floor" -- or "" if it is fine (TileSolid, the same rule _is_blocked uses).
 func bad_tile_reason(tile: Vector2i) -> String:
-	if wall_data != null and wall_data.get_cell_source_id(tile) != -1:
-		return "wall"
-	if floor_data == null:
-		return ""
-	var floor_id := floor_data.get_cell_source_id(tile)
-	if floor_id == -1:
-		return "no floor"
-	return "void" if floor_id == _void_source_id else ""
+	return TileSolid.reason(wall_data, floor_data, tile)
 
 ## Debug: put the body on a spot right now, cancelling any step in progress.
 func teleport(pos: Vector2) -> void:
@@ -119,6 +166,7 @@ func teleport(pos: Vector2) -> void:
 	if _tween != null and _tween.is_valid():
 		_tween.kill()
 	is_moving = false
+	_finish_step = Callable()
 	for tile in _reserved.keys():
 		if _reserved[tile] == _body:
 			_reserved.erase(tile)
@@ -190,22 +238,27 @@ func is_position_blocked(global_pos: Vector2) -> bool:
 ## every mover uses the same tile_size, true everywhere in this project
 ## today.
 static var _occupancy_frame: int = -1
+static var _occupancy_tick: int = -1
 static var _occupancy_index: Dictionary = {}  # Vector2i -> Array[Node2D]
 
 ## Every living creature on `tile` this frame (ghosts excluded).
 func occupants_at(tile: Vector2i) -> Array:
-	return _tile_occupants(tile)
+	return occupants(get_tree(), tile, tile_size)
 
-func _tile_occupants(tile: Vector2i) -> Array:
+## The same for code that has no GridMover of its own (DoorManager). A body covers the
+## tiles from its top-left one, as many as its footprint.
+static func occupants(tree: SceneTree, tile: Vector2i, size_px: int) -> Array:
+	# Also rebuilt on a new tick: a frame can run several ticks, and steps end on them.
 	var frame := Engine.get_process_frames()
-	if frame != _occupancy_frame:
+	if frame != _occupancy_frame or GameTick.tick != _occupancy_tick:
 		_occupancy_frame = frame
+		_occupancy_tick = GameTick.tick
 		_occupancy_index.clear()
 		for group in ["protagonist", "antagonist"]:
-			for body: Node2D in get_tree().get_nodes_in_group(group):
+			for body: Node2D in tree.get_nodes_in_group(group):
 				if "stats" in body and body.stats != null and body.stats.is_ghost:
 					continue
-				var body_tile := Vector2i(floori(body.global_position.x / tile_size), floori(body.global_position.y / tile_size))
+				var body_tile := Vector2i(floori(body.global_position.x / size_px), floori(body.global_position.y / size_px))
 				var body_size: int = body.get_meta("footprint", 1)
 				for y in body_size:
 					for x in body_size:
@@ -232,7 +285,7 @@ func _tile_occupied_single(tile: Vector2i) -> bool:
 	# Boss privilege: a boss walks through the antagonists that are not bosses
 	# (they step aside, see MinionController._yield_to_boss). Players still block it.
 	var is_boss: bool = _body.get_meta("is_boss", false)
-	for body in _tile_occupants(tile):
+	for body in occupants_at(tile):
 		if body == _body or body == _swap_partner:
 			continue
 		if is_boss and body.is_in_group("antagonist") and not body.get_meta("is_boss", false):
@@ -255,11 +308,7 @@ static var _reserved: Dictionary = {}  # Vector2i -> Node2D
 func _is_blocked(target_global: Vector2) -> bool:
 	if wall_data == null or _no_clip():
 		return false
-	var cell: Vector2i = wall_data.local_to_map(wall_data.to_local(target_global))
-	var source_id := wall_data.get_cell_source_id(cell)
-	if source_id != -1:
-		return true
-	return _floor_source_at(target_global) == _void_source_id
+	return TileSolid.is_solid(wall_data, floor_data, wall_data.local_to_map(wall_data.to_local(target_global)))
 
 ## A diagonal step squeezes past the corner its two straight steps share, so
 ## both of those straight steps' tiles must be open -- no cutting past a wall
@@ -351,15 +400,31 @@ func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> bool:
 	var origin_speed: float = (1.0 if ignore_terrain else _floor_speed.get(_floor_source_at(origin_global), 1.0)) * speed_scale
 	var target_speed: float = (1.0 if ignore_terrain else _floor_speed.get(_floor_source_at(target_global), 1.0)) * speed_scale
 	var half_time := move_time * direction.length() / 2.0
+	var first_half := half_time / origin_speed
+	var second_half := half_time / target_speed
+	if on_tick:
+		# Carry on from where the last step was due if it only just ended (see on_tick);
+		# the tween then runs for what is left, so the body is drawn where the rules have it.
+		var now := GameTick.seconds()
+		var start := step_due if now - step_due < GameTick.TICK_SECONDS else now
+		step_due = start + first_half + second_half
+		var stretch := maxf(step_due - now, 0.001) / (first_half + second_half)
+		first_half *= stretch
+		second_half *= stretch
 
-	var tween := create_tween()
-	_tween = tween
-	tween.tween_property(_body, "global_position", midpoint, half_time / origin_speed)
-	tween.tween_property(_body, "global_position", target_global, half_time / target_speed)
-	tween.finished.connect(func():
+	_finish_step = func():
+		_body.global_position = target_global
 		is_moving = false
+		_finish_step = Callable()
 		for covered in reserved_tiles:
 			if _reserved.get(covered) == _body:
 				_reserved.erase(covered)
-		stepped.emit(target_tile))
+		stepped.emit(target_tile)
+	var tween := create_tween()
+	_tween = tween
+	tween.tween_property(_body, "global_position", midpoint, first_half)
+	tween.tween_property(_body, "global_position", target_global, second_half)
+	tween.finished.connect(func():
+		if is_moving and _tween == tween:
+			_finish_step.call())
 	return true

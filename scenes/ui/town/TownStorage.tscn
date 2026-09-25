@@ -40,7 +40,6 @@ layout_mode = 2
 size_flags_vertical = 0
 script = ExtResource("2_inventory")
 storage_open = true
-closable = false
 
 [node name="StoragePanel" type="PanelContainer" parent="CenterContainer/VBoxContainer/Panels"]
 layout_mode = 2

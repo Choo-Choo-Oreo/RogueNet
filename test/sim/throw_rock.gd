@@ -6,9 +6,9 @@ extends SceneTree
 ## the spot) without attacking. The player stands more than the light's radius from the rat, so only
 ## the sound can move it.
 ##
-##   godot --headless -s res://test/sim/throw_rock.gd
+##   godot --headless --fixed-fps 60 -s res://test/sim/throw_rock.gd
 ##
-## Real time (the AI's timers use the wall clock): about 15 seconds.
+## Game time (GameTick): about 15 game seconds, a few real ones with --fixed-fps.
 
 const CELL := "hearing_rock_behind_wall"
 const THROW_AT_MSEC := 3000
@@ -44,7 +44,7 @@ func _process(_delta: float) -> bool:
 		return false
 	if _player == null:
 		return _begin()
-	var now := Time.get_ticks_msec() - _start_msec
+	var now: int = root.get_node("GameTick").msec() - _start_msec
 	if not _thrown and now >= THROW_AT_MSEC:
 		_throw()
 	if _thrown and is_instance_valid(_rat) and _marker != null and is_instance_valid(_marker):
@@ -79,7 +79,7 @@ func _begin() -> bool:
 	for m: Node2D in get_nodes_in_group("antagonist"):
 		if area.has_point(Vector2i((m.global_position / ts).floor())):
 			_rat = m
-	_start_msec = Time.get_ticks_msec()
+	_start_msec = root.get_node("GameTick").msec()
 	return false
 
 func _throw() -> void:

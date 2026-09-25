@@ -3,11 +3,17 @@
 `dev_sim.gd` plays the development biome (`test/lab/development/`) without a window and reports
 what the creatures did, so the AI bugs in `docs/TODO.md` ("Big bodies, movement, abilities") can be
 checked by a command instead of by walking around. It is a script run by Godot, not a GUT test:
-it takes real time (about `seconds` per cell) and prints a report.
+it prints a report. Times are game time (`GameTick`), so it can run faster than real time.
 
 ```
-godot --headless -s res://test/sim/dev_sim.gd -- [seconds=15] [natural] [cell_name ...]
+godot --headless --fixed-fps 60 -s res://test/sim/dev_sim.gd -- [seconds=15] [natural] [speed=N] [cell_name ...]
 ```
+
+- `--fixed-fps 60` (Godot's own flag): every frame counts as exactly 1/60 s and Godot stops waiting
+  for the clock, so it runs as fast as the CPU allows with the same frames as a real game. Use it.
+  Without it, a cell takes real time (about `seconds`).
+- `speed=N` sets `GameTick.speed`: frames get N times longer. When the machine can't keep up, one
+  frame holds many ticks and tweens, physics and timers only update per frame, so results can differ.
 
 (`run_sim.bat` does the same with the Godot copy in `.godot-local/`.)
 
@@ -29,12 +35,18 @@ godot --headless -s res://test/sim/dev_sim.gd -- [seconds=15] [natural] [cell_na
   the expectation first, watch it fail, then fix.
 - `dev_cells.json` is written by `test/lab/development/generate_hub.py`; do not edit it by hand.
 
-Two smaller checks run on their own (each exits 1 on failure):
+Smaller checks run on their own (each exits 1 on failure; `--fixed-fps 60` makes them fast):
 - `dual_grid_after_smash.gd` breaks the walls in `bug3_smash_plain` and compares what is drawn with a fresh refresh.
 - `throw_rock.gd` (about 15 s) throws a rock with the real Throw Rock action into `hearing_rock_behind_wall`
   and checks the noise marker and that the blind rat investigates it.
+- `character_select.gd` (a few seconds) goes through the Characters screen with a test save folder:
+  Singleplayer opens it, a new hero is listed, Play picks it, remembers it and goes on to the town,
+  Swap Characters in town opens the same screen and saves the hero being left, and leaving the town saves the bag.
 - `debug_senses.gd` turns on the sense debug overlays and the inspector in the Test Lab, makes a
   sound and builds every creature's inspector panel: a crash there is a bug in the debug drawing.
+- `investigate_far_room.gd` (a real dungeon, seed 1, not the lab) places a rat, makes a noise two rooms
+  away along the most turning route, and checks it walks there (Investigate never keeps it in its room)
+  and then back to its home room on patrol.
 
 Not covered: the smash telegraph is visual. The boss zone (bug 5) is sampled, but the flicker the audit
 describes has not been reproduced yet.

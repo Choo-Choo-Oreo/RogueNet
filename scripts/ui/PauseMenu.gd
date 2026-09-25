@@ -8,14 +8,19 @@ extends Control
 const PANEL_PADDING := Vector2(60, 60)
 
 func _ready() -> void:
+	add_to_group("pause_menu")   # the HUD's Menu button and System tab open it
 	hide()
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel"):
+	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("menu"):
 		if visible:
 			_close()
 		else:
 			_open()
+
+func open() -> void:
+	if not visible:
+		_open()
 
 # Only the host, and only during a mission, can end it for everyone.
 func _open() -> void:

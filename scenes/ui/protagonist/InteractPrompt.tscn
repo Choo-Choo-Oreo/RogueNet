@@ -1,0 +1,28 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/protagonist/InteractPrompt.gd" id="1_interact"]
+[ext_resource type="Theme" path="res://resources/HudTheme.tres" id="2_theme"]
+[ext_resource type="Script" path="res://scripts/ui/InputPrompt.gd" id="3_prompt"]
+
+[node name="InteractPrompt" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("2_theme")
+script = ExtResource("1_interact")
+
+[node name="Box" type="PanelContainer" parent="."]
+layout_mode = 0
+mouse_filter = 2
+theme_type_variation = &"HudPanel"
+
+[node name="Prompt" type="HBoxContainer" parent="Box"]
+layout_mode = 2
+script = ExtResource("3_prompt")
+text = "Interact"
+key_text = "E"
+pad_text = "A"

@@ -124,6 +124,7 @@ static func _heap_push(heap: Array, item: Array) -> void:
 	heap.append(item)
 	var i := heap.size() - 1
 	while i > 0:
+		@warning_ignore("integer_division")  # whole index on purpose
 		var parent := (i - 1) / 2
 		if heap[parent][0] <= heap[i][0]:
 			break
@@ -169,14 +170,14 @@ static func marker_at(tree: SceneTree, position: Vector2) -> Node2D:
 		scene.add_child(marker)
 		marker.global_position = position
 		tree.create_timer(MARKER_SECONDS).timeout.connect(_expire.bind(tree, marker))
-	marker.set_meta("until_msec", Time.get_ticks_msec() + int(MARKER_SECONDS * 1000.0))
+	marker.set_meta("until_msec", GameTick.msec() + int(MARKER_SECONDS * 1000.0))
 	return marker
 
 ## Frees the marker once its last refresh has run out (a reuse pushes the deadline back).
 static func _expire(tree: SceneTree, marker) -> void:
 	if not is_instance_valid(marker):
 		return
-	var left_msec: int = int(marker.get_meta("until_msec")) - Time.get_ticks_msec()
+	var left_msec: int = int(marker.get_meta("until_msec")) - GameTick.msec()
 	if left_msec <= 0:
 		marker.queue_free()
 	else:

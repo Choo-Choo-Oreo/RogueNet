@@ -8,8 +8,6 @@ extends PanelContainer
 ## Right-click or double-click: a bag item goes on, a worn item comes off --
 ## into the storage when `storage_open` (the town), else into the bag.
 
-signal close_requested
-
 const UI_DIR := "res://resources/gfx/ui/inventory/"
 const BODY_SHEET := "res://resources/gfx/entities/entities.protagonist/human/Human-%s.png"
 const DOLL_SCALE := 8
@@ -49,8 +47,17 @@ static func mouse_over_open_panel(viewport: Viewport) -> bool:
 
 ## Set in the town, where worn gear comes off into the storage instead of the bag.
 @export var storage_open := false
-## Shows the x button in the header (the dungeon HUD closes it; the town screen has Back).
-@export var closable := true
+## The dungeon menu's layout: equipment on both sides of the character, bag to the
+## right, so it is wide and short and fits between the party frames and the hotbar.
+## The town keeps the tall layout (character and equipment on top, bag under them).
+@export var wide_layout := false
+## Inside the dungeon menu (GameMenu), which draws the frame, the tabs and the
+## prompts itself: no own frame, header or hint line.
+@export var embedded := false
+
+## The character preview is drawn this many times bigger (the wide layout uses a
+## smaller one so the panel stays short).
+const DOLL_SCALE_WIDE := 6
 
 var _slots: Array[ItemSlot] = []
 var _facing := 0
@@ -60,13 +67,7 @@ var _bag_count: Label
 var _body_sheets: Dictionary = {}
 
 func _ready() -> void:
-	var style := StyleBoxFlat.new()
-	style.bg_color = COLOR_PANEL
-	style.border_color = COLOR_PANEL_BORDER
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(4)
-	style.set_content_margin_all(14)
-	add_theme_stylebox_override("panel", style)
+	add_theme_stylebox_override("panel", (StyleBoxEmpty.new() as StyleBox) if embedded else frame_style())
 	for sheet in ItemDatabase.DRAW_ORDER:
 		_body_sheets[sheet] = load(BODY_SHEET % sheet)
 	_build()
@@ -74,31 +75,43 @@ func _ready() -> void:
 	PlayerInventory.changed.connect(refresh)
 	refresh()
 
+## The purple frame the inventory windows share (also the dungeon GameMenu's).
+static func frame_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = COLOR_PANEL
+	style.border_color = COLOR_PANEL_BORDER
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(4)
+	style.set_content_margin_all(14)
+	return style
+
 func _build() -> void:
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 10)
 	add_child(column)
 
-	var header := HBoxContainer.new()
-	header.add_theme_constant_override("separation", 8)
-	column.add_child(header)
-	header.add_child(_pixel_icon(load(UI_DIR + "backpack.png"), 2))
-	header.add_child(_label("Inventory", COLOR_TEXT, 20))
-	var spacer := Control.new()
-	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	header.add_child(spacer)
-	if closable:
-		var close := _flat_button("x")
-		close.tooltip_text = "Close"
-		close.pressed.connect(func(): close_requested.emit())
-		header.add_child(close)
+	if not embedded:
+		var header := HBoxContainer.new()
+		header.add_theme_constant_override("separation", 8)
+		column.add_child(header)
+		header.add_child(_pixel_icon(load(UI_DIR + "backpack.png"), 2))
+		header.add_child(_label("Inventory", COLOR_TEXT, 20))
 
 	var top := HBoxContainer.new()
-	top.add_theme_constant_override("separation", 14)
+	top.add_theme_constant_override("separation", 18 if wide_layout else 14)
 	column.add_child(top)
 
+	# Wide: [worn pieces] [character] [neck/back/hands], each a column of slots.
+	var paper := HBoxContainer.new()
+	paper.add_theme_constant_override("separation", 10)
+	top.add_child(paper)
+	var left_slots: VBoxContainer = null
+	if wide_layout:
+		left_slots = _slot_column()
+		paper.add_child(left_slots)
+
 	var doll_column := VBoxContainer.new()
-	top.add_child(doll_column)
+	paper.add_child(doll_column)
 	var doll_frame := PanelContainer.new()
 	var doll_style := StyleBoxFlat.new()
 	doll_style.bg_color = ItemSlot.COLOR_BG
@@ -108,7 +121,7 @@ func _build() -> void:
 	doll_frame.add_theme_stylebox_override("panel", doll_style)
 	doll_column.add_child(doll_frame)
 	_doll = Control.new()
-	_doll.custom_minimum_size = Vector2.ONE * ItemDatabase.FRAME_SIZE * DOLL_SCALE
+	_doll.custom_minimum_size = Vector2.ONE * ItemDatabase.FRAME_SIZE * (DOLL_SCALE_WIDE if wide_layout else DOLL_SCALE)
 	doll_frame.add_child(_doll)
 	var turn_row := HBoxContainer.new()
 	turn_row.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -124,19 +137,31 @@ func _build() -> void:
 	right.pressed.connect(_turn.bind(1))
 	turn_row.add_child(right)
 
-	var equip_grid := GridContainer.new()
-	equip_grid.columns = 2
-	equip_grid.add_theme_constant_override("h_separation", 6)
-	equip_grid.add_theme_constant_override("v_separation", 6)
-	top.add_child(equip_grid)
-	for slot in EQUIP_LAYOUT:
-		var cell := ItemSlot.new(PlayerInventory.place(PlayerInventory.EQUIP, slot), load(UI_DIR + "slot_%s.png" % slot))
-		cell.quick_action = _quick_action
-		equip_grid.add_child(cell)
-		_slots.append(cell)
+	# EQUIP_LAYOUT is two columns read row by row: even entries are the left
+	# column (worn pieces), odd entries the right one (neck, back, hands).
+	if wide_layout:
+		var right_slots := _slot_column()
+		paper.add_child(right_slots)
+		for i in EQUIP_LAYOUT.size():
+			_add_equip_cell(left_slots if i % 2 == 0 else right_slots, EQUIP_LAYOUT[i])
+	else:
+		var equip_grid := GridContainer.new()
+		equip_grid.columns = 2
+		equip_grid.add_theme_constant_override("h_separation", 6)
+		equip_grid.add_theme_constant_override("v_separation", 6)
+		top.add_child(equip_grid)
+		for slot in EQUIP_LAYOUT:
+			_add_equip_cell(equip_grid, slot)
+
+	# Wide: the bag sits right of the character; tall: under it.
+	var bag_parent := column
+	if wide_layout:
+		bag_parent = VBoxContainer.new()
+		bag_parent.add_theme_constant_override("separation", 8)
+		top.add_child(bag_parent)
 
 	var bag_header := HBoxContainer.new()
-	column.add_child(bag_header)
+	bag_parent.add_child(bag_header)
 	bag_header.add_child(_label("Bag", COLOR_TEXT, 16))
 	var bag_spacer := Control.new()
 	bag_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -148,15 +173,40 @@ func _build() -> void:
 	bag_grid.columns = BAG_COLUMNS
 	bag_grid.add_theme_constant_override("h_separation", 4)
 	bag_grid.add_theme_constant_override("v_separation", 4)
-	column.add_child(bag_grid)
+	bag_parent.add_child(bag_grid)
 	for i in PlayerInventory.BAG_SIZE:
 		var cell := ItemSlot.new(PlayerInventory.place(PlayerInventory.BAG, i))
 		cell.quick_action = _quick_action
 		bag_grid.add_child(cell)
 		_slots.append(cell)
 
-	var hint := _label("Drag, right-click or double-click to equip and unequip", COLOR_DIM, 12)
-	column.add_child(hint)
+	if not embedded:   # the GameMenu shows its own prompts, for keyboard and controller
+		var hint := _label("Drag, right-click or double-click to equip and unequip", COLOR_DIM, 12)
+		column.add_child(hint)
+
+func _slot_column() -> VBoxContainer:
+	var slots := VBoxContainer.new()
+	slots.add_theme_constant_override("separation", 6)
+	return slots
+
+func _add_equip_cell(parent: Container, slot: String) -> void:
+	var cell := ItemSlot.new(PlayerInventory.place(PlayerInventory.EQUIP, slot), load(UI_DIR + "slot_%s.png" % slot))
+	cell.quick_action = _quick_action
+	parent.add_child(cell)
+	_slots.append(cell)
+
+## Controller use: slots take focus (the left stick moves between them) and the
+## first one is selected. Off for keyboard + mouse, where a focused slot would
+## grab Space and Enter.
+func set_pad_focus(on: bool) -> void:
+	for cell in _slots:
+		cell.focus_mode = Control.FOCUS_ALL if on else Control.FOCUS_NONE
+	if on and not _slots.is_empty():
+		_slots[0].grab_focus()
+	elif not on:
+		var owner_control := get_viewport().gui_get_focus_owner()
+		if owner_control in _slots:
+			owner_control.release_focus()
 
 func refresh() -> void:
 	for cell in _slots:

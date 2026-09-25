@@ -231,13 +231,12 @@ func _draw_collisions() -> void:
 				draw_rect(rect, color, false, 1.0)
 
 ## Green dot = doing a full AI tick, grey dot = waiting (boxed in / re-thinking
-## in a few frames) or driven by the host.
+## in a few ticks) or driven by the host.
 func _draw_activity() -> void:
-	var frame := Engine.get_process_frames()
 	for minion in get_tree().get_nodes_in_group("antagonist"):
-		if not "_idle_until_frame" in minion:
+		if not "_idle_until_tick" in minion:
 			continue
-		var thinking: bool = minion.is_multiplayer_authority() and not minion._stuck and minion._idle_until_frame <= frame
+		var thinking: bool = minion.is_multiplayer_authority() and not minion._stuck and minion._idle_until_tick <= GameTick.tick
 		var centre: Vector2 = minion.global_position + Vector2(TILE, TILE) / 2.0
 		draw_circle(centre, 2.5, Color(0.3, 1.0, 0.4) if thinking else Color(0.6, 0.6, 0.6))
 
@@ -397,7 +396,8 @@ func _draw_sound() -> void:
 		_label_sound(Sound.recent.back())
 	for marker: Node2D in get_tree().get_nodes_in_group(Sound.GROUP):
 		var at := marker.global_position
-		var seconds_left := (int(marker.get_meta("until_msec", now)) - now) / 1000.0
+		# Markers expire in game time (GameTick), like the minions that go to them.
+		var seconds_left := (int(marker.get_meta("until_msec", 0)) - GameTick.msec()) / 1000.0
 		draw_colored_polygon(PackedVector2Array([at + Vector2(0, -4), at + Vector2(4, 0), at + Vector2(0, 4), at + Vector2(-4, 0)]), Color(SenseHearing.DEBUG_COLOR, 0.7))
 		_label(at + Vector2(-8, -6), "noise %.0fs" % seconds_left, SenseHearing.DEBUG_COLOR)
 

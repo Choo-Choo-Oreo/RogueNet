@@ -4,7 +4,7 @@ extends RefCounted
 ## Shared per-target step field: one flood from the target's tile
 ## outward, reused by every minion chasing that same target this frame,
 ## instead of each one solving its own from-scratch A* search (see
-## Pathfinding.gd, and MinionController's MAX_PATHFINDS_PER_FRAME budget /
+## Pathfinding.gd, and MinionController's MAX_PATHFINDS_PER_TICK budget /
 ## _try_direct_step bypass -- this is the third tier alongside them). A whole
 ## pursuing crowd shares one search: the swarm-room stress test is the
 ## textbook "many agents, one target" case flow fields are for.

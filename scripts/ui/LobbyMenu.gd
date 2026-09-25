@@ -100,10 +100,9 @@ func _on_host_button_pressed():
 		return
 
 	multiplayer.multiplayer_peer = peer
-	NetworkSync.session_mode = NetworkSync.SessionMode.HOST
 	NetworkSync.reset_session()
 	NetworkSync.peer_steam_ids[1] = Steam.getSteamID()
-	NetworkSync.peer_names[1] = Steam.getPersonaName()
+	NetworkSync.peer_names[1] = NetworkSync.account_name()
 	get_tree().change_scene_to_file("res://scenes/ui/town/MainTown.tscn")
 
 func _on_join_button_pressed():
@@ -142,8 +141,7 @@ func _on_join_button_pressed():
 
 func _on_connected_to_server():
 	_joining = false
-	NetworkSync.session_mode = NetworkSync.SessionMode.CLIENT
-	NetworkSync.report_player_name.rpc_id(1, Steam.getPersonaName())
+	NetworkSync.report_player_name.rpc_id(1, NetworkSync.account_name())
 	get_tree().change_scene_to_file("res://scenes/ui/town/MainTown.tscn")
 
 func _on_back_pressed() -> void:

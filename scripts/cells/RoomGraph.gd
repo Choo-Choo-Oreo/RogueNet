@@ -108,4 +108,10 @@ func next_waypoint(from_cell: Vector2i, to_cell: Vector2i) -> Vector2i:
 		if d < best_dist:
 			best_dist = d
 			best = cell
+	# A joint cell can still belong to this room: aim one cell further, inside the next room,
+	# or a walker standing on the joint has arrived and never crosses.
+	if room_at(best) != step_room:
+		for dir: Vector2i in [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]:
+			if room_at(best + dir) == step_room:
+				return best + dir
 	return best

@@ -1,8 +1,5 @@
 extends Node
 
-enum SessionMode { SINGLEPLAYER, HOST, CLIENT }
-var session_mode: SessionMode = SessionMode.SINGLEPLAYER
-
 # Temporary local test flag — flip by hand to simulate a dedicated host
 # (no local player) without an actual dedicated-server build. Remove once
 # real headless support exists.
@@ -18,6 +15,7 @@ var dungeon_biome: String = ""
 var dive_members: Array = []
 
 func _ready() -> void:
+	GameTick.tick_ended.connect(_send_minion_batch)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 	multiplayer.peer_disconnected.connect(func(id):
 		if not multiplayer.is_server():
@@ -47,6 +45,19 @@ func _ready() -> void:
 		if main_town and main_town.has_method("refresh_player_list"):
 			main_town.refresh_player_list()
 	)
+
+## True in real multiplayer (hosting or joined). Singleplayer runs on an OfflineMultiplayerPeer,
+## which does not count. The one check for "offline-only" things (debug tools, GameTick.speed).
+func is_online() -> bool:
+	if not is_inside_tree():  # a -s sim script can ask before autoloads join the tree
+		return false
+	var peer := multiplayer.multiplayer_peer
+	return peer != null and not peer is OfflineMultiplayerPeer
+
+## The name other players see: the Steam account's, never the character's (characters are
+## swapped freely, the player stays the same). "Player" without Steam.
+func account_name() -> String:
+	return Steam.getPersonaName() if SteamManager.online else "Player"
 
 func reset_session() -> void:
 	missions.clear()
@@ -125,8 +136,7 @@ func receive_position(player_id: int, pos: Vector2) -> void:
 		return
 	var player := scene.get_node_or_null("Player/" + str(player_id))
 	if player:
-		player.global_position = pos
-		player.grid_mover.note_move("network")
+		player.grid_mover.follow_network(pos)
 
 var missions: Dictionary = {}
 
@@ -217,8 +227,6 @@ func receive_player_characters(characters: Dictionary) -> void:
 	var scene := get_tree().current_scene
 	if scene == null:
 		return
-	if scene.has_method("refresh_character_label"):
-		scene.refresh_character_label()
 	var player_root := scene.get_node_or_null("Player")
 	if player_root == null:
 		return
@@ -478,18 +486,45 @@ func receive_spawn_minions(spawns: Array) -> void:
 # Host relays every frame it moves an owned minion (unreliable, same as player
 # position) -- clients never run minion AI at all, they only ever render
 # whatever the host last told them.
+# Host only: the minions whose position or state changed this tick, sent together when the
+# tick ends (GameTick.tick_ended) instead of one message per minion. Split into messages of
+# MINION_BATCH_SIZE so each stays around one network packet (13 bytes a minion).
+const MINION_BATCH_SIZE := 64
+var _batch_ids := PackedInt32Array()
+var _batch_positions := PackedVector2Array()
+var _batch_states := PackedByteArray()
+
 func relay_minion_state(minion_id: int, pos: Vector2, state: int) -> void:
-	for peer_id in multiplayer.get_peers():
-		receive_minion_state.rpc_id(peer_id, minion_id, pos, state)
+	if multiplayer.get_peers().is_empty():
+		return
+	_batch_ids.append(minion_id)
+	_batch_positions.append(pos)
+	_batch_states.append(state)
+
+func _send_minion_batch(_tick: int) -> void:
+	if _batch_ids.is_empty():
+		return
+	for start in range(0, _batch_ids.size(), MINION_BATCH_SIZE):
+		var end := mini(start + MINION_BATCH_SIZE, _batch_ids.size())
+		var ids := _batch_ids.slice(start, end)
+		var positions := _batch_positions.slice(start, end)
+		var states := _batch_states.slice(start, end)
+		for peer_id in multiplayer.get_peers():
+			receive_minion_states.rpc_id(peer_id, ids, positions, states)
+	_batch_ids.clear()
+	_batch_positions.clear()
+	_batch_states.clear()
 
 @rpc("authority", "unreliable_ordered")
-func receive_minion_state(minion_id: int, pos: Vector2, state: int) -> void:
+func receive_minion_states(ids: PackedInt32Array, positions: PackedVector2Array, states: PackedByteArray) -> void:
 	var scene := get_tree().current_scene
-	if scene == null:
+	var minions := scene.get_node_or_null("Minions") if scene else null
+	if minions == null:
 		return
-	var minion := scene.get_node_or_null("Minions/" + str(minion_id))
-	if minion and minion.has_method("receive_network_state"):
-		minion.receive_network_state(pos, state)
+	for i in ids.size():
+		var minion := minions.get_node_or_null(str(ids[i]))
+		if minion and minion.has_method("receive_network_state"):
+			minion.receive_network_state(positions[i], states[i])
 
 # A client's attack reports the hit to the host (only the host may ever
 # actually apply it); the host itself applies straight away. Either path

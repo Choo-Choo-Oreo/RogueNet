@@ -151,35 +151,6 @@ offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelCharacter" unique_id=1126673910]
-layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-grow_vertical = 2
-theme_override_constants/separation = 14
-
-[node name="Title" type="Label" parent="PanelCharacter/VBoxContainer" unique_id=1126673911]
-layout_mode = 2
-theme_override_font_sizes/font_size = 30
-text = "CHOOSE CHARACTER"
-horizontal_alignment = 1
-
-[node name="CurrentLabel" type="Label" parent="PanelCharacter/VBoxContainer" unique_id=1126673912]
-layout_mode = 2
-text = "Current: Human"
-horizontal_alignment = 1
-
-[node name="HumanButton" type="Button" parent="PanelCharacter/VBoxContainer" unique_id=1126673920]
-custom_minimum_size = Vector2(220, 50)
-layout_mode = 2
-text = "Human"
-
-[node name="BackButton" type="Button" parent="PanelCharacter/VBoxContainer" unique_id=1126673915]
-custom_minimum_size = Vector2(220, 50)
-layout_mode = 2
-text = "Back"
-
 [node name="PanelGuild" type="Panel" parent="." unique_id=471029384]
 visible = false
 self_modulate = Color(1, 1, 1, 0)
@@ -239,6 +210,4 @@ layout_mode = 1
 [connection signal="pressed" from="PanelMain/VBoxContainer/SwapCharactersButton" to="." method="_on_swap_characters_button_pressed"]
 [connection signal="pressed" from="PanelMain/VBoxContainer/StorageButton" to="." method="_on_storage_button_pressed"]
 [connection signal="pressed" from="PanelMain/VBoxContainer/LeaveButton" to="." method="_on_leave_button_pressed"]
-[connection signal="pressed" from="PanelCharacter/VBoxContainer/HumanButton" to="." method="_on_human_button_pressed"]
-[connection signal="pressed" from="PanelCharacter/VBoxContainer/BackButton" to="." method="_on_character_back_button_pressed"]
 [connection signal="back_pressed" from="PanelStorage/TownStorage" to="." method="_on_storage_back_pressed"]

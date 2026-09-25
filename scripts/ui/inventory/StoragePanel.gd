@@ -3,6 +3,7 @@ extends PanelContainer
 
 ## The town storage: a grid of PlayerInventory.storage. Items drag between here,
 ## the bag and the equipment slots; right-click or double-click puts one on.
+## Run from the editor, it also has debug buttons that fill the storage.
 
 const MAX_VISIBLE_ROWS := 8
 
@@ -35,6 +36,10 @@ func _build() -> void:
 	header.add_child(spacer)
 	_count = InventoryPanel._label("", InventoryPanel.COLOR_DIM, 14)
 	header.add_child(_count)
+	if OS.has_feature("editor"):
+		_debug_button(column, "Populate all items", ItemDatabase.all_ids)
+		_debug_button(column, "Populate cosmetics",
+			func(): return ItemDatabase.all_ids().filter(ItemDatabase.is_cosmetic))
 
 	var grid := GridContainer.new()
 	grid.columns = PlayerInventory.STORAGE_COLUMNS
@@ -60,7 +65,22 @@ func _build() -> void:
 
 	column.add_child(InventoryPanel._label("Drag gear onto your character, or right-click it", InventoryPanel.COLOR_DIM, 12))
 
+## Adds one of each item `ids` returns that the hero lacks (PlayerInventory.add_to_storage).
+func _debug_button(column: VBoxContainer, text: String, ids: Callable) -> void:
+	var button := InventoryPanel._flat_button("[debug] " + text)
+	button.pressed.connect(func():
+		var list: Array[String] = []
+		list.assign(ids.call())
+		PlayerInventory.add_to_storage(list))
+	column.add_child(button)
+
 func refresh() -> void:
+	# Storage grew (a debug button): the grid is built for a fixed number of cells.
+	if _slots.size() != PlayerInventory.storage.size():
+		for child in get_children():
+			child.queue_free()
+		_slots.clear()
+		_build()
 	for cell in _slots:
 		cell.refresh()
 	_count.text = "%d / %d" % [PlayerInventory.storage.size() - PlayerInventory.storage.count(""), PlayerInventory.storage.size()]

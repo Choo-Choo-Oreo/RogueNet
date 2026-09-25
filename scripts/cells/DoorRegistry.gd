@@ -62,11 +62,11 @@ static func _changed() -> void:
 	FlowField.clear()
 
 ## Ends the swing of every door whose animation time is up. DoorManager calls
-## this each frame.
+## this each game tick.
 static func tick() -> void:
 	if _swinging.is_empty():
 		return
-	var now := Time.get_ticks_msec()
+	var now := GameTick.msec()
 	var done: Array = []
 	for door: Door in _swinging:
 		if now - door.opened_msec >= int(door.passable_seconds * 1000.0):
@@ -132,7 +132,7 @@ static func set_open(id: int, open: bool) -> bool:
 	door.is_open = open
 	door.swinging = open and door.passable_seconds > 0.0
 	if door.swinging:
-		door.opened_msec = Time.get_ticks_msec()
+		door.opened_msec = GameTick.msec()
 		if not _swinging.has(door):
 			_swinging.append(door)
 	else:

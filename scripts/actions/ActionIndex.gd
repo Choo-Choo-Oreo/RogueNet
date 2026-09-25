@@ -17,8 +17,8 @@ static func _ensure() -> void:
 	for root in ROOTS:
 		JsonOnloading.find_by_id(root, _paths, "Action")
 
-## The resolved attack dictionaries for a creature's "actions" list, in list order. An
-## unknown action id is skipped with a warning.
+## The resolved attack dictionaries for a creature's "actions" list, in list order, each
+## with its action "id" added (the hotbar shows it). An unknown action id is skipped with a warning.
 static func resolve(entries: Array) -> Array:
 	_ensure()
 	var result: Array = []
@@ -33,6 +33,7 @@ static func resolve(entries: Array) -> Array:
 			push_warning("Action '%s' has no known verb (%s), skipped" % [id, ", ".join(ActionRunner.VERBS)])
 			continue
 		var attack: Dictionary = (_data[id] as Dictionary).duplicate(true)
+		attack["id"] = id
 		if entry is Dictionary:
 			for key in entry:
 				if key != "action":

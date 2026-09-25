@@ -58,14 +58,15 @@ var _unreachable_since_msec := 0
 var _avoid_id := 0
 var _avoid_until_msec := 0
 
-const IDLE_RETHINK_FRAMES := 6
-var _idle_until_frame := 0
+## Ticks (GameTick) a minion that failed to advance waits before thinking again.
+const IDLE_RETHINK_TICKS := 2
+var _idle_until_tick := 0
 var _skipped_delta := 0.0
 
-const RELAY_HEARTBEAT_MSEC := 1000
+const RELAY_HEARTBEAT_TICKS := 20
 var _relayed_state := -1
 var _relayed_position := Vector2.INF
-var _relayed_msec := 0
+var _relayed_tick := 0
 
 ## Half speed while Investigate is closing in on a lit-but-not-directly-seen
 ## target -- full speed once Attack actually confirms it.
@@ -96,16 +97,15 @@ const PATHFIND_RADIUS_MAX := 24
 ## both landed -- real solves-per-frame dropped a lot, so a higher cap for
 ## the ones that still happen is cheap. Tune by testing with the F4 debug
 ## menu's time-usage readout in a heavy biome (cathedral).
-const MAX_PATHFINDS_PER_FRAME := 32
-static var _pathfind_budget_frame: int = -1
+const MAX_PATHFINDS_PER_TICK := 32
+static var _pathfind_budget_tick: int = -1
 static var _pathfind_budget_used: int = 0
 
 static func _consume_pathfind_budget() -> bool:
-	var frame := Engine.get_process_frames()
-	if frame != _pathfind_budget_frame:
-		_pathfind_budget_frame = frame
+	if GameTick.tick != _pathfind_budget_tick:
+		_pathfind_budget_tick = GameTick.tick
 		_pathfind_budget_used = 0
-	if _pathfind_budget_used >= MAX_PATHFINDS_PER_FRAME:
+	if _pathfind_budget_used >= MAX_PATHFINDS_PER_TICK:
 		return false
 	_pathfind_budget_used += 1
 	return true
@@ -195,7 +195,7 @@ func set_minion_type(id: String) -> void:
 			"through_walls": bool(extra.get("only_through_walls", false)),
 		})
 	# "doors": "none" (default) can't open doors, "open" can (see-through doors any
-	# time, solid ones only while investigating or pursuing), "phase" passes through
+	# time, solid ones only while investigating, pursuing or walking home), "phase" passes through
 	# closed doors without opening them.
 	var door_mode: String = data.get("doors", "none")
 	_can_open_doors = door_mode == "open"
@@ -205,13 +205,12 @@ func take_damage(amount: int, type: String = "") -> void:
 	stats.take_damage(amount, type)
 	senses.note_hit()
 
-## Called by NetworkSync.receive_minion_state on every peer that isn't this
+## Called by NetworkSync.receive_minion_states on every peer that isn't this
 ## minion's authority (the host) -- the host told everyone where it is and
 ## what state it's in, this just applies that locally instead of deciding
 ## anything itself.
 func receive_network_state(pos: Vector2, state: int) -> void:
-	global_position = pos
-	grid_mover.note_move("network")
+	grid_mover.follow_network(pos)
 	var minion_state := state as MinionSenses.State
 	if minion_state != _last_state:
 		_show_alertness(minion_state)
@@ -221,33 +220,46 @@ func _ready() -> void:
 	add_to_group("antagonist")
 	_base_move_time = grid_mover.move_time
 	_light_map = get_tree().current_scene.find_child("LightMap", true, false)
+	# The AI thinks on the game tick; steps end on it too (GridMover.on_tick).
+	grid_mover.on_tick = true
+	GameTick.ticked.connect(_on_tick)
 	if default_minion_type != "":
 		set_minion_type(default_minion_type)
 	stats.died.connect(queue_free)
 	tree_exiting.connect(func(): bosses.erase(self))
 	# Which doors this minion may open depends on its "doors" field (see set_minion_type).
 	grid_mover.open_predicate = func(door: DoorRegistry.Door) -> bool:
-		return _can_open_doors and (door.transparent or _last_state != MinionSenses.State.PATROL)
+		return _can_open_doors and (door.transparent or _last_state != MinionSenses.State.PATROL or _away_from_home())
 
 ## Minions are always host-owned (see MinionSpawning.spawn_one) -- a client
 ## never runs AI for one, it only ever renders whatever position/state the
 ## host last relayed, the same split PlayerController uses for a remote peer's
 ## body (animate_from_position instead of reading local input).
 func _process(delta: float) -> void:
-	var started := Time.get_ticks_usec()
-	_process_inner(delta)
-	DebugState.add_time("minion AI", Time.get_ticks_usec() - started)
-
-func _process_inner(delta: float) -> void:
 	if not is_multiplayer_authority():
 		animator.animate_from_position(delta, global_position)
+
+## The host's AI, once per game tick (GameTick), whatever the frame rate.
+func _on_tick(_tick: int) -> void:
+	if not is_inside_tree():  # leaving with a scene change, not freed yet
 		return
+	if not is_multiplayer_authority():
+		return
+	var started := Time.get_ticks_usec()
+	_think(GameTick.TICK_SECONDS)
+	DebugState.add_time("minion AI", Time.get_ticks_usec() - started)
+
+func _think(delta: float) -> void:
+	# Home is where it first stands, even if a noise sends it off before it ever patrols.
+	if not _patrol_has_home:
+		_patrol_home = _to_tile(global_position)
+		_patrol_has_home = true
 	# Boss privilege: an ally standing in a boss's way steps aside before anything else.
 	if not bosses.is_empty() and not is_boss and not grid_mover.is_moving and _yield_to_boss():
 		return
 	# Aggro validity runs BEFORE the idle-skip / boxed-in early returns below so
 	# a waiting minion still notices a dead, ghost or freed target.
-	var now := Time.get_ticks_msec()
+	var now := GameTick.msec()
 	if _lock != null and not _is_valid_target(_lock):
 		_lock = null
 		_wake_up()
@@ -269,10 +281,10 @@ func _process_inner(delta: float) -> void:
 	# frame -- in the packed development stress room this is most of the 500+
 	# minions most of the time.
 	# Same idea for a rat that just failed to advance (waiting on a crowded
-	# tile): re-think a few frames later instead of every frame. The skipped
-	# time is carried into the next real tick so senses/attack timers still
+	# tile): re-think a few ticks later instead of every tick. The skipped
+	# time is carried into the next real think so senses/attack timers still
 	# run at true speed instead of crawling.
-	if Engine.get_process_frames() < _idle_until_frame:
+	if GameTick.tick < _idle_until_tick:
 		_skipped_delta += delta
 		return
 	if _stuck:
@@ -315,10 +327,10 @@ func _process_inner(delta: float) -> void:
 	_last_state = state
 	# Only tell peers when something they'd render changed (plus a slow
 	# heartbeat so a late joiner still gets a parked minion's position).
-	if state != _relayed_state or global_position != _relayed_position or Time.get_ticks_msec() - _relayed_msec > RELAY_HEARTBEAT_MSEC:
+	if state != _relayed_state or global_position != _relayed_position or GameTick.tick - _relayed_tick > RELAY_HEARTBEAT_TICKS:
 		_relayed_state = state
 		_relayed_position = global_position
-		_relayed_msec = Time.get_ticks_msec()
+		_relayed_tick = GameTick.tick
 		NetworkSync.relay_minion_state(int(str(name)), global_position, state)
 
 	var can_attack := is_engaging and _target and _in_attack_range(_target)
@@ -362,7 +374,7 @@ func _process_inner(delta: float) -> void:
 				if _is_boxed_in():
 					_stuck = true
 				else:
-					_idle_until_frame = Engine.get_process_frames() + IDLE_RETHINK_FRAMES + get_instance_id() % 4
+					_idle_until_tick = GameTick.tick + IDLE_RETHINK_TICKS + get_instance_id() % 2
 		elif is_engaging:
 			_try_slide_step(_target)
 		return
@@ -473,9 +485,15 @@ func _try_pursue_step(target: Node2D, full_speed: bool) -> void:
 			_try_detour_step(target, origin_cell, target_cell, full_speed)
 		return
 
+	_route_step(origin_cell, target_cell, full_speed, target)
+
+## One step toward `target_cell`, anywhere in the dungeon: a target in another room is reached
+## room by room through the doors (RoomGraph.next_waypoint), since this minion's own search only
+## covers a box around it and the way round through a door often leaves that box. Shared by
+## Attack, Investigate and a patrol walking back to its home room; no state limits the rooms.
+func _route_step(origin_cell: Vector2i, target_cell: Vector2i, full_speed: bool, target: Node2D = null) -> void:
 	var local_target := target_cell
-	var distance := maxi(absi(target_cell.x - origin_cell.x), absi(target_cell.y - origin_cell.y))
-	if distance > PATHFIND_RADIUS_MAX and RoomGraph.current != null:
+	if RoomGraph.current != null:
 		var waypoint := RoomGraph.current.next_waypoint(origin_cell, target_cell)
 		if waypoint != Vector2i.ZERO:
 			local_target = waypoint
@@ -484,7 +502,7 @@ func _try_pursue_step(target: Node2D, full_speed: bool) -> void:
 		_try_pathfind_step(origin_cell, local_target, full_speed)
 		# No route (a wall-breaker's target walled in): walk straight at it until the wall
 		# is in smashing range, instead of standing where no special can reach.
-		if not grid_mover.is_moving and _can_break_walls():
+		if target != null and not grid_mover.is_moving and _can_break_walls():
 			_try_direct_step(origin_cell, local_target, full_speed, target)
 		return
 	_try_direct_step(origin_cell, local_target, full_speed, target)
@@ -559,7 +577,9 @@ func _try_surround_step(target: Node2D, origin_cell: Vector2i, target_cell: Vect
 		if grid_mover.tile_cost(next_cell) > HAZARD_COST and grid_mover.tile_cost(origin_cell) <= HAZARD_COST:
 			avoided_hazard = true  # do not fan out into lava or water
 			continue
-		if grid_mover.is_tile_occupied(next_cell):
+		# A tile in a boss's zone counts as taken, or the surround step keeps picking a
+		# tile _try_move refuses and never falls back to a sidestep (bug2_two_wide_gap).
+		if grid_mover.is_tile_occupied(next_cell) or _kept_out_by_boss(next_cell):
 			blocked_forward.append(step)
 			continue
 		# Stable per-rat tie-break so equal options don't flip between frames.
@@ -621,7 +641,7 @@ func _try_detour_step(target: Node2D, origin_cell: Vector2i, target_cell: Vector
 			continue
 		if grid_mover.tile_cost(next_cell) > HAZARD_COST and grid_mover.tile_cost(origin_cell) <= HAZARD_COST:
 			continue
-		if not is_boss and not bosses.is_empty() and _in_boss_zone(next_cell):
+		if _kept_out_by_boss(next_cell):
 			continue
 		var score: int = int(distances[next_cell]) * 2 + ((get_instance_id() + step.x + step.y * 2) & 1)
 		if score < best_score:
@@ -671,6 +691,10 @@ func boss_zone() -> Rect2i:
 		zone = zone.merge(Rect2i(top_left + Vector2i(grid_mover.facing_direction.round()), body))
 	return zone
 
+## A non-boss may not step onto `tile`: it is inside a boss's zone.
+func _kept_out_by_boss(tile: Vector2i) -> bool:
+	return not is_boss and not bosses.is_empty() and _in_boss_zone(tile)
+
 func _in_boss_zone(tile: Vector2i) -> bool:
 	for boss in bosses:
 		if is_instance_valid(boss) and boss != self and boss.boss_zone().has_point(tile):
@@ -711,7 +735,7 @@ func _yield_to_boss() -> bool:
 ## away and hold there for MAKE_WAY_MSEC so the ally can get by and find its own way round.
 ## Returns true while making way (the boss then does nothing else this tick).
 func _make_way_for_allies(target: Node2D) -> bool:
-	var now := Time.get_ticks_msec()
+	var now := GameTick.msec()
 	if now < _make_way_until_msec:
 		return true
 	var here := _to_tile(global_position)
@@ -759,7 +783,7 @@ func _make_way_for_allies(target: Node2D) -> bool:
 func _try_slide_step(target: Node2D) -> void:
 	if _attack_range != 1:
 		return
-	if Time.get_ticks_msec() < _slide_ready_msec:
+	if GameTick.msec() < _slide_ready_msec:
 		return
 	var origin_cell := _to_tile(global_position)
 	var target_cell := _to_tile(target.global_position)
@@ -784,7 +808,7 @@ func _try_slide_step(target: Node2D) -> void:
 			# two rats trade places forever (each ends up with the other
 			# behind it), which wiggles in place and blocks everyone else.
 			# Staggered per rat so a crowd doesn't all come off cooldown together.
-			_slide_ready_msec = Time.get_ticks_msec() + SLIDE_COOLDOWN_MSEC + (get_instance_id() % 5) * 250
+			_slide_ready_msec = GameTick.msec() + SLIDE_COOLDOWN_MSEC + (get_instance_id() % 5) * 250
 		return
 
 func _cheb(offset: Vector2i) -> int:
@@ -864,7 +888,7 @@ func _terrain_cost() -> Callable:
 ## detour is actually needed. First tries to keep following this minion's own
 ## cached route (_next_cached_step) instead of re-solving an identical
 ## AStarGrid2D every frame for a target that's barely moved; only falls
-## through to an actual solve (budget-gated, see MAX_PATHFINDS_PER_FRAME)
+## through to an actual solve (budget-gated, see MAX_PATHFINDS_PER_TICK)
 ## when the cache can't answer.
 func _try_pathfind_step(origin_cell: Vector2i, target_cell: Vector2i, full_speed: bool) -> void:
 	var step := _next_cached_step(origin_cell, target_cell)
@@ -904,8 +928,8 @@ const CACHED_PATH_TARGET_TOLERANCE := 2
 ## fresh solve every single frame -- negative caching. Short enough that a
 ## door opening or a wall coming down is still noticed quickly.
 var _failed_target: Vector2i = Vector2i.ZERO
-var _failed_until_frame: int = -1
-const FAILED_SEARCH_COOLDOWN_FRAMES := 30
+var _failed_until_tick: int = -1
+const FAILED_SEARCH_COOLDOWN_TICKS := 10
 
 ## Advances along the cached path if it's still usable for `target_cell`,
 ## returning the next step direction, or Vector2i.ZERO (and clearing the
@@ -940,7 +964,7 @@ func _next_cached_step(origin_cell: Vector2i, target_cell: Vector2i) -> Vector2i
 	return step
 
 func _solve_and_cache_path(origin_cell: Vector2i, target_cell: Vector2i) -> Vector2i:
-	if target_cell == _failed_target and Engine.get_process_frames() < _failed_until_frame:
+	if target_cell == _failed_target and GameTick.tick < _failed_until_tick:
 		return Vector2i.ZERO
 	if not _consume_pathfind_budget():
 		return Vector2i.ZERO
@@ -949,12 +973,12 @@ func _solve_and_cache_path(origin_cell: Vector2i, target_cell: Vector2i) -> Vect
 	var path := Pathfinding.full_path(origin_cell, target_cell, grid_mover.is_tile_blocked, radius, _terrain_cost())
 	if path.is_empty():
 		_failed_target = target_cell
-		_failed_until_frame = Engine.get_process_frames() + FAILED_SEARCH_COOLDOWN_FRAMES
+		_failed_until_tick = GameTick.tick + FAILED_SEARCH_COOLDOWN_TICKS
 		# A real wall-based failed solve is the ONLY thing that starts the
 		# unreachable timer -- the budget / cooldown early-outs above and plain
 		# crowding never do.
 		if _unreachable_since_msec == 0 and _override == null:
-			_unreachable_since_msec = Time.get_ticks_msec()
+			_unreachable_since_msec = GameTick.msec()
 		return Vector2i.ZERO
 	_unreachable_since_msec = 0
 	_cached_path = path
@@ -1012,7 +1036,7 @@ func _try_move(direction: Vector2, full_speed: bool = true) -> bool:
 	_debug_step_msec = Time.get_ticks_msec()
 	if grid_mover.is_tile_blocked(target_tile) or grid_mover.is_tile_occupied(target_tile):
 		return false
-	if not is_boss and not bosses.is_empty() and _in_boss_zone(target_tile):
+	if _kept_out_by_boss(target_tile):
 		return false
 	var moved := grid_mover.move_one_tile(direction, 1.0 if full_speed else INVESTIGATE_SPEED_SCALE)
 	if moved:
@@ -1027,7 +1051,7 @@ func _is_valid_target(target) -> bool:
 ## Makes a waiting / boxed-in minion run a full AI tick next frame.
 func _wake_up() -> void:
 	_stuck = false
-	_idle_until_frame = 0
+	_idle_until_tick = 0
 
 ## Gives up on the locked player (leash / unreachable): forgets the alert
 ## window so it falls back to Patrol, and ignores that player for AVOID_MSEC
@@ -1070,7 +1094,7 @@ func _is_packmate(other: Node) -> bool:
 	var there := _to_tile(other.global_position)
 	if _cheb(there - here) > PACK_RADIUS_TILES:
 		return false
-	return RoomGraph.current == null or RoomGraph.current.room_at(here) == RoomGraph.current.room_at(there)
+	return _same_room(here, there)
 
 ## A packmate is attacking `player`: attack them too, unless already attacking.
 func join_pack_attack(player: Node2D) -> void:
@@ -1107,7 +1131,7 @@ func force_target(player: Node2D, seconds: float) -> void:
 		return
 	_lock = player
 	_override = null
-	_taunt_until_msec = Time.get_ticks_msec() + int(seconds * 1000.0)
+	_taunt_until_msec = GameTick.msec() + int(seconds * 1000.0)
 	_unreachable_since_msec = 0
 	_blocked_since_msec = 0
 	_avoid_id = 0
@@ -1146,7 +1170,7 @@ func _note_blocked_by_player(now: int) -> void:
 func _nearest_player() -> Node2D:
 	var nearest: Node2D = null
 	var nearest_dist := INF
-	var avoiding := Time.get_ticks_msec() < _avoid_until_msec
+	var avoiding := GameTick.msec() < _avoid_until_msec
 	for player in get_tree().get_nodes_in_group("protagonist"):
 		if player.stats.is_ghost:
 			continue
@@ -1167,15 +1191,15 @@ const MOVE_DIRECTIONS: Array[Vector2] = [
 
 ## Patrol: a minion that nobody is near stands still (and costs nothing). Once a player is in its
 ## room or a room next to it, it walks between random spots within PATROL_RADIUS_TILES of where it
-## started, never leaving its room, at half speed, resting a few seconds at each. An alert ends
-## with a fresh "home" wherever it stands (_patrol_reset).
+## started, never leaving its room, at half speed, resting a few seconds at each. Home is kept for
+## good: after an alert (which may take it anywhere) it walks back to its home room.
 const PATROL_RADIUS_TILES := 8
 const PATROL_MIN_TRAVEL_TILES := 2
 const PATROL_REST_MSEC_MIN := 1500
 const PATROL_REST_MSEC_MAX := 4000
 const PATROL_GIVE_UP_MSEC := 8000
 const PATROL_GATE_MSEC := 500
-const PATROL_SLEEP_FRAMES := 15
+const PATROL_SLEEP_TICKS := 5
 ## Off only in the headless sim (test/sim/dev_sim.gd), for cells that are not about patrol: a creature
 ## walking around by itself would drift into the player's light and change what they measure.
 static var patrol_enabled := true
@@ -1192,10 +1216,6 @@ const PACK_SPREAD_TILES := 3
 var _patrol_following := Vector2i.ZERO
 var _patrol_gate_msec := 0
 var _patrol_active := true
-
-func _patrol_reset() -> void:
-	_patrol_has_home = false
-	_patrol_has_goal = false
 
 ## True when a living player is in this minion's room or one next to it (always true when the
 ## dungeon has no room graph). Re-checked every PATROL_GATE_MSEC, not every frame.
@@ -1219,17 +1239,15 @@ func _patrol_step(now: int) -> void:
 	var origin_cell := _to_tile(global_position)
 	if not _patrol_gate(now, origin_cell):
 		_patrol_has_goal = false
-		_idle_until_frame = Engine.get_process_frames() + PATROL_SLEEP_FRAMES + get_instance_id() % 4
+		_idle_until_tick = GameTick.tick + PATROL_SLEEP_TICKS + get_instance_id() % 2
 		return
-	if not _patrol_has_home:
-		_patrol_home = origin_cell
-		_patrol_has_home = true
 	if now < _patrol_rest_until_msec:
 		return
 	var leader := _pack_leader()
 	if leader != null and _patrol_has_goal and leader._patrol_has_goal and leader._patrol_goal != _patrol_following:
 		_patrol_has_goal = false
-	if _patrol_has_goal and (origin_cell == _patrol_goal or now - _patrol_goal_since_msec > PATROL_GIVE_UP_MSEC):
+	# The give-up clock only runs once back in the goal's room: the walk home may be long.
+	if _patrol_has_goal and _same_room(origin_cell, _patrol_goal) and (origin_cell == _patrol_goal or now - _patrol_goal_since_msec > PATROL_GIVE_UP_MSEC):
 		_patrol_has_goal = false
 		_patrol_rest_until_msec = now + randi_range(PATROL_REST_MSEC_MIN, PATROL_REST_MSEC_MAX)
 		return
@@ -1238,7 +1256,19 @@ func _patrol_step(now: int) -> void:
 			_patrol_rest_until_msec = now + randi_range(PATROL_REST_MSEC_MIN, PATROL_REST_MSEC_MAX)
 			return
 		_patrol_goal_since_msec = now
-	_try_direct_step(origin_cell, _patrol_goal, false)
+	if _same_room(origin_cell, _patrol_goal):
+		_try_direct_step(origin_cell, _patrol_goal, false)
+	else:
+		# Away from home (after an alert): back through the doors.
+		_patrol_goal_since_msec = now
+		_route_step(origin_cell, _patrol_goal, false)
+
+## Out of its home room (an alert took it away): patrol walks it back, through solid doors too.
+func _away_from_home() -> bool:
+	return _patrol_has_home and not _same_room(_to_tile(global_position), _patrol_home)
+
+func _same_room(a: Vector2i, b: Vector2i) -> bool:
+	return RoomGraph.current == null or RoomGraph.current.room_at(a) == RoomGraph.current.room_at(b)
 
 ## A random open spot in the patrol square (inside this room), a few tiles from here.
 func _pick_patrol_goal(origin_cell: Vector2i, leader: MinionController = null) -> bool:

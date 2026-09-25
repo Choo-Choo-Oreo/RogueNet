@@ -27,10 +27,13 @@ const TILE_HOVER_DATA := {
 	"speed": 1.0,
 }
 
-## Hotbar slots 1-5 (index 0-4) -- an empty {} means the slot has nothing
-## equipped, so number keys ignore it and it never fires. Public so Hotbar
-## can poll it to highlight the active slot.
+## Hotbar slots 1-0 (index 0-9): the worn gear's actions, then the player's own
+## (see _update_attacks). A slot past the end holds nothing, so number keys ignore
+## it. active_slot is public so Hotbar can poll it to highlight the active slot.
+signal attacks_changed
 var _attacks: Array = []
+var _own_actions: Array = []
+var _worn: Dictionary = {}
 var active_slot: int = 0
 var _attack_timer := 0.0
 var _is_dead := false
@@ -44,14 +47,36 @@ func set_character(character_id: String) -> void:
 	var data := JsonOnloading.load_dict(CHARACTERS.get(character_id, CHARACTERS[DEFAULT_CHARACTER]))
 	$AnimatedSprite2D.sprite_frames = SpriteFramesLoader.build(data["sprite_frames"])
 
-## worn: slot -> item id (NetworkSync.peer_equipment). Cosmetic only for now.
+## worn: slot -> item id (NetworkSync.peer_equipment). Drawn, and its actions go on the hotbar.
 func set_equipment(worn: Dictionary) -> void:
+	_worn = worn
 	gear.set_equipment(worn)
+	_update_attacks()
 
 func _load_player_data() -> void:
 	var data := JsonOnloading.load_dict(PLAYER_DATA_PATH)
 	stats.load_from_data(data)
-	_attacks = ActionIndex.resolve(data.get("actions", []))
+	_own_actions = data.get("actions", [])
+	_update_attacks()
+
+## Gear actions come first, weapons before the other slots, then the player's own
+## actions (player.json: taunt, throw rock), cut to the 10 hotbar slots.
+const WEAPON_SLOTS: Array[String] = ["main_hand", "off_hand"]
+
+func _update_attacks() -> void:
+	var entries: Array = []
+	var slots := WEAPON_SLOTS + ItemDatabase.SLOTS.filter(func(slot): return not WEAPON_SLOTS.has(slot))
+	for slot in slots:
+		if _worn.has(slot):
+			entries.append_array(ItemDatabase.get_item(_worn[slot]).get("actions", []))
+	_attacks = ActionIndex.resolve(entries + _own_actions).slice(0, SLOT_ACTIONS.size())
+	if not _slot_usable(active_slot):
+		active_slot = 0
+	attacks_changed.emit()
+
+## The hotbar's actions in slot order (Hotbar shows their ids).
+func hotbar_actions() -> Array:
+	return _attacks
 
 func _current_attack() -> Dictionary:
 	return _attacks[active_slot] if active_slot < _attacks.size() else {}
@@ -126,7 +151,7 @@ func _process(delta: float) -> void:
 		_attack_timer = maxf(_attack_timer - delta, 0.0)
 		_update_tile_hover()
 		if _attack_held:
-			if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) or Input.is_action_pressed("attack"):
 				_try_attack()
 			else:
 				_attack_held = false
@@ -156,7 +181,7 @@ func _update_tile_hover() -> void:
 	var ranged: bool = _current_attack().get("target_mode", "melee") == "ranged"
 	var own_tile := _own_tile()
 	var tile := (
-		Vector2i((get_global_mouse_position() / grid_mover.tile_size).floor()) if ranged
+		Vector2i((aim_position() / grid_mover.tile_size).floor()) if ranged
 		else _melee_target_tile(own_tile)
 	)
 	var valid: bool = not _is_dead and not grid_mover.is_tile_blocked(tile)
@@ -166,6 +191,22 @@ func _update_tile_hover() -> void:
 
 ## The 8 tiles ringing the player, ordered by angle starting from due east
 ## (matches Vector2.angle()'s 0 = +x, increasing clockwise since y is down).
+## Last direction the left stick pointed, scaled by how far it was pushed.
+var _stick_aim := Vector2.RIGHT
+
+## Where the player aims, in world space: the mouse, or on a controller the left
+## stick, reaching as far as the current attack's range_tiles (see ThrowVerb).
+## The stick's last direction is kept after it lets go, so aim doesn't jump to
+## wherever the unused mouse cursor sits. Also used by MouseFollowCamera.
+func aim_position() -> Vector2:
+	var stick := Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down")
+	if stick != Vector2.ZERO:
+		_stick_aim = stick
+	if not InputDevice.using_pad:
+		return get_global_mouse_position()
+	var reach: float = _current_attack().get("range_tiles", 6.0) * grid_mover.tile_size
+	return global_position + Vector2(8, 8) + _stick_aim * reach
+
 const ADJACENT_OFFSETS: Array[Vector2i] = [
 	Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 1), Vector2i(-1, 1),
 	Vector2i(-1, 0), Vector2i(-1, -1), Vector2i(0, -1), Vector2i(1, -1),
@@ -180,17 +221,19 @@ func _melee_target_tile(own_tile: Vector2i) -> Vector2i:
 	# top-left corner) -- that 8px bias barely affects the angle at range,
 	# but up close, where to_mouse itself might only be ~16-24px long, it's
 	# enough to swing the angle into the wrong one of the 8 directions.
-	var to_mouse := get_global_mouse_position() - (global_position + Vector2(8, 8))
+	var to_mouse := aim_position() - (global_position + Vector2(8, 8))
 	if to_mouse.length() < 0.001:
 		return own_tile + ADJACENT_OFFSETS[0]
 	var index := int(round(fposmod(to_mouse.angle(), TAU) / (PI / 4.0))) % 8
 	return own_tile + ADJACENT_OFFSETS[index]
 
+## WASD or the right stick (project.godot). Not the ui_* actions: those are the
+## left stick, which aims in play and moves the focus in menus.
 const MOVE_ACTIONS := {
-	"ui_right": Vector2.RIGHT,
-	"ui_left": Vector2.LEFT,
-	"ui_up": Vector2.UP,
-	"ui_down": Vector2.DOWN,
+	"move_right": Vector2.RIGHT,
+	"move_left": Vector2.LEFT,
+	"move_up": Vector2.UP,
+	"move_down": Vector2.DOWN,
 }
 
 # Left mouse held down since a press that started as an attack: _process repeats
@@ -213,34 +256,49 @@ func _held_direction() -> Vector2:
 			direction.y = step.y
 	return direction
 
-const SLOT_KEYS := {
-	KEY_1: 0,
-	KEY_2: 1,
-	KEY_3: 2,
-	KEY_4: 3,
-	KEY_5: 4,
-}
+## Input actions for hotbar slots 1..10 (keys 1-9 and 0, see project.godot).
+const SLOT_ACTIONS := ["hotbar_1", "hotbar_2", "hotbar_3", "hotbar_4", "hotbar_5",
+	"hotbar_6", "hotbar_7", "hotbar_8", "hotbar_9", "hotbar_0"]
 
 func _input(event: InputEvent) -> void:
 	if not is_multiplayer_authority():
 		return
 	if get_viewport().gui_get_focus_owner() is LineEdit:
 		return
-	if event is InputEventKey and event.pressed and SLOT_KEYS.has(event.keycode):
-		var slot: int = SLOT_KEYS[event.keycode]
-		if slot < _attacks.size() and not _attacks[slot].is_empty():
+	for slot in SLOT_ACTIONS.size():
+		if event.is_action_pressed(SLOT_ACTIONS[slot]) and _slot_usable(slot):
 			active_slot = slot
+	# The mouse wheel is also hotbar_prev/next: not while it scrolls a menu or zooms the free cam.
+	var wheel_busy := event is InputEventMouseButton and (_attack_blocked() or DebugState.free_cam)
+	if not wheel_busy and event.is_action_pressed("hotbar_prev"):
+		_step_slot(-1)
+	elif not wheel_busy and event.is_action_pressed("hotbar_next"):
+		_step_slot(1)
 	for action in MOVE_ACTIONS:
 		if event.is_action_pressed(action):
 			_held.erase(action)
 			_held.append(action)
 		elif event.is_action_released(action):
 			_held.erase(action)
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+	# Space and RT ("attack" in project.godot) swing the same as the left mouse button.
+	var attack_pressed: bool = event.is_action_pressed("attack") or (event is InputEventMouseButton
+		and event.pressed and event.button_index == MOUSE_BUTTON_LEFT)
+	if attack_pressed:
 		# Holding the button keeps swinging (see _process); a press that starts on
 		# the debug menu or a click tool never turns into a held attack.
 		_attack_held = not _attack_blocked()
 		_try_attack()
+
+func _slot_usable(slot: int) -> bool:
+	return slot < _attacks.size() and not _attacks[slot].is_empty()
+
+## LB/RB: the next slot that holds an attack, wrapping around the 10 slots.
+func _step_slot(step: int) -> void:
+	for i in range(1, SLOT_ACTIONS.size()):
+		var slot := posmod(active_slot + step * i, SLOT_ACTIONS.size())
+		if _slot_usable(slot):
+			active_slot = slot
+			return
 
 ## A click on a menu (the debug menu, the open inventory) is not an attack.
 func _attack_blocked() -> bool:
@@ -264,7 +322,7 @@ func _try_attack() -> void:
 	var ranged: bool = attack.get("target_mode", "melee") == "ranged"
 	var target_tile: Vector2i
 	if ranged:
-		target_tile = Vector2i((get_global_mouse_position() / grid_mover.tile_size).floor())
+		target_tile = Vector2i((aim_position() / grid_mover.tile_size).floor())
 		if target_tile == own_tile:
 			return
 	else:
@@ -282,7 +340,7 @@ func _try_attack() -> void:
 var _taunt_ready_msec := 0
 
 func _try_taunt(attack: Dictionary) -> void:
-	var now := Time.get_ticks_msec()
+	var now := GameTick.msec()
 	if _is_dead or now < _taunt_ready_msec:
 		return
 	_taunt_ready_msec = now + int(attack.get("interval", 12.0) * 1000.0)

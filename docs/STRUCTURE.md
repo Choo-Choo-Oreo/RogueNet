@@ -64,6 +64,8 @@ RogueNet/
  │    ├── entities/
  │    ├── dungeon/
  │    └── ui/
+ │         ├── protagonist/
+ │         ├── antagonist/
  │         └── town/
  │
  ├── scripts/
@@ -89,6 +91,8 @@ RogueNet/
  │    ├── dungeon/
  │    ├── items/
  │    ├── ui/
+ │    │    ├── protagonist/
+ │    │    ├── antagonist/
  │    │    ├── inventory/
  │    │    └── town/
  │    ├── settings/
@@ -159,7 +163,7 @@ player-driven antagonist are literally the same scene, configured with a differe
 Projectile and effect scenes live here too. Wiring only, no rules.
 
 **`scenes/dungeon/`, `scenes/ui/`** The dive and room-maker scenes; menus, HUD, and the
-`town/` screens.
+`town/` screens; the HUD split by team as in `scripts/ui/`.
 
 **`scripts/entities/` (its root)** The body every creature shares: stepping on the grid,
 footprint, health, stats (including stamina), animation, worn gear, the effect of the
@@ -169,6 +173,8 @@ sit at the root because everything else calls them most. A change here affects p
 rats and the Minotaur alike, so the collision rule ("can this body stand on this tile",
 including no floor = blocked) lives here once, and so do the rules that belong to the body
 itself, such as a boss walking through minions. Sprinting is movement, so it lives here too.
+The character save (`CharacterSave`: files, listing, the fields every character has) is here
+as well; each team's own save sits in its folder (`ProtagonistSave`, `AntagonistSave`).
 
 **`scripts/entities/entities.senses/`** How an AI notices things. Only AI drivers use it.
 
@@ -221,7 +227,10 @@ own), and the Maker tool.
 
 **`scripts/items/`, `scripts/ui/`, `scripts/settings/`, `scripts/debug/`, `scripts/util/`**
 Item data lookup (loot and rarity later); menu and HUD scripts, including the lobby menu,
-with `inventory/` and `town/`; options controls; developer tools; small helpers with no
+with `inventory/` and `town/`. A player-driven hero and a player-driven antagonist see
+different screens, so a HUD piece only one side uses goes in `ui/protagonist/` or
+`ui/antagonist/` (scripts and scenes alike); what both use (prompts, chat, pause menu)
+stays in `ui/`. Options controls; developer tools; small helpers with no
 game knowledge.
 
 **`game/entities/`** One JSON per creature, same format for both teams. Under

@@ -86,7 +86,7 @@ possibly the boss, because nothing loops back around.
 
 ## Rules for a biome room
 
-- It lives in the biome's folder and has `"biome": "<folder name>"`.
+- It lives in the biome's folder; the folder is its biome (the file does not say).
 - Its `id` starts with the biome name (`Cave_Hollow_11x9`), so it can
   never clash with a legacy room. The filename is the `id` plus `.json`.
 - It uses that biome's walls and floors only.

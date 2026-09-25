@@ -93,7 +93,6 @@ Example (`Dungeon_Brick_Arena_9x9.json`, trimmed):
 ```json
 {
 	"format": 2,
-	"biome": "dungeon",
 	"id": "Dungeon_Brick_Arena_9x9",
 	"width": 9,
 	"height": 9,
@@ -241,10 +240,20 @@ JSON. DungeonMaker keeps it when re-saving.)
   each direction is `DRAW_ORDER` in `scripts/items/ItemDatabase.gd`.
 - `set` — optional; storage lists items set by set (`heavy_iron`, `arcane`,
   `cleric`, `necromancer`, then everything else).
+- `actions` — optional; what wearing it lets you do, in the same form as a
+  creature's `actions` (ids from `game/actions/`, with per-item overrides).
+  They fill the hotbar: main hand first, then off hand, then the other slots,
+  then the player's own actions from `player.json` (taunt, throw rock), up to
+  10. An item without `actions` is cosmetic.
 - `icon` — optional 16x16 PNG for inventory slots, kept in
   `resources/gfx/ui/icons/items/<item id>.png`. Without one, the slot
   shows the front view cropped to its pixels, which is too small to read for
   gloves and boots.
+- `overlay` — optional; a sprite JSON (same `sprite_frames` format as
+  creatures, animation names `Front`, `FrontRight`, `Side`, `BackRight`,
+  `Back`) for a part that animates on its own clock, drawn just over the item
+  and also while standing still. Example: `fallback_torch`'s flame, 8 frames
+  at 10 fps. **Not read by the game yet**; until then only `art` shows.
 - Items are cosmetic only for now (no stats, no rarity). The inventory lives
   in `singletons/PlayerInventory.gd`, in memory only: it starts over on every
   launch, with one of every item in the town storage.

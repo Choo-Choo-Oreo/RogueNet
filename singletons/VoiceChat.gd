@@ -1,10 +1,10 @@
 extends Node
 
-## Push-to-talk voice chat over Steam. Hold push_to_talk (V): Steam records the microphone
-## picked in the Steam client and hands back compressed voice. It goes to the host, which
-## passes it on to everyone in the same place as the speaker (the town, or the same started
-## mission), the same way chat goes through the host (NetworkSync.send_chat). Every speaker
-## gets their own AudioStreamPlayer on the VoiceChat bus.
+## Push-to-talk voice chat over Steam. Press push_to_talk (V, or Share on a pad) to turn the
+## mic on and again to turn it off: Steam records the microphone picked in the Steam client and hands back compressed
+## voice. It goes to the host, which passes it on to everyone in the same place as the
+## speaker (the town, or the same started mission), the same way chat goes through the host
+## (NetworkSync.send_chat). Every speaker gets their own AudioStreamPlayer on the VoiceChat bus.
 ##
 ## Talking in the dungeon is also a noise (NetworkSync.report_noise) that minions can hear.
 ## Needs Steam (SteamManager.online); without it V does nothing.
@@ -45,6 +45,7 @@ var _loudest_db := -INF
 func _ready() -> void:
 	if SteamManager.online:
 		_sample_rate = Steam.getVoiceOptimalSampleRate()
+	get_tree().scene_changed.connect(_on_scene_changed)
 	multiplayer.peer_disconnected.connect(_drop)
 	multiplayer.server_disconnected.connect(func():
 		for peer_id in _players.keys() + _last_heard.keys():
@@ -53,18 +54,38 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	# Exact match, so Ctrl+V (paste in the Dungeon Maker) is not a push to talk. Typing a V in
 	# a text box never gets here: the box eats the key.
-	if event.is_action_pressed("push_to_talk", false, true) and SteamManager.online:
+	if not (event.is_action_pressed("push_to_talk", false, true) and SteamManager.online):
+		return
+	# V and the pad's Share button both toggle: one press on, the next off.
+	_set_talking(not talking)
+
+## True while this player's mic is on (push_to_talk toggled it on). The HUD's mic icon reads it.
+var talking := false
+
+## Whether the current scene is a mission (the dungeon).
+var _in_mission := false
+
+## Leaving a mission any way (ended by the host, Main Menu, a disconnect) turns the mic off,
+## so a toggled-on mic does not follow the player into the town or the menus.
+func _on_scene_changed() -> void:
+	var was_in_mission := _in_mission
+	_in_mission = get_tree().current_scene.scene_file_path.ends_with("Dungeon.tscn")
+	if was_in_mission and not _in_mission and talking:
+		_set_talking(false)
+
+func _set_talking(on: bool) -> void:
+	talking = on
+	if on:
 		Steam.startVoiceRecording()
-		Steam.setInGameVoiceSpeaking(Steam.getSteamID(), true)
+	else:
+		Steam.stopVoiceRecording()
+	Steam.setInGameVoiceSpeaking(Steam.getSteamID(), on)
 
 func _process(_delta: float) -> void:
 	if not SteamManager.online:
 		return
-	if Input.is_action_just_released("push_to_talk"):
-		Steam.stopVoiceRecording()
-		Steam.setInGameVoiceSpeaking(Steam.getSteamID(), false)
-	# Read every frame, not just while V is held: Steam still has the last bit buffered after
-	# the key goes up, and says NOT_RECORDING / NO_DATA when there is nothing.
+	# Read every frame, not just while talking: Steam still has the last bit buffered after
+	# talking is toggled off, and says NOT_RECORDING / NO_DATA when there is nothing.
 	_send_available_voice()
 	_make_noise()
 	var now := Time.get_ticks_msec()
@@ -129,6 +150,7 @@ static func voice_loudness(db: float) -> float:
 ## How loud a chunk of voice is: its RMS in dB under the loudest the mic can record (0 dB).
 ## A chunk peaking the mic (CLIPPED_FRACTION of it at the limit) counts as 0 dB.
 static func _level_db(pcm: PackedByteArray) -> float:
+	@warning_ignore("integer_division")  # 2 bytes per sample
 	var count := pcm.size() / 2
 	if count == 0:
 		return -INF
@@ -191,6 +213,7 @@ func _play(peer_id: int, pcm: PackedByteArray) -> void:
 		return
 	var playback: AudioStreamGeneratorPlayback = _player_for(peer_id).get_stream_playback()
 	var frames := PackedVector2Array()
+	@warning_ignore("integer_division")  # 2 bytes per sample
 	frames.resize(pcm.size() / 2)
 	for i in frames.size():
 		var sample := pcm.decode_s16(i * 2) / 32768.0

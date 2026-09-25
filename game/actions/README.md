@@ -2,7 +2,7 @@
 
 One JSON file per action: something a creature can do on purpose (a bite, an arrow shot,
 a wall smash, a taunt). The file name minus `.json` is the action's **id**. Every creature
-(a minion, a boss, the player) lists action ids in its own JSON under `"actions"`; nothing
+(a minion, a boss, the player, an item the player wears) lists action ids in its own JSON under `"actions"`; nothing
 here belongs to one team. Files are found in this folder and every folder under it, so ids
 must be unique. This file is the reference for what exists; keep it in step when one is
 added or changed.

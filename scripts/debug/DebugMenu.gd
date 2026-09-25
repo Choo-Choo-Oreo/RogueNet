@@ -7,7 +7,7 @@ extends CanvasLayer
 ## The panel is modelled on Factorio's debug settings:
 ##   always  overlays that draw whenever ticked
 ##   debug   the same overlays, drawn only while F5 is toggled on
-##   tools   god mode, no clip, see all, spawn, teleport, kill all, doors, heal
+##   tools   god mode, no clip, see all, spawn, teleport, kill all, doors, heal, game speed
 ## Performance capture: tick it, play, press save. The capture (build info,
 ## the debug log, one sample per second) is written to Godot's user folder,
 ## and "open" jumps to that folder. Nothing here is sent to chat.
@@ -61,6 +61,9 @@ var _option_checks := {}
 var _tabs: TabContainer
 var _tools_locked := false
 var _free_cam_check: CheckBox
+## Game speed steps for the -/+ buttons (GameTick.speed; singleplayer only, like every tool).
+const SPEEDS: Array[float] = [0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0]
+var _speed_label: Label
 var _option_boxes: Array[CheckBox] = []
 var _option_scrolls: Array[ScrollContainer] = []
 var _shared_scroll := 0
@@ -164,6 +167,13 @@ func _build_panel() -> void:
 	_button(tools_box, "Open all doors", func(): _all_doors(true))
 	_button(tools_box, "Close all doors", func(): _all_doors(false))
 	_button(tools_box, "Heal me to full", _heal)
+	var speed_row := HBoxContainer.new()
+	_button(speed_row, "-", func(): _step_speed(-1))
+	_speed_label = Label.new()
+	speed_row.add_child(_speed_label)
+	_button(speed_row, "+", func(): _step_speed(1))
+	tools_box.add_child(speed_row)
+	_show_speed()
 	_button(tools_box, "New dungeon (same biome)", func(): _regenerate(false))
 	_button(tools_box, "New dungeon (random biome)", func(): _regenerate(true))
 	_hint = Label.new()
@@ -341,15 +351,11 @@ func _reset_defaults() -> void:
 		_option_checks[key].set_pressed_no_signal(DebugState.flags.get(key, false))
 	DebugLog.add("overlay settings reset to defaults")
 
-## Real multiplayer (hosting or joined, dedicated or not) has no tools: the tab
-## disappears and everything on it is switched off. Singleplayer uses an
-## OfflineMultiplayerPeer, which does not count.
-func _in_multiplayer() -> bool:
-	var peer := multiplayer.multiplayer_peer
-	return peer != null and not peer is OfflineMultiplayerPeer
+## Real multiplayer (NetworkSync.is_online) has no tools: the tab disappears and
+## everything on it is switched off.
 
 func _update_tools_lock() -> void:
-	var locked := _in_multiplayer()
+	var locked := NetworkSync.is_online()
 	if locked == _tools_locked:
 		return
 	_tools_locked = locked
@@ -365,13 +371,30 @@ func _update_tools_lock() -> void:
 		DebugState.free_cam = false
 		_free_cam_check.set_pressed_no_signal(false)
 		DebugState.click_tool = ""
+		GameTick.speed = 1.0
+		_show_speed()
 		DebugLog.add("tools locked (multiplayer)")
+
+func _step_speed(direction: int) -> void:
+	var i := SPEEDS.find(GameTick.speed)
+	if i < 0:
+		i = SPEEDS.find(1.0)
+	GameTick.speed = SPEEDS[clampi(i + direction, 0, SPEEDS.size() - 1)]
+	_show_speed()
+	DebugLog.add("game speed %sx" % GameTick.speed)
+
+func _show_speed() -> void:
+	_speed_label.text = "game speed %sx" % GameTick.speed
+
+## Leaving the dungeon (back to town, a new mission) puts time back to normal.
+func _exit_tree() -> void:
+	GameTick.speed = 1.0
 
 ## Rebuilds the dungeon from a fresh seed without going back through the town:
 ## the same path a mission start takes, minus the menus. Tools only exist in
 ## singleplayer, so there is no other peer to keep in step.
 func _regenerate(new_biome: bool) -> void:
-	if _in_multiplayer():
+	if NetworkSync.is_online():
 		return
 	NetworkSync.dungeon_seed = randi()
 	if new_biome or NetworkSync.dungeon_biome == "":
@@ -498,11 +521,10 @@ func _overlay_text() -> String:
 				counts[clampi(int(minion._last_state), 0, 2)] += 1
 		lines.append("Minions %d   patrol %d   investigate %d   attack %d" % [minions.size(), counts[0], counts[1], counts[2]])
 	if DebugState.on("show-active-minions"):
-		var frame := Engine.get_process_frames()
 		var thinking := 0
 		var all := get_tree().get_nodes_in_group("antagonist")
 		for minion in all:
-			if "_idle_until_frame" in minion and minion.is_multiplayer_authority() and not minion._stuck and minion._idle_until_frame <= frame:
+			if "_idle_until_tick" in minion and minion.is_multiplayer_authority() and not minion._stuck and minion._idle_until_tick <= GameTick.tick:
 				thinking += 1
 		lines.append("Minions thinking %d   waiting %d" % [thinking, all.size() - thinking])
 	if DebugState.on("show-system-time"):

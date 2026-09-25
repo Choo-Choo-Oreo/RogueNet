@@ -6,7 +6,7 @@ extends SceneTree
 ## to the player, whether it stalled, and whether it ever stood on a wall, void or no-floor tile.
 ## Exits 1 if any creature stood on a bad tile, so it can also gate a run.
 ##
-##   godot --headless -s res://test/sim/dev_sim.gd -- [seconds=15] [natural] [cell_name ...]
+##   godot --headless -s res://test/sim/dev_sim.gd -- [seconds=15] [natural] [speed=N] [cell_name ...]
 ##
 ## Creatures are told where the player is at the start (the same call a taunt uses), so a wall
 ## between them tests their pathfinding instead of their eyesight. Pass `natural` to leave them
@@ -14,7 +14,13 @@ extends SceneTree
 ##
 ## With no cell names it runs the bug cells. Cell names and door/entry tiles come from
 ## test/sim/dev_cells.json, which test/lab/development/generate_hub.py writes.
-## Real time, not simulated: minion timers use the wall clock, so 15 s takes 15 s per cell.
+## Times are game time (GameTick), so a run can go faster than real time. Two ways:
+##   godot --headless --fixed-fps 60 -s ...   every frame is exactly 1/60 s of game time and
+##       Godot stops waiting for the clock: as fast as the CPU allows, same frames as a real
+##       game. Use this one.
+##   ... -- speed=8                            GameTick.speed: frames get 8x longer. When the
+##       machine can't keep up, one frame holds many ticks and per-frame things (tweens,
+##       physics, timers) update coarsely, so results can differ from a real game.
 
 const CELLS_FILE := "res://test/sim/dev_cells.json"
 const DEFAULT_CELLS := ["minion_minotaur", "bug1_spawn_fit", "bug1_no_room_for_boss", "bug1_hole_band",
@@ -54,15 +60,19 @@ var _spawn_ids := {}  # hub spawn tile -> minion id, from the room file
 # autoloads exist, and every game script that mentions NetworkSync would then fail to load.
 var _doors
 var _log
+var _tick
 
 func _initialize() -> void:
 	_doors = load("res://scripts/cells/DoorRegistry.gd")
 	_log = load("res://scripts/debug/DebugLog.gd")
+	_tick = root.get_node("GameTick")
 	var args := OS.get_cmdline_user_args()
 	var names: Array = []
 	for a in args:
 		if a == "natural":
 			_natural = true
+		elif a.begins_with("speed="):
+			_tick.speed = float(a.trim_prefix("speed="))
 		elif a.is_valid_float():
 			_seconds = float(a)
 		else:
@@ -90,19 +100,25 @@ func _next_cell() -> void:
 		quit(1 if not _failed.is_empty() else 0)
 		return
 	_cell = _queue.pop_front()
+	seed(hash(_cell["name"]))  # the same random rolls every run of a cell (patrol goals)
+	_set_patrol()  # already while loading, or creatures wander as the previous cell left it
 	var sync := root.get_node("NetworkSync")
 	sync.dungeon_seed = 1
 	sync.dungeon_biome = "res://test/lab/development"
 	_log.lines.clear()
 	change_scene_to_file("res://scenes/dungeon/Dungeon.tscn")
 	_state = "wait_scene"
-	_state_msec = Time.get_ticks_msec()
+	_state_msec = _tick.msec()
+
+## Patrol only in cells that test movement (`moves`).
+func _set_patrol() -> void:
+	load("res://scripts/entities/entities.antagonist/minions/ai/MinionController.gd").patrol_enabled = not _cell.get("moves", {}).is_empty()
 
 func _world_tile(hub: Dictionary) -> Vector2i:
 	return Vector2i(int(hub["x"]), int(hub["y"])) - _center
 
 func _process(_delta: float) -> bool:
-	var now := Time.get_ticks_msec()
+	var now: int = _tick.msec()
 	match _state:
 		"wait_scene":
 			if current_scene != null and current_scene.name == "Dungeon" \
@@ -124,7 +140,7 @@ func _process(_delta: float) -> bool:
 func _begin_run() -> void:
 	_player = get_nodes_in_group("protagonist")[0]
 	_player.set("debug_god", true)
-	load("res://scripts/entities/entities.antagonist/minions/ai/MinionController.gd").patrol_enabled = not _cell.get("moves", {}).is_empty()
+	_set_patrol()
 	var tile_size: int = _player.grid_mover.tile_size
 	var rect: Dictionary = _cell["rect"]
 	var top_left := _world_tile(rect)
@@ -136,7 +152,7 @@ func _begin_run() -> void:
 		var tile := Vector2i(floori(m.global_position.x / tile_size), floori(m.global_position.y / tile_size))
 		if area.has_point(tile):
 			_watch.append({"node": m, "id": _label(m, tile), "start": tile, "zone": null, "zone_changes": 0, "state": 0, "attack_msec": -1, "closest": 9999.0, "closest_noise": 9999.0, "farthest": 0.0,
-				"last_pos": m.global_position, "last_moved_msec": Time.get_ticks_msec(), "stalled": false, "bad": "", "waded": 0, "wade_first": ""})
+				"last_pos": m.global_position, "last_moved_msec": _tick.msec(), "stalled": false, "bad": "", "waded": 0, "wade_first": ""})
 	_expected = 0
 	for s in _spawn_ids:
 		if area.has_point(s):
@@ -159,7 +175,7 @@ func _begin_run() -> void:
 	elif not _natural and not _cell.get("alone", false):
 		for w in _watch:
 			w["node"].force_target(_player, _seconds)
-	_started_msec = Time.get_ticks_msec()
+	_started_msec = _tick.msec()
 	_next_sample = 0.0
 	_state = "run"
 

@@ -4,7 +4,6 @@ extends Control
 @onready var panel_guild: Panel = $PanelGuild
 @onready var panel_character: Panel = $PanelCharacter
 @onready var panel_storage: Panel = $PanelStorage
-@onready var current_character_label: Label = $PanelCharacter/VBoxContainer/CurrentLabel
 @onready var player_list: VBoxContainer = $HSplitContainer/PlayerListPanel/PlayersBox/PlayerList
 @onready var sidebar: Panel = $Sidebar
 @onready var player_list_panel: VSplitContainer = $HSplitContainer/PlayerListPanel
@@ -16,13 +15,22 @@ func _ready() -> void:
 	MusicManager.stop()
 	refresh_player_list()
 	VoiceChat.speaking_changed.connect(_on_speaking_changed)
-	refresh_character_label()
-	_apply_session_mode()
+	# The hero's saved look; with no hero picked (a test going straight here) keep the default.
+	if not PlayerInventory.hero.is_empty():
+		_choose_character(PlayerInventory.hero["skin"])
+	# Singleplayer has nobody to list or talk to.
+	sidebar.visible = NetworkSync.is_online()
+	player_list_panel.visible = NetworkSync.is_online()
 	# Tell everyone what this player wears: after joining a server, or coming back from a dive.
 	NetworkSync.share_equipment(PlayerInventory.worn())
 	chat_log.scroll_following = true
 	send_button.pressed.connect(_send_chat)
 	chat_input.text_submitted.connect(func(_text): _send_chat())
+	PlayerInventory.save_hero()
+
+# Leaving the town any way (Leave, a dive starting, the host going) saves the hero.
+func _exit_tree() -> void:
+	PlayerInventory.save_hero()
 
 # Enter in the input box or the Send button both come here.
 func _send_chat() -> void:
@@ -35,15 +43,6 @@ func _send_chat() -> void:
 func add_chat_line(line: String) -> void:
 	# [lb] stops a player's text from being read as formatting tags.
 	chat_log.append_text(line.replace("[", "[lb]") + "\n")
-
-func _apply_session_mode() -> void:
-	match NetworkSync.session_mode:
-		NetworkSync.SessionMode.SINGLEPLAYER:
-			sidebar.hide()
-			player_list_panel.hide()
-		NetworkSync.SessionMode.HOST, NetworkSync.SessionMode.CLIENT:
-			sidebar.show()
-			player_list_panel.show()
 
 func refresh_player_list() -> void:
 	for child in player_list.get_children():
@@ -85,17 +84,17 @@ func _on_leave_button_pressed() -> void:
 	NetworkSync.reset_session()
 	get_tree().change_scene_to_file("res://scenes/ui/MainMenu.tscn")
 
-func refresh_character_label() -> void:
-	var character_id: String = NetworkSync.peer_characters.get(multiplayer.get_unique_id(), "human")
-	current_character_label.text = "Current: " + character_id.capitalize()
-
+## The same Characters screen as the main menu's. Picking a hero saves the one being left
+## (PlayerInventory.use_hero), then shows the new one's look and gear to everyone.
 func _on_swap_characters_button_pressed() -> void:
 	panel_main.hide()
 	panel_character.show()
-
-func _on_character_back_button_pressed() -> void:
-	panel_character.hide()
-	panel_main.show()
+	var select = preload("res://scenes/ui/protagonist/CharacterSelect.tscn").instantiate()
+	panel_character.add_child(select)
+	select.picked.connect(func(hero: Dictionary):
+		_choose_character(hero["skin"])
+		NetworkSync.share_equipment(PlayerInventory.worn()))
+	select.tree_exited.connect(panel_main.show)
 
 func _on_storage_button_pressed() -> void:
 	panel_main.hide()
@@ -106,11 +105,9 @@ func _on_storage_back_pressed() -> void:
 	panel_main.show()
 
 func _choose_character(character_id: String) -> void:
+	if not PlayerInventory.hero.is_empty():
+		PlayerInventory.hero["skin"] = character_id
 	if multiplayer.is_server():
 		NetworkSync._set_character(1, character_id)
 	else:
 		NetworkSync.report_player_character.rpc_id(1, character_id)
-	refresh_character_label()
-
-func _on_human_button_pressed() -> void:
-	_choose_character("human")

@@ -64,6 +64,7 @@ Two decisions gate most of these (see "Decisions needed" below): what `power` me
 
 ### Quick wins (small, unblocked, any time)
 
+- [✗] (2026-09-25, low priority) Duplicated "is the current scene the dungeon?" check: `get_tree().current_scene.scene_file_path.ends_with("Dungeon.tscn")` is in both `scripts/ui/PauseMenu.gd` (`_open`) and `singletons/VoiceChat.gd` (`_on_scene_changed`). Dungeon.tscn will never be renamed, so it cannot break; tidy it into one shared helper (e.g. `NetworkSync.in_mission()`) when convenient, and use that helper rather than adding a third copy
 - [✗] Shuffle the treasure room order in `_place_any_locked` so `Armory` does not always win (offered, not decided)
 - [✗] Split data and UI in `receive_mission_members`, which still force-shows `PanelMission`
 - [✗] Seed the enemy RNG from the dungeon seed and stop checking the host's fog when rolling spawns (matters once boss-death respawns exist)
@@ -233,6 +234,115 @@ Steps, smallest first:
 - [✓] Art and script folders, done 2026-09-24 (not yet confirmed in a full playtest): the Minotaur art is in `resources/gfx/entities/entities.antagonist/bosses/minotaur/`, minion art in `.../minions/<species>/`, player art in `.../entities.protagonist/`; `scripts/player/` and `scripts/entities/entities.enemies/` are gone (controllers now in `entities.protagonist/player/` and `entities.antagonist/minions/ai/`). See `docs/STRUCTURE.md`.
 
 Decisions for Orea (also in the list above): (a) do players and enemies both get diagonals, and does a diagonal step cost the same as a straight one; (b) answered 2026-09-24: shared action data in `game/actions/`.
+
+## Central game tick (decided 2026-09-25: 20 ticks per second, one step at a time)
+
+Game rules run on `GameTick.ticked` (`singletons/GameTick.gd`), drawing and this machine's own
+input stay per frame. `GameTick.speed` (Engine.time_scale) above 1 only offline or headless.
+- [✓] 1. `GameTick` autoload: fixed 20/s ticks from any frame rate, no catch-up burst after a long frame, `seconds()`, `ticks_for()`, `fraction()`, speed guarded in multiplayer (`test/unit/test_game_tick.gd`)
+- [✓] 2. Game clock: the ~30 `Time.get_ticks_msec`/`get_ticks_usec`/`create_timer` timings in gameplay code (taunt cooldown, alert icons, door timings...) switch to GameTick time, or they drift once speed is not 1. Debug and UI timing stays on the real clock
+- [✓] 3. Minion AI, senses, noise and light detection on the tick instead of `_process` (replaces the frame-skipping); tweens and walk animations stay per frame. Check with the full dev sim
+- [✓] 4. Host network state per tick: one batched minion message (performance item 11), player positions per tick (item 21)
+- [✓] 5. Doors (swing end, host auto-close) and minion attack timers on the tick; projectiles stay per frame but move in half-tile pieces so a long frame can't skip a wall; player cooldowns stay per frame on game time. Needs a two-player test of the batched minion message
+- [✓] 6. Headless sims run fast-forward: `--fixed-fps 60` (in `run_sim.bat`), all 24 cells in ~140 s instead of ~7 min; `speed=N` also works but is coarse when the machine can't keep up. Each cell is seeded, so a run repeats exactly. Found and fixed on the way: minions spawned at (0,0) and all "touched" the player; the surround step picked tiles in a boss's zone (bug2_two_wide_gap)
+- [✗] 7. Later, its own feature: bot protagonists against bot antagonists to measure difficulty and competence
+- [✓] Debug game speed: `-`/`+` on the debug tools tab (0.25x to 128x, singleplayer only, back to 1x on leaving the dungeon)
+- [✓] Minions leave their room when investigating or attacking (door waypoints whenever the target is in another room, not only past 24 tiles; a waypoint is inside the next room so a walker on the doorway crosses) and walk back to their home room on patrol (home kept from the first tick, `_patrol_reset` removed). `test/sim/investigate_far_room.gd`
+- [✓] Doors per creature is intended (Orea 2026-09-25): a closed door holds a creature that can't open it (a rat can't open a big wooden door); `"doors": "open"` opens, `"phase"` walks through (wraith). Set per creature in its JSON
+- [✗] Investigate lasts 10 s from the last noise (`ACTIVE_ALERT_SECONDS`); at half speed that is about 25 tiles, so a far noise can run out before arrival
+- [✗] Packs join across walls: `_is_packmate` only checks 16 tiles and same room, so in the lab hub (one room) a herd can adopt a leader from the next cell. Needs a rule choice: line of sight, or each lab cell its own room
+
+## Performance audit (2026-09-25: one agent read the code, nothing measured; fix the worst first)
+
+Most likely behind the slow 529-rat room: 1, 2, 3, 6 (every frame), 5 and 8 (spikes). Measure
+first: split F4's "minion AI" time into boxed-in check / surround step / flow field / pathfind,
+and take readings with F5 (`show-minion-state`) off, since item 7 alone draws 529 labels a frame.
+
+- [✗] 1. High. `MinionController._is_boxed_in` (about line 1001): a boxed-in rat re-checks all 8 neighbours every frame, about 100 engine calls each. Re-check every N frames, or wake it when a neighbour tile empties
+- [✗] 2. High. `GridMover._is_blocked` / `tile_cost`: every wall check reads the tile maps and the door registry, tens of thousands of times a frame. One walkable/cost grid per dungeon (PackedByteArray), updated on door and tile changes. Items 3, 4, 13 and 14 all speed up with it
+- [✗] 3. High. `MinionController._try_surround_step` (about line 516): 8 directions checked per tick, with a new lambda, typed array and Callables each call. Hoist them; use the grid from 2
+- [✗] 4. High in big rooms. `Pathfinding.full_path` builds a new `AStarGrid2D` (up to 49x49) per solve, up to 32 solves a frame. Keep one per dungeon, updated on door and tile changes
+- [✗] 5. Medium-high. `FlowField`: a new `StepCache` re-reads a 41x41 wall area every time the player changes tile, and `DoorRegistry._changed` wipes every field on each door open, close or swing end. Keep the wall cache across targets; drop only fields near the door
+- [✗] 6. Medium. `GridMover.occupants` rebuilds the tile index every frame (about 530 new arrays). Update it when a step starts or ends
+- [✗] 7. High while F5 is on. `DebugDraw.gd` (about lines 286-309) draws a text label for every minion, off-screen ones too. Skip minions outside the view, as `_draw_senses` already does
+- [✗] 8. Medium spike. Alert icons (`MinionController` about 416 -> `AttackEffect` 62-70) rebuild SpriteFrames per icon; a whole room alerting at once makes hundreds. Cache the frames or pool the icons
+- [✗] 9. Medium. Every minion's `_process` runs every frame, even when asleep, with 2 `get_ticks_usec` and a string-keyed `DebugState.add_time`. Time the minion loop once; stop processing sleeping minions
+- [✗] 10. Medium, check physics ms in F4 first. Minions all share collision layer/mask 1, so the physics engine tracks rat-vs-rat pairs nothing uses. Leave other minions out of their mask
+- [✗] 11. High in multiplayer. Every moving minion sends one RPC per frame per peer (`MinionController` 318 -> `NetworkSync` 481-492), and parked minions send once a second. Batch them into one packed message at 10-20 Hz; send tile and state on change
+- [✗] 12. Medium. `LightMap` refills its 81x81 image and re-uploads the texture every frame per moving lit player (up to 4). Paint only when the cell changes
+- [✗] 13. Low-medium. `LightMap` clears `_blocked_cache` on every flood; only needed on a door change or broken tile
+- [✗] 14. Medium. `Sound.flood` allocates a new array per heap push and pop, and calls `hearing_budget` on every minion per footstep. Packed heap; distance filter first
+- [✗] 15. Medium, memory. `FlowField` keeps one field per noise marker until a door changes or a new dungeon loads. Drop fields whose target is gone
+- [✗] 16. Medium, load time. Each spawned minion runs `find_child("LightMap")` over a scene that already holds every rat (`MinionController` line 223). Pass it in from the spawner
+- [✗] 17. Medium, load time. Per spawned minion: `SpriteFramesLoader.build` (new SpriteFrames and 8 AtlasTextures) and a new collision shape. Cache per minion type and size. (Its TileTypeRegistry JSON parse per minion is gone: `TileSolid` looks the void id up once.)
+- [✗] 18. Medium, pack creatures only. Pack alert and leader search scan every minion per packmate (`MinionController` 1055, 1276). Keep a member list per pack
+- [✗] 19. Low-medium. `get_nodes_in_group("protagonist")` makes a new array per minion per tick (`MinionController` 1129, 1150, 1210)
+- [✗] 20. Low-medium. `GridMover.move_one_tile`: a tween, a closure and a new `last_move` dict per step
+- [✗] 21. Low-medium. `NetworkPositionRelay` sends every player's position every frame, standing still too. Send on change or at a fixed rate
+- [✗] 22. Low-medium. Attack effects send the whole effect `data` dict (texture paths) over the network (`NetworkSync` 639-671). Send the action id
+- [✗] 23. Low. `DoorManager._art_key` string formatting per door per frame
+- [✗] 24. Low. `RoomGraph`: a new BFS per call for far chasers; `room_at` checks every room. Precompute next-hop and a cell -> room lookup
+- [✗] 25. Low. `TileHit.apply` scans every minion per hit (it keeps its own centre-of-body rule on purpose, so it cannot simply use GridMover's top-left index)
+- [✗] 26. Low. `DebugDraw` string concatenations per frame; `ParticleBurst` filters into a new array per burst per frame
+- [✗] 27. Low. `GridMover._reserved` is never cleared between dungeons (holds freed nodes; harmless)
+- Duplicates it found:
+  - [✓] (2026-09-25) Wall/void/no-floor tile reads written three times (`GridMover`, `LightMap`, `MinionSpawning`) are now one rule, `scripts/cells/tiles/TileSolid.gd`. Behaviour change: a tile with no floor now blocks movement, as BodySweep already treated it as a bad tile. `FlowField` and `Pathfinding` were never copies: they call whatever check they are given. `Sound._muffle_reader` reads muffle values, a different question
+  - [✓] (2026-09-25) "Which creature is on which tile" built three times: `DoorManager` layering and auto-close now use `GridMover.occupants` (so a 2x2 boss now holds a door open on any tile it covers, and ghosts no longer change door layering)
+  - [✗] "Walk every minion" loops (`Sound.make`, `NetworkSync._resolve_taunt`, `SurroundSectors`, pack alert, `TileHit`) ask different things (per-minion hearing budget, taunt radius, sectors, pack id, centre tile), so they are not copies of one rule. A spatial index could serve all of them later; that is a performance change, not a de-duplication
+- Bugs it found (not performance):
+  - [✗] `FlowField._field_for` keeps one wall cache per field and takes the newest caller's `is_blocked`, so a minion can be routed by another minion's door rules (door permission changes with alert state)
+  - [✗] `MinionController` line 294: `is_tile_lit` only knows the host's own light, so in multiplayer a client's light never alerts minions (known)
+
+## Dead code and duplication audit (2026-09-25: one agent, grep-checked, nothing removed)
+
+Unused (all in Orea's area):
+- [✗] Never called: `DungeonMaker._insert_connector` (2402; callers use `_insert_connector_data`), `Connector.dir()` (86), `MinionIndex.path_of()` (45), `MinionIndex.refresh()` (29; no tool calls it), `ItemDatabase.item_name()` (72; `ItemSlot.gd:75` does the same lookup inline), `MainTown._on_back_button_pressed` (88; no connection, `GuildTown.gd:48` does it)
+- [✓] `MinionController._patrol_reset()` was never called: removed 2026-09-25, home is now kept for good (Orea: walk back to the remembered room)
+- [✗] Written, never read: `DebugMenu._capture_box` (74), `dev_sim.gd` `_bad_total` (47)
+- [✗] Exports no scene sets: `TileInitialize.tile_types` (10), `MinionController.default_minion_type` (14; may matter for a hand-placed minion)
+- [✗] `NetworkSync.is_dedicated` is never set, so every dedicated-server branch is dead (`GuildMission` 17-18, 80-85, `MainTown` 79, `NetworkSync` 880, `VoiceChat` 166). Kept on purpose until headless hosting exists?
+- [✗] `project.godot`: input action `debug_dungeon_layout` is unused (this file says it was removed 2026-09-23). `menu_move_item`, `use_consumable`, `interact` are unused until the HUD is wired (WIP)
+- [✗] `CompileTilePalette.gd` still writes `game/tile_palette.json`, which nothing reads; only its `registry.save()` part is used
+- WIP, unused until the HUD is wired: `HealthBar.set_player_name`/`set_portrait`, `Hotbar.set_cooldown`/`set_consumable`, `InteractPrompt.show_at`/`hide_prompt`, `PauseMenu.open()` and its `pause_menu` group
+- Test-only for now: `CharacterSave.load_character()`, `AntagonistSave` (placeholder for the antagonist side)
+
+Duplication:
+- [✗] Scanning `res://game/tiles/`: four copies (`TileType.by_id`, `TileInitialize._discover_tile_types`, `CompileTilePalette`, `TileDestruction` 42-48), the path defined three times
+- [✗] Find JSON by id: `JsonOnloading.find_by_id` exists, but `ItemDatabase` (49-61), `DungeonAssembler` (80-90) and `DoorRegistry` (155-167) have their own loops; `DoorRegistry` 165 and `DoorManager` 99 also parse JSON by hand
+- [✗] Position -> tile: `_to_tile` identical in `MinionController` 969 and `PlayerController` 168, and the same expression inline 14 times (`GridMover`, `SenseSight`, `BodySweep`). One helper, probably on `GridMover`
+- [✗] Local player lookup: `PlayerLookup.find_local` exists, but `LightMap._local_player` (131) repeats it and `VoiceChat` (127) uses the `Player/<id>` path
+- [✗] Chat: `ChatBox` and `MainTown` both have `add_chat_line`, and MainTown builds its own chat instead of using `ChatBox.tscn`. They differ: only MainTown escapes `[`
+- [✗] Menus: `_close_settings_panel` identical in `MainMenu` 68 and `PauseMenu` 64; "leave the session" (peer = null, reset, MainMenu) in `PauseMenu` 59-62, `MainTown` 92-95, `NetworkSync` 61-63; `_on_back_pressed` identical in `LobbyMenu` 149 and `SettingsMenu` 21
+- [✗] Minor: `FullscreenControl`/`VSyncControl` are copies differing in one call; `DebugMenu._button` and `CharacterSelect._button` near-identical
+
+## Dead code and duplication audit, round 2 (2026-09-25: one agent, symbol index + structural diff, nothing removed)
+
+Only what round 1 above did not list. Line numbers as of the audit.
+
+Dead code and data:
+- [✗] `InventoryPanel.close_requested`, `closable` and the close-button branch (`InventoryPanel.gd:11,53,106-110`): both scenes set `closable = false`; its only listener was the deleted old `InventoryHud.gd`
+- [✗] `EntityStats.load_from_file` (`EntityStats.gd:43`): never called, both controllers use `load_from_data`
+- [✗] `NetworkSync.session_mode` / `SessionMode`: stored, but only read in `MainTown._apply_session_mode`, where host and client act the same; derivable from `NetworkSync.is_online()`
+- [✗] Room JSON `"biome"` (934 rooms): never read, the folder decides (`DungeonMaker.gd:2843` says so); remove it and the Maker code that keeps it in sync (`DungeonMaker.gd:937-939, 2864, 2978-2980, 3005`)
+- [✗] Room `"objects"` (94 rooms): only DungeonMaker reads it; editor data until decoration is built
+
+Duplications (single home in brackets):
+- [✗] "Host calls `_x(1, ...)`, client calls `report_x.rpc_id(1, ...)`" written 9x outside NetworkSync (`MainTown`, `GuildTown`, `GuildMission`, `NetworkPositionRelay`) and ~10x inside, plus 20 `report_*` with the same server guard [`@rpc("any_peer","call_local")` + one `_sender()` helper; medium risk]
+- [✗] "Host or offline" `multiplayer_peer == null or is_server()` in 9 NetworkSync spots, `DoorManager.gd:204`, `MinionSpawning.gd:33,64` [`NetworkSync.is_host()` beside `is_online()`]
+- [✗] Removing a player from a mission copied between the disconnect handler (`NetworkSync.gd:36-46`) and `_leave_mission` (869-880); "Countdown cancelled" string 3x [disconnect calls `_leave_mission`]
+- [✗] Body lookup by path (`"Player/"+id`, `"Minions/"+id`) 8x in NetworkSync; identical Player loops at 228 and 271; `_resolve_minion_hit` repeats `receive_minion_damage`; line 747 repeats `PlayerLookup.find_local` [`_player(id)`, `_minion(id)`]
+- [✗] TileSolid still bypassed: `DungeonPainter._warn_bad_spawn_cells` (66-77, also misses "no floor"), `TileDestruction.gd:71,89,103` [`TileSolid`]
+- [✗] 8-neighbour lists: `FlowField.NEIGHBOR_STEPS` = `MinionController.MOVE_DIRECTIONS`; `TileDestruction.NEIGHBOURS_8` and `LightFlood.DIRS` same set, other order [one constant in `scripts/cells/`; order changes tie-breaks]. Keep `PlayerController.ADJACENT_OFFSETS` (angle order for aiming)
+- [✗] Chebyshev distance inline at `MinionController.gd:942,971`, `FlowField.gd:172,204`, `test/sim/investigate_far_room.gd:152` beside `MinionController._cheb` [one helper]
+- [✗] Living-player filter (`not stats.is_ghost`) at `MinionController.gd:1154,1175,1231`, `SurroundSectors.gd:35`, `DebugMenu.gd:554`; `GridMover._is_ghost` rule repeated at 259 [`PlayerLookup.living(tree)`; `cells/` must not call entities]
+- [✗] Debug copies: "minion is thinking" in `DebugDraw.gd:239` and `DebugMenu.gd:527` (read private fields); no-clip test `BodySweep.gd:44` = `GridMover._no_clip` [public methods]
+- [✗] `StoragePanel.gd:14-20` rebuilds `InventoryPanel.frame_style()`
+- [✗] `ActionIndex` and `MinionIndex` share the same lazy id cache [a `JsonIndex` class]
+- [✗] `LightMap._flood_glow` (310-360) is a multi-source copy of `LightFlood.flood`; magic `1.0824` twice (220, 261)
+- [✗] In-file: `DungeonMaker._cell_in_bounds` bypassed at 1750, 1777, 1803, 1859, 2389 and the undo block duplicated (1762-1772, 1878-1888); `DungeonAssembler` connector sort (514, 661) and Placement setup (487-501, 532-543)
+- [✗] The five sense scripts share `enabled`, `range_tiles`, `DEBUG_COLOR`, `debug_draw` with no base class; Smell and Taste are identical stubs [a `Sense` base]
+
+Look alike, keep apart: `DungeonMaker._line_cells` vs `LineOfSight.blocked_at`; the two `_nearest_player`s (debug includes ghosts); player vs minion `take_damage`; `Sound.flood` / `LightFlood` / `FlowField` (different costs; only `_flood_glow` is a real copy).
 
 ## Multiplayer and structure
 

@@ -1,11 +1,12 @@
 [gd_scene format=3 uid="uid://c7oo6hc4nq1pn"]
 
 [ext_resource type="PackedScene" path="res://scenes/ui/PauseMenu.tscn" id="1_pausemenu"]
-[ext_resource type="PackedScene" path="res://scenes/ui/Hotbar.tscn" id="1_hotbar"]
-[ext_resource type="PackedScene" path="res://scenes/ui/HealthBar.tscn" id="1_healthbar"]
-[ext_resource type="PackedScene" path="res://scenes/ui/DeathCountdown.tscn" id="1_deathcountdown"]
+[ext_resource type="PackedScene" path="res://scenes/ui/protagonist/Hotbar.tscn" id="1_hotbar"]
+[ext_resource type="PackedScene" path="res://scenes/ui/protagonist/HealthBar.tscn" id="1_healthbar"]
+[ext_resource type="PackedScene" path="res://scenes/ui/protagonist/DeathCountdown.tscn" id="1_deathcountdown"]
 [ext_resource type="PackedScene" path="res://scenes/ui/ChatBox.tscn" id="1_chatbox"]
-[ext_resource type="PackedScene" path="res://scenes/ui/InventoryHud.tscn" id="1_inventoryhud"]
+[ext_resource type="PackedScene" path="res://scenes/ui/protagonist/InventoryHud.tscn" id="1_inventoryhud"]
+[ext_resource type="PackedScene" path="res://scenes/ui/protagonist/InteractPrompt.tscn" id="1_interactprompt"]
 [ext_resource type="Script" path="res://scripts/dungeon/Dungeon.gd" id="1_dungeonroot"]
 [ext_resource type="Script" uid="uid://bc0lnb6o6cg5r" path="res://scripts/dungeon/PlayerSpawner.gd" id="2_playerspawner"]
 [ext_resource type="Texture2D" uid="uid://cukpeoxqsmyde" path="res://resources/gfx/placeholders/flat-color.png" id="3_564yl"]
@@ -320,3 +321,5 @@ visible = false
 [node name="ChatBox" parent="UILayer" instance=ExtResource("1_chatbox")]
 
 [node name="InventoryHud" parent="UILayer" instance=ExtResource("1_inventoryhud")]
+
+[node name="InteractPrompt" parent="UILayer" instance=ExtResource("1_interactprompt")]

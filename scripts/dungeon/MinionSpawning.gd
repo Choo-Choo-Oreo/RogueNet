@@ -125,14 +125,13 @@ static func fit_tile(minion_id: String, tile: Vector2i, minions_root: Node) -> V
 	var floor_data := scene.find_child("FloorData", true, false) as TileMapLayer
 	if wall_data == null or floor_data == null:
 		return tile
-	var void_id := TileTypeRegistry.new().get_id("floor_void")
 	var best := tile
 	var best_distance := INF
 	for dy in range(-FIT_SEARCH_RADIUS, FIT_SEARCH_RADIUS + 1):
 		for dx in range(-FIT_SEARCH_RADIUS, FIT_SEARCH_RADIUS + 1):
 			var candidate := tile + Vector2i(dx, dy)
 			var distance := float(dx * dx + dy * dy)
-			if distance >= best_distance or not _body_fits(candidate, size, wall_data, floor_data, void_id):
+			if distance >= best_distance or not _body_fits(candidate, size, wall_data, floor_data):
 				continue
 			best = candidate
 			best_distance = distance
@@ -141,12 +140,10 @@ static func fit_tile(minion_id: String, tile: Vector2i, minions_root: Node) -> V
 		return NO_FIT
 	return best
 
-static func _body_fits(top_left: Vector2i, size: int, wall_data: TileMapLayer, floor_data: TileMapLayer, void_id: int) -> bool:
+static func _body_fits(top_left: Vector2i, size: int, wall_data: TileMapLayer, floor_data: TileMapLayer) -> bool:
 	for y in size:
 		for x in size:
-			var cell := top_left + Vector2i(x, y)
-			var floor_id := floor_data.get_cell_source_id(cell)
-			if wall_data.get_cell_source_id(cell) != -1 or floor_id == -1 or floor_id == void_id:
+			if TileSolid.is_solid(wall_data, floor_data, top_left + Vector2i(x, y)):
 				return false
 	return true
 
@@ -155,6 +152,10 @@ static func _body_fits(top_left: Vector2i, size: int, wall_data: TileMapLayer, f
 static func spawn_one(id: int, minion_id: String, tile: Vector2i, minions_root: Node) -> MinionController:
 	var minion: MinionController = MINION_SCENE.instantiate()
 	minion.name = str(id)
+	# Placed before it joins the tree: added at (0, 0) first, its body would touch the
+	# player standing there on the first physics frame, and every minion would wake.
+	var world := Vector2(tile) * TILE_SIZE
+	minion.position = (minions_root as Node2D).to_local(world) if minions_root is Node2D else world
 	minions_root.add_child(minion)
 	# Minions are always host-owned -- host runs their AI and tells everyone
 	# else where they end up, the same "host decides, peers are told" split

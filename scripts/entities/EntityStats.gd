@@ -40,9 +40,6 @@ func load_from_data(data: Dictionary) -> void:
 	cognitive = data.get("cognitive", FALLBACK_ATTRIBUTE)
 	resistances = data.get("resistances", {})
 
-func load_from_file(path: String) -> void:
-	load_from_data(JsonOnloading.load_dict(path))
-
 func take_damage(amount: int, type: String = "") -> void:
 	_apply_health(-amount, type)
 

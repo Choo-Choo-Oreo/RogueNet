@@ -12,6 +12,7 @@ const TILES_PER_SECOND := 10.0
 
 var _target: Vector2
 var _speed: float
+var _max_substep: float
 var _is_blocked: Callable
 var _on_arrival: Callable
 var _hit_check: Callable
@@ -30,6 +31,7 @@ func launch(texture_path: String, to: Vector2, tile_size: float, on_arrival: Cal
 	_sprite.texture = load(texture_path)
 	_target = to
 	_speed = TILES_PER_SECOND * tile_size
+	_max_substep = tile_size * 0.5
 	_is_blocked = is_blocked
 	_on_arrival = on_arrival
 	_hit_check = hit_check
@@ -43,17 +45,23 @@ func _process(delta: float) -> void:
 	if not _is_blocked.is_valid():
 		queue_free()
 		return
-	var to_target := _target - global_position
-	var step := _speed * delta
-	var arrived := to_target.length() <= step
-	var next_position: Vector2 = _target if arrived else global_position + to_target.normalized() * step
-	if _is_blocked.call(next_position):
-		queue_free()
-		return
-	global_position = next_position
-	if _hit_check.is_valid() and _hit_check.call(global_position):
-		queue_free()
-		return
-	if arrived:
-		_on_arrival.call()
-		queue_free()
+	# Moves in pieces of at most half a tile, so a long frame (a hitch, or a sim run at
+	# GameTick.speed 8) can't carry the shot through a wall or past a creature.
+	var left := _speed * delta
+	while left > 0.0:
+		var step := minf(left, _max_substep)
+		left -= step
+		var to_target := _target - global_position
+		var arrived := to_target.length() <= step
+		var next_position: Vector2 = _target if arrived else global_position + to_target.normalized() * step
+		if _is_blocked.call(next_position):
+			queue_free()
+			return
+		global_position = next_position
+		if _hit_check.is_valid() and _hit_check.call(global_position):
+			queue_free()
+			return
+		if arrived:
+			_on_arrival.call()
+			queue_free()
+			return

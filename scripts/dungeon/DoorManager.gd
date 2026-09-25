@@ -32,7 +32,8 @@ const BEHIND_Z := 1600
 const OVERLAY_Z := 1800
 const LAYER_INTERVAL := 0.05
 const CLOSE_DELAY := 2.0
-const CHECK_INTERVAL := 0.25
+## Auto-close check every CHECK_TICKS game ticks (0.25 s).
+const CHECK_TICKS := 5
 ## Animation cap (docs/ART_TODO.md: 10 fps): a leaf shows a new frame at most every
 ## 0.1 s. Only the picture steps; the open timing (open_seconds) is unchanged.
 const ANIM_STEP := 0.1
@@ -40,7 +41,6 @@ const ANIM_STEP := 0.1
 var _art := {}       # "type:width:tier:wall" -> {"layers": [{"texture": CanvasTexture, "animated": bool, "overlay": bool}], "pieces": Dictionary, "frames": int, "frame_size": Vector2i, "own_cell_row": int}
 var _visuals: Array = []  # [{"door": Door, "sprites": Array, "frame": float, "shown": int}]
 var _empty_for := {}  # door id -> seconds nobody has been near it
-var _check_left := 0.0
 var _layer_left := 0.0
 var _anim_left := 0.0
 
@@ -150,8 +150,18 @@ func _boss_layers(json: Dictionary, dir: String, door: DoorRegistry.Door) -> Arr
 		result.append({"texture": canvas, "animated": layer == "leaves", "overlay": layer == "overlay"})
 	return result
 
-func _process(delta: float) -> void:
+func _ready() -> void:
+	GameTick.ticked.connect(_on_tick)
+
+## Door rules run on the game tick: swings finishing, and (host only) auto-close.
+func _on_tick(tick: int) -> void:
+	if not is_inside_tree():  # leaving with a scene change, not freed yet
+		return
 	DoorRegistry.tick()
+	if _is_authority() and tick % CHECK_TICKS == 0:
+		_auto_close()
+
+func _process(delta: float) -> void:
 	_layer_left -= delta
 	if _layer_left <= 0.0:
 		_layer_left = LAYER_INTERVAL
@@ -169,18 +179,9 @@ func _process(delta: float) -> void:
 		var frame := roundi(visual["frame"])
 		if frame != visual["shown"] and (anim_tick or visual["frame"] == target):
 			_show_frame(visual, frame)
-	if _is_authority():
-		_check_left -= delta
-		if _check_left <= 0.0:
-			_check_left = CHECK_INTERVAL
-			_auto_close()
 
 ## Puts each piece of a horizontal door over or under the creatures next to it (see BEHIND_Z).
 func _update_layering() -> void:
-	var occupied := {}
-	for group in ["protagonist", "antagonist"]:
-		for body: Node2D in get_tree().get_nodes_in_group(group):
-			occupied[Vector2i(floori(body.global_position.x / TILE), floori(body.global_position.y / TILE))] = true
 	for visual in _visuals:
 		# Only doors in a north/south wall have a "behind"; a door in an east/west
 		# wall is walked through side on, so it stays under creatures.
@@ -190,7 +191,7 @@ func _update_layering() -> void:
 			if sprite.get_meta("overlay"):
 				continue
 			var cell: Vector2i = sprite.get_meta("cell")
-			sprite.z_index = BEHIND_Z if occupied.has(cell + Vector2i.UP) or occupied.has(cell + Vector2i.UP * 2) else DOOR_Z
+			sprite.z_index = BEHIND_Z if _occupied(cell + Vector2i.UP) or _occupied(cell + Vector2i.UP * 2) else DOOR_Z
 
 func _show_frame(visual: Dictionary, frame: int) -> void:
 	visual["shown"] = frame
@@ -205,29 +206,27 @@ func _is_authority() -> bool:
 ## An open door shuts again CLOSE_DELAY seconds after the last creature left
 ## it -- "near" means on one of its cells or on any tile touching one.
 func _auto_close() -> void:
-	var occupied := {}
-	for group in ["protagonist", "antagonist"]:
-		for body: Node2D in get_tree().get_nodes_in_group(group):
-			if "stats" in body and body.stats != null and body.stats.is_ghost:
-				continue
-			occupied[Vector2i(floori(body.global_position.x / TILE), floori(body.global_position.y / TILE))] = true
 	for visual in _visuals:
 		var door: DoorRegistry.Door = visual["door"]
 		if not door.is_open:
 			_empty_for.erase(door.id)
 			continue
-		if _anyone_near(door, occupied):
+		if _anyone_near(door):
 			_empty_for[door.id] = 0.0
 			continue
-		_empty_for[door.id] = _empty_for.get(door.id, 0.0) + CHECK_INTERVAL
+		_empty_for[door.id] = _empty_for.get(door.id, 0.0) + CHECK_TICKS * GameTick.TICK_SECONDS
 		if _empty_for[door.id] >= CLOSE_DELAY:
 			_empty_for.erase(door.id)
 			NetworkSync.set_door(door.id, false)
 
-func _anyone_near(door: DoorRegistry.Door, occupied: Dictionary) -> bool:
+func _anyone_near(door: DoorRegistry.Door) -> bool:
 	for cell in door.cells:
 		for dy in range(-1, 2):
 			for dx in range(-1, 2):
-				if occupied.has(cell + Vector2i(dx, dy)):
+				if _occupied(cell + Vector2i(dx, dy)):
 					return true
 	return false
+
+## A living creature covers `tile` (GridMover's shared per-frame index; ghosts don't count).
+func _occupied(tile: Vector2i) -> bool:
+	return not GridMover.occupants(get_tree(), tile, TILE).is_empty()

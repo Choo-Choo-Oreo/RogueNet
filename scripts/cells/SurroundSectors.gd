@@ -4,28 +4,27 @@ extends RefCounted
 ## How many chasing minions are currently in each of 16 pie slices around a
 ## target, so an approaching minion can pick the emptier side (see
 ## MinionController._try_surround_step). One pass over every minion, redone at
-## most every REFRESH_FRAMES -- cheap, and exact counts don't matter, only
+## most every REFRESH_TICKS game ticks -- cheap, and exact counts don't matter, only
 ## which side is relatively crowded.
 
 const SECTORS := 16
-const REFRESH_FRAMES := 6
+const REFRESH_TICKS := 2
 const RADIUS_TILES := 12
 
-static var _last_frame := -1000
+static var _last_tick := -1000
 # target instance id -> PackedInt32Array of SECTORS counts
 static var _counts := {}
 
 static func clear() -> void:
 	_counts.clear()
-	_last_frame = -1000
+	_last_tick = -1000
 
 static func sector_of(offset: Vector2) -> int:
 	return int((atan2(offset.y, offset.x) + PI) / TAU * SECTORS) % SECTORS
 
 static func counts_for(tree: SceneTree, target_id: int, tile_size: int) -> PackedInt32Array:
-	var frame := Engine.get_process_frames()
-	if frame - _last_frame >= REFRESH_FRAMES:
-		_last_frame = frame
+	if GameTick.tick - _last_tick >= REFRESH_TICKS:
+		_last_tick = GameTick.tick
 		_refresh(tree, tile_size)
 	return _counts.get(target_id, PackedInt32Array())
 

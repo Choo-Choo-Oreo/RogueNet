@@ -2,9 +2,9 @@ class_name ItemDatabase
 extends RefCounted
 
 ## Every item in game/items/<slot>/<id>.json, loaded once. The filename (minus
-## .json) is the item's id, same rule as minions. Items are only cosmetic gear
-## for now: a name, the slot it goes in, an optional set, and "art", the path
-## of its sheets minus the "-<Direction>.png" ending (see README.md).
+## .json) is the item's id, same rule as minions. An item has a name, the slot it
+## goes in, an optional set, "art" (the path of its sheets minus the "-<Direction>.png"
+## ending) and optional "actions" it gives whoever wears it (see README.md).
 
 const ITEMS_DIR := "res://game/items"
 
@@ -74,6 +74,10 @@ static func item_name(item_id: String) -> String:
 
 static func item_slot(item_id: String) -> String:
 	return get_item(item_id).get("slot", "")
+
+## Cosmetic: only changes how you look, it gives no actions.
+static func is_cosmetic(item_id: String) -> bool:
+	return not get_item(item_id).has("actions")
 
 ## All item ids: the four sets first (each in slot order), then everything else.
 static func all_ids() -> Array[String]:

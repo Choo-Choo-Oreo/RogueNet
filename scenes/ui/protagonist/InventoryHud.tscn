@@ -1,0 +1,226 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/protagonist/InventoryHud.gd" id="1_hud"]
+[ext_resource type="Script" path="res://scripts/ui/inventory/InventoryPanel.gd" id="2_inventory"]
+[ext_resource type="Texture2D" path="res://resources/gfx/ui/inventory/backpack.png" id="3_backpack"]
+[ext_resource type="Theme" path="res://resources/HudTheme.tres" id="4_theme"]
+[ext_resource type="Script" path="res://scripts/ui/InputPrompt.gd" id="5_prompt"]
+
+[node name="InventoryHud" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("4_theme")
+script = ExtResource("1_hud")
+
+[node name="MenuButtons" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -60.0
+offset_right = 16.0
+offset_bottom = -16.0
+grow_vertical = 0
+theme_override_constants/separation = 6
+
+[node name="BackpackButton" type="Button" parent="MenuButtons"]
+texture_filter = 1
+custom_minimum_size = Vector2(44, 44)
+layout_mode = 2
+focus_mode = 0
+tooltip_text = "Inventory (I)"
+icon = ExtResource("3_backpack")
+icon_alignment = 1
+expand_icon = true
+
+[node name="CharacterButton" type="Button" parent="MenuButtons"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+focus_mode = 0
+tooltip_text = "Character: not built yet"
+disabled = true
+text = "Character"
+
+[node name="SkillsButton" type="Button" parent="MenuButtons"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+focus_mode = 0
+tooltip_text = "Skills: not built yet"
+disabled = true
+text = "Skills"
+
+[node name="HelpButton" type="Button" parent="MenuButtons"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+focus_mode = 0
+tooltip_text = "Help: not built yet"
+disabled = true
+text = "Help"
+
+[node name="MenuButton" type="Button" parent="MenuButtons"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+focus_mode = 0
+tooltip_text = "Menu (Esc)"
+text = "Menu"
+
+[node name="PadStrip" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -52.0
+offset_right = 16.0
+offset_bottom = -16.0
+grow_vertical = 0
+mouse_filter = 2
+theme_type_variation = &"HudPanel"
+
+[node name="Row" type="HBoxContainer" parent="PadStrip"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="InventoryPrompt" type="HBoxContainer" parent="PadStrip/Row"]
+layout_mode = 2
+script = ExtResource("5_prompt")
+text = "Inventory"
+pad_text = "Y"
+pad_only = true
+
+[node name="MenuPrompt" type="HBoxContainer" parent="PadStrip/Row"]
+layout_mode = 2
+script = ExtResource("5_prompt")
+text = "Menu"
+pad_text = "Menu"
+pad_only = true
+
+[node name="GameMenu" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -72.0
+offset_right = 16.0
+offset_bottom = -72.0
+grow_vertical = 0
+
+[node name="Column" type="VBoxContainer" parent="GameMenu"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Tabs" type="HBoxContainer" parent="GameMenu/Column"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="PrevPrompt" type="HBoxContainer" parent="GameMenu/Column/Tabs"]
+layout_mode = 2
+size_flags_vertical = 4
+script = ExtResource("5_prompt")
+key_text = "Q"
+pad_text = "LT"
+
+[node name="TabBar" type="TabBar" parent="GameMenu/Column/Tabs"]
+layout_mode = 2
+focus_mode = 0
+tab_count = 5
+tab_0/title = "Inventory"
+tab_1/title = "Character"
+tab_2/title = "Skills"
+tab_3/title = "Help"
+tab_4/title = "System"
+
+[node name="NextPrompt" type="HBoxContainer" parent="GameMenu/Column/Tabs"]
+layout_mode = 2
+size_flags_vertical = 4
+script = ExtResource("5_prompt")
+key_text = "E"
+pad_text = "RT"
+
+[node name="Spacer" type="Control" parent="GameMenu/Column/Tabs"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="CloseButton" type="Button" parent="GameMenu/Column/Tabs"]
+layout_mode = 2
+focus_mode = 0
+tooltip_text = "Close (Esc)"
+text = "x"
+flat = true
+
+[node name="Pages" type="VBoxContainer" parent="GameMenu/Column"]
+layout_mode = 2
+
+[node name="InventoryPanel" type="PanelContainer" parent="GameMenu/Column/Pages"]
+layout_mode = 2
+script = ExtResource("2_inventory")
+wide_layout = true
+embedded = true
+
+[node name="CharacterPage" type="Label" parent="GameMenu/Column/Pages"]
+visible = false
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+theme_type_variation = &"HudSmall"
+text = "Character: not built yet"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SkillsPage" type="Label" parent="GameMenu/Column/Pages"]
+visible = false
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+theme_type_variation = &"HudSmall"
+text = "Skills: not built yet"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HelpPage" type="Label" parent="GameMenu/Column/Pages"]
+visible = false
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+theme_type_variation = &"HudSmall"
+text = "Help: not built yet"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PromptBar" type="HBoxContainer" parent="GameMenu/Column"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="EquipPrompt" type="HBoxContainer" parent="GameMenu/Column/PromptBar"]
+layout_mode = 2
+script = ExtResource("5_prompt")
+text = "Equip / unequip"
+key_text = "Right-click"
+pad_text = "A"
+
+[node name="MovePrompt" type="HBoxContainer" parent="GameMenu/Column/PromptBar"]
+layout_mode = 2
+script = ExtResource("5_prompt")
+text = "Move"
+key_text = "Drag"
+pad_text = "X"
+
+[node name="ClosePrompt" type="HBoxContainer" parent="GameMenu/Column/PromptBar"]
+layout_mode = 2
+script = ExtResource("5_prompt")
+text = "Close"
+key_text = "Esc"
+pad_text = "B"
+
+[node name="TabsPrompt" type="HBoxContainer" parent="GameMenu/Column/PromptBar"]
+layout_mode = 2
+script = ExtResource("5_prompt")
+text = "Tabs"
+pad_text = "LT RT"
+pad_only = true

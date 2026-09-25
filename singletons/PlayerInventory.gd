@@ -1,9 +1,10 @@
 extends Node
 
 ## This machine's own player: what they wear, their bag, and their storage in
-## the town. Only kept in memory for now (there is no character save yet), so it
-## starts over on every launch. Other players only ever learn what you wear,
-## through NetworkSync.peer_equipment -- bag and storage stay local.
+## the town. Filled from the hero's save (ProtagonistSave) when one is picked and
+## written back by save_hero(): on arriving in and leaving the town, and when the
+## game window closes. Other players only ever learn what you wear, through
+## NetworkSync.peer_equipment -- bag and storage stay local.
 ##
 ## A place in the inventory is a Dictionary {"where": EQUIP/BAG/STORAGE, "key": ...}:
 ## the key is a slot name for EQUIP and an index for BAG and STORAGE. An empty
@@ -19,22 +20,72 @@ const BAG_SIZE := 21
 const STORAGE_COLUMNS := 8
 const MIN_STORAGE_SIZE := 48
 
+## The hero being played (a ProtagonistSave character), picked on the main menu's
+## Characters screen; {} until one is picked. Set it through use_hero().
+var hero: Dictionary = {}
+
 var equipped: Dictionary = {}
 var bag: Array[String] = []
 var storage: Array[String] = []
 
 func _ready() -> void:
+	# The hero picked last time, so a restart starts where the player left off.
+	var saves := ProtagonistSave.new()
+	hero = saves.load_character(saves.last_id())
+	_fill(hero)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		save_hero()
+
+## Plays `new_hero` and fills the inventory from its save; {} empties it. The hero being
+## left is saved first (a swap in town keeps what it carried) and the new one is remembered.
+func use_hero(new_hero: Dictionary) -> void:
+	save_hero()
+	var saves := ProtagonistSave.new()
+	var id: String = new_hero.get("id", "")
+	# Read back from its file: the caller's copy may predate the save just made (same hero).
+	var saved := saves.load_character(id) if id != "" else {}
+	hero = saved if not saved.is_empty() else new_hero
+	saves.remember(id)
+	_fill(hero)
+	# Not shared: heroes are picked on the main menu, with no session to share with.
+	# The town shares what the hero wears on arrival (MainTown._ready).
+	changed.emit()
+
+## Writes the inventory into the hero's save file. Does nothing with no hero picked.
+func save_hero() -> void:
+	if hero.is_empty():
+		return
+	hero["equipped"] = worn()
+	hero["bag"] = bag.duplicate()
+	hero["storage"] = storage.duplicate()
+	if ProtagonistSave.new().save(hero) != OK:
+		push_warning("Could not save the character %s." % hero["name"])
+
+## Item ids no longer in ItemDatabase are dropped, and so is worn gear that no longer
+## fits its slot. Storage keeps every saved cell; the bag is always BAG_SIZE.
+func _fill(saved: Dictionary) -> void:
+	var saved_equipped: Dictionary = saved.get("equipped", {})
+	equipped.clear()
 	for slot in ItemDatabase.SLOTS:
-		equipped[slot] = ""
-	bag.resize(BAG_SIZE)
-	bag.fill("")
-	# For now storage starts with one of every item, so players can try the gear on.
-	var ids := ItemDatabase.all_ids()
-	var rows := ceili(float(maxi(ids.size(), MIN_STORAGE_SIZE)) / STORAGE_COLUMNS)
-	storage.resize(rows * STORAGE_COLUMNS)
-	storage.fill("")
-	for i in ids.size():
-		storage[i] = ids[i]
+		var item_id := _known(saved_equipped.get(slot, ""))
+		equipped[slot] = item_id if fits(item_id, place(EQUIP, slot)) else ""
+	bag = _cells(saved.get("bag", []), BAG_SIZE)
+	var saved_storage: Array = saved.get("storage", [])
+	var rows := ceili(float(maxi(saved_storage.size(), MIN_STORAGE_SIZE)) / STORAGE_COLUMNS)
+	storage = _cells(saved_storage, rows * STORAGE_COLUMNS)
+
+func _cells(saved: Array, size: int) -> Array[String]:
+	var cells: Array[String] = []
+	cells.resize(size)
+	cells.fill("")
+	for i in mini(saved.size(), size):
+		cells[i] = _known(saved[i])
+	return cells
+
+func _known(item_id) -> String:
+	return item_id if item_id is String and ItemDatabase.has_item(item_id) else ""
 
 func place(where: String, key) -> Dictionary:
 	return {"where": where, "key": key}
@@ -91,6 +142,23 @@ func send_to(at: Dictionary, where: String) -> bool:
 	if free < 0 or get_at(at) == "":
 		return false
 	return move(at, place(where, free))
+
+## Puts each of item_ids the hero does not own yet into storage, adding whole rows when
+## it is full. Returns how many were added. For the editor-only debug buttons (StoragePanel).
+func add_to_storage(item_ids: Array[String]) -> int:
+	var owned := worn().values() + bag + storage
+	var added := 0
+	for item_id in item_ids:
+		if owned.has(item_id):
+			continue
+		if not storage.has(""):
+			for i in STORAGE_COLUMNS:
+				storage.append("")
+		storage[storage.find("")] = item_id
+		added += 1
+	if added > 0:
+		_after_change(false)
+	return added
 
 ## Slot -> item id for the slots that hold something, the form NetworkSync shares.
 func worn() -> Dictionary:

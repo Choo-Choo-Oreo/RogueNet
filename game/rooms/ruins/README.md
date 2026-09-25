@@ -131,7 +131,7 @@ A ruins room is a dungeon room with the forest let in, so the easiest way
 is to **make the dungeon room first**, then make its two stages from it:
 
 1. **Copy the dungeon room's JSON** twice, as `..._Overgrown_` and
-   `..._Reclaimed_`, and set `"biome": "ruins"` and the new `id`.
+   `..._Reclaimed_`, put them in `ruins/` and set the new `id`.
 2. **Let the forest in.** Paint grass over the stone in patches, dirt round
    the edges, and a small pool or two away from the openings. Turn some
    brick into `wall_forest`, and remove a few inner wall tiles (never the

@@ -150,7 +150,7 @@ A 3x3 closet with one 1-wide opening on the south edge:
 
 ```json
 {
-  "id": "Dungeon_Closet_3x3", "biome": "dungeon", "format": 2,
+  "id": "Dungeon_Closet_3x3", "format": 2,
   "width": 3, "height": 3, "role": "normal", "tags": ["peaceful"],
   "floor": [[null, null, null], [null, "floor_smooth_stone", null], [null, null, null]],
   "walls": [["wall_smooth_stone", "wall_smooth_stone", "wall_smooth_stone"],

@@ -15,7 +15,6 @@ const PATH_SLACK := LightFlood.PATH_SLACK
 
 var _wall_data: TileMapLayer
 var _floor_data: TileMapLayer
-var _void_id: int
 const MAX_OTHERS := 3
 
 # One light per player: its own window of cells and the flood results inside it.
@@ -50,7 +49,6 @@ var _shading: ShaderMaterial = load("res://resources/shaders/normal_lit_material
 func _ready() -> void:
 	_wall_data = tile_initialize.get_node("WallData")
 	_floor_data = tile_initialize.get_node("FloorData")
-	_void_id = tile_initialize.tile_registry.get_id("floor_void")
 	_side = int(view_half * 2.0 / CELL) + 1
 	_local = _make_light()
 	_glow_image = Image.create(1, 1, false, Image.FORMAT_RGBA8)
@@ -374,8 +372,6 @@ func _is_blocked(cell: Vector2i) -> bool:
 	var tile := Vector2i(floori(cell.x * CELL / float(TILE)), floori(cell.y * CELL / float(TILE)))
 	if _blocked_cache.has(tile):
 		return _blocked_cache[tile]
-	var wall_id := _wall_data.get_cell_source_id(tile)
-	var floor_id := _floor_data.get_cell_source_id(tile)
-	var blocked := wall_id != -1 or floor_id == -1 or floor_id == _void_id or DoorRegistry.blocks_sight(tile)
+	var blocked := TileSolid.is_solid(_wall_data, _floor_data, tile) or DoorRegistry.blocks_sight(tile)
 	_blocked_cache[tile] = blocked
 	return blocked

@@ -914,8 +914,7 @@ func _on_delete_folder_confirmed() -> void:
 
 ## Called when a room thumbnail is dragged onto a folder in the sidebar
 ## (see RoomBrowserSourceList.gd / RoomBrowserFolderList.gd). Moves the file
-## on disk and keeps its "biome" field in sync with the new folder, the same
-## way _on_save_location_confirmed() does for newly-exported rooms.
+## on disk; the folder is the room's biome, so nothing in the file changes.
 func _on_room_dropped_on_folder(room_file: String, target_folder: String) -> void:
 	var current_folder := room_file.get_base_dir()
 	if current_folder == target_folder:
@@ -929,15 +928,7 @@ func _on_room_dropped_on_folder(room_file: String, target_folder: String) -> voi
 	if dir == null or dir.rename(room_file, new_rel) != OK:
 		_show_export_status("Failed to move " + room_file)
 		return
-	var data := _read_room_file(new_rel)
-	if data.is_empty():
-		_show_export_status("Moved to " + new_rel)
-	else:
-		if target_folder != "":
-			data["biome"] = target_folder
-		else:
-			data.erase("biome")
-		_write_room_file(ROOMS_DIR + new_rel, data)
+	_show_export_status("Moved to " + new_rel)
 	_refresh_room_browser_folder_list()
 	_refresh_room_browser()
 
@@ -2840,13 +2831,13 @@ func _on_room_file_selected(path: String) -> void:
 		_show_export_status("Invalid room file: " + path)
 		return
 	_load_room_data(data)
-	# The folder is what the game reads as the biome, so it wins over the
-	# "biome" field when a room is opened from inside game/rooms/.
+	# The folder is the biome (the file does not store it).
+	room_biome = ""
 	if path.begins_with(ROOMS_DIR):
 		var folder := path.get_base_dir().trim_prefix(ROOMS_DIR.trim_suffix("/")).trim_prefix("/")
 		if not folder.contains("/"):
 			room_biome = folder
-			_show_role_and_biome()
+	_show_role_and_biome()
 	_refresh_recent_rooms()
 	_show_export_status("Loaded " + path)
 
@@ -2861,7 +2852,6 @@ func _load_room_data(data: Dictionary) -> void:
 	room_id = str(data.get("id", ""))
 	id_line_edit.text = room_id
 	room_role = str(data.get("role", "normal"))
-	room_biome = str(data.get("biome", ""))
 	room_extras.clear()
 	for key in ROOM_EXTRA_KEYS:
 		if data.has(key):
@@ -2974,10 +2964,6 @@ func _on_save_location_confirmed() -> void:
 	var folder_name := "" if selected.is_empty() or selected[0] == 0 else save_location_folder_list.get_item_text(selected[0])
 	room_biome = folder_name
 	_show_role_and_biome()
-	if folder_name != "":
-		pending_export_data["biome"] = folder_name
-	else:
-		pending_export_data.erase("biome")
 	save_location_dialog.hide()
 	var folder := "" if folder_name == "" else folder_name + "/"
 	var path := "%s%s%s.json" % [ROOMS_DIR, folder, room_id]
@@ -3001,8 +2987,6 @@ func _build_export_data() -> Dictionary:
 		"objects": _serialize_objects(),
 		"connectors": _serialize_connectors(),
 	}
-	if room_biome != "":
-		data["biome"] = room_biome
 	for key in room_extras:
 		data[key] = room_extras[key]
 	var spawn_cells := _serialize_spawn_cells()
