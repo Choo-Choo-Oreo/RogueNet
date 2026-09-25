@@ -12,7 +12,8 @@ extends Node
 ## It also poses the body without new frames, by moving the whole sprite in whole
 ## pixels at 10 fps, so worn gear (GearLayers, which copies the offset) follows:
 ## - play_attack(): pull back 1px, lunge 2px toward the target, recover (0.4 s).
-## - play_death(): topple sideways, lie flat in its own tile, fade (1.7 s).
+## - play_death(): topple sideways, lie flat in its own tile, fade (1.7 s). A body
+##   that is freed on death (a minion) hands its sprite to leave_corpse() instead.
 ## - idle life, from the sprite JSON's "idle" block (set_idle_life): "breath" sinks
 ##   the body 1px for half of every 3 s, "blink" shows an eyelid sheet (one 16x16
 ##   cell per listed animation) for 0.2 s of every 3 s.
@@ -162,6 +163,35 @@ func play_death() -> void:
 	for alpha in [0.75, 0.5, 0.25, 0.0]:
 		_pose.append([Vector2.ZERO, 90.0 * side, alpha])
 	_pose_time = 0.0
+
+## Plays the death topple on a body that is about to be freed: the sprite moves to a
+## short-lived "Corpse" node beside the body (same place, same z) which plays it and
+## then frees itself. The body goes at once as before, so nothing can hit, target or
+## count a dead one. Cosmetic only; every peer frees its own copy of the body.
+static func leave_corpse(body: Node2D, body_sprite: AnimatedSprite2D) -> void:
+	var parent := body.get_parent()
+	if parent == null or not body.is_inside_tree():
+		return
+	# the body is only freed at the end of the frame; until then it must not touch the sprite
+	body.process_mode = Node.PROCESS_MODE_DISABLED
+	var corpse := Node2D.new()
+	corpse.name = "Corpse"
+	corpse.z_index = body.z_index
+	corpse.z_as_relative = body.z_as_relative
+	parent.add_child(corpse)
+	corpse.global_position = body.global_position
+	body_sprite.reparent(corpse)
+	body_sprite.stop()
+	body_sprite.speed_scale = 1.0
+	var animator := DirectionalAnimator.new()
+	animator.sprite_path = NodePath("../" + String(body_sprite.name))
+	corpse.add_child(animator)
+	animator.play_death()
+	animator.pose_finished.connect(corpse.queue_free)
+	# HitFeedback went with the body mid-flash: finish the flash here.
+	corpse.get_tree().create_timer(HitFeedback.WHITE_SECONDS + HitFeedback.RED_SECONDS).timeout.connect(func():
+		if is_instance_valid(body_sprite):
+			body_sprite.modulate = Color(1, 1, 1, body_sprite.modulate.a))
 
 func reset_pose() -> void:
 	_pose = []

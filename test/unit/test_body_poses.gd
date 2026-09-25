@@ -92,3 +92,29 @@ func test_a_creature_without_idle_life_is_left_alone() -> void:
 	_step(2.0)
 	assert_eq(_sprite.offset, Vector2(3, 3))
 	assert_false(_sprite.has_node("Blink"))
+
+func test_a_freed_body_leaves_a_corpse_that_topples_and_goes() -> void:
+	var minions := Node2D.new()
+	add_child_autofree(minions)
+	var body := Node2D.new()
+	body.name = "7"
+	body.z_index = 1000
+	minions.add_child(body)
+	body.position = Vector2(32, 48)
+	var sprite := AnimatedSprite2D.new()
+	sprite.name = "AnimatedSprite2D"
+	sprite.sprite_frames = _sprite.sprite_frames
+	sprite.modulate = HitFeedback.FLASH_WHITE
+	body.add_child(sprite)
+	DirectionalAnimator.leave_corpse(body, sprite)
+	body.queue_free()
+	var corpse := minions.get_node("Corpse")
+	assert_eq(sprite.get_parent(), corpse)
+	assert_eq(corpse.global_position, Vector2(32, 48))
+	assert_eq(corpse.z_index, 1000)
+	await wait_seconds(0.6)
+	assert_false(is_instance_valid(body))
+	assert_ne(sprite.rotation, 0.0, "toppling")
+	assert_eq(sprite.modulate.r, 1.0, "the hit flash finished")
+	await wait_seconds(1.5)
+	assert_false(is_instance_valid(corpse), "gone once faded")

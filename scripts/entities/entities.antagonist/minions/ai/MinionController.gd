@@ -240,7 +240,9 @@ func _ready() -> void:
 	hit_feedback.name = "HitFeedback"
 	add_child(hit_feedback)
 	hit_feedback.setup(self, $AnimatedSprite2D, stats, tags)
-	stats.died.connect(queue_free)
+	stats.died.connect(func():
+		DirectionalAnimator.leave_corpse(self, $AnimatedSprite2D)
+		queue_free())
 	stats.damaged.connect(func(amount: int, _type: String, _cause: String):
 		if _hit_by.is_valid_int():
 			RunLog.minion_hurt(int(_hit_by), amount, minion_id, stats.current_health == 0))
