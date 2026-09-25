@@ -2,10 +2,6 @@
 	"permissions": {
 		"allow": [
 			"WebSearch"
-		],
-		"deny": [
-			"Bash(git commit:*)",
-			"Bash(git push:*)"
 		]
 	}
 }

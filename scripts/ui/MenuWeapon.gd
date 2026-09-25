@@ -5,7 +5,8 @@ extends Control
 ## pointing at it as if about to attack. Each new scroll gets a random sword or
 ## staff (the items' own inventory icons). strike() plays the attack on a scroll:
 ## a sword swings through it and cuts it in half, a staff throws a fireball that
-## burns it (see MenuScrollButton).
+## burns it (see MenuScrollButton). Each of those moments has a sound (SFX_DIR),
+## played through SoundPlayer on the UI bus.
 
 ## Which items can show up, by how they attack. The icons are drawn pointing up-right;
 ## mirrored, they point up-left at the scroll.
@@ -22,6 +23,11 @@ const AIM_GAP := Vector2(4, 0)
 const FIREBALL_TEX := preload(MenuScrollButton.ART + "Fireball.png")
 const FIREBALL_SIZE := Vector2i(10, 8)
 const FIREBALL_FRAMES := 4
+## Menu sounds, cut from Pixabay recordings (Pixabay Content License) to fit these animations.
+## hover: the weapon moves to a new scroll. sword_cut: the swing and the paper tearing.
+## staff_charge: the fireball growing on the tip and flying off. fire_burn: the scroll burning.
+const SFX_DIR := "res://resources/sfx/ui/main_menu/"
+const SFX := {"bus": "UI", "max_length": 2.0}
 
 var _sprite: TextureRect
 var _fireball: TextureRect
@@ -53,6 +59,7 @@ func aim_at(button: MenuScrollButton) -> void:
 	var first := modulate.a == 0.0
 	if button != _target or first:
 		_roll_weapon()
+		_sound("hover", {"jitter": 0.05, "volume_db": -4.0})
 	_target = button
 	if _move_tween:
 		_move_tween.kill()
@@ -122,6 +129,7 @@ func _swing(button: MenuScrollButton) -> void:
 	var swing := create_tween().set_parallel()
 	swing.tween_property(_sprite, "position", Vector2(across, rest.y + 2 * PX), 0.14).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	swing.tween_property(_sprite, "rotation", -1.1, 0.14)
+	_sound("sword_cut")
 	button.cut()   # runs alongside the swing; waited for below
 	await swing.finished
 	var back := create_tween().set_parallel()
@@ -136,6 +144,7 @@ func _cast(button: MenuScrollButton) -> void:
 	_fireball.position = tip
 	_fireball.scale = Vector2.ZERO
 	_fireball.visible = true
+	_sound("staff_charge")
 	# charge: the fireball grows on the tip while the staff shakes
 	var charge := create_tween().set_parallel()
 	charge.tween_property(_fireball, "scale", Vector2.ONE, 0.3)
@@ -144,6 +153,7 @@ func _cast(button: MenuScrollButton) -> void:
 	await _animate_fireball(0.3)
 	_sprite.position = rest
 	var target := button.strike_point() - global_position - _fireball.size / 2.0
+	_sound("fire_burn")
 	var fly := create_tween()
 	fly.tween_property(_fireball, "position", target, 0.16).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	create_tween().tween_property(_sprite, "position", rest + Vector2(2, 0) * PX, 0.08)
@@ -161,3 +171,8 @@ func _animate_fireball(seconds: float) -> void:
 		frame = (frame + 1) % FIREBALL_FRAMES
 		await get_tree().create_timer(0.05).timeout
 		elapsed += 0.05
+
+func _sound(sound_name: String, options: Dictionary = {}) -> void:
+	var o := SFX.duplicate()
+	o.merge(options, true)
+	SoundPlayer.play(self, SFX_DIR + sound_name + ".wav", o)
