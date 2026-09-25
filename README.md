@@ -55,13 +55,6 @@ Notes:
   a noise (a player's footstep, loudness 1.0; a thrown rock landing, 3.0) is heard within
   `range_tiles * loudness` tiles (default range 3, through walls), and the minion
   investigates the *spot* of the noise, not the player.
-- `pack` (optional) — a pack id (`"wolf"`). Minions of one pack within 16 tiles share alarms:
-  when one goes to Investigate the rest go to the same spot, when one goes to Attack they all
-  attack the same player. A minion raised by its pack does not call it again.
-- Patrol (no JSON, every minion): while a player is in its room or a room next to it, an
-  unalerted minion walks at half speed between random spots within 8 tiles of where it stands
-  (never leaving the room), resting 1.5 to 4 s at each. With no player near it stands still.
-  After an alert ends, where it stands becomes its new home.
 - `flying` (optional, default `false`) — set `true` for minions that fly
   (bat, flying hamsters). Terrain (water, lava, rough ground) never slows
   them, their routes ignore terrain cost, and their idle animation never
@@ -231,7 +224,10 @@ JSON. DungeonMaker keeps it when re-saving.)
   right-facing art mirrored. Which slots draw over or behind the body for
   each direction is `DRAW_ORDER` in `scripts/items/ItemDatabase.gd`.
 - `set` — optional; storage lists items set by set (`heavy_iron`, `arcane`,
-  `cleric`, `necromancer`, then everything else).
+  `cleric`, `necromancer`, then everything else). Wearing a whole set (head,
+  chest, gloves, legs and feet; weapons and amulet don't count) turns on its
+  full-set bonus, if `game/sets/<set>.json` gives it one: an aura under the
+  feet, a trail left on the floor, particles. See `game/sets/README.md`.
 - `icon` — optional 16x16 PNG for inventory slots, kept in
   `resources/gfx/ui/icons/items/<item id>.png`. Without one, the slot
   shows the front view cropped to its pixels, which is too small to read for

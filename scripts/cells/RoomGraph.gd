@@ -36,37 +36,11 @@ static func build(rooms: Dictionary, placements: Array) -> void:
 		graph._adjacency[p.parent_index].append({"to": i, "door": p.door_cell, "cells": p.joint_world})
 	current = graph
 
-func room_at(cell: Vector2i) -> int:
+func _room_at(cell: Vector2i) -> int:
 	for i in _room_rects.size():
 		if _room_rects[i].has_point(cell):
 			return i
 	return -1
-
-## The room `cell` is in plus every room joined to it by a door (empty when the cell is in no room).
-func rooms_near(cell: Vector2i) -> Array[int]:
-	var here := room_at(cell)
-	var near: Array[int] = []
-	if here < 0:
-		return near
-	near.append(here)
-	for edge in _adjacency[here]:
-		near.append(edge["to"])
-	return near
-
-## True when `cell` is in the same room as one of `player_cells`, or in a room next to it.
-func is_near_any(cell: Vector2i, player_cells: Array[Vector2i]) -> bool:
-	var here := room_at(cell)
-	if here < 0:
-		return false
-	for player_cell in player_cells:
-		if here in rooms_near(player_cell):
-			return true
-	return false
-
-## The rectangle of the room `cell` is in (an empty Rect2i when it is in none).
-func room_rect(cell: Vector2i) -> Rect2i:
-	var i := room_at(cell)
-	return _room_rects[i] if i >= 0 else Rect2i()
 
 ## The world cell of the next door to head for on the way from `from_cell`
 ## to `to_cell`, or Vector2i.ZERO if hierarchical routing doesn't apply here
@@ -74,8 +48,8 @@ func room_rect(cell: Vector2i) -> Rect2i:
 ## room (the local flow field / pathfind handles that directly, no need for
 ## a room-level hop), or no route exists between them at all.
 func next_waypoint(from_cell: Vector2i, to_cell: Vector2i) -> Vector2i:
-	var from_room := room_at(from_cell)
-	var to_room := room_at(to_cell)
+	var from_room := _room_at(from_cell)
+	var to_room := _room_at(to_cell)
 	if from_room < 0 or to_room < 0 or from_room == to_room:
 		return Vector2i.ZERO
 	var came_from := {from_room: -1}

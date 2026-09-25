@@ -3,12 +3,10 @@ extends Node2D
 
 ## A full-set bonus (game/sets/<set>.json, see its README) drawn around a body:
 ## an "aura" that stays under its feet, a "trail" left on each tile it walks
-## onto, and "particles" that drift off it. A single worn item can carry a bonus
-## of its own in the same format (a legendary ring's particles), shown alongside.
-## Which set is complete comes from the worn gear, which is already synced to
-## every peer, so every peer draws the same effects without any networking of
-## their own. GearLayers owns it and adds it to the body sprite, so it sits on
-## the body's tile centre and moves with it.
+## onto, and "particles" that drift off it. Which set is complete comes from the
+## worn gear, which is already synced to every peer, so every peer draws the same
+## effects without any networking of their own. GearLayers owns it and adds it
+## to the body sprite, so it sits on the body's tile centre and moves with it.
 
 ## Floors are z 1-10 and walls z 100: ground effects go between the two.
 const GROUND_Z := 20
@@ -16,10 +14,10 @@ const GROUND_Z := 20
 const PARTICLE_Z := 20
 const TILE := 16
 
-var _sources: Array[String] = []   # the set, then each worn item with a bonus
+var _set_id := ""
 var _active := true
 var _aura: AnimatedSprite2D
-var _particles: Array[CPUParticles2D] = []
+var _particles: CPUParticles2D
 var _trail: Dictionary = {}         # the set's "trail" block, {} for none
 var _trail_frames: SpriteFrames
 var _decals: Node2D                 # world-space parent of the trail decals
@@ -36,40 +34,23 @@ func _ready() -> void:
 	add_child(_decals)
 
 ## worn: slot -> item id, the same dictionary GearLayers gets.
-## The set's bonus comes first; one aura and one trail at most (the first found),
-## but every bonus's particles show.
 func set_equipment(worn: Dictionary) -> void:
-	var sources: Array[String] = []
-	var bonuses: Array[Dictionary] = []
 	var set_id := ItemDatabase.full_set(worn)
-	if set_id != "":
-		sources.append(set_id)
-		bonuses.append(ItemDatabase.set_bonus(set_id))
-	for slot in ItemDatabase.SLOTS:
-		var item_bonus := ItemDatabase.item_bonus(worn.get(slot, ""))
-		if not item_bonus.is_empty():
-			sources.append(worn[slot])
-			bonuses.append(item_bonus)
-	if sources == _sources:
+	if set_id == _set_id:
 		return
-	_sources = sources
-	for old: Node in [_aura] + _particles:
+	_set_id = set_id
+	for old: Node in [_aura, _particles]:
 		if old != null:
 			remove_child(old)   # now, so the new ones can take the same names
 			old.queue_free()
 	_aura = null
-	_particles.clear()
-	_trail = {}
-	for i in bonuses.size():
-		var bonus := bonuses[i]
-		if bonus.has("aura") and _aura == null:
-			_aura = _make_aura(bonus["aura"])
-		if bonus.has("particles"):
-			var p := _make_particles(bonus["particles"])
-			p.name = "Particles_" + sources[i]
-			_particles.append(p)
-		if bonus.has("trail") and _trail.is_empty():
-			_trail = bonus["trail"]
+	_particles = null
+	var bonus := ItemDatabase.set_bonus(set_id)
+	if bonus.has("aura"):
+		_aura = _make_aura(bonus["aura"])
+	if bonus.has("particles"):
+		_particles = _make_particles(bonus["particles"])
+	_trail = bonus.get("trail", {})
 	_trail_frames = _frames(_trail) if not _trail.is_empty() else null
 	# Decals already left keep fading out on their own.
 
@@ -79,8 +60,8 @@ func set_active(on: bool) -> void:
 		return
 	_active = on
 	visible = on
-	for p in _particles:
-		p.emitting = on
+	if _particles != null:
+		_particles.emitting = on
 
 func _process(_delta: float) -> void:
 	if _trail.is_empty() or not _active:

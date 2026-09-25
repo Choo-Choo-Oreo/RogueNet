@@ -1,21 +1,21 @@
 {
- "hub": "Development_Hub_349x61",
- "width": 349,
- "height": 61,
+ "hub": "Development_Hub_332x39",
+ "width": 332,
+ "height": 39,
  "cells": [
   {
    "name": "minion_rat",
    "door": {
     "x": 5,
-    "y": 27
+    "y": 16
    },
    "entry": {
     "x": 5,
-    "y": 25
+    "y": 14
    },
    "rect": {
     "x": 1,
-    "y": 21,
+    "y": 10,
     "w": 11,
     "h": 7
    },
@@ -25,9 +25,6 @@
    "wade_max": -1,
    "index": 0,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -41,15 +38,15 @@
    "name": "minion_rat_toothless",
    "door": {
     "x": 16,
-    "y": 27
+    "y": 16
    },
    "entry": {
     "x": 16,
-    "y": 25
+    "y": 14
    },
    "rect": {
     "x": 12,
-    "y": 21,
+    "y": 10,
     "w": 11,
     "h": 7
    },
@@ -59,9 +56,6 @@
    "wade_max": -1,
    "index": 2,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -75,15 +69,15 @@
    "name": "minion_bat_echo",
    "door": {
     "x": 27,
-    "y": 27
+    "y": 16
    },
    "entry": {
     "x": 27,
-    "y": 25
+    "y": 14
    },
    "rect": {
     "x": 23,
-    "y": 21,
+    "y": 10,
     "w": 11,
     "h": 7
    },
@@ -93,9 +87,6 @@
    "wade_max": -1,
    "index": 4,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -109,15 +100,15 @@
    "name": "minion_hamster_flying",
    "door": {
     "x": 38,
-    "y": 27
+    "y": 16
    },
    "entry": {
     "x": 38,
-    "y": 25
+    "y": 14
    },
    "rect": {
     "x": 34,
-    "y": 21,
+    "y": 10,
     "w": 11,
     "h": 7
    },
@@ -127,9 +118,6 @@
    "wade_max": -1,
    "index": 6,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -143,15 +131,15 @@
    "name": "minion_leech",
    "door": {
     "x": 49,
-    "y": 27
+    "y": 16
    },
    "entry": {
     "x": 49,
-    "y": 25
+    "y": 14
    },
    "rect": {
     "x": 45,
-    "y": 21,
+    "y": 10,
     "w": 11,
     "h": 7
    },
@@ -161,9 +149,6 @@
    "wade_max": -1,
    "index": 8,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -177,15 +162,15 @@
    "name": "minion_wolf",
    "door": {
     "x": 60,
-    "y": 27
+    "y": 16
    },
    "entry": {
     "x": 60,
-    "y": 25
+    "y": 14
    },
    "rect": {
     "x": 56,
-    "y": 21,
+    "y": 10,
     "w": 11,
     "h": 7
    },
@@ -195,9 +180,6 @@
    "wade_max": -1,
    "index": 10,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -211,15 +193,15 @@
    "name": "minion_skeleton_archer",
    "door": {
     "x": 71,
-    "y": 27
+    "y": 16
    },
    "entry": {
     "x": 71,
-    "y": 25
+    "y": 14
    },
    "rect": {
     "x": 67,
-    "y": 21,
+    "y": 10,
     "w": 11,
     "h": 7
    },
@@ -229,9 +211,6 @@
    "wade_max": -1,
    "index": 12,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -245,15 +224,15 @@
    "name": "minion_minotaur",
    "door": {
     "x": 83,
-    "y": 27
+    "y": 16
    },
    "entry": {
     "x": 83,
-    "y": 25
+    "y": 14
    },
    "rect": {
     "x": 78,
-    "y": 19,
+    "y": 8,
     "w": 13,
     "h": 9
    },
@@ -265,9 +244,6 @@
    "wade_max": -1,
    "index": 14,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -281,15 +257,15 @@
    "name": "bug1_no_room_for_boss",
    "door": {
     "x": 93,
-    "y": 27
+    "y": 16
    },
    "entry": {
     "x": 93,
-    "y": 25
+    "y": 14
    },
    "rect": {
     "x": 91,
-    "y": 13,
+    "y": 2,
     "w": 27,
     "h": 15
    },
@@ -299,9 +275,6 @@
    "wade_max": -1,
    "index": 16,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -315,15 +288,15 @@
    "name": "bug2_one_wide_gap",
    "door": {
     "x": 130,
-    "y": 27
+    "y": 16
    },
    "entry": {
     "x": 130,
-    "y": 25
+    "y": 14
    },
    "rect": {
     "x": 118,
-    "y": 19,
+    "y": 8,
     "w": 17,
     "h": 9
    },
@@ -336,9 +309,6 @@
    "wade_max": -1,
    "index": 19,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -352,15 +322,15 @@
    "name": "bug3_smash_plain",
    "door": {
     "x": 147,
-    "y": 27
+    "y": 16
    },
    "entry": {
     "x": 147,
-    "y": 25
+    "y": 14
    },
    "rect": {
     "x": 135,
-    "y": 21,
+    "y": 10,
     "w": 17,
     "h": 7
    },
@@ -372,9 +342,6 @@
    "wade_max": -1,
    "index": 21,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -388,15 +355,15 @@
    "name": "bug3_smash_pillar",
    "door": {
     "x": 164,
-    "y": 27
+    "y": 16
    },
    "entry": {
     "x": 164,
-    "y": 25
+    "y": 14
    },
    "rect": {
     "x": 152,
-    "y": 19,
+    "y": 8,
     "w": 17,
     "h": 9
    },
@@ -408,9 +375,6 @@
    "wade_max": -1,
    "index": 23,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -424,15 +388,15 @@
    "name": "bug4_open_archer",
    "door": {
     "x": 181,
-    "y": 27
+    "y": 16
    },
    "entry": {
     "x": 181,
-    "y": 25
+    "y": 14
    },
    "rect": {
     "x": 169,
-    "y": 19,
+    "y": 8,
     "w": 17,
     "h": 9
    },
@@ -444,9 +408,6 @@
    "wade_max": -1,
    "index": 25,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -460,15 +421,15 @@
    "name": "manual_boss_chase_arena",
    "door": {
     "x": 199,
-    "y": 27
+    "y": 16
    },
    "entry": {
     "x": 199,
-    "y": 25
+    "y": 14
    },
    "rect": {
     "x": 186,
-    "y": 11,
+    "y": 0,
     "w": 29,
     "h": 17
    },
@@ -478,9 +439,6 @@
    "wade_max": -1,
    "index": 27,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -494,15 +452,15 @@
    "name": "manual_minotaur_corners",
    "door": {
     "x": 237,
-    "y": 27
+    "y": 16
    },
    "entry": {
     "x": 237,
-    "y": 25
+    "y": 14
    },
    "rect": {
     "x": 215,
-    "y": 17,
+    "y": 6,
     "w": 25,
     "h": 11
    },
@@ -512,9 +470,6 @@
    "wade_max": -1,
    "index": 29,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -528,15 +483,15 @@
    "name": "terrain_lava",
    "door": {
     "x": 252,
-    "y": 27
+    "y": 16
    },
    "entry": {
     "x": 252,
-    "y": 25
+    "y": 14
    },
    "rect": {
     "x": 240,
-    "y": 20,
+    "y": 9,
     "w": 17,
     "h": 8
    },
@@ -546,16 +501,13 @@
    "wade_max": 0,
    "index": 31,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": {
     "x": 254,
-    "y": 22
+    "y": 11
    },
    "what": "A lava band with a stone way round.",
    "try": "Stand across the band.",
@@ -565,15 +517,15 @@
    "name": "terrain_acid",
    "door": {
     "x": 269,
-    "y": 27
+    "y": 16
    },
    "entry": {
     "x": 269,
-    "y": 25
+    "y": 14
    },
    "rect": {
     "x": 257,
-    "y": 20,
+    "y": 9,
     "w": 17,
     "h": 8
    },
@@ -583,16 +535,13 @@
    "wade_max": 0,
    "index": 33,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": {
     "x": 271,
-    "y": 22
+    "y": 11
    },
    "what": "An acid band with a stone way round.",
    "try": "Stand across the band.",
@@ -602,15 +551,15 @@
    "name": "swarm_rats",
    "door": {
     "x": 284,
-    "y": 27
+    "y": 16
    },
    "entry": {
     "x": 284,
-    "y": 25
+    "y": 14
    },
    "rect": {
     "x": 274,
-    "y": 13,
+    "y": 2,
     "w": 23,
     "h": 15
    },
@@ -620,9 +569,6 @@
    "wade_max": -1,
    "index": 35,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -636,15 +582,15 @@
    "name": "hearing_range",
    "door": {
     "x": 304,
-    "y": 27
+    "y": 16
    },
    "entry": {
     "x": 304,
-    "y": 25
+    "y": 14
    },
    "rect": {
     "x": 297,
-    "y": 13,
+    "y": 2,
     "w": 17,
     "h": 15
    },
@@ -655,12 +601,9 @@
    "index": 37,
    "noise_at": {
     "x": 305,
-    "y": 15,
+    "y": 4,
     "loudness": 1.0
    },
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [
@@ -671,7 +614,7 @@
    ],
    "player_at": {
     "x": 305,
-    "y": 26
+    "y": 15
    },
    "what": "A blind rat (hears 8) and a plain rat (hears 3), 7 tiles either side of a spot near the top.",
    "try": "Do NOT press Enter. Press N: one footstep at the spot. Then walk about yourself: every step you take is a footstep.",
@@ -681,15 +624,15 @@
    "name": "pack_wolves_attack",
    "door": {
     "x": 321,
-    "y": 27
+    "y": 16
    },
    "entry": {
     "x": 321,
-    "y": 25
+    "y": 14
    },
    "rect": {
     "x": 314,
-    "y": 13,
+    "y": 2,
     "w": 17,
     "h": 15
    },
@@ -699,9 +642,6 @@
    "wade_max": -1,
    "index": 39,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "wolf",
    "attacks": [
     "wolf"
@@ -712,64 +652,25 @@
    ],
    "player_at": {
     "x": 322,
-    "y": 26
+    "y": 15
    },
    "what": "The same wolves and rat. The top-left wolf is shot from the dark (the sim pokes it).",
    "try": "Do NOT press Enter. Wake one wolf yourself: open the door, press the backslash key to step inside, walk toward the top-left wolf until it attacks you.",
    "look": "When one wolf goes to Attack, every wolf attacks you. The rat should not care."
   },
   {
-   "name": "patrol_wanders",
-   "door": {
-    "x": 338,
-    "y": 27
-   },
-   "entry": {
-    "x": 338,
-    "y": 25
-   },
-   "rect": {
-    "x": 331,
-    "y": 0,
-    "w": 17,
-    "h": 28
-   },
-   "reach": [],
-   "may_skip": false,
-   "zone_changes_max": -1,
-   "wade_max": -1,
-   "index": 41,
-   "noise_at": null,
-   "alone": true,
-   "together": [],
-   "moves": {
-    "rat": 3
-   },
-   "poke": "",
-   "attacks": [],
-   "hear": [],
-   "no_hear": [],
-   "player_at": {
-    "x": 339,
-    "y": 26
-   },
-   "what": "One rat alone in a room; you stand at the far end, outside its sight and your light.",
-   "try": "Do NOT press Enter. Just watch it for about 20 seconds.",
-   "look": "It should walk to a few random spots (staying in the room), pausing between. Leave the room by the door: it should stop moving when no player is in or next to its room."
-  },
-  {
    "name": "minion_rat_blind",
    "door": {
     "x": 5,
-    "y": 33
+    "y": 22
    },
    "entry": {
     "x": 5,
-    "y": 35
+    "y": 24
    },
    "rect": {
     "x": 1,
-    "y": 33,
+    "y": 22,
     "w": 11,
     "h": 7
    },
@@ -779,9 +680,6 @@
    "wade_max": -1,
    "index": 1,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -795,15 +693,15 @@
    "name": "minion_bat",
    "door": {
     "x": 16,
-    "y": 33
+    "y": 22
    },
    "entry": {
     "x": 16,
-    "y": 35
+    "y": 24
    },
    "rect": {
     "x": 12,
-    "y": 33,
+    "y": 22,
     "w": 11,
     "h": 7
    },
@@ -813,9 +711,6 @@
    "wade_max": -1,
    "index": 3,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -829,15 +724,15 @@
    "name": "minion_hamster",
    "door": {
     "x": 27,
-    "y": 33
+    "y": 22
    },
    "entry": {
     "x": 27,
-    "y": 35
+    "y": 24
    },
    "rect": {
     "x": 23,
-    "y": 33,
+    "y": 22,
     "w": 11,
     "h": 7
    },
@@ -847,9 +742,6 @@
    "wade_max": -1,
    "index": 5,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -863,15 +755,15 @@
    "name": "minion_hamster_demonic",
    "door": {
     "x": 38,
-    "y": 33
+    "y": 22
    },
    "entry": {
     "x": 38,
-    "y": 35
+    "y": 24
    },
    "rect": {
     "x": 34,
-    "y": 33,
+    "y": 22,
     "w": 11,
     "h": 7
    },
@@ -881,9 +773,6 @@
    "wade_max": -1,
    "index": 7,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -897,15 +786,15 @@
    "name": "minion_leech_flesh",
    "door": {
     "x": 49,
-    "y": 33
+    "y": 22
    },
    "entry": {
     "x": 49,
-    "y": 35
+    "y": 24
    },
    "rect": {
     "x": 45,
-    "y": 33,
+    "y": 22,
     "w": 11,
     "h": 7
    },
@@ -915,9 +804,6 @@
    "wade_max": -1,
    "index": 9,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -931,15 +817,15 @@
    "name": "minion_wolf_hellhound",
    "door": {
     "x": 60,
-    "y": 33
+    "y": 22
    },
    "entry": {
     "x": 60,
-    "y": 35
+    "y": 24
    },
    "rect": {
     "x": 56,
-    "y": 33,
+    "y": 22,
     "w": 11,
     "h": 7
    },
@@ -949,9 +835,6 @@
    "wade_max": -1,
    "index": 11,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -965,15 +848,15 @@
    "name": "minion_wraith",
    "door": {
     "x": 71,
-    "y": 33
+    "y": 22
    },
    "entry": {
     "x": 71,
-    "y": 35
+    "y": 24
    },
    "rect": {
     "x": 67,
-    "y": 33,
+    "y": 22,
     "w": 11,
     "h": 7
    },
@@ -983,9 +866,6 @@
    "wade_max": -1,
    "index": 13,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -999,15 +879,15 @@
    "name": "bug1_spawn_fit",
    "door": {
     "x": 83,
-    "y": 33
+    "y": 22
    },
    "entry": {
     "x": 83,
-    "y": 35
+    "y": 24
    },
    "rect": {
     "x": 78,
-    "y": 33,
+    "y": 22,
     "w": 13,
     "h": 9
    },
@@ -1019,9 +899,6 @@
    "wade_max": -1,
    "index": 15,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -1035,15 +912,15 @@
    "name": "bug1_hole_band",
    "door": {
     "x": 98,
-    "y": 33
+    "y": 22
    },
    "entry": {
     "x": 98,
-    "y": 35
+    "y": 24
    },
    "rect": {
     "x": 91,
-    "y": 33,
+    "y": 22,
     "w": 17,
     "h": 13
    },
@@ -1055,9 +932,6 @@
    "wade_max": -1,
    "index": 17,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -1071,15 +945,15 @@
    "name": "bug2_two_wide_gap",
    "door": {
     "x": 120,
-    "y": 33
+    "y": 22
    },
    "entry": {
     "x": 120,
-    "y": 35
+    "y": 24
    },
    "rect": {
     "x": 108,
-    "y": 33,
+    "y": 22,
     "w": 17,
     "h": 9
    },
@@ -1092,9 +966,6 @@
    "wade_max": -1,
    "index": 18,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -1108,15 +979,15 @@
    "name": "bug6_boss_blocks_gap",
    "door": {
     "x": 137,
-    "y": 33
+    "y": 22
    },
    "entry": {
     "x": 137,
-    "y": 35
+    "y": 24
    },
    "rect": {
     "x": 125,
-    "y": 33,
+    "y": 22,
     "w": 17,
     "h": 9
    },
@@ -1128,9 +999,6 @@
    "wade_max": -1,
    "index": 20,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -1144,15 +1012,15 @@
    "name": "bug3_smash_door",
    "door": {
     "x": 154,
-    "y": 33
+    "y": 22
    },
    "entry": {
     "x": 154,
-    "y": 35
+    "y": 24
    },
    "rect": {
     "x": 142,
-    "y": 33,
+    "y": 22,
     "w": 17,
     "h": 7
    },
@@ -1164,9 +1032,6 @@
    "wade_max": -1,
    "index": 22,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -1180,15 +1045,15 @@
    "name": "bug4_corridor_archer",
    "door": {
     "x": 173,
-    "y": 33
+    "y": 22
    },
    "entry": {
     "x": 173,
-    "y": 35
+    "y": 24
    },
    "rect": {
     "x": 159,
-    "y": 33,
+    "y": 22,
     "w": 19,
     "h": 9
    },
@@ -1200,9 +1065,6 @@
    "wade_max": -1,
    "index": 24,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -1216,15 +1078,15 @@
    "name": "bug5_boss_crowd",
    "door": {
     "x": 185,
-    "y": 33
+    "y": 22
    },
    "entry": {
     "x": 185,
-    "y": 35
+    "y": 24
    },
    "rect": {
     "x": 178,
-    "y": 33,
+    "y": 22,
     "w": 17,
     "h": 11
    },
@@ -1234,9 +1096,6 @@
    "wade_max": -1,
    "index": 26,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -1250,15 +1109,15 @@
    "name": "manual_corridor_swap",
    "door": {
     "x": 220,
-    "y": 33
+    "y": 22
    },
    "entry": {
     "x": 220,
-    "y": 35
+    "y": 24
    },
    "rect": {
     "x": 195,
-    "y": 33,
+    "y": 22,
     "w": 29,
     "h": 9
    },
@@ -1268,9 +1127,6 @@
    "wade_max": -1,
    "index": 28,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -1284,15 +1140,15 @@
    "name": "manual_smash_or_walk",
    "door": {
     "x": 242,
-    "y": 33
+    "y": 22
    },
    "entry": {
     "x": 242,
-    "y": 35
+    "y": 24
    },
    "rect": {
     "x": 224,
-    "y": 33,
+    "y": 22,
     "w": 22,
     "h": 11
    },
@@ -1302,9 +1158,6 @@
    "wade_max": -1,
    "index": 30,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -1318,15 +1171,15 @@
    "name": "terrain_water",
    "door": {
     "x": 258,
-    "y": 33
+    "y": 22
    },
    "entry": {
     "x": 258,
-    "y": 35
+    "y": 24
    },
    "rect": {
     "x": 246,
-    "y": 33,
+    "y": 22,
     "w": 17,
     "h": 8
    },
@@ -1336,16 +1189,13 @@
    "wade_max": 0,
    "index": 32,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": {
     "x": 260,
-    "y": 35
+    "y": 24
    },
    "what": "A water band with a stone way round.",
    "try": "Stand across the band.",
@@ -1355,15 +1205,15 @@
    "name": "doors_widths",
    "door": {
     "x": 270,
-    "y": 33
+    "y": 22
    },
    "entry": {
     "x": 270,
-    "y": 35
+    "y": 24
    },
    "rect": {
     "x": 263,
-    "y": 33,
+    "y": 22,
     "w": 17,
     "h": 9
    },
@@ -1373,9 +1223,6 @@
    "wade_max": -1,
    "index": 34,
    "noise_at": null,
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
@@ -1389,15 +1236,15 @@
    "name": "hearing_rock_behind_wall",
    "door": {
     "x": 292,
-    "y": 33
+    "y": 22
    },
    "entry": {
     "x": 292,
-    "y": 35
+    "y": 24
    },
    "rect": {
     "x": 280,
-    "y": 33,
+    "y": 22,
     "w": 17,
     "h": 15
    },
@@ -1408,12 +1255,9 @@
    "index": 36,
    "noise_at": {
     "x": 293,
-    "y": 35,
+    "y": 24,
     "loudness": 3.0
    },
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [
@@ -1422,7 +1266,7 @@
    "no_hear": [],
    "player_at": {
     "x": 295,
-    "y": 46
+    "y": 35
    },
    "what": "A blind rat (hears 8 tiles, sees nothing) on one side of a wall with a gap; you are on the other side.",
    "try": "Do NOT press Enter (that tells them where you are). Press N: a rock lands at the far side. Or throw one yourself: key 5, click the far side.",
@@ -1432,15 +1276,15 @@
    "name": "pack_wolves_investigate",
    "door": {
     "x": 304,
-    "y": 33
+    "y": 22
    },
    "entry": {
     "x": 304,
-    "y": 35
+    "y": 24
    },
    "rect": {
     "x": 297,
-    "y": 33,
+    "y": 22,
     "w": 17,
     "h": 15
    },
@@ -1451,12 +1295,9 @@
    "index": 38,
    "noise_at": {
     "x": 301,
-    "y": 35,
+    "y": 24,
     "loudness": 1.0
    },
-   "alone": false,
-   "together": [],
-   "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [
@@ -1467,53 +1308,11 @@
    ],
    "player_at": {
     "x": 305,
-    "y": 46
+    "y": 35
    },
    "what": "Three wolves (a pack) and a rat (not in it). Only the top-left wolf is close enough to hear a footstep.",
    "try": "Do NOT press Enter. Press N: one footstep beside the top-left wolf.",
    "look": "All three wolves should walk to the footstep (the readout says \"-> going to\"). The rat must ignore it."
-  },
-  {
-   "name": "patrol_herd",
-   "door": {
-    "x": 321,
-    "y": 33
-   },
-   "entry": {
-    "x": 321,
-    "y": 35
-   },
-   "rect": {
-    "x": 314,
-    "y": 33,
-    "w": 17,
-    "h": 28
-   },
-   "reach": [],
-   "may_skip": false,
-   "zone_changes_max": -1,
-   "wade_max": -1,
-   "index": 40,
-   "noise_at": null,
-   "alone": true,
-   "together": [
-    "wolf",
-    10
-   ],
-   "moves": {
-    "wolf": 3
-   },
-   "poke": "",
-   "attacks": [],
-   "hear": [],
-   "no_hear": [],
-   "player_at": {
-    "x": 322,
-    "y": 59
-   },
-   "what": "Three wolves (a pack) spread along the top of a room; you stand at the far end.",
-   "try": "Do NOT press Enter. Watch for about 30 seconds.",
-   "look": "The wolves should wander as a group, staying close to each other, not each in a different direction."
   }
  ]
 }

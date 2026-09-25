@@ -254,9 +254,6 @@ cell('hearing_range', ['R.............r'] + ['...............'] * 12, door_x=6)
 _pack = ['..w.........w..'] + ['...............'] * 2 + ['.......w......r'] + ['...............'] * 9
 cell('pack_wolves_investigate', _pack, door_x=6)
 cell('pack_wolves_attack', _pack, door_x=6)
-# Patrol: one rat, alone in a room with a player at the far end (outside its sight and light).
-cell('patrol_herd', ['..w.....w.....w'] + ['...............'] * 25, door_x=6)
-cell('patrol_wanders', ['.......r.......'] + ['...............'] * 25, door_x=6)
 
 
 # ---- what must be true (checked by test/sim/dev_sim.gd; keep a cell after its bug is fixed) ----
@@ -288,16 +285,10 @@ NO_HEAR = {'hearing_range': ['rat'], 'pack_wolves_investigate': ['rat'], 'pack_w
 # sim then does NOT tell the others anything. ATTACKS: every creature of these ids must reach Attack.
 POKE = {'pack_wolves_attack': 'wolf'}
 ATTACKS = {'pack_wolves_attack': ['wolf']}
-# ALONE: the sim does not tell the creatures where the player is (like a noise cell, but no noise).
-# MOVES: a creature of this id must get at least this many tiles from where it started (patrol).
-ALONE = ['patrol_wanders', 'patrol_herd']
-MOVES = {'patrol_wanders': {'rat': 3}, 'patrol_herd': {'wolf': 3}}
-# TOGETHER: at the end the creatures of these ids must all be within this many tiles of each other (a herd).
-TOGETHER = {'patrol_herd': ('wolf', 10)}
 
 # Where the player stands instead of at the door (interior column, row), for cells that test a
 # straight line to the creature. The sim and the Test Lab both use it for "step inside".
-PLAYER_AT = {'terrain_lava': (13, 1), 'terrain_water': (13, 1), 'terrain_acid': (13, 1), 'hearing_rock_behind_wall': (14, 12), 'hearing_range': (7, 12), 'pack_wolves_investigate': (7, 12), 'pack_wolves_attack': (7, 12), 'patrol_wanders': (7, 25), 'patrol_herd': (7, 25)}
+PLAYER_AT = {'terrain_lava': (13, 1), 'terrain_water': (13, 1), 'terrain_acid': (13, 1), 'hearing_rock_behind_wall': (14, 12), 'hearing_range': (7, 12), 'pack_wolves_investigate': (7, 12), 'pack_wolves_attack': (7, 12)}
 
 # The Minotaur is expected to be skipped here, so the cell may spawn fewer creatures than it pins.
 MAY_SKIP = ['bug1_no_room_for_boss']
@@ -378,12 +369,6 @@ NOTES = {
     'pack_wolves_attack': ('The same wolves and rat. The top-left wolf is shot from the dark (the sim pokes it).',
                            'Do NOT press Enter. Wake one wolf yourself: open the door, press the backslash key to step inside, walk toward the top-left wolf until it attacks you.',
                            'When one wolf goes to Attack, every wolf attacks you. The rat should not care.'),
-    'patrol_wanders': ('One rat alone in a room; you stand at the far end, outside its sight and your light.',
-                       'Do NOT press Enter. Just watch it for about 20 seconds.',
-                       'It should walk to a few random spots (staying in the room), pausing between. Leave the room by the door: it should stop moving when no player is in or next to its room.'),
-    'patrol_herd': ('Three wolves (a pack) spread along the top of a room; you stand at the far end.',
-                    'Do NOT press Enter. Watch for about 30 seconds.',
-                    'The wolves should wander as a group, staying close to each other, not each in a different direction.'),
     'doors_widths': ('Minotaur, archer, rat and wraith behind 1, 2 and 3 wide wooden doors.',
                      'Open each door and step back.',
                      'The Minotaur cannot use the 1-wide door; everyone else should get out of theirs.'),
@@ -482,7 +467,6 @@ def place(b, ox, oy, door_side):
                       'index': [k['name'] for k in cells].index(c['name']),
                       'noise_at': ({'x': ox + 1 + NOISE_AT[c['name']][0], 'y': oy + 1 + NOISE_AT[c['name']][1], 'loudness': NOISE_AT[c['name']][2]}
                                    if c['name'] in NOISE_AT else None),
-                      'alone': c['name'] in ALONE, 'together': TOGETHER.get(c['name'], []), 'moves': MOVES.get(c['name'], {}),
                       'poke': POKE.get(c['name'], ''), 'attacks': ATTACKS.get(c['name'], []),
                       'hear': HEAR.get(c['name'], []), 'no_hear': NO_HEAR.get(c['name'], []),
                       'player_at': ({'x': ox + 1 + PLAYER_AT[c['name']][0], 'y': oy + 1 + PLAYER_AT[c['name']][1]}
