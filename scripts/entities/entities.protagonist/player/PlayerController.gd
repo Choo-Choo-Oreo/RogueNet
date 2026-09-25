@@ -34,6 +34,9 @@ var _attacks: Array = []
 var active_slot: int = 0
 var _attack_timer := 0.0
 var _is_dead := false
+## Set once the death topple has played and the ghost skin is on. Until then the
+## body lies where it fell, seen by everyone.
+var _ghost_look := false
 
 ## True on this machine once its OWN player has died. A dead player's ghost
 ## (and its light, see LightMap) is only shown to other ghosts, never to the
@@ -43,6 +46,7 @@ static var local_is_ghost := false
 func set_character(character_id: String) -> void:
 	var data := JsonOnloading.load_dict(CHARACTERS.get(character_id, CHARACTERS[DEFAULT_CHARACTER]))
 	$AnimatedSprite2D.sprite_frames = SpriteFramesLoader.build(data["sprite_frames"])
+	animator.set_idle_life(data.get("idle", {}))
 
 ## worn: slot -> item id (NetworkSync.peer_equipment). Cosmetic only for now.
 func set_equipment(worn: Dictionary) -> void:
@@ -104,12 +108,19 @@ func _on_died() -> void:
 	stats.is_ghost = true
 	if is_multiplayer_authority():
 		local_is_ghost = true
+	animator.play_death()
+	await animator.pose_finished
+	if not is_inside_tree():
+		return
+	animator.reset_pose()
+	_ghost_look = true
 	# Above every other entity (players/minions sit at 1000), but below
 	# LightMap's own overlay sprites (2000/2001) so it doesn't fight lighting.
 	z_index = 1500
 	gear.hidden = true
 	var ghost_data := JsonOnloading.load_dict(GHOST_DATA_PATH)
 	$AnimatedSprite2D.sprite_frames = SpriteFramesLoader.build(ghost_data["sprite_frames"])
+	animator.set_idle_life(ghost_data.get("idle", {}))
 
 func _on_touch_area_body_entered(body: Node2D) -> void:
 	if not stats.is_ghost and body is MinionController:
@@ -157,9 +168,11 @@ func _process(delta: float) -> void:
 			else:
 				_attack_held = false
 		# Debug "unseen": your own sprite goes see-through as the reminder.
-		$AnimatedSprite2D.modulate.a = 0.4 if DebugState.unseen else 1.0
+		# (not while dying: the topple fades the sprite out itself)
+		if not _is_dead or _ghost_look:
+			$AnimatedSprite2D.modulate.a = 0.4 if DebugState.unseen else 1.0
 	else:
-		visible = not stats.is_ghost or local_is_ghost
+		visible = not _ghost_look or local_is_ghost
 		animator.animate_from_position(delta, global_position)
 
 ## Vector2i(pos / tile_size) truncates toward zero, which rounds the wrong
@@ -302,6 +315,11 @@ func _try_attack() -> void:
 	var target_global := Vector2(target_tile) * grid_mover.tile_size
 	if not ActionRunner.perform(self, target_global, attack):
 		_attack_timer = 0.0
+		return
+	# Face the target and lunge at it (DirectionalAnimator.play_attack).
+	var toward := Vector2(target_tile - own_tile)
+	animator.animate_facing(toward)
+	animator.play_attack(toward)
 
 ## Taunt slot (an action whose verb is "taunt", see TauntVerb). Its own cooldown
 ## (`interval`) so it never locks out the attacks.
@@ -316,6 +334,9 @@ func _try_taunt(attack: Dictionary) -> void:
 
 func _physics_process(_delta: float) -> void:
 	if not is_multiplayer_authority():
+		return
+	# Lying where it fell until the ghost rises (see _on_died).
+	if _is_dead and not _ghost_look:
 		return
 	# Drop keys that are no longer down (a release can be missed, for example when focus is lost).
 	_held = _held.filter(func(action): return Input.is_action_pressed(action))

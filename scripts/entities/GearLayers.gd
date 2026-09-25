@@ -4,7 +4,8 @@ extends Node
 ## Draws a player's worn gear. Each slot gets its own AnimatedSprite2D, added as
 ## a child of the body sprite so it moves, fades and hides with it. Nothing here
 ## plays an animation by itself: every frame each layer copies the body's
-## animation, frame and flip, so the gear walks exactly in step with the body.
+## animation, frame, flip and offset, so the gear walks (and lunges, breathes and
+## topples, see DirectionalAnimator) exactly in step with the body.
 ## The z_index follows ItemDatabase.DRAW_ORDER for the way the body faces, which
 ## puts a cape or a shield behind the character when that's how it's drawn.
 ## A full set's bonus effects (GearEffects) hang off the body the same way.
@@ -61,6 +62,7 @@ func _process(_delta: float) -> void:
 			layer.animation = _body.animation
 		layer.frame = _body.frame % ItemDatabase.FRAME_COUNT
 		layer.flip_h = _body.flip_h
+		layer.offset = _body.offset
 	if sheet != "" and sheet != _sheet:
 		_sheet = sheet
 		_apply_draw_order(sheet)

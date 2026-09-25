@@ -8,5 +8,12 @@
 			"BackRight": { "texture": "res://resources/gfx/entities/entities.protagonist/human/Human-UpRight.png", "frame_count": 4, "speed": 20.0 },
 			"Back": { "texture": "res://resources/gfx/entities/entities.protagonist/human/Human-Up.png", "frame_count": 4, "speed": 20.0 }
 		}
+	},
+	"idle": {
+		"breath": true,
+		"blink": {
+			"texture": "res://resources/gfx/entities/entities.protagonist/human/Human-Blink.png",
+			"animations": ["Front", "FrontRight", "Side"]
+		}
 	}
 }

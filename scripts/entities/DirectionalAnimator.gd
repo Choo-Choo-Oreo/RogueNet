@@ -8,6 +8,15 @@ extends Node
 ## animate_idle() when the caller already knows its own movement intent
 ## (the locally-controlled body), or animate_from_position() to infer
 ## facing from observed position changes (a remote peer's body).
+##
+## It also poses the body without new frames, by moving the whole sprite in whole
+## pixels at 10 fps, so worn gear (GearLayers, which copies the offset) follows:
+## - play_attack(): pull back 1px, lunge 2px toward the target, recover (0.4 s).
+## - play_death(): topple sideways, lie flat in its own tile, fade (1.7 s).
+## - idle life, from the sprite JSON's "idle" block (set_idle_life): "breath" sinks
+##   the body 1px for half of every 3 s, "blink" shows an eyelid sheet (one 16x16
+##   cell per listed animation) for 0.2 s of every 3 s.
+## Getting hurt is HitFeedback's (flash and jolt), not this.
 
 @export var sprite_path: NodePath = ^"../AnimatedSprite2D"
 @onready var sprite: AnimatedSprite2D = get_node(sprite_path)
@@ -22,6 +31,25 @@ const IDLE_DISTANCE := 0.5
 ## stand, so their wings shouldn't ever freeze on a mid-flap frame the way a
 ## grounded idle does -- set true by MinionController from the minion's JSON.
 var continuous_animation: bool = false
+
+signal pose_finished
+
+## One step of a pose is this long (the house style's 10 fps).
+const STEP := 0.1
+## The attack's steps, in pixels toward the target.
+const ATTACK_STEPS := [-1, 2, 2, 1]
+const IDLE_LOOP := 3.0
+const BREATH_FROM := 1.5
+const BLINK_FROM := 2.2
+const BLINK_TO := 2.4
+
+var _pose: Array = []   # steps of [offset, degrees, alpha]
+var _pose_time := 0.0
+var _idle := false
+var _idle_time := 0.0
+var _breath := false
+var _blink: Sprite2D = null
+var _blink_columns: Array = []
 
 # Some characters (eg. the dwarf) have real, separately-drawn left/right art; others (eg. the
 # knight) have one side image that gets mirrored. Play whichever the current sprite_frames provides.
@@ -62,10 +90,12 @@ func animate_idle() -> void:
 	if continuous_animation:
 		return
 	sprite.stop()
+	_idle = true
 
 func animate_moving(direction: Vector2) -> void:
 	if direction.is_zero_approx():
 		return
+	_idle = false
 	# Nearest of 8 directions, counting clockwise from right: 0 right, 1 down-right,
 	# 2 down, 3 down-left, 4 left, 5 up-left, 6 up, 7 up-right (y points down).
 	var octant := int(round(fposmod(direction.angle(), TAU) / (PI / 4.0))) % 8
@@ -98,3 +128,87 @@ func animate_from_position(delta: float, current_position: Vector2) -> void:
 		return
 	_anim_idle_time = 0.0
 	animate_moving(delta_pos)
+
+## The sprite JSON's "idle" block ({} turns idle life off).
+func set_idle_life(idle: Dictionary) -> void:
+	_breath = idle.get("breath", false)
+	var blink: Dictionary = idle.get("blink", {})
+	_blink_columns = blink.get("animations", [])
+	if blink.has("texture"):
+		if _blink == null:
+			_blink = Sprite2D.new()
+			_blink.name = "Blink"
+			_blink.visible = false
+			sprite.add_child(_blink)
+		_blink.texture = load(blink["texture"])
+		_blink.hframes = _blink_columns.size()
+	elif _blink != null:
+		_blink.queue_free()
+		_blink = null
+
+## direction: toward the target. The lunge snaps to the nearest of the 8 directions.
+func play_attack(direction: Vector2) -> void:
+	var forward := Vector2(signf(roundf(direction.normalized().x)), signf(roundf(direction.normalized().y)))
+	_pose = ATTACK_STEPS.map(func(px): return [forward * px, 0.0, 1.0])
+	_pose_time = 0.0
+
+## Topples the way the body faces (right unless flipped). Waits out HitFeedback's jolt
+## first. Ends faded out; pose_finished fires, then reset_pose() puts the body back.
+func play_death() -> void:
+	var side := -1.0 if sprite.flip_h else 1.0
+	_pose = [[Vector2.ZERO, 0.0, 1.0], [Vector2.ZERO, 0.0, 1.0], [Vector2.ZERO, 45.0 * side, 1.0]]
+	for i in 10:
+		_pose.append([Vector2.ZERO, 90.0 * side, 1.0])
+	for alpha in [0.75, 0.5, 0.25, 0.0]:
+		_pose.append([Vector2.ZERO, 90.0 * side, alpha])
+	_pose_time = 0.0
+
+func reset_pose() -> void:
+	_pose = []
+	_apply(Vector2.ZERO, 0.0, 1.0)
+
+func _process(delta: float) -> void:
+	if not _pose.is_empty():
+		_pose_time += delta
+		var i := int(_pose_time / STEP)
+		if i < _pose.size():
+			_apply(_pose[i][0], _pose[i][1], _pose[i][2])
+			_show_blink(false)
+			return
+		var last: Array = _pose.back()
+		_pose = []
+		# a death stays down until reset_pose(); an attack springs back
+		if last[1] == 0.0:
+			_apply(Vector2.ZERO, 0.0, 1.0)
+		pose_finished.emit()
+		return
+	if sprite.rotation != 0.0 or (not _breath and _blink == null):
+		return
+	_idle_time = fmod(_idle_time + delta, IDLE_LOOP) if _idle else 0.0
+	sprite.offset = Vector2(0, 1) if _breath and _idle and _idle_time >= BREATH_FROM else Vector2.ZERO
+	_show_blink(_idle and _idle_time >= BLINK_FROM and _idle_time < BLINK_TO)
+
+# Starts turning about the feet (the bottom middle of the frame), and the pivot slides up
+# to the middle as it goes, so a body lying flat stays inside its own tile.
+func _apply(offset: Vector2, degrees: float, alpha: float) -> void:
+	var feet := Vector2(0, _frame_height() / 2.0) * (1.0 - absf(degrees) / 90.0)
+	sprite.rotation = deg_to_rad(degrees)
+	sprite.offset = offset.rotated(-sprite.rotation) + feet.rotated(-sprite.rotation) - feet
+	sprite.modulate.a = alpha
+
+func _show_blink(on: bool) -> void:
+	if _blink == null:
+		return
+	var column := _blink_columns.find(String(sprite.animation))
+	_blink.visible = on and column >= 0
+	if _blink.visible:
+		_blink.frame = column
+		_blink.flip_h = sprite.flip_h
+		_blink.offset = sprite.offset
+
+func _frame_height() -> float:
+	var frames := sprite.sprite_frames
+	if frames == null or not frames.has_animation(sprite.animation):
+		return 16.0
+	var texture := frames.get_frame_texture(sprite.animation, sprite.frame)
+	return texture.get_size().y if texture else 16.0

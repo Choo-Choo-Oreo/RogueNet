@@ -66,6 +66,12 @@ Notes:
 - Sprite PNGs and their animation JSON (if any, e.g. Aseprite exports) live
   together under `resources/gfx/entities/entities.antagonist/minions/<id>/`, not under
   `game/`.
+- `idle` (optional, next to `sprite_frames`; only the player's `human.json` reads it so far)
+  — life while standing still (`DirectionalAnimator.set_idle_life`). `"breath": true` sinks
+  the body 1px for half of every 3 s. `"blink": { "texture": ..., "animations": [...] }`
+  is a sheet of 16x16 eyelid-only cells, one per listed animation in that order
+  (`Human-Blink.png`: Front, FrontRight, Side), shown for 0.2 s of every 3 s. Attack and
+  death need no art: the whole body lunges or topples (see `DirectionalAnimator`).
 
 ### Rooms — `game/rooms/<biome>/<id>.json`
 
