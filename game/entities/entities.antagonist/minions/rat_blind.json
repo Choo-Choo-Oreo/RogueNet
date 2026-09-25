@@ -9,7 +9,8 @@
 	"resistances": {},
 	"actions": [{"action": "bite", "interval": 1.2}],
 	"senses": {
-		"sight": false
+		"sight": false,
+		"hearing": {"range_tiles": 8.0}
 	},
 	"sprite_frames": {
 		"frame_size": [16, 16],

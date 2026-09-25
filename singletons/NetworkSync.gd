@@ -744,6 +744,19 @@ func _resolve_taunt(player_id: int, radius_tiles: float, duration: float, max_ta
 	for i in mini(in_range.size(), max_targets):
 		in_range[i][1].force_target(player, duration)
 
+# Noise (footsteps, a landing rock): like a taunt, minion AI only runs on the host, so a
+# client's noise is a request to it. Sound.make tells every minion that can hear the spot.
+func report_noise(position: Vector2, loudness: float) -> void:
+	if multiplayer.multiplayer_peer == null or multiplayer.is_server():
+		Sound.make(get_tree(), position, loudness)
+	else:
+		request_noise.rpc_id(1, position, loudness)
+
+@rpc("any_peer", "unreliable")
+func request_noise(position: Vector2, loudness: float) -> void:
+	if multiplayer.is_server():
+		Sound.make(get_tree(), position, loudness)
+
 # Minion-on-player damage only ever originates on the host (only the host ever
 # runs minion AI/attacks), so this is a straight broadcast, no any_peer report
 # step needed the way minion hits have one.

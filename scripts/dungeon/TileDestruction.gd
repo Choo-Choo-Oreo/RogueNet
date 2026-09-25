@@ -29,6 +29,7 @@ const NEIGHBOURS_8: Array[Vector2i] = [
 static var _registry: TileTypeRegistry
 static var _names := {}       # tile id -> tile name
 static var _plain_floor := {} # floor tile id -> true when it is ordinary ground
+static var _atlas := {}       # tile id -> its texture path (rubble takes the wall's colours)
 ## When apply() last changed the map (msec), for the debug body sweep (BodySweep).
 static var last_applied_msec := 0
 
@@ -45,6 +46,7 @@ static func _setup() -> void:
 		if not file_name.ends_with(".json"):
 			continue
 		var data := JsonOnloading.load_dict("res://game/tiles/" + file_name)
+		_atlas[_registry.get_id(str(data.get("tile_name", "")))] = str(data.get("atlas_texture", ""))
 		if data.get("category", "") == "floor" and data.get("terrain", "normal") == "normal":
 			_plain_floor[_registry.get_id(str(data.get("tile_name", "")))] = true
 
@@ -138,6 +140,9 @@ static func apply(changes: Array, scene: Node) -> void:
 		if change["floor"] != "":
 			floor_data.set_cell(cell, _registry.get_id(change["floor"]), Vector2i.ZERO)
 		if change["wall"] == "":
+			var old_wall := wall_data.get_cell_source_id(cell)
+			if old_wall != -1:
+				ParticleBurst.rubble(scene, wall_data.to_global(wall_data.map_to_local(cell)), _atlas.get(old_wall, ""))
 			wall_data.erase_cell(cell)
 		else:
 			wall_data.set_cell(cell, _registry.get_id(change["wall"]), Vector2i.ZERO)

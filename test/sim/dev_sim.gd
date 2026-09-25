@@ -19,7 +19,8 @@ extends SceneTree
 const CELLS_FILE := "res://test/sim/dev_cells.json"
 const DEFAULT_CELLS := ["minion_minotaur", "bug1_spawn_fit", "bug1_no_room_for_boss", "bug1_hole_band",
 	"bug2_two_wide_gap", "bug2_one_wide_gap", "bug6_boss_blocks_gap", "bug3_smash_plain", "bug3_smash_door", "bug3_smash_pillar",
-	"bug4_corridor_archer", "bug4_open_archer", "bug5_boss_crowd", "terrain_lava", "terrain_water", "terrain_acid"]
+	"bug4_corridor_archer", "bug4_open_archer", "bug5_boss_crowd", "terrain_lava", "terrain_water", "terrain_acid",
+	"hearing_rock_behind_wall", "hearing_range"]
 const SAMPLE_SECONDS := 0.25
 ## A creature that moved less than this (tiles) over STALL_SECONDS while the player was farther
 ## than STALL_MIN_DISTANCE is reported as stalled.
@@ -39,6 +40,7 @@ var _state := "load"
 var _state_msec := 0
 var _watch: Array = []  # [{node, id, start, closest, last_pos, last_moved_msec, stalled, bad}]
 var _player: Node2D
+var _noise_pos := Vector2.ZERO
 var _next_sample := 0.0
 var _started_msec := 0
 var _center := Vector2i.ZERO
@@ -132,7 +134,7 @@ func _begin_run() -> void:
 	for m: Node2D in get_nodes_in_group("antagonist"):
 		var tile := Vector2i(floori(m.global_position.x / tile_size), floori(m.global_position.y / tile_size))
 		if area.has_point(tile):
-			_watch.append({"node": m, "id": _label(m, tile), "start": tile, "zone": null, "zone_changes": 0, "state": 0, "attack_msec": -1, "closest": 9999.0,
+			_watch.append({"node": m, "id": _label(m, tile), "start": tile, "zone": null, "zone_changes": 0, "state": 0, "attack_msec": -1, "closest": 9999.0, "closest_noise": 9999.0,
 				"last_pos": m.global_position, "last_moved_msec": Time.get_ticks_msec(), "stalled": false, "bad": "", "waded": 0, "wade_first": ""})
 	_expected = 0
 	for s in _spawn_ids:
@@ -143,7 +145,12 @@ func _begin_run() -> void:
 		if door.cells.has(door_tile):
 			_doors.set_open(door.id, true)
 	_player.grid_mover.teleport(Vector2(_world_tile(_cell["player_at"] if _cell.get("player_at") != null else _cell["entry"]) * tile_size))
-	if not _natural:
+	var noise = _cell.get("noise_at")
+	# A hearing cell is left alone: only its noise (made here, like a thrown rock or a footstep) may move them.
+	if noise != null:
+		_noise_pos = (Vector2(_world_tile(noise)) + Vector2(0.5, 0.5)) * tile_size
+		root.get_node("NetworkSync").report_noise(_noise_pos, float(noise["loudness"]))
+	elif not _natural:
 		for w in _watch:
 			w["node"].force_target(_player, _seconds)
 	_started_msec = Time.get_ticks_msec()
@@ -174,6 +181,7 @@ func _sample(now: int) -> void:
 		if state == 2 and int(w["attack_msec"]) < 0:
 			w["attack_msec"] = now - _started_msec
 		w["closest"] = minf(w["closest"], d)
+		w["closest_noise"] = minf(w["closest_noise"], m.global_position.distance_to(_noise_pos) / tile_size)
 		if w["last_pos"].distance_to(m.global_position) / tile_size >= STALL_MOVE:
 			w["last_pos"] = m.global_position
 			w["last_moved_msec"] = now
@@ -276,6 +284,17 @@ func _finish() -> void:
 					problems.append("%s stopped %.1f tiles away" % [label, w["closest"]])
 		if not found:
 			problems.append("no %s in the cell" % want)
+	for want in _cell.get("hear", []):
+		for w in _watch:
+			if str(w["id"]).begins_with(want):
+				if w["closest_noise"] > REACH_TILES:
+					problems.append("%s heard the noise but stopped %.1f tiles from it" % [w["id"], w["closest_noise"]])
+				if int(w["state"]) >= 2:
+					problems.append("%s attacked; a noise should only make it investigate" % w["id"])
+	for deaf in _cell.get("no_hear", []):
+		for w in _watch:
+			if str(w["id"]) == deaf and int(w["state"]) > 0:
+				problems.append("%s reacted to a noise it is too far away to hear" % w["id"])
 	if problems.is_empty():
 		print("  PASS ", _cell["name"])
 	else:

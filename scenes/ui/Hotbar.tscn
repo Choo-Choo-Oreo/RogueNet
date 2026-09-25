@@ -9,9 +9,9 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -142.0
+offset_left = -176.0
 offset_top = -80.0
-offset_right = 142.0
+offset_right = 176.0
 offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 0
@@ -87,6 +87,22 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Taunt"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Slot5" type="Panel" parent="Slots"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Slots/Slot5"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Rock"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2

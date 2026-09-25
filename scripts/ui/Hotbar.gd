@@ -1,9 +1,9 @@
 class_name Hotbar
 extends Control
 
-## Hotbar display -- 4 slots, still placeholder text/icons, but now tracks
+## Hotbar display -- 5 slots, still placeholder text/icons, but now tracks
 ## and highlights whichever slot PlayerController.active_slot says is
-## equipped (switched with number keys 1-4). set_slot() is the hook real
+## equipped (switched with number keys 1-5). set_slot() is the hook real
 ## inventory code will need later to change what a slot's label shows.
 
 @onready var _labels: Array[Label] = [
@@ -11,6 +11,7 @@ extends Control
 	$Slots/Slot2/Label,
 	$Slots/Slot3/Label,
 	$Slots/Slot4/Label,
+	$Slots/Slot5/Label,
 ]
 
 @onready var _panels: Array[Panel] = [
@@ -18,6 +19,7 @@ extends Control
 	$Slots/Slot2,
 	$Slots/Slot3,
 	$Slots/Slot4,
+	$Slots/Slot5,
 ]
 
 const ACTIVE_COLOR := Color(1.4, 1.4, 1.4)

@@ -57,7 +57,11 @@ func _apply_health(delta: int, type: String) -> void:
 	if delta < 0:
 		delta += resistances.get(type, FALLBACK_RESISTANCE)
 		delta = min(delta, 0)
+	var was_alive := current_health > 0
 	current_health = clamp(current_health + delta, 0, max_health)
 	health_changed.emit(current_health, max_health)
+	# Only the hit that kills bleeds; a ghost taking more damage does not bleed again.
+	if was_alive and current_health == 0:
+		ParticleBurst.blood(get_parent())
 	if current_health == 0:
 		died.emit()

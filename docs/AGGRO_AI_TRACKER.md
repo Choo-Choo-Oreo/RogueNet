@@ -73,6 +73,10 @@ Status key: [ ] todo, [x] done, [~] built / needs playtest, [-] on hold
 
 MinionController: _lock / _override / timers, force_target(); MinionSenses.forget(); NetworkSync.report_taunt; PlayerController._try_taunt; slot 4 in player.json (radius 6, 4s, 12s cooldown, cap 24). Flyers are cosmetic-only in this codebase (they path like walkers) so no flyer exemption was needed.
 
+## Hearing built 2026-09-24 (needs playtest)
+
+Investigate now walks to a marker (a spot), not the player: `Sound.gd` (host-side fan-out), `SenseHearing.hears`, `MinionSenses.hear` / `investigate_marker`, `MinionController.can_hear` / `hear_noise`. Only an Attack locks a target now (before, Investigate locked the nearest player too). Footsteps come from `GridMover.stepped` (PlayerController), rocks from `ThrowVerb`; `NetworkSync.report_noise` sends a client's noise to the host.
+
 ## Background
 
 - Today: MinionController._process re-picks _nearest_player() every tick; the 10s alert window (MinionSenses.ACTIVE_ALERT_SECONDS) belongs to the enemy, not to any player; note_hit() doesn't record who hit it.

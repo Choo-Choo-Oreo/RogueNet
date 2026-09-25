@@ -7,7 +7,7 @@ extends RefCounted
 ## aimed tile. Returns false when the action had no effect (a wall smash with nothing to
 ## break), so the driver can leave its cooldown unspent; true otherwise.
 
-const VERBS := ["hit", "projectile", "destroy_tiles", "taunt"]
+const VERBS := ["hit", "projectile", "destroy_tiles", "taunt", "throw"]
 
 static func perform(caster: Node2D, target_global: Vector2, attack: Dictionary) -> bool:
 	match str(attack.get("verb", "")):
@@ -19,6 +19,8 @@ static func perform(caster: Node2D, target_global: Vector2, attack: Dictionary) 
 			return DestroyTilesVerb.perform(caster, target_global, attack)
 		"taunt":
 			TauntVerb.perform(caster, attack)
+		"throw":
+			return ThrowVerb.perform(caster, target_global, attack)
 		_:
 			return false
 	return true

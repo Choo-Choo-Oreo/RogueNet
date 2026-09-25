@@ -26,7 +26,7 @@ walks) and for the player (the order is the hotbar slot).
 
 | Field | Meaning |
 |---|---|
-| `verb` | What it does: `hit` (an instant hit on a tile, next to the caster or at range), `projectile` (a shot that flies and hits the first creature in its path), `destroy_tiles`, `taunt`. Required; the code for each is in `scripts/actions/verbs/`. |
+| `verb` | What it does: `hit` (an instant hit on a tile, next to the caster or at range), `projectile` (a shot that flies and hits the first creature in its path), `destroy_tiles`, `taunt`, `throw` (throws something that lands at a spot and makes a noise there, no damage). Required; the code for each is in `scripts/actions/verbs/`. |
 | `amount`, `type` | Damage and its type id from `game/damage_types.json`. |
 | `interval` | Seconds before it can be used again. |
 | `range_tiles` | How far it reaches for a minion (default 1, adjacent). |
@@ -34,6 +34,7 @@ walks) and for the player (the order is the hotbar slot).
 | `effect` | A picture played when it is used: `texture`, `frame_count`, `speed`, `anchor`. A `projectile` adds `projectile` (a flying sprite) plus `attacker` and `target` animations. |
 | `shape` | For `destroy_tiles`: breaks the walls inside it (`line` with `length` and `width`, or `circle` with `radius`), leaving floor. Never breaks `barrier_*` tiles. |
 | `radius_tiles`, `duration`, `max_targets` | For `taunt`: forces minions within the radius (nearest `max_targets`) onto the user for `duration` seconds. |
+| `loudness` | For `throw`: how far the landing carries, in multiples of a footstep (`SenseHearing`). It flies at most `range_tiles` and stops short of a wall. |
 | `needs_sight`, `only_through_walls` | Minion firing rules. The second fires only while a wall is between it and its target. |
 
 ## Every action
@@ -48,5 +49,6 @@ walks) and for the player (the order is the hotbar slot).
 | `entropia_bolt` | 2 Entropia, ranged, 4 tiles. | hamster_demonic, the player |
 | `wall_smash` | Breaks walls in a 3x2 line, 6 s, only through walls. | minotaur, ogre |
 | `taunt` | Pulls minions within 6 tiles for 4 s, 12 s cooldown. | the player |
+| `throw_rock` | Throws a rock up to 8 tiles; the landing is a noise (loudness 3) minions investigate. 1.5 s. The picture is the arrow, a placeholder (no rock art yet). | the player (slot 5) |
 
 Costs (ammo, magic, stamina) are not built.

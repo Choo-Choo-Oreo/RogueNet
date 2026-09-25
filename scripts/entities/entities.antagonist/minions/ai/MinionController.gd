@@ -299,12 +299,16 @@ func _process_inner(delta: float) -> void:
 	if _override == null:
 		if state == MinionSenses.State.PATROL:
 			_lock = null
-		elif _lock == null and _target != null:
+		elif _lock == null and _target != null and state == MinionSenses.State.ATTACK:
 			_lock = _target
 			_unreachable_since_msec = 0
 			_blocked_since_msec = 0
 	var is_engaging := state == MinionSenses.State.ATTACK
-	var is_tracking := is_engaging or state == MinionSenses.State.INVESTIGATE
+	# Attack chases the player; Investigate walks to the spot (a Sound marker), never the player.
+	var goal: Node2D = _target
+	if state == MinionSenses.State.INVESTIGATE:
+		goal = senses.investigate_marker if is_instance_valid(senses.investigate_marker) else null
+	var is_tracking := goal != null and state != MinionSenses.State.PATROL
 	if state != _last_state:
 		_show_alertness(state)
 	_last_state = state
@@ -341,11 +345,11 @@ func _process_inner(delta: float) -> void:
 	# and never attacks even if it ends up adjacent. Only idle wandering
 	# stays throttled by wander_interval.
 	if is_tracking:
-		var reached_range := _target != null and _in_attack_range(_target)
+		var reached_range := _in_attack_range(goal)
 		if not reached_range:
-			if is_boss and _make_way_for_allies(_target):
+			if is_boss and _make_way_for_allies(goal):
 				return
-			_try_pursue_step(_target, is_engaging)
+			_try_pursue_step(goal, is_engaging)
 			if grid_mover.is_moving:
 				_blocked_since_msec = 0
 			else:
@@ -1040,6 +1044,15 @@ func _drop_lock(now: int) -> void:
 	_unreachable_since_msec = 0
 	_blocked_since_msec = 0
 	senses.forget()
+	_wake_up()
+
+## Noise entry points (host-side, from Sound.make): whether this minion's ears reach the
+## spot, and the order to go and look at its marker. Ignored while it is already attacking.
+func can_hear(noise_position: Vector2, loudness: float) -> bool:
+	return is_multiplayer_authority() and senses.hearing.hears(global_position, noise_position, loudness)
+
+func hear_noise(marker: Node2D) -> void:
+	senses.hear(marker)
 	_wake_up()
 
 ## Taunt entry point (host-side, called from NetworkSync). Hard-locks onto

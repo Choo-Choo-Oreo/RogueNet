@@ -1,7 +1,7 @@
 class_name SenseHearing
 extends Node
 
-## Hears noises (see Noise): unlike sight and touch it is not a check made every tick against a
+## Hears noises (see Sound): unlike sight and touch it is not a check made every tick against a
 ## player, it is told when something made a sound. A noise carries `loudness`; this creature
 ## hears it when it is within `range_tiles * loudness` tiles, straight-line, walls do not
 ## muffle it (yet). So `range_tiles` is how far it hears a footstep (loudness 1.0), and a

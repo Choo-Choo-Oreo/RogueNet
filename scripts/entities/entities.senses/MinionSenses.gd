@@ -7,8 +7,10 @@ extends Node
 ## the target's actual light without a direct detection (e.g. round a corner
 ## from a clear line of sight) fires Investigate instead -- half-speed, closes
 ## in on the target's location but won't attack even if it arrives adjacent;
-## next tick's direct check is what promotes it to Attack. Hearing/Smell/
-## Taste are still unbuilt stubs that always pass (never detect). See the
+## next tick's direct check is what promotes it to Attack. Hearing is heard
+## by event, not checked here: Sound tells the minion (hear) and it goes to look
+## at the spot. Investigate always walks to `investigate_marker`, a place, never
+## the player. Smell/Taste are still unbuilt stubs that always pass. See the
 ## minion senses design memory for the full planned behavior.
 
 enum State { PATROL, INVESTIGATE, ATTACK }
@@ -28,6 +30,9 @@ var state: State = State.PATROL
 var _active_timer := 0.0
 var _active_tier: State = State.PATROL
 
+## Where Investigate is heading: a Sound marker (a spot, see Sound). Invalid outside Investigate.
+var investigate_marker: Node2D
+
 ## Getting hit always means the minion now knows roughly where its attacker
 ## is, even with no direct sense of them (e.g. shot from off-screen or from
 ## behind) -- forces Attack and (re)starts the same sticky window as a real
@@ -37,12 +42,23 @@ func note_hit() -> void:
 	_active_timer = ACTIVE_ALERT_SECONDS
 	_active_tier = State.ATTACK
 
+## A noise was heard at `marker`: go and look, unless already attacking someone. The newest
+## noise wins if this minion was already investigating another.
+func hear(marker: Node2D) -> void:
+	if state == State.ATTACK:
+		return
+	investigate_marker = marker
+	_active_timer = ACTIVE_ALERT_SECONDS
+	_active_tier = State.INVESTIGATE
+	state = State.INVESTIGATE
+
 ## Gives up entirely (leash / unreachable target): drops the sticky window so
 ## the minion falls back to Patrol until a sense fires again.
 func forget() -> void:
 	_active_timer = 0.0
 	_active_tier = State.PATROL
 	state = State.PATROL
+	investigate_marker = null
 
 ## Per-minion-type toggle, e.g. rat_blind's "senses": {"sight": false} JSON
 ## key -- keys match this node's own property names (touch/sight/hearing/
@@ -80,7 +96,6 @@ func update(origin: Vector2, target: Node2D, is_blocked: Callable, lit: bool, de
 	var direct_sense := (
 		touch.detects(origin, target)
 		or sight.detects(origin, target, is_blocked)
-		or hearing.detects(origin, target)
 		or smell.detects(origin, target)
 		or taste.detects(origin, target)
 	)
@@ -88,6 +103,9 @@ func update(origin: Vector2, target: Node2D, is_blocked: Callable, lit: bool, de
 		_active_timer = ACTIVE_ALERT_SECONDS
 		_active_tier = State.ATTACK
 	elif lit and state != State.ATTACK:
+		# The glow gives away where the light is: investigate that spot (once, not the player).
+		if state != State.INVESTIGATE or not is_instance_valid(investigate_marker):
+			investigate_marker = Sound.marker_at(target.get_tree(), target.global_position)
 		# state (not _active_tier) is checked here on purpose: it's the tier
 		# already decayed for the elapsed timer, so once a real Attack sticky
 		# window has actually run out this correctly re-arms Investigate --

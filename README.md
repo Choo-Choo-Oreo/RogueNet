@@ -49,9 +49,12 @@ Notes:
   while it is chasing, whenever ready and in range. The attack's own fields (damage type,
   ranged effects, `destroy_tiles` shape) are described in `game/actions/README.md`.
 - `senses` (optional) overrides which detection senses are enabled, e.g.
-  `"senses": { "hearing": false }`. Only `sight` and `touch` are actually
-  implemented right now — `hearing`/`smell`/`taste` exist but always report
-  no detection.
+  `"senses": { "hearing": false }`, or sets a sense's numbers, e.g.
+  `"senses": { "hearing": { "range_tiles": 8.0 } }`. `touch`, `sight` and `hearing` are
+  implemented; `smell`/`taste` exist but always report no detection. Hearing is by event:
+  a noise (a player's footstep, loudness 1.0; a thrown rock landing, 3.0) is heard within
+  `range_tiles * loudness` tiles (default range 3, through walls), and the minion
+  investigates the *spot* of the noise, not the player.
 - `flying` (optional, default `false`) — set `true` for minions that fly
   (bat, flying hamsters). Terrain (water, lava, rough ground) never slows
   them, their routes ignore terrain cost, and their idle animation never

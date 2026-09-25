@@ -223,6 +223,29 @@ for y in range(1, 12, 2):
     swarm[y] = '.' + 'r.' * 10
 cell('swarm_rats', swarm, door_w=3)
 
+# ---- hearing: a noise is a place to go and look at, not a player to chase ----
+# The player stands in the far bottom corner, more than the light's 8-tile radius from the noise, so the
+# rat cannot see the glow and find the player that way; only the noise can move it.
+# A blind rat (hearing range 8) far from a wall with one gap in it; the noise is a thrown rock's
+# landing on the far side. It must walk through the gap to the spot, and never attack.
+cell('hearing_rock_behind_wall', [
+    'R.....#........',
+    '......#........',
+    '......#........',
+    '......#........',
+    '......#........',
+    '......#........',
+    '...............',
+    '......#........',
+    '......#........',
+    '......#........',
+    '......#........',
+    '......#........',
+    '......#........'], door_x=11)
+# A blind rat (range 8) and a plain rat (range 3), each 7 tiles from one footstep. Only the blind
+# rat may come to look; the plain one must not react at all.
+cell('hearing_range', ['R.............r'] + ['...............'] * 12, door_x=6)
+
 
 # ---- what must be true (checked by test/sim/dev_sim.gd; keep a cell after its bug is fixed) ----
 # Creatures named here must get within 3 tiles of the player once the door is open. "big" is any
@@ -241,9 +264,17 @@ REACH = {
     'bug4_open_archer': ['rat'],
 }
 
+# A noise the sim (and the Test Lab's N key) makes in a cell: (interior column, row, loudness). 1.0
+# is a footstep, 3.0 a thrown rock. The sim then does NOT tell the creatures where the player is,
+# so only hearing can move them. HEAR: must get within 3 tiles of the noise and never attack.
+# NO_HEAR: must not react at all (never leave Patrol).
+NOISE_AT = {'hearing_rock_behind_wall': (12, 1, 3.0), 'hearing_range': (7, 1, 1.0)}
+HEAR = {'hearing_rock_behind_wall': ['rat_blind'], 'hearing_range': ['rat_blind']}
+NO_HEAR = {'hearing_range': ['rat']}
+
 # Where the player stands instead of at the door (interior column, row), for cells that test a
 # straight line to the creature. The sim and the Test Lab both use it for "step inside".
-PLAYER_AT = {'terrain_lava': (13, 1), 'terrain_water': (13, 1), 'terrain_acid': (13, 1)}
+PLAYER_AT = {'terrain_lava': (13, 1), 'terrain_water': (13, 1), 'terrain_acid': (13, 1), 'hearing_rock_behind_wall': (14, 12), 'hearing_range': (7, 12)}
 
 # The Minotaur is expected to be skipped here, so the cell may spawn fewer creatures than it pins.
 MAY_SKIP = ['bug1_no_room_for_boss']
@@ -312,6 +343,12 @@ NOTES = {
                       'Walkers must route round; flyers may cross. Anything wading through.'),
     'terrain_acid': ('An acid band with a stone way round.', 'Stand across the band.',
                      'Walkers should take the stone way round, not wade through the acid (a flyer may cross). Acid will become a damaging tile later.'),
+    'hearing_rock_behind_wall': ('A blind rat (hears 8 tiles, sees nothing) on one side of a wall with a gap; you are on the other side.',
+                                 'Do NOT press Enter (that tells them where you are). Press N: a rock lands at the far side. Or throw one yourself: key 5, click the far side.',
+                                 'The rat should go to the spot the sound came from (through the gap), not to you. "-> going to" in the readout shows where. It must not attack you.'),
+    'hearing_range': ('A blind rat (hears 8) and a plain rat (hears 3), 7 tiles either side of a spot near the top.',
+                      'Do NOT press Enter. Press N: one footstep at the spot. Then walk about yourself: every step you take is a footstep.',
+                      'Only the blind rat should come to look at the spot. The plain rat should ignore it.'),
     'doors_widths': ('Minotaur, archer, rat and wraith behind 1, 2 and 3 wide wooden doors.',
                      'Open each door and step back.',
                      'The Minotaur cannot use the 1-wide door; everyone else should get out of theirs.'),
@@ -408,6 +445,9 @@ def place(b, ox, oy, door_side):
                       'zone_changes_max': ZONE_CHANGES_MAX.get(c['name'], -1),
                       'wade_max': WADE_MAX.get(c['name'], -1),
                       'index': [k['name'] for k in cells].index(c['name']),
+                      'noise_at': ({'x': ox + 1 + NOISE_AT[c['name']][0], 'y': oy + 1 + NOISE_AT[c['name']][1], 'loudness': NOISE_AT[c['name']][2]}
+                                   if c['name'] in NOISE_AT else None),
+                      'hear': HEAR.get(c['name'], []), 'no_hear': NO_HEAR.get(c['name'], []),
                       'player_at': ({'x': ox + 1 + PLAYER_AT[c['name']][0], 'y': oy + 1 + PLAYER_AT[c['name']][1]}
                                     if c['name'] in PLAYER_AT else None),
                       'what': note[0], 'try': note[1], 'look': note[2]})

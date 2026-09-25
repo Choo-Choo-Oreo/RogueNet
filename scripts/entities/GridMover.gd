@@ -15,6 +15,9 @@ extends Node
 
 @onready var _void_source_id: int = TileTypeRegistry.new().get_id("floor_void")
 
+## Emitted when a step finishes, with the tile stepped onto. Not for teleports.
+signal stepped(tile: Vector2i)
+
 var is_moving := false
 var facing_direction := Vector2.DOWN
 
@@ -364,5 +367,6 @@ func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> bool:
 		is_moving = false
 		for covered in reserved_tiles:
 			if _reserved.get(covered) == _body:
-				_reserved.erase(covered))
+				_reserved.erase(covered)
+		stepped.emit(target_tile))
 	return true

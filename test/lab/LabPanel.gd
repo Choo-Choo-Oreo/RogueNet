@@ -9,6 +9,7 @@ extends CanvasLayer
 ##   [ or PageUp    previous cell            ] or PageDown  next cell
 ##   '  or F6       open the door            Enter or F7    open the door and wake everything in the cell
 ##   \  or F8       step inside the cell     Backspace / F9 reset cell (rebuild)
+##   N  or F5       make the cell's noise    (a footstep or a rock landing where the cell says; see NOISE_AT)
 ##   /  or F10      copy bug report          F3             hide / show this panel
 ## Every key is also a button. It removes itself if you leave the dungeon.
 
@@ -59,7 +60,7 @@ func _build_ui() -> void:
 	_readout.add_theme_font_size_override("font_size", 12)
 	v.add_child(_readout)
 	for row in [[["Prev [", _step.bind(-1)], ["Next ]", _step.bind(1)], ["Reset Bksp", _reset]],
-			[["Open door '", _open_door], ["Wake them Enter", _taunt], ["Inside \\", _step_inside], ["Report /", _copy_report]]]:
+			[["Open door '", _open_door], ["Wake them Enter", _taunt], ["Noise N", _make_noise], ["Inside \\", _step_inside], ["Report /", _copy_report]]]:
 		var h := HBoxContainer.new()
 		v.add_child(h)
 		for b in row:
@@ -77,6 +78,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		KEY_PAGEDOWN, KEY_BRACKETRIGHT: _step(1)
 		KEY_F6, KEY_APOSTROPHE: _open_door()
 		KEY_F7, KEY_ENTER, KEY_KP_ENTER: _taunt()
+		KEY_F5, KEY_N: _make_noise()
 		KEY_F8, KEY_BACKSLASH: _step_inside()
 		KEY_F9, KEY_BACKSPACE: _reset()
 		KEY_F10, KEY_SLASH: _copy_report()
@@ -157,6 +159,19 @@ func _taunt() -> void:
 	for m in _creatures():
 		m.force_target(_player, 30.0)
 
+## The noise the sim makes for this cell (a footstep or a rock landing, see NOISE_AT in
+## generate_hub.py), or a rock landing where you stand if the cell has none.
+func _make_noise() -> void:
+	var c: Dictionary = _cells[_index]
+	var ts: int = _player.grid_mover.tile_size
+	var at: Vector2 = _player.global_position
+	var loudness := 3.0
+	if c.get("noise_at") != null:
+		at = (Vector2(_world(c["noise_at"])) + Vector2(0.5, 0.5)) * ts
+		loudness = float(c["noise_at"]["loudness"])
+	NetworkSync.report_noise(at, loudness)
+	DebugLog.add("Test Lab: noise (loudness %.0f) at %s" % [loudness, Vector2i((at / ts).floor())])
+
 func _cell_rect() -> Rect2i:
 	var r: Dictionary = _cells[_index]["rect"]
 	return Rect2i(_world(r), Vector2i(int(r["w"]), int(r["h"])))
@@ -190,6 +205,8 @@ func _lines() -> Array[String]:
 		var stalled: bool = state == 2 and d > 2.5 and now - int(t["moved"]) >= int(STALL_SECONDS * 1000.0)
 		var bad: String = m.grid_mover.bad_tile_reason(_tile_of(m))
 		var line := "%s %s: %s, %.1f tiles away" % [m.minion_id, _tile_of(m), ["patrol", "investigate", "attack"][state], d]
+		if state == 1 and is_instance_valid(m.senses.investigate_marker):
+			line += ", -> going to %s" % _tile_of(m.senses.investigate_marker)
 		if is_instance_valid(m.get("_lock")):
 			line += ", locked on you"
 		if stalled:

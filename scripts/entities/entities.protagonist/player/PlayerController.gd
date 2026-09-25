@@ -27,7 +27,7 @@ const TILE_HOVER_DATA := {
 	"speed": 1.0,
 }
 
-## Hotbar slots 1-4 (index 0-3) -- an empty {} means the slot has nothing
+## Hotbar slots 1-5 (index 0-4) -- an empty {} means the slot has nothing
 ## equipped, so number keys ignore it and it never fires. Public so Hotbar
 ## can poll it to highlight the active slot.
 var _attacks: Array = []
@@ -68,6 +68,15 @@ func take_damage(amount: int, type: String = "") -> void:
 ## Swaps to the ghost skin and stops the player from attacking -- movement
 ## stays on, since a ghost that can still drift around to watch the rest of
 ## the party fits the usual sense of "ghost" better than freezing in place.
+## Each step into a new tile is a noise minions can hear (Sound, SenseHearing). Only the
+## player's own machine reports it; a ghost or a debug-unseen player is silent.
+const FOOTSTEP_LOUDNESS := 1.0
+
+func _on_stepped(tile: Vector2i) -> void:
+	if not is_multiplayer_authority() or stats.is_ghost or DebugState.unseen:
+		return
+	NetworkSync.report_noise((Vector2(tile) + Vector2(0.5, 0.5)) * grid_mover.tile_size, FOOTSTEP_LOUDNESS)
+
 func _on_died() -> void:
 	if _is_dead:
 		return
@@ -100,6 +109,7 @@ func _ready() -> void:
 	gear.setup($AnimatedSprite2D)
 	_load_player_data()
 	stats.died.connect(_on_died)
+	grid_mover.stepped.connect(_on_stepped)
 	$TileHoverHighlight.sprite_frames = SpriteFramesLoader.build({
 		"frame_size": [16, 16],
 		"animations": {"Play": TILE_HOVER_DATA},
@@ -208,6 +218,7 @@ const SLOT_KEYS := {
 	KEY_2: 1,
 	KEY_3: 2,
 	KEY_4: 3,
+	KEY_5: 4,
 }
 
 func _input(event: InputEvent) -> void:
@@ -247,8 +258,7 @@ func _try_attack() -> void:
 	if attack.get("verb", "") == "taunt":
 		_try_taunt(attack)
 		return
-	var amount: int = attack.get("amount", 0)
-	if _is_dead or _attack_timer > 0.0 or amount <= 0:
+	if _is_dead or _attack_timer > 0.0 or attack.is_empty():
 		return
 	var own_tile := _own_tile()
 	var ranged: bool = attack.get("target_mode", "melee") == "ranged"
@@ -259,11 +269,13 @@ func _try_attack() -> void:
 			return
 	else:
 		target_tile = _melee_target_tile(own_tile)
-	if grid_mover.is_tile_blocked(target_tile):
+	# A thrown rock may be aimed at a wall (ThrowVerb lands it in front).
+	if attack.get("verb", "") != "throw" and grid_mover.is_tile_blocked(target_tile):
 		return
 	_attack_timer = attack.get("interval", 0.5)
 	var target_global := Vector2(target_tile) * grid_mover.tile_size
-	ActionRunner.perform(self, target_global, attack)
+	if not ActionRunner.perform(self, target_global, attack):
+		_attack_timer = 0.0
 
 ## Taunt slot (an action whose verb is "taunt", see TauntVerb). Its own cooldown
 ## (`interval`) so it never locks out the attacks.

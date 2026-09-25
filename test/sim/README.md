@@ -15,7 +15,7 @@ godot --headless -s res://test/sim/dev_sim.gd -- [seconds=15] [natural] [cell_na
 - Per cell it rebuilds the dungeon, puts an invincible player at the cell's entry, opens the cell's
   door and samples every 0.25 s.
 - By default creatures are told where the player is (the call a taunt makes), so a wall in the way
-  tests pathfinding, not eyesight. `natural` leaves them to their own senses.
+  tests pathfinding, not eyesight. `natural` leaves them to their own senses. A cell with `noise_at` (the hearing cells) is always left to their senses: the sim makes that noise instead, and `hear` / `no_hear` say who must come to look and who must ignore it.
 - Per creature: how it was alerted, closest and final distance to the player, `STALLED` (alerted,
   more than 2.5 tiles away and not moving for 4 s; a ranged creature holding its range also shows
   this, so read it with the creature type in mind), and `BAD TILE` if it ever stood on a wall, void or
@@ -28,6 +28,11 @@ godot --headless -s res://test/sim/dev_sim.gd -- [seconds=15] [natural] [cell_na
 - **A cell that fails means a bug is present or came back.** Cells stay after their bug is fixed; add
   the expectation first, watch it fail, then fix.
 - `dev_cells.json` is written by `test/lab/development/generate_hub.py`; do not edit it by hand.
+
+Two smaller checks run on their own (each exits 1 on failure):
+- `dual_grid_after_smash.gd` breaks the walls in `bug3_smash_plain` and compares what is drawn with a fresh refresh.
+- `throw_rock.gd` (about 15 s) throws a rock with the real Throw Rock action into `hearing_rock_behind_wall`
+  and checks the noise marker and that the blind rat investigates it.
 
 Not covered: the smash telegraph is visual. The boss zone (bug 5) is sampled, but the flicker the audit
 describes has not been reproduced yet.

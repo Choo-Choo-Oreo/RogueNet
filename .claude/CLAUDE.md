@@ -55,6 +55,14 @@ Claude build the game for them. Most of the team is new to programming.
   code"), point to the official docs:
   https://docs.godotengine.org/en/stable/getting_started/step_by_step/index.html
 
+## Who owns what
+Every file has an owner (Orea: systems, gameplay numbers, tests; Silvery Foxy: art;
+HamsterMan4949crypto: content Orea hands over). Do not edit a file in someone else's area
+without their say-so, and never change a gameplay number (a creature's `size_tiles`, stats,
+speeds, senses) because of art or as a side effect of another task: ask the owner. The table
+and the rules are in [docs/OWNERSHIP.md](../docs/OWNERSHIP.md); read it before touching `game/`,
+`scripts/` or `resources/gfx/`.
+
 ## No duplication
 Duplicated code and duplicated data are a recurring problem here, and an LLM's
 default is to add a fix next to what exists instead of looking for it. Do the

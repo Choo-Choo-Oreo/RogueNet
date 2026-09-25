@@ -1,7 +1,7 @@
 {
 	"tags": ["beast"],
 	"doors": "open",
-	"size_tiles": 3,
+	"size_tiles": 2,
 	"max_health": 60,
 	"strength": 6,
 	"dexterity": 1,
@@ -11,7 +11,7 @@
 	"speed_tiles_per_second": 3.0,
 	"actions": ["bludgeon", "wall_smash"],
 	"sprite_frames": {
-		"frame_size": [48, 48],
+		"frame_size": [32, 32],
 		"animations": {
 			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/minotaur/Minotaur-Down.png", "frame_count": 8, "speed": 10.0 },
 			"FrontRight": { "texture": "res://resources/gfx/entities/entities.antagonist/bosses/minotaur/Minotaur-DownRight.png", "frame_count": 8, "speed": 10.0 },
