@@ -1,8 +1,9 @@
 extends Node
 
-## Push-to-talk voice chat. Press push_to_talk (V, or Share on a pad) to turn the mic on and
+## Voice chat, push to talk or voice activated (Settings > Audio > Voice, voice_activation). Press
+## push_to_talk (V, or Share on a pad) to turn the mic on and
 ## again to turn it off. The game records the microphone itself (MicInput, with the mic and gain
-## picked in Settings > Voice; not Steam's recording) and sends each chunk squeezed to a byte a
+## picked in Settings > Audio > Voice; not Steam's recording) and sends each chunk squeezed to a byte a
 ## sample (MuLaw), with how loud it is in the dungeon (voice_db) in front. Only talking is sent:
 ## a chunk quieter than the gate (gate_db, a little under this player's whisper) is background.
 ## It goes to the host, which passes it on to everyone in the same place as the
@@ -22,7 +23,7 @@ signal own_voice(pcm: PackedByteArray)
 ## This player's talking made a noise of `db` (what minions hear, voice_db).
 signal voice_noise(db: float)
 
-## Flip by hand (or in Settings > Voice) to hear your own voice played back.
+## Flip by hand (or in Settings > Audio > Voice) to hear your own voice played back.
 var loopback := false
 ## Peers this player does not want to hear: peer_id -> true. Local only.
 var muted: Dictionary = {}
@@ -34,7 +35,7 @@ const SPEAKING_TIMEOUT_MSEC := 300
 ## How loud talking is in the dungeon (Sound, in dB like every noise; a footstep is
 ## PlayerController.FOOTSTEP_DB): from WHISPER_DB to YELL_DB, in a straight line between this
 ## player's whisper and yell as their mic records them (RMS, in dB under the loudest the mic
-## can record). Settings > Voice calibrates the two (whisper_mic_db, yell_mic_db); until then
+## can record). Settings > Audio > Voice calibrates the two (whisper_mic_db, yell_mic_db); until then
 ## they are the DEFAULT_ ones.
 const WHISPER_DB := 30.0
 const YELL_DB := 70.0
@@ -42,6 +43,20 @@ const DEFAULT_WHISPER_MIC_DB := -45.0
 const DEFAULT_YELL_MIC_DB := -5.0
 ## Quieter than this far under the whisper is not talking: not sent, no noise.
 const GATE_UNDER_WHISPER_DB := 6.0
+## Once open, the gate stays open down to this far under gate_db (so a voice hovering around
+## the gate doesn't flicker on and off).
+const GATE_CLOSE_UNDER_DB := 6.0
+## The voice level the game goes by (envelope_db) follows a louder chunk this share of the way
+## at once and a quieter one only this share per chunk (40 ms): quick up, slow down, so the
+## dips between syllables don't count as the player going quiet.
+const ENVELOPE_ATTACK := 0.6
+const ENVELOPE_RELEASE := 0.1
+## How loud a voice is played to everyone (dBFS, RMS): a whisper at PLAYBACK_WHISPER_DBFS, a
+## yell at PLAYBACK_YELL_DBFS, whatever the mic recorded; the sender turns it up or down to that
+## before sending, by at most MAX_BOOST_DB (more would mostly be turning up the room).
+const PLAYBACK_WHISPER_DBFS := -30.0
+const PLAYBACK_YELL_DBFS := -12.0
+const MAX_BOOST_DB := 24.0
 ## The gate stays open this long after the last chunk over it, so words keep their ends.
 const GATE_HOLD_MSEC := 300
 ## A chunk with this share of its samples at the mic's limit is peaking: 0 dB.
@@ -51,15 +66,30 @@ const VOICE_NOISE_SECONDS := 0.5
 ## How quickly background_db follows each new quiet chunk (its share of the average).
 const BACKGROUND_FOLLOW := 0.05
 
-## This player's calibration (Settings > Voice, the "voice" settings).
+## This player's calibration (Settings > Audio > Voice, the "voice" settings).
 var whisper_mic_db := DEFAULT_WHISPER_MIC_DB
 var yell_mic_db := DEFAULT_YELL_MIC_DB
-## The mic right now, for Settings > Voice's meter: the last chunk's level, and the background
+## The mic right now, for Settings > Audio > Voice's meter: the last chunk's level, and the background
 ## (the chunks under the gate, averaged). -INF before there is any.
 var level_db := -INF
 var background_db := -INF
-## Keeps the mic running without sending anything (Settings > Voice's meter and calibration).
+## The smoothed voice level (ENVELOPE_ATTACK / _RELEASE): what the dungeon loudness, the noise
+## and the playback volume are worked out from. -INF before there is any.
+var envelope_db := -INF
+## Keeps the mic running without sending anything (Settings > Audio > Voice's meter and calibration).
 var monitoring := false
+## Settings > Audio > Voice (the "voice" settings), each saved at once by its set_ function:
+## - auto_gain: turn every voice to its playback volume (playback_boost_db); off sends the mic as is.
+## - auto_gate: the gate is GATE_UNDER_WHISPER_DB under the calibrated whisper; off, it is manual_gate_db.
+## - voice_activation: the mic is always on and the gate alone decides what is sent;
+##   push_to_talk then mutes and unmutes. Off, push_to_talk turns the mic on and off.
+## - stereo: voices come from left or right of where the speaker stands; off, all from the
+##   middle. How loud stays the same either way (that part is the sound spreading, gameplay).
+var auto_gain := true
+var auto_gate := true
+var manual_gate_db := DEFAULT_WHISPER_MIC_DB - GATE_UNDER_WHISPER_DB
+var voice_activation := false
+var stereo := true
 
 var mic := MicInput.new()
 var _players: Dictionary = {}     # peer_id -> AudioStreamPlayer
@@ -71,6 +101,7 @@ var _next_noise_msec := 0
 ## The loudest voice level (dB) not yet made into a noise; -INF when there is none.
 var _loudest_db := -INF
 var _gate_open_until := 0
+var _gate_open := false
 
 func _ready() -> void:
 	add_child(mic)
@@ -79,6 +110,16 @@ func _ready() -> void:
 	mic.gain_db = ConfigFileHandler.get_setting("voice", "gain_db", 0.0)
 	whisper_mic_db = ConfigFileHandler.get_setting("voice", "whisper_mic_db", DEFAULT_WHISPER_MIC_DB)
 	yell_mic_db = ConfigFileHandler.get_setting("voice", "yell_mic_db", DEFAULT_YELL_MIC_DB)
+	mic.rumble_filter = ConfigFileHandler.get_setting("voice", "rumble_filter", true)
+	auto_gain = ConfigFileHandler.get_setting("voice", "auto_gain", true)
+	auto_gate = ConfigFileHandler.get_setting("voice", "auto_gate", true)
+	manual_gate_db = ConfigFileHandler.get_setting("voice", "manual_gate_db", manual_gate_db)
+	stereo = ConfigFileHandler.get_setting("voice", "stereo", true)
+	var output: String = ConfigFileHandler.get_setting("voice", "output_device", DEFAULT_DEVICE)
+	AudioServer.output_device = output if output_devices().has(output) else DEFAULT_DEVICE
+	voice_activation = ConfigFileHandler.get_setting("voice", "voice_activation", false)
+	if voice_activation:
+		set_talking(true)
 	get_tree().scene_changed.connect(_on_scene_changed)
 	multiplayer.peer_disconnected.connect(_drop)
 	multiplayer.server_disconnected.connect(func():
@@ -99,12 +140,12 @@ var talking := false
 ## Whether the current scene is a mission (the dungeon).
 var _in_mission := false
 
-## Leaving a mission any way (ended by the host, Main Menu, a disconnect) turns the mic off,
-## so a toggled-on mic does not follow the player into the town or the menus.
+## Leaving a mission any way (ended by the host, Main Menu, a disconnect) turns a push-to-talk
+## mic off, so a toggled-on mic does not follow the player into the town or the menus.
 func _on_scene_changed() -> void:
 	var was_in_mission := _in_mission
 	_in_mission = get_tree().current_scene.scene_file_path.ends_with("Dungeon.tscn")
-	if was_in_mission and not _in_mission and talking:
+	if was_in_mission and not _in_mission and talking and not voice_activation:
 		set_talking(false)
 
 func set_talking(on: bool) -> void:
@@ -118,26 +159,64 @@ func set_monitoring(on: bool) -> void:
 	_update_mic()
 
 func _update_mic() -> void:
-	if talking or monitoring:
+	if talking or monitoring or voice_activation:
 		if not mic.is_on():
 			mic.start()
 	else:
 		mic.stop()
 		level_db = -INF
+		envelope_db = -INF
+		_gate_open = false
 
-# --- Settings > Voice: each saved at once.
+# --- Settings > Audio > Voice: each saved at once.
 
 func set_device(device: String) -> void:
 	MicInput.set_device(device)
 	ConfigFileHandler.save_setting("voice", "device", device)
 
-## A new gain moves the calibration with it (both are levels after the gain), so it changes how
-## loud friends hear you, not how loud you are in the dungeon. Uncalibrated, it changes both.
+## A new gain moves the calibration with it (both are levels after the gain), so, calibrated, it
+## changes neither how loud you are in the dungeon nor how loud friends hear you (playback_boost_db
+## levels that out); it only helps a mic too quiet to reach the gate. Uncalibrated, it changes both.
 func set_gain(db: float) -> void:
 	if is_calibrated():
 		set_calibration(whisper_mic_db + db - mic.gain_db, yell_mic_db + db - mic.gain_db)
 	mic.gain_db = db
 	ConfigFileHandler.save_setting("voice", "gain_db", db)
+
+## The device name that means "whatever the system uses", for the speaker as for the mic.
+const DEFAULT_DEVICE := MicInput.DEFAULT_DEVICE
+
+static func output_devices() -> PackedStringArray:
+	return AudioServer.get_output_device_list()
+
+## Where all the game's sound plays, not only voices.
+func set_output_device(device: String) -> void:
+	AudioServer.output_device = device if output_devices().has(device) else DEFAULT_DEVICE
+	ConfigFileHandler.save_setting("voice", "output_device", device)
+
+func set_rumble_filter(on: bool) -> void:
+	mic.rumble_filter = on
+	ConfigFileHandler.save_setting("voice", "rumble_filter", on)
+
+func set_auto_gain(on: bool) -> void:
+	auto_gain = on
+	ConfigFileHandler.save_setting("voice", "auto_gain", on)
+
+func set_gate(auto: bool, manual_db: float) -> void:
+	auto_gate = auto
+	manual_gate_db = manual_db
+	ConfigFileHandler.save_setting("voice", "auto_gate", auto)
+	ConfigFileHandler.save_setting("voice", "manual_gate_db", manual_db)
+
+## Switching to voice activation unmutes (talking on); back to push to talk, the mic starts off.
+func set_voice_activation(on: bool) -> void:
+	voice_activation = on
+	ConfigFileHandler.save_setting("voice", "voice_activation", on)
+	set_talking(on)
+
+func set_stereo(on: bool) -> void:
+	stereo = on
+	ConfigFileHandler.save_setting("voice", "stereo", on)
 
 func set_calibration(whisper: float, yell: float) -> void:
 	whisper_mic_db = whisper
@@ -167,32 +246,37 @@ func set_muted(peer_id: int, on: bool) -> void:
 
 # --- Sending: this player's voice, to the host.
 
-## Every chunk the mic records: measured (level_db, background_db) and, while talking with the
-## gate open, sent with its loudness in the dungeon in front.
+## Every chunk the mic records: measured (level_db, envelope_db, background_db) and, while
+## talking with the gate open, turned to its playback volume and sent with its loudness in the
+## dungeon in front.
 func _on_mic_chunk(pcm: PackedByteArray) -> void:
 	level_db = mic_level_db(pcm)
+	envelope_db = follow_envelope(envelope_db, level_db)
 	var now := Time.get_ticks_msec()
-	if level_db >= gate_db():
+	_gate_open = gate_stays_open(_gate_open, level_db, gate_db())
+	if _gate_open:
 		_gate_open_until = now + GATE_HOLD_MSEC
 	elif level_db > -INF:
 		background_db = level_db if background_db == -INF else lerpf(background_db, level_db, BACKGROUND_FOLLOW)
 	var open := now <= _gate_open_until
 	var me := multiplayer.get_unique_id()
-	var db := my_voice_db(level_db)
-	# Loopback also while only monitoring, so Settings > Voice can play you back.
+	var db := my_voice_db(envelope_db)
+	# What is played: turned to how loud this voice should sound (own_voice keeps the mic's own).
+	var played := scaled(pcm, playback_boost_db(envelope_db, db)) if open and auto_gain else pcm
+	# Loopback also while only monitoring, so Settings > Audio > Voice can play you back.
 	if loopback and open:
-		_play(me, pcm, db)
+		_play(me, played, db)
 	if not talking:
 		return
 	own_voice.emit(pcm)
 	if not open:
 		return
 	_note_speaking(me)
-	if level_db >= gate_db():
-		_loudest_db = maxf(_loudest_db, level_db)
+	if _gate_open:
+		_loudest_db = maxf(_loudest_db, envelope_db)
 	if multiplayer.get_peers().is_empty():
 		return
-	var data := PackedByteArray([roundi(db)]) + MuLaw.encode(pcm)
+	var data := PackedByteArray([roundi(db)]) + MuLaw.encode(played)
 	if multiplayer.is_server():
 		_relay(me, data)
 	else:
@@ -215,7 +299,7 @@ func _make_noise() -> void:
 
 ## The mic level under which this player is not talking.
 func gate_db() -> float:
-	return whisper_mic_db - GATE_UNDER_WHISPER_DB
+	return whisper_mic_db - GATE_UNDER_WHISPER_DB if auto_gate else manual_gate_db
 
 ## This player's mic level as a loudness in the dungeon, with their calibration.
 func my_voice_db(mic_db: float) -> float:
@@ -230,6 +314,35 @@ static func voice_db(mic_db: float, whisper_mic := DEFAULT_WHISPER_MIC_DB, yell_
 ## The other way, uncalibrated: the mic level a voice of `db` has (the Test Lab's fake talkers).
 static func mic_level_for(db: float) -> float:
 	return lerpf(DEFAULT_WHISPER_MIC_DB, DEFAULT_YELL_MIC_DB, (db - WHISPER_DB) / (YELL_DB - WHISPER_DB))
+
+## One step of envelope_db: `level` (this chunk) pulls it up fast and lets it down slowly.
+static func follow_envelope(envelope: float, level: float) -> float:
+	if envelope == -INF or level == -INF:
+		return level if envelope == -INF else envelope - 2.0
+	return lerpf(envelope, level, ENVELOPE_ATTACK if level > envelope else ENVELOPE_RELEASE)
+
+## Whether the gate is open after a chunk of `level`: it opens at `gate` and, once open, closes
+## only under `gate` - GATE_CLOSE_UNDER_DB.
+static func gate_stays_open(was_open: bool, level: float, gate: float) -> bool:
+	return level >= (gate - GATE_CLOSE_UNDER_DB if was_open else gate)
+
+## How much to turn a voice at mic level `envelope` up (or down) so it plays as loud as a voice
+## of `db` in the dungeon should (PLAYBACK_WHISPER_DBFS to _YELL_DBFS), at most MAX_BOOST_DB up.
+static func playback_boost_db(envelope: float, db: float) -> float:
+	if envelope == -INF:
+		return 0.0
+	var target := lerpf(PLAYBACK_WHISPER_DBFS, PLAYBACK_YELL_DBFS, (db - WHISPER_DB) / (YELL_DB - WHISPER_DB))
+	return minf(target - envelope, MAX_BOOST_DB)
+
+## 16-bit samples `boost_db` louder (or quieter), clipped at the limit.
+static func scaled(pcm: PackedByteArray, boost_db: float) -> PackedByteArray:
+	var gain := db_to_linear(boost_db)
+	var out := PackedByteArray()
+	out.resize(pcm.size())
+	@warning_ignore("integer_division")  # 2 bytes per sample
+	for i in pcm.size() / 2:
+		out.encode_s16(i * 2, clampi(roundi(pcm.decode_s16(i * 2) * gain), -32768, 32767))
+	return out
 
 ## The average of several levels (dB) as the ear hears it: of their power, not of the dB numbers.
 static func average_db(levels: Array) -> float:
@@ -335,16 +448,17 @@ func _player_for(peer_id: int) -> AudioStreamPlayer2D:
 
 ## A living speaker in the dungeon is heard from their body, as loud as what reaches us of
 ## how loud they talk (`db`, voice_db), or not at all below our hearing. Anyone else (the town,
-## a ghost, loopback) is heard at full volume: the player sits on the listener, the screen's centre.
+## a ghost, loopback) is heard at full volume. The player sits on the listener, the screen's
+## centre (no left or right), for those and for everyone with `stereo` off.
 func _place_voice(peer_id: int, player: AudioStreamPlayer2D, db: float) -> void:
 	var body: Node2D = NetworkSync._player(peer_id)
-	if _in_mission and Viewer.local() != null and body != null and not _is_ghost(body) and peer_id != multiplayer.get_unique_id():
+	var heard := _in_mission and Viewer.local() != null and body != null and not _is_ghost(body) and peer_id != multiplayer.get_unique_id()
+	player.volume_db = heard_volume_db(peer_id, body.global_position, db) if heard else 0.0
+	if heard and stereo:
 		player.global_position = body.global_position
-		player.volume_db = heard_volume_db(peer_id, body.global_position, db)
 	else:
 		var viewport := get_viewport()
 		player.global_position = viewport.get_canvas_transform().affine_inverse() * (viewport.get_visible_rect().size / 2.0)
-		player.volume_db = 0.0
 
 const SILENT_DB := -80.0
 

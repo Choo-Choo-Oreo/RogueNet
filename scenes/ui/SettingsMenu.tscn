@@ -44,10 +44,20 @@ layout_mode = 2
 size_flags_vertical = 3
 current_tab = 0
 
-[node name="Audio" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Tabs"]
+[node name="Audio" type="ScrollContainer" parent="MarginContainer/VBoxContainer/Tabs"]
 layout_mode = 2
-theme_override_constants/separation = 12
+horizontal_scroll_mode = 0
 metadata/_tab_index = 0
+
+[node name="List" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Tabs/Audio"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="VolumeHeading" type="Label" parent="MarginContainer/VBoxContainer/Tabs/Audio/List"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Volume"
 
 [node name="Video" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Tabs"]
 visible = false
@@ -55,24 +65,17 @@ layout_mode = 2
 theme_override_constants/separation = 12
 metadata/_tab_index = 1
 
-[node name="Voice" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Tabs"]
-visible = false
-layout_mode = 2
-theme_override_constants/separation = 12
-script = ExtResource("5_voice")
-metadata/_tab_index = 2
-
-[node name="MasterHBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Tabs/Audio"]
+[node name="MasterHBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Tabs/Audio/List"]
 layout_mode = 2
 script = ExtResource("2_audio")
 audio_bus_name = "Master"
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Tabs/Audio/MasterHBoxContainer"]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/MasterHBoxContainer"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Master Volume"
 
-[node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/Tabs/Audio/MasterHBoxContainer"]
+[node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/MasterHBoxContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -81,24 +84,24 @@ max_value = 1.0
 step = 0.01
 value = 1.0
 
-[node name="AudioTypeControl" type="SpinBox" parent="MarginContainer/VBoxContainer/Tabs/Audio/MasterHBoxContainer"]
+[node name="AudioTypeControl" type="SpinBox" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/MasterHBoxContainer"]
 layout_mode = 2
 max_value = 1.0
 step = 0.01
 value = 1.0
 allow_greater = true
 
-[node name="MusicHBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Tabs/Audio"]
+[node name="MusicHBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Tabs/Audio/List"]
 layout_mode = 2
 script = ExtResource("2_audio")
 audio_bus_name = "Music"
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Tabs/Audio/MusicHBoxContainer"]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/MusicHBoxContainer"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Music Volume"
 
-[node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/Tabs/Audio/MusicHBoxContainer"]
+[node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/MusicHBoxContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -107,24 +110,24 @@ max_value = 1.0
 step = 0.01
 value = 1.0
 
-[node name="AudioTypeControl" type="SpinBox" parent="MarginContainer/VBoxContainer/Tabs/Audio/MusicHBoxContainer"]
+[node name="AudioTypeControl" type="SpinBox" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/MusicHBoxContainer"]
 layout_mode = 2
 max_value = 1.0
 step = 0.01
 value = 1.0
 allow_greater = true
 
-[node name="SFXHBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Tabs/Audio"]
+[node name="SFXHBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Tabs/Audio/List"]
 layout_mode = 2
 script = ExtResource("2_audio")
 audio_bus_name = "SFX"
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Tabs/Audio/SFXHBoxContainer"]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/SFXHBoxContainer"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "SFX Volume"
 
-[node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/Tabs/Audio/SFXHBoxContainer"]
+[node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/SFXHBoxContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -133,24 +136,24 @@ max_value = 1.0
 step = 0.01
 value = 1.0
 
-[node name="AudioTypeControl" type="SpinBox" parent="MarginContainer/VBoxContainer/Tabs/Audio/SFXHBoxContainer"]
+[node name="AudioTypeControl" type="SpinBox" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/SFXHBoxContainer"]
 layout_mode = 2
 max_value = 1.0
 step = 0.01
 value = 1.0
 allow_greater = true
 
-[node name="UIHBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Tabs/Audio"]
+[node name="UIHBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Tabs/Audio/List"]
 layout_mode = 2
 script = ExtResource("2_audio")
 audio_bus_name = "UI"
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Tabs/Audio/UIHBoxContainer"]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/UIHBoxContainer"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "UI Volume"
 
-[node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/Tabs/Audio/UIHBoxContainer"]
+[node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/UIHBoxContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -159,24 +162,24 @@ max_value = 1.0
 step = 0.01
 value = 1.0
 
-[node name="AudioTypeControl" type="SpinBox" parent="MarginContainer/VBoxContainer/Tabs/Audio/UIHBoxContainer"]
+[node name="AudioTypeControl" type="SpinBox" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/UIHBoxContainer"]
 layout_mode = 2
 max_value = 1.0
 step = 0.01
 value = 1.0
 allow_greater = true
 
-[node name="VoiceChatHBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Tabs/Voice"]
+[node name="VoiceChatHBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Tabs/Audio/List"]
 layout_mode = 2
 script = ExtResource("2_audio")
 audio_bus_name = "VoiceChat"
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Tabs/Voice/VoiceChatHBoxContainer"]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/VoiceChatHBoxContainer"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Voice Chat Volume"
 
-[node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/Tabs/Voice/VoiceChatHBoxContainer"]
+[node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/VoiceChatHBoxContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -185,12 +188,23 @@ max_value = 1.0
 step = 0.01
 value = 1.0
 
-[node name="AudioTypeControl" type="SpinBox" parent="MarginContainer/VBoxContainer/Tabs/Voice/VoiceChatHBoxContainer"]
+[node name="AudioTypeControl" type="SpinBox" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/VoiceChatHBoxContainer"]
 layout_mode = 2
 max_value = 1.0
 step = 0.01
 value = 1.0
 allow_greater = true
+
+[node name="VoiceHeading" type="Label" parent="MarginContainer/VBoxContainer/Tabs/Audio/List"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Voice"
+
+[node name="Voice" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Tabs/Audio/List"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+script = ExtResource("5_voice")
 
 [node name="FullscreenCheckButton" type="CheckButton" parent="MarginContainer/VBoxContainer/Tabs/Video"]
 custom_minimum_size = Vector2(400, 15)

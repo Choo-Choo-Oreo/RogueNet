@@ -2,7 +2,7 @@ class_name LabMicCheck
 extends Node
 
 ## The Test Lab's mic check (the voice_mic_check cell). Turns your mic on (VoiceChat: the mic,
-## gain and calibration from Settings > Voice) and asks you to whisper, then talk, then yell:
+## gain and calibration from Settings > Audio > Voice) and asks you to whisper, then talk, then yell:
 ## GAP_SECONDS to get ready, then TAKE_SECONDS of recording each. It shows your background level
 ## (the mic when you are not talking, VoiceChat.background_db). For every take it keeps:
 ## - what the game made of it: the noises your talking made (VoiceChat.voice_noise, the dB
@@ -33,7 +33,7 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	if _take >= 0:
-		VoiceChat.set_talking(false)
+		VoiceChat.set_talking(VoiceChat.voice_activation)
 
 func start() -> void:
 	results.clear()
@@ -65,7 +65,7 @@ func _process(_delta: float) -> void:
 		_begin(_take + 1)
 	else:
 		_take = -1
-		VoiceChat.set_talking(false)
+		VoiceChat.set_talking(VoiceChat.voice_activation)
 		status = "Done (WAVs in %s). Press M to go again." % ProjectSettings.globalize_path(WAV_DIR)
 
 ## The background level and the gate (under it is not talking), for the panel.

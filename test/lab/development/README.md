@@ -29,7 +29,7 @@ reach a far cell.
 | `doors_widths` | Minotaur, archer, rat and wraith behind 1, 2 and 3 wide wooden doors. |
 | `swarm_rats` | About 60 rats in one room, for performance. |
 | `voice_whisper`, `voice_talk`, `voice_yell` | A fake teammate talking without a break at 30, 50 and 70 dB beside a wall (`LabVoice`, played like a real teammate): walk up to it to hear how far a voice carries. Test Lab only. |
-| `voice_mic_check` | Press M: records you whispering, talking and yelling (`LabMicCheck`, with the mic and calibration from Settings > Voice; shows your background level) and compares the game's dB with the recording's; the takes are saved as WAVs in `user://test_lab/`. |
+| `voice_mic_check` | Press M: records you whispering, talking and yelling (`LabMicCheck`, with the mic and calibration from Settings > Audio > Voice; shows your background level) and compares the game's dB with the recording's; the takes are saved as WAVs in `user://test_lab/`. |
 | `manual_*` (4) | For you to try by hand, things the headless sim cannot judge; see below. |
 
 ## Manual cells and the Test Lab
