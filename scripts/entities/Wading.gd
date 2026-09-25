@@ -107,11 +107,20 @@ func _frame_height() -> float:
 
 # ---------------------------------------------------------------- effects
 
+# Splashes and rings go on the scene, like the other effects (DamageNumber, ParticleBurst).
+# Never next to the body: everything under the players' node is taken to be a player
+# (LightMap reads each one's stats).
+func _effects_parent() -> Node:
+	return get_tree().current_scene
+
 func _ring(at: Vector2, from_radius: float, to_radius: float, seconds: float) -> void:
+	var scene := _effects_parent()
+	if scene == null:
+		return
 	var ring := Ripple.new()
-	ring.position = at
 	ring.z_index = RIPPLE_Z
-	_body.get_parent().add_child(ring)
+	scene.add_child(ring)
+	ring.global_position = at
 	ring.radius = from_radius
 	var tween := ring.create_tween().set_parallel()
 	tween.tween_property(ring, "radius", to_radius, seconds).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
@@ -120,8 +129,10 @@ func _ring(at: Vector2, from_radius: float, to_radius: float, seconds: float) ->
 
 # Droplets thrown up in front of the body and falling back.
 func _splash(at: Vector2, count: int) -> void:
+	var scene := _effects_parent()
+	if scene == null:
+		return
 	var drops := CPUParticles2D.new()
-	drops.position = at
 	drops.z_index = _body.z_index + 1
 	drops.one_shot = true
 	drops.explosiveness = 0.9
@@ -138,7 +149,8 @@ func _splash(at: Vector2, count: int) -> void:
 	fade.set_color(0, Color(FOAM, 0.95))
 	fade.set_color(1, Color(FOAM, 0.0))
 	drops.color_ramp = fade
-	_body.get_parent().add_child(drops)
+	scene.add_child(drops)
+	drops.global_position = at
 	drops.emitting = true
 	drops.finished.connect(drops.queue_free)
 
