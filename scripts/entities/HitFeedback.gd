@@ -72,6 +72,10 @@ func _on_damaged(amount: int, type: String, cause: String) -> void:
 	var now := Time.get_ticks_msec()
 	var rhythm_ok := now - _last_flash_msec >= int(MIN_GAP * 1000.0)
 	var color := DamageNumber.BLOCKED if amount <= 0 else (DamageNumber.HURT if _is_player else DamageNumber.DEALT)
+	# The last number frees itself once it has faded. A freed object can't be passed as a
+	# DamageNumber (Godot stops with "previously freed"), so forget it first.
+	if not is_instance_valid(_number):
+		_number = null
 	_number = DamageNumber.show_on(_body, amount, color, _number)
 	if amount <= 0:
 		CombatSounds.play_impact(_body, _tags, 0)
