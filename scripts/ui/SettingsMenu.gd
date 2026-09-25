@@ -199,7 +199,7 @@ func _build() -> void:
 	_pages["sound"] = _page_box([
 		_volume_row("Master", "Master", "Everything at once. The other three lines are shares of this one."),
 		_volume_row("Music", "Music", "Town and dungeon music."),
-		_volume_row("SFX", "Effects", "Hits, spells, doors, footsteps, minions."),
+		_volume_row("SFX", "Effects", "Hits, spells, doors, footsteps, minions, ambience."),
 		_volume_row("UI", "Interface", "Clicks, page turns, the scrolls unrolling."),
 	])
 	_pages["screen"] = _page_box([

@@ -10,11 +10,16 @@ extends Node
 ##   is partly see-through, with a pale rim where it meets the legs, wobbling gently
 ##   (resources/shaders/wading.gdshader). Gear sinks with the body.
 ## - Stepping in splashes (droplets, a ring, enter.wav); each wading step splashes a
-##   little (step_1-3); stepping out drips (exit).
+##   little (step_1.wav...); stepping out drips (exit).
 ## - Walking leaves a trail of rings; standing still sends out a slow ring now and then.
+## - Near it or in it, moving or not, the player on this machine hears the liquid itself
+##   (lava bubbling and sizzling), if its folder has those sounds (LiquidAmbience).
 ## The colours come from the floor tile's own art (liquid_look); how see-through it is,
 ## from "see_through" in its game/tiles JSON.
-## Ghosts and fliers don't wade (GridMover ignores terrain for them).
+## Dry ground has its steps here too, as they come from the same step onto a new tile: each
+## plays the floor's step sounds (the folder its JSON names in "footsteps", see TileType),
+## quieter than wading, and kicks up a little puff of dust in the floor's colour.
+## Ghosts and fliers don't wade or step (GridMover ignores terrain for them).
 
 const SHADER := preload("res://resources/shaders/wading.gdshader")
 const SFX_ROOT := "res://resources/sfx/effects/"
@@ -32,6 +37,8 @@ const RIPPLE_Z := 50
 const QUIETER_DB := 10.0
 ## The rim, droplets and rings: the tile's lightest colour, this far towards white.
 const RIM_PALE := 0.6
+## Steps on dry ground are this much quieter again than wading ones.
+const DRY_QUIETER_DB := 4.0
 
 var _body: Node2D
 var _sprite: AnimatedSprite2D
@@ -44,11 +51,14 @@ var _rim := Color.WHITE   # the rim colour of the liquid it's in (or was last in
 static var _liquids := {}
 ## Sfx folder name -> liquid_look() (built the first time each liquid is waded into).
 static var _looks := {}
+## Floor tile id -> its step sounds (built the first time a body steps on that floor).
+static var _steps := {}
 var _tile := Vector2i.MAX
 var _last_position := Vector2.INF
 var _wake_left := 0.0
 var _idle_left := 0.0
 var _step := 0
+var _ambience: LiquidAmbience   # players only: what the liquids around sound like to them
 
 func setup(body: Node2D, sprite: AnimatedSprite2D, mover: GridMover) -> void:
 	_body = body
@@ -64,6 +74,11 @@ func setup(body: Node2D, sprite: AnimatedSprite2D, mover: GridMover) -> void:
 			child.use_parent_material = true
 	if _liquids.is_empty():
 		_liquids = liquid_folders()
+	# not minions: they wade too, and on the host every one of them is its authority
+	if body.is_in_group("protagonist"):
+		_ambience = LiquidAmbience.new()
+		add_child(_ambience)
+		_ambience.setup(_liquids)
 
 ## Floor tile id -> sfx folder name, for every floor with an enter.wav in its folder.
 static func liquid_folders() -> Dictionary:
@@ -84,17 +99,7 @@ static func liquid_look(folder: String) -> Dictionary:
 		return _looks[folder]
 	var tile := TileType.new()
 	tile.load_from_file(TILES_DIR + "floor_" + folder + ".json")
-	var texture: Texture2D = tile.atlas_texture
-	if texture is CanvasTexture:
-		texture = (texture as CanvasTexture).diffuse_texture
-	var counts := {}
-	var image := texture.get_image() if texture else null
-	if image:
-		for y in image.get_height():
-			for x in image.get_width():
-				var c := image.get_pixel(x, y)
-				if c.a > 0.5:
-					counts[c] = counts.get(c, 0) + 1
+	var counts := TileType.art_colours(tile.atlas_texture)
 	var colour := Color(0.22, 0.42, 0.72)   # only if the tile has no art
 	var lightest := Color(0.4, 0.6, 1.0)
 	for c: Color in counts:
@@ -118,6 +123,8 @@ func _process(delta: float) -> void:
 	# the tile under the middle of the body (big bodies: the middle of their footprint)
 	var centre := _body.global_position + Vector2.ONE * (_mover.footprint * 8.0)
 	var tile: Vector2i = _mover.floor_data.local_to_map(_mover.floor_data.to_local(centre))
+	if _ambience and _body.is_multiplayer_authority():
+		_ambience.hear(_mover.floor_data, tile, delta)
 	# _ignores_terrain: ghosts and fliers, the same rule that stops water slowing them
 	var floor_id := -1 if _mover._ignores_terrain() else _mover.floor_data.get_cell_source_id(tile)
 	var liquid: String = _liquids.get(floor_id, "")
@@ -128,20 +135,23 @@ func _process(delta: float) -> void:
 		# stepping out drips the old liquid's colour; stepping in (from dry ground or from
 		# another liquid) takes on the new one's look before it splashes
 		if not placed and _liquid != "":
-			_play(_liquid, "exit", surface)
+			_play(SFX_ROOT + _liquid + "/exit.wav", surface)
 			if not wet:
 				_splash(surface, 5)
 		if wet:
 			_wear(liquid)
 			if not placed:
-				_play(liquid, "enter", surface)
+				_play(SFX_ROOT + liquid + "/enter.wav", surface)
 				_splash(surface, 12)
 				_ring(surface, 2.0, 8.0, 0.6)
 		_liquid = liquid
-	elif wet and tile != _tile:
-		_splash(surface, 5)
-		_play(liquid, "step_%d" % (_step % 3 + 1), surface)
-		_step += 1
+	elif tile != _tile and not placed and floor_id != -1:
+		# another step: wading splashes a little, dry ground puffs dust
+		if wet:
+			_splash(surface, 5)
+		else:
+			_dust_puff(floor_id, feet)
+		_play_step(floor_id, surface if wet else feet, wet)
 	if wet:
 		if _body.global_position != _last_position:
 			_wake_left -= delta
@@ -230,11 +240,30 @@ func _splash(at: Vector2, count: int) -> void:
 	drops.emitting = true
 	drops.finished.connect(drops.queue_free)
 
-func _play(liquid: String, sound: String, at: Vector2) -> void:
+# A little puff of the floor's own dust from a step on dry ground (ParticleBurst.dust).
+func _dust_puff(floor_id: int, at: Vector2) -> void:
+	var tile := GridMover.floor_type(floor_id)
+	var scene := _effects_parent()
+	if tile == null or tile.atlas_texture == null or scene == null or not SoundPlayer.on_screen(self, at):
+		return
+	ParticleBurst.dust(scene, at, TileType.plain(tile.atlas_texture).resource_path)
+
+# The floor's step sounds (its "footsteps" folder), taken in turn.
+func _play_step(floor_id: int, at: Vector2, wet: bool) -> void:
+	if not _steps.has(floor_id):
+		var tile := GridMover.floor_type(floor_id)
+		_steps[floor_id] = SoundPlayer.numbered(SFX_ROOT + tile.footsteps + "/step") if tile and tile.footsteps != "" else []
+	var steps: Array = _steps[floor_id]
+	if steps.is_empty():
+		return
+	_play(steps[_step % steps.size()], at, 0.0 if wet else DRY_QUIETER_DB)
+	_step += 1
+
+func _play(path: String, at: Vector2, quieter := 0.0) -> void:
 	var team := "protagonist" if _body.is_in_group("protagonist") else ""
 	var peer := int(str(_body.name)) if team != "" else 0
-	var db := CombatSounds.who_db(_body, team, peer, false) - QUIETER_DB
-	SoundPlayer.play(_body, SFX_ROOT + liquid + "/" + sound + ".wav", {"at": at, "volume_db": db, "jitter": 0.08})
+	var db := CombatSounds.who_db(_body, team, peer, false) - QUIETER_DB - quieter
+	SoundPlayer.play(_body, path, {"at": at, "volume_db": db, "jitter": 0.08})
 
 ## A flat ring on the liquid, drawn in whole pixels, growing and fading (Wading._ring).
 class Ripple extends Node2D:

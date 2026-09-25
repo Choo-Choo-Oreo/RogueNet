@@ -21,6 +21,7 @@ const RUBBLE_PATH := "res://resources/gfx/effects/effects.particles/Rubble_Parti
 const CHIPS := preload("res://resources/gfx/effects/effects.particles/Hit_Chips.png")
 const CHIP_ROW := {"bone": 0, "stone": 1, "metal": 1, "organic": 2, "ethereal": 3}
 const RUBBLE_GRID := Vector2i(5, 6)  # columns, rows of 8x8 cells
+const DUST_FRAMES := [25, 26, 27, 28, 29]  # its bottom row: a puff of dust
 
 const FPS := 10.0
 const GRAVITY := 400.0     # px/s^2
@@ -29,7 +30,7 @@ const AIR_Z := 1100        # above bodies (1000), below the LightMap overlay (20
 const STAIN_SECONDS := 8.0 # how long blood stays on the floor before fading
 const RUBBLE_SECONDS := 3.0
 
-static var _rubble_by_wall := {}  # wall atlas path -> recoloured rubble sheet
+static var _rubble_by_tile := {}  # wall or floor atlas path -> recoloured rubble sheet
 
 class Piece:
 	var sprite: Sprite2D
@@ -96,7 +97,7 @@ static func rubble(scene: Node, centre: Vector2, wall_atlas: String) -> void:
 	var sheet := _rubble_sheet(wall_atlas)
 	var burst := _spawn(scene, centre)
 	var puff := burst._add(sheet, RUBBLE_GRID, Vector2.ZERO)
-	puff.land_frames = [25, 26, 27, 28, 29]  # bottom row: dust puff
+	puff.land_frames = DUST_FRAMES
 	puff.landed_z = AIR_Z
 	puff.linger = 0.5
 	for i in 3:
@@ -114,6 +115,18 @@ static func rubble(scene: Node, centre: Vector2, wall_atlas: String) -> void:
 		pebble.linger = RUBBLE_SECONDS
 		pebble.fade = 1.0
 		_throw(pebble, Vector2(25, 65), Vector2(50, 100))
+
+## A little puff of dust where a foot comes down on dry ground (Wading): the rubble sheet's
+## dust, in the floor's colours the way rubble takes a wall's. `floor_atlas` is the floor's
+## texture path. It sits on the floor, under bodies.
+static func dust(scene: Node, at: Vector2, floor_atlas: String) -> void:
+	var burst := _spawn(scene, at)
+	var puff := burst._add(_rubble_sheet(floor_atlas), RUBBLE_GRID, Vector2.ZERO)
+	puff.land_frames = DUST_FRAMES
+	puff.linger = 0.5
+	puff.landed = true
+	puff.sprite.z_index = FLOOR_Z
+	puff.sprite.frame = DUST_FRAMES[0]
 
 static func _spawn(scene: Node, at: Vector2) -> ParticleBurst:
 	var burst := ParticleBurst.new()
@@ -181,14 +194,15 @@ func _hit_floor(piece: Piece) -> void:
 	piece.time = 0.0
 	piece.sprite.z_index = piece.landed_z
 
-## The rubble sheet in one wall's colours, made once per wall and kept. Template grey i
-## (i * 32 + 16) becomes the wall's colour at the same place in its dark-to-light order;
-## a wall with fewer than 8 colours shares them out. Unknown wall: the greys stay.
-static func _rubble_sheet(wall_atlas: String) -> Texture2D:
-	if _rubble_by_wall.has(wall_atlas):
-		return _rubble_by_wall[wall_atlas]
+## The rubble sheet in one tile's colours (a wall's for rubble, a floor's for dust), made once
+## per tile and kept. Template grey i (i * 32 + 16) becomes the tile's colour at the same
+## place in its dark-to-light order; a tile with fewer than 8 colours shares them out.
+## Unknown tile: the greys stay.
+static func _rubble_sheet(atlas: String) -> Texture2D:
+	if _rubble_by_tile.has(atlas):
+		return _rubble_by_tile[atlas]
 	var image := _image_of(load(RUBBLE_PATH))
-	var palette := _wall_palette(wall_atlas)
+	var palette := _tile_palette(atlas)
 	if not palette.is_empty():
 		for y in image.get_height():
 			for x in image.get_width():
@@ -197,24 +211,18 @@ static func _rubble_sheet(wall_atlas: String) -> Texture2D:
 					var grey := clampi(floori(colour.r8 / 32.0), 0, 7)
 					image.set_pixel(x, y, palette[floori(grey * palette.size() / 8.0)])
 	var sheet := ImageTexture.create_from_image(image)
-	_rubble_by_wall[wall_atlas] = sheet
+	_rubble_by_tile[atlas] = sheet
 	return sheet
 
-## A wall texture's colours, darkest first. Black is left out: it is the unseen top of the
-## wall, not the stone (the tile colour limit does not count it either).
-static func _wall_palette(wall_atlas: String) -> Array[Color]:
+## A tile texture's colours, darkest first (its plain set's: see TileType.art_colours). Black
+## is left out: on a wall it is the unseen top, not the stone (the tile colour limit does not
+## count it either).
+static func _tile_palette(atlas: String) -> Array[Color]:
 	var palette: Array[Color] = []
-	var texture: Texture2D = load(wall_atlas) if ResourceLoader.exists(wall_atlas) else null
-	if texture == null:
-		return palette
-	var image := _image_of(texture)
-	var seen := {}
-	for y in image.get_height():
-		for x in image.get_width():
-			var colour := image.get_pixel(x, y)
-			if colour.a >= 1.0 and colour != Color.BLACK:
-				seen[colour] = true
-	palette.assign(seen.keys())
+	var texture: Texture2D = load(atlas) if ResourceLoader.exists(atlas) else null
+	for colour: Color in TileType.art_colours(texture):
+		if colour != Color.BLACK:
+			palette.append(colour)
 	palette.sort_custom(func(a: Color, b: Color) -> bool: return a.get_luminance() < b.get_luminance())
 	return palette
 

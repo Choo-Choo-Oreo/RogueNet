@@ -29,6 +29,8 @@ func _cell_id(pos: Vector2i) -> int:
 
 var group_sources: Dictionary = {}
 var void_floor_source: int = -1
+## The tile's variant_weights (see TileType), set by TileInitialize.
+var variant_weights: Array[float] = []
 var _variants := 1
 var overlay_layer: TileMapLayer
 
@@ -129,4 +131,18 @@ func _refresh_cell(pos: Vector2i) -> void:
 func _pick_variant(cell: Vector2i) -> int:
 	if _variants <= 1:
 		return 0
-	return (((cell.x * 73856093) ^ (cell.y * 19349663)) & 0x7fffffff) % _variants
+	if variant_weights.is_empty():
+		return (((cell.x * 73856093) ^ (cell.y * 19349663)) & 0x7fffffff) % _variants
+	# hash() mixes well, so the rare sets don't line up in rows or a checkerboard
+	var total := 0.0
+	for i in _variants:
+		total += _weight(i)
+	var roll := float(hash(cell) & 0xffff) / 65536.0 * total
+	for i in _variants:
+		roll -= _weight(i)
+		if roll < 0.0:
+			return i
+	return 0
+
+func _weight(variant: int) -> float:
+	return variant_weights[variant] if variant < variant_weights.size() else 1.0

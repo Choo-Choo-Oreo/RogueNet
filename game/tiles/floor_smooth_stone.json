@@ -4,5 +4,7 @@
 	"normal_texture": "res://resources/gfx/tileset/floor_smooth_stone_normal.png",
 	"specular_color": [0.1, 0.1, 0.1, 1],
 	"sort_order": 1,
+	"footsteps": "stone",
+	"variant_weights": [60, 1, 1, 1.5, 1.5],
 	"marker_color": [0.690196, 0.690196, 0.690196, 1]
 }

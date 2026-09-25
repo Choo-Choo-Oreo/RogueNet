@@ -44,6 +44,8 @@ func _footprint_tiles(anchor: Vector2i) -> Array[Vector2i]:
 ## mover used to read the registry and all the tile files itself, which with hundreds of
 ## minions was thousands of file reads while a dungeon loaded.
 static var _floor_speed := {}
+## Floor tile id -> its TileType, from the same read (floor_type()).
+static var _floor_types := {}
 static var _registry: TileTypeRegistry = null
 
 static func _tile_ids() -> TileTypeRegistry:
@@ -66,6 +68,13 @@ static func _build_floor_speeds() -> void:
 		tile.load_from_file("res://game/tiles/" + file_name)
 		if tile.category == TileType.Category.FLOOR:
 			_floor_speed[_tile_ids().get_id(tile.tile_name)] = tile.move_speed()
+			_floor_types[_tile_ids().get_id(tile.tile_name)] = tile
+
+## The floor tile with this id (a TileMapLayer's source id), or null.
+static func floor_type(id: int) -> TileType:
+	if _floor_types.is_empty():
+		_build_floor_speeds()
+	return _floor_types.get(id)
 
 ## True for a mover that flies: terrain never slows it, and its pathfinding
 ## ignores terrain cost. Set from the minion JSON's "flying" (MinionController).

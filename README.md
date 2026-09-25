@@ -135,6 +135,11 @@ instead of rolling the biome table. The Dungeon Maker's minion spawner sets this
   `spawn_cells`. Weights are relative, not percentages — they just need to
   be consistent within one table.
 - `music` — path to the biome's background track.
+- `ambience` (optional) — path to a sound that loops under the music for the
+  whole dive (dripping water in a cave, wind through ruins), on the effects
+  volume; biomes that sound alike name the same file. It fades in when the
+  dungeon starts and out on leaving. None yet: the files go in
+  `resources/sfx/ambiance/` (import them looping).
 - `default_door` (optional) — a door type name (`"wood"`) or `"none"`; missing
   means `"none"`. It is what a joint gets when neither connector asks for
   anything specific (see below). A type that is too narrow for a joint is
@@ -207,6 +212,22 @@ JSON. DungeonMaker keeps it when re-saving.)
   count toward that; older tiles were made under a 6-color cap) —
   regenerate normal maps after any wall/floor art edit.
 - Naming is subject-first: `wall_forest_dense`, not `wall_dense_forest`.
+- `footsteps` (floors, optional): the folder in `resources/sfx/effects/` whose
+  `step_1.wav`, `step_2.wav`... play as a creature walks over the floor (`Wading`), so
+  floors that sound alike share one: `floor_smooth_stone` and `floor_smooth_cave` use
+  `stone`, the five carpets `carpet`, `floor_wood_planks` `wood`. Left out, it is the tile's
+  name without `floor_` (`dirt`, `grass`, `flesh`, and the liquids' own folders). Every step
+  on dry ground also puffs a little dust in the floor's colours.
+- Variants: a tile's art can hold more than one 64x64 set, stacked top to bottom
+  (animation frames run left to right). Each 8x8 quarter of the floor picks a set of its
+  own, so a detail drawn in a variant set must fit inside one quarter and leave its edges
+  as the first set has them. `variant_weights` (optional) says how often each set is picked:
+  `[60, 1, 1, 1.5, 1.5]` on `floor_smooth_stone` keeps the clean first set nearly
+  everywhere, with two cracked and two mossy sets turning up now and then. Without it every
+  set is as likely (`floor_flesh`'s first four used to be); sets past the end of the list
+  weigh 1. Now used by `floor_smooth_stone` (cracks, moss), `floor_flesh` (bits of bone:
+  skulls, teeth, ribs) and `wall_rough_cave` (gold ore in the rock faces). The sets are
+  drawn by script from the first one, so redraw the variants after changing it.
 - A floor is a liquid when `resources/sfx/effects/<name without floor_>/enter.wav`
   exists (see that folder's README). Bodies wading in it sink, and below the surface
   take the tile art's most common colour, with a rim, droplets and rings in its lightest
@@ -231,9 +252,11 @@ JSON. DungeonMaker keeps it when re-saving.)
   `main_hand`, `off_hand`.
 - `art` — the worn sheets' path minus the `-<Direction>.png` ending. The game
   adds `-Down`, `-DownRight`, `-Right`, `-UpRight` and `-Up`: 4 frames of
-  16x16 each, lined up with the Human's walk cycle. In `-Right`, frames 1 and
-  3 are the strides: the body dips 1 px, so every piece sits 1 px lower there
-  (legs and feet follow the stride pose). Left-facing views are the
+  16x16 each, lined up with the Human's walk cycle. In every direction frames
+  1 and 3 are the steps: the body dips 1 px, so every piece sits 1 px lower
+  there. The feet stay on the ground, so legs, feet, skirts and anything that
+  reaches the bottom row lose a pixel of height in the middle instead (in
+  `-Right`, legs and feet follow the stride pose). Left-facing views are the
   right-facing art mirrored. Which slots draw over or behind the body for
   each direction is `DRAW_ORDER` in `scripts/items/ItemDatabase.gd`.
   Held items (`main_hand`, `off_hand`) stay in their own hand facing left

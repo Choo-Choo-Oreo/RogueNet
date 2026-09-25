@@ -4,6 +4,7 @@
 	"normal_texture": "res://resources/gfx/tileset/wall_rough_cave_normal.png",
 	"specular_color": [0.05, 0.05, 0.05, 1],
 	"sort_order": 100,
+	"variant_weights": [6, 1, 1],
 	"category": "wall",
 	"marker_color": [0.36, 0.31, 0.27, 1]
 }

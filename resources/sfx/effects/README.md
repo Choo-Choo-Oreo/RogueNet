@@ -21,6 +21,27 @@ needs a `tar/` folder. Every liquid also looks wet: bodies sink, and below the s
 colour, with a pale rim, droplets and rings (`Wading.liquid_look`; how see-through it is
 is the tile's `see_through`). Lava is a thick gloop with a sizzle, acid a fizz with bright bubbles.
 
+A liquid can also make a sound by itself, heard near it and standing in it whether or not
+anyone moves (`scripts/audio/LiquidAmbience.gd`, only for the player on that machine). Only
+lava has these so far; any liquid folder can add them:
+
+| File | When |
+|---|---|
+| `loop.wav` | all the time near it: louder the closer and the more of it there is, loudest standing in a big pool. Must be imported looping (Import dock, Loop Mode: Forward) |
+| `pop_1.wav`, `pop_2.wav`... | now and then from a random tile of it within 5 tiles (a bubble bursting), oftener the more of it there is |
+
+Lava's loop is slow thick bubbles over a low churn with a crackling sizzle; its pops are
+big bubbles bursting with a hiss after.
+
+## Footsteps: `stone/`, `carpet/`, `wood/`, `dirt/`, `grass/`, `flesh/`
+
+Played by `scripts/entities/Wading.gd` each time a creature on the ground steps onto another
+tile of a dry floor, 14 dB under its combat sounds, taken in turn: `step_1.wav`,
+`step_2.wav`... (as many as there are). Which folder a floor uses is its `footsteps` in
+`game/tiles/` (the root README, "Tiles"); a floor whose folder is missing or empty is silent.
+**None of these folders exist yet:** every dry floor is silent until the files are added.
+Wading steps come from the same place (the liquid's own folder, `step_1.wav`...).
+
 ## Doors: `doors/`
 
 Played by `scripts/dungeon/DoorManager.gd` on every screen, at the door, when it starts to open

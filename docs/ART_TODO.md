@@ -109,12 +109,12 @@ gives room builders something to make paths, rugs and hazards with.
 
 - [✓] Carpet or rug (dungeon, cathedral). Five colours exist, `floor_carpet_*`; a red runner with a trim edge is not separate
 - [✗] Cobblestone floor (dungeon). Rougher than smooth stone.
-- [✗] Cracked or mossy smooth stone (dungeon, cave)
+- [✓] Cracked or mossy smooth stone (dungeon, cave): variant sets of `floor_smooth_stone` that turn up now and then (`variant_weights`), not a separate tile
 - [✗] Rail track on dirt (mine). Rooms already have plank "tracks" waiting for this.
 - [✗] Gravel or rubble (mine, cave)
 - [✓] Shallow water (cave): `floor_water` exists. Could later slow movement the way flesh does.
 - [~] Mushroom or moss ground (cave), a stranger cousin of grass (the cave uses `floor_grass` as moss; no dedicated tile)
-- [✗] Bone or tooth floor (flesh). Pale, to break up all the red.
+- [~] Bone or tooth floor (flesh). Pale, to break up all the red. `floor_flesh` now has two variant sets with skulls, teeth, ribs and small bones scattered in it; a whole bone floor is still to do
 - [✗] Pulsing or wet flesh variant (flesh)
 
 ### New walls
@@ -124,7 +124,7 @@ Barriers: bedrock, dense forest. The catacomb, manor and sewer stand in for miss
 with these, so each item below removes a workaround.
 
 - [✗] Mossy or damp stone wall (cave meets dungeon)
-- [✗] Ore vein wall (mine): rough cave rock with a metal or crystal streak
+- [~] Ore vein wall (mine): rough cave rock with a metal or crystal streak. `wall_rough_cave` now has gold flecks in its rock faces now and then (two variant sets), everywhere that wall is used; a mine-only ore wall or crystal is still to do
 - [✗] Bookshelf wall (dungeon)
 - [✗] Window or stained glass wall (cathedral)
 - [✗] Iron bars (dungeon). Special: you should see the floor through it **(decide first)**
@@ -252,6 +252,7 @@ Frames are 16x16, in strips. What exists:
 - [~] The current knight and dwarf are TEMPORARY (2026-09-24, Orea). A teammate is building a new `human` character with EIGHT-direction movement (walking north, north+east, east, south+east, south, and so on) in `resources/gfx/entities/entities.protagonist/human/`; the flipped directions come from the right-facing art. It comes with an equipment slot map (head, neck, chest, back, gloves, legs, feet, main hand, off hand) that says, per direction, which worn pieces draw over or behind the body and where a held item's grip pixel sits. Do not draw more frames for the old knight and dwarf until that lands. Later on 2026-09-24 the Knight and Dwarf were taken off the character list (Foxy's request, Orea's OK): the Human is the only playable character. Their art files are kept, and `DungeonMaker` still uses `Knight-Down.png` as the player spawn marker
 - [~] Human: walk cycles renamed to the `Name-Direction` pattern, 2026-09-24: `human/Human-Down/DownRight/Right/UpRight/Up` (`.png` + `.aseprite`). Left, Down-Left and Up-Left come from flipping the right-facing art. In-game since 2026-09-24 (not yet committed or reviewed): movement and `DirectionalAnimator` handle eight directions, and the Human's `FrontRight`/`BackRight` animations are used for diagonals (mirrored for left). Creatures with no diagonal art play their side animation when moving diagonally
   - Side walk (`Human-Right`) redone 2026-09-25 at Foxy's request (the old one looked goofy): frame 0 is still the standing/idle pose; frames 1 and 3 are strides with the legs apart and the back foot on its toes, and the whole body dips 1 px; frame 2 passes with the far foot lifted. All 185 `-Right` gear sheets follow (legs and feet re-posed, skirts squash 1 px, everything else 1 px lower on frames 1 and 3; the ultimate sets' glow still pulses) and every template's Default Man was updated. The four bows/daggers that reach the bottom row lose their lowest pixel on the stride frames
+  - Bob in every direction, 2026-09-25 (Foxy): `Human-Down/DownRight/Up/UpRight` dip 1 px on frames 1 and 3 too, with the feet planted (rows 0-12 move down 1, row 13 goes: the legs get a pixel shorter; the lifted foot is unchanged). All 740 gear sheets for those directions follow: legs, feet, skirts and the six bows/daggers that reach the bottom row the same way as the body, everything else 1 px lower. Every template's Default Man was updated
 - [~] Gear layer: `gear/helmets/heavy_iron/HeavyIronHelm-Down/DownRight/Right/UpRight/Up` is done for all 5 directions (checked against the Human walk cycle, 2026-09-24). Gear sheets use the same `Name-Direction` pattern as the body so code can pair them up. Drawn in-game since 2026-09-24: whatever the player wears in the inventory is drawn over (or behind) the body, in the order of the slot map
 - [~] Example gear sets, 2026-09-24 (made by Claude, waiting on Foxy's review). Four sets, drawn on the Default Man for all 5 directions and all 4 walk frames. Each piece has a PNG plus an `.aseprite` copied from the HeavyIronHelm template (Default Man hidden, piece in its slot layer):
   - **Heavy Iron:** the existing helm, plus `HeavyIronCuirass`, `HeavyIronGauntlets`, `HeavyIronGreaves` and `HeavyIronSabatons`
@@ -360,7 +361,7 @@ their sub-types; `effects.necrotic`: perditio, ruina, torpor, virulentia), plus 
 
 - [✓] Hit spark (per damage type, see above)
 - [~] Weapon slash arc (`physical.slashing` exists; check it reads as an arc on a swing)
-- [✗] Footstep dust
+- [✓] Footstep dust, 2026-09-25: each step on dry ground puffs the rubble sheet's dust frames in the floor's own colours (`ParticleBurst.dust`, called from `Wading`)
 - [✗] Flesh squish or splat
 - [✗] Chest opening sparkle
 - [✗] Enemy death puff
@@ -382,7 +383,7 @@ and nothing about its look is decided, so all of this is **(decide first)**.
 
 - [✗] Steam store art: capsule, header, library images
 - [✗] Trailer stills
-- [✗] App icon (the project still has Godot's default `icon.svg`)
+- [~] App icon, 2026-09-25 (made by Claude, waiting on Foxy's review): a sword standing in a firelit dungeon archway, 32x32 pixel art in `resources/gfx/ui/app_icon/` (`AppIcon.png` + `.aseprite` is the source; `AppIcon_256.png` is it scaled up for `project.godot`, `AppIcon.ico` has every size for the Windows exe). Godot's `icon.svg` is no longer used
 
 ## 9. Sound
 
@@ -390,7 +391,7 @@ Not art, but nobody owns it yet. `resources/sfx/effects` and `resources/sfx/ambi
 only three music tracks exist (Groovy, Menu-Music, The-Lone-Forest). Direction from Silvery Foxy.
 
 - [~] Combat sounds, 2026-09-25: swings, hits by material, hurt by damage type, deaths, monster voices, grunts, heartbeat (`resources/sfx/combat/`, see its README). Synthesised placeholders, waiting on Foxy's ears and a Pixabay list. Also new art for it: damage digits and hurt vignette (`resources/gfx/ui/hud/`), bone/stone/goo/wisp chips (`effects.particles/Hit_Chips.png`)
-- [~] Sound effects: doors (per type) and liquids (water, lava, acid: in, out, steps), 2026-09-25, synthesised placeholders (`resources/sfx/effects/`, see its README). Footsteps on dry ground still silent
+- [~] Sound effects: doors (per type) and liquids (water, lava, acid: in, out, steps; lava also bubbles and sizzles nearby), 2026-09-25, synthesised placeholders (`resources/sfx/effects/`, see its README). Footsteps on dry ground are wired (each floor names a folder, `stone/`, `carpet/`, `wood/`, `dirt/`, `grass/`, `flesh/`) but have no sound files yet
 - [✗] Ambiance per biome
 - [✗] More music (dungeon, boss, town)
 

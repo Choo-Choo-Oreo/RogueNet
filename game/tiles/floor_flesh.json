@@ -4,6 +4,7 @@
 	"normal_texture": "res://resources/gfx/tileset/floor_flesh_normal.png",
 	"specular_color": [0.75, 0.75, 0.75, 1],
 	"sort_order": 4,
+	"variant_weights": [10, 10, 10, 10, 1, 1],
 	"terrain": "rough",
 	"marker_color": [0.74902, 0.184314, 0.184314, 1]
 }

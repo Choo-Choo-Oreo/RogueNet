@@ -95,6 +95,8 @@ func _ensure_pair(tile_type: TileType, data_layer: TileMapLayer) -> void:
 		if existing is StaticTileRender:
 			existing.atlas_coords = tile_type.atlas_coords
 			existing.orientable = tile_type.orientable
+		if existing is DualGridRender:
+			existing.variant_weights = tile_type.variant_weights
 		_apply_marker_appearance(data_layer, existing.source_id, tile_type)
 		_ensure_overlay(existing, tile_type)
 		return
@@ -110,6 +112,8 @@ func _ensure_pair(tile_type: TileType, data_layer: TileMapLayer) -> void:
 	if pair is StaticTileRender:
 		pair.atlas_coords = tile_type.atlas_coords
 		pair.orientable = tile_type.orientable
+	else:
+		pair.variant_weights = tile_type.variant_weights
 
 	var display_layer := TileMapLayer.new()
 	display_layer.name = "DisplayLayer"

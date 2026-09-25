@@ -240,6 +240,11 @@ func _ready() -> void:
 	hit_feedback.name = "HitFeedback"
 	add_child(hit_feedback)
 	hit_feedback.setup(self, $AnimatedSprite2D, stats, tags)
+	# looks and sounds only; fliers skip it (GridMover.flies), big bodies wade by their middle
+	var wading := Wading.new()
+	wading.name = "Wading"
+	add_child(wading)
+	wading.setup(self, $AnimatedSprite2D, grid_mover)
 	stats.died.connect(func():
 		DirectionalAnimator.leave_corpse(self, $AnimatedSprite2D)
 		queue_free())

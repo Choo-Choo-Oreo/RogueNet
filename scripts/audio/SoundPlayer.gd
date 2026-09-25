@@ -90,6 +90,14 @@ static func play(from: Node, path: String, options: Dictionary = {}) -> Node:
 		fade.tween_callback(player.queue_free)
 	return player
 
+## The takes of one sound: `start` + "_1.wav", "_2.wav"... up to the first one missing
+## (res://resources/sfx/effects/lava/pop gives pop_1.wav to pop_3.wav). Empty if there are none.
+static func numbered(start: String) -> Array[String]:
+	var paths: Array[String] = []
+	while ResourceLoader.exists("%s_%d.wav" % [start, paths.size() + 1]):
+		paths.append("%s_%d.wav" % [start, paths.size() + 1])
+	return paths
+
 ## True if a world position is on screen (or within OFF_SCREEN_MARGIN of it) for the camera
 ## `from` is seen through.
 static func on_screen(from: Node, world: Vector2) -> bool:

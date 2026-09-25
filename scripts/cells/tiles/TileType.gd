@@ -32,6 +32,18 @@ const TERRAIN_SPEED := {
 ## 0 hidden (lava) to 1 clear.
 @export_range(0.0, 1.0) var see_through := 0.45
 
+## Dual-grid tiles with more than one 64x64 set in the art (stacked top to bottom): how often
+## each set is picked, per 8x8 quarter. Sets past the end of the list weigh 1; empty = all
+## equally often. [20, 1] makes the second set a rare one (cracked stone among clean stone).
+@export var variant_weights: Array[float] = []
+
+## Floors: the folder in resources/sfx/effects/ whose step_1.wav, step_2.wav... play as a body
+## walks over it (see Wading). Floors that sound alike share one ("stone"); left out, it is the
+## tile's own name without "floor_" (floor_water: water/).
+@export var footsteps := ""
+
+static var _colours := {}   # art path -> art_colours()
+
 func move_speed() -> float:
 	return TERRAIN_SPEED[terrain]
 
@@ -60,6 +72,35 @@ func load_from_data(data: Dictionary) -> void:
 	glow_radius = data.get("glow_radius", 0.0)
 	overlay_density = data.get("overlay_density", 0.2)
 	see_through = data.get("see_through", 0.45)
+	variant_weights.assign(data.get("variant_weights", []))
+	footsteps = data.get("footsteps", tile_name.trim_prefix("floor_"))
+
+## The colours of a tile's art, colour -> how many pixels have it (see-through ones left out).
+## Only the first 64x64 set counts: later sets are rarer variants (moss, ore) or animation
+## frames, and a variant's extra colours are not the tile's own. Worked out once per texture.
+static func art_colours(texture: Texture2D) -> Dictionary:
+	texture = plain(texture)
+	if texture == null:
+		return {}
+	var key := texture.resource_path
+	if key != "" and _colours.has(key):
+		return _colours[key]
+	var image := texture.get_image()
+	if image.is_compressed():
+		image.decompress()
+	var counts := {}
+	for y in mini(image.get_height(), 64):
+		for x in mini(image.get_width(), 64):
+			var colour := image.get_pixel(x, y)
+			if colour.a > 0.5:
+				counts[colour] = counts.get(colour, 0) + 1
+	if key != "":
+		_colours[key] = counts
+	return counts
+
+## A lit tile's art is a CanvasTexture holding the art and its normal map: this is the art.
+static func plain(texture: Texture2D) -> Texture2D:
+	return (texture as CanvasTexture).diffuse_texture if texture is CanvasTexture else texture
 
 func load_from_file(path: String) -> void:
 	load_from_data(JsonOnloading.load_dict(path))
