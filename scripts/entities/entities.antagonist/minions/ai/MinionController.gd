@@ -27,6 +27,8 @@ var is_boss := false
 static var bosses: Array[MinionController] = []
 var _base_move_time := 0.2
 var _light_map: LightMap = null
+## Whether the target's light touched this minion on its last full tick (debug inspector).
+var debug_lit := false
 
 ## True once a failed move confirms every neighbor (all 8) is blocked or
 ## occupied -- see _is_boxed_in() and its use in _process().
@@ -290,6 +292,7 @@ func _process_inner(delta: float) -> void:
 	else:
 		_target = _nearest_player()
 	var lit := _target != null and _light_map != null and _light_map.is_tile_lit(_to_tile(global_position))
+	debug_lit = lit
 	var state := senses.update(global_position, _target, grid_mover.blocks_sight, lit, delta)
 	if _override == null:
 		if state == MinionSenses.State.PATROL:
@@ -1039,8 +1042,8 @@ func _drop_lock(now: int) -> void:
 	senses.forget()
 	_wake_up()
 
-## Pack: minions of one `pack` id (creature JSON, e.g. "wolf") within PACK_RADIUS_TILES share
-## alarms. When one steps up to Investigate its packmates go to look at the same spot; when one
+## Pack: minions of one `pack` id (creature JSON) in the same room and within PACK_RADIUS_TILES
+## share alarms (_is_packmate). When one steps up to Investigate its packmates go to look at the same spot; when one
 ## goes to Attack they attack the same player. A minion raised by the pack does not call it
 ## again (last_trigger "pack"), so the alarm does not chain across the room.
 const PACK_RADIUS_TILES := 16
@@ -1050,14 +1053,24 @@ func _alert_pack(state: MinionSenses.State) -> void:
 	var player: Node2D = _lock if is_instance_valid(_lock) else _target
 	var marker := senses.investigate_marker
 	for other: Node in get_tree().get_nodes_in_group("antagonist"):
-		if other == self or not "pack_id" in other or other.pack_id != pack_id:
-			continue
-		if _cheb(_to_tile(other.global_position) - _to_tile(global_position)) > PACK_RADIUS_TILES:
+		if not _is_packmate(other):
 			continue
 		if state == MinionSenses.State.ATTACK:
 			other.join_pack_attack(player)
 		elif is_instance_valid(marker):
 			other.join_pack_investigation(marker)
+
+## Same pack id, same room (RoomGraph; a pack never reaches through a wall into the next room)
+## and within PACK_RADIUS_TILES (the cap that still applies where there is no room map, and in
+## one big room such as the Test Lab hub).
+func _is_packmate(other: Node) -> bool:
+	if other == self or not "pack_id" in other or other.pack_id != pack_id or pack_id == "":
+		return false
+	var here := _to_tile(global_position)
+	var there := _to_tile(other.global_position)
+	if _cheb(there - here) > PACK_RADIUS_TILES:
+		return false
+	return RoomGraph.current == null or RoomGraph.current.room_at(here) == RoomGraph.current.room_at(there)
 
 ## A packmate is attacking `player`: attack them too, unless already attacking.
 func join_pack_attack(player: Node2D) -> void:
@@ -1076,11 +1089,13 @@ func join_pack_investigation(marker: Node2D) -> void:
 
 ## Noise entry points (host-side, from Sound.make): whether this minion's ears reach the
 ## spot, and the order to go and look at its marker. Ignored while it is already attacking.
-func can_hear(noise_position: Vector2, loudness: float) -> bool:
-	return is_multiplayer_authority() and senses.hearing.hears(global_position, noise_position, loudness)
+func hearing_budget(loudness: float) -> float:
+	return senses.hearing.budget(loudness) if is_multiplayer_authority() else 0.0
 
-func hear_noise(marker: Node2D) -> void:
+## `cost` is how much of its budget the sound spent getting here (Sound.flood), for the inspector.
+func hear_noise(marker: Node2D, cost := 0.0) -> void:
 	senses.hear(marker)
+	senses.last_heard_cost = cost
 	_wake_up()
 
 ## Taunt entry point (host-side, called from NetworkSync). Hard-locks onto
@@ -1259,9 +1274,9 @@ func _pack_leader() -> MinionController:
 	var best: MinionController = null
 	var best_id := get_instance_id()
 	for other: Node in get_tree().get_nodes_in_group("antagonist"):
-		if other == self or not "pack_id" in other or other.pack_id != pack_id or other.senses.state != MinionSenses.State.PATROL:
+		if not _is_packmate(other) or other.senses.state != MinionSenses.State.PATROL:
 			continue
-		if other.get_instance_id() < best_id and _cheb(_to_tile(other.global_position) - _to_tile(global_position)) <= PACK_RADIUS_TILES:
+		if other.get_instance_id() < best_id:
 			best = other
 			best_id = other.get_instance_id()
 	return best

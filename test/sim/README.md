@@ -33,6 +33,8 @@ Two smaller checks run on their own (each exits 1 on failure):
 - `dual_grid_after_smash.gd` breaks the walls in `bug3_smash_plain` and compares what is drawn with a fresh refresh.
 - `throw_rock.gd` (about 15 s) throws a rock with the real Throw Rock action into `hearing_rock_behind_wall`
   and checks the noise marker and that the blind rat investigates it.
+- `debug_senses.gd` turns on the sense debug overlays and the inspector in the Test Lab, makes a
+  sound and builds every creature's inspector panel: a crash there is a bug in the debug drawing.
 
 Not covered: the smash telegraph is visual. The boss zone (bug 5) is sampled, but the flicker the audit
 describes has not been reproduced yet.

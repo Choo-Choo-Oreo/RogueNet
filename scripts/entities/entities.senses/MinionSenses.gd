@@ -36,22 +36,8 @@ var investigate_marker: Node2D
 ## Which sense last raised the alert, for the debug overlay: "touch", "sight", "smell", "taste",
 ## "hearing", "light" (lit by the player's glow), "hit", "pack" (a packmate raised the alarm) or "" (nothing yet / gave up).
 var last_trigger := ""
-
-## Debug overlay (show-minion-senses): every sense draws its own range, then a line to the spot
-## being investigated.
-func debug_draw(canvas: CanvasItem, centre: Vector2) -> void:
-	for sense in [touch, sight, hearing, smell, taste]:
-		sense.debug_draw(canvas, centre)
-	if state == State.INVESTIGATE and is_instance_valid(investigate_marker):
-		canvas.draw_line(centre, investigate_marker.global_position, Color(SenseHearing.DEBUG_COLOR, 0.8), 1.0)
-
-## Names of the senses currently enabled, for the debug label.
-func enabled_names() -> String:
-	var names: Array[String] = []
-	for sense_name in ["touch", "sight", "hearing", "smell", "taste"]:
-		if get(sense_name).enabled:
-			names.append(sense_name)
-	return " ".join(names)
+## How much of its hearing budget the last sound it heard had spent getting here (debug inspector).
+var last_heard_cost := -1.0
 
 ## Getting hit always means the minion now knows roughly where its attacker
 ## is, even with no direct sense of them (e.g. shot from off-screen or from

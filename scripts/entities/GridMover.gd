@@ -33,7 +33,7 @@ var footprint := 1:
 			owner_body.set_meta("footprint", footprint)
 
 ## Every tile a body of this size covers when its top-left tile is `anchor`.
-func _footprint_tiles(anchor: Vector2i) -> Array[Vector2i]:
+func footprint_tiles(anchor: Vector2i) -> Array[Vector2i]:
 	var tiles: Array[Vector2i] = []
 	for y in footprint:
 		for x in footprint:
@@ -46,17 +46,10 @@ func _ready() -> void:
 	_build_floor_speeds()
 
 func _build_floor_speeds() -> void:
-	var registry := TileTypeRegistry.new()
-	var dir := DirAccess.open("res://game/tiles/")
-	if dir == null:
-		return
-	for file_name in dir.get_files():
-		if not file_name.ends_with(".json"):
-			continue
-		var tile := TileType.new()
-		tile.load_from_file("res://game/tiles/" + file_name)
-		if tile.category == TileType.Category.FLOOR:
-			_floor_speed[registry.get_id(tile.tile_name)] = tile.move_speed()
+	var tiles := TileType.by_id()
+	for id in tiles:
+		if tiles[id].category == TileType.Category.FLOOR:
+			_floor_speed[id] = tiles[id].move_speed()
 
 ## True for a mover that flies: terrain never slows it, and its pathfinding
 ## ignores terrain cost. Set from the minion JSON's "flying" (MinionController).
@@ -155,7 +148,7 @@ func _is_ghost() -> bool:
 ## opens it), so paths and flow fields route straight through.
 func is_tile_blocked(tile: Vector2i) -> bool:
 	if footprint > 1:
-		for covered in _footprint_tiles(tile):
+		for covered in footprint_tiles(tile):
 			if _tile_blocked_single(covered):
 				return true
 		return false
@@ -229,7 +222,7 @@ func _tile_occupants(tile: Vector2i) -> Array:
 ## they already don't count as attack targets or collide with minions.
 func is_tile_occupied(tile: Vector2i) -> bool:
 	if footprint > 1:
-		for covered in _footprint_tiles(tile):
+		for covered in footprint_tiles(tile):
 			if _tile_occupied_single(covered):
 				return true
 		return false
@@ -279,7 +272,7 @@ func can_step_diagonally(origin_tile: Vector2i, step: Vector2i) -> bool:
 		return false
 	if _ignores_doors():
 		return true
-	for covered in _footprint_tiles(origin_tile):
+	for covered in footprint_tiles(origin_tile):
 		for tile in [covered, covered + step, covered + Vector2i(step.x, 0), covered + Vector2i(0, step.y)]:
 			if DoorRegistry.is_door_cell(tile):
 				return false
@@ -298,7 +291,7 @@ func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> bool:
 	var target_global := origin_global + direction * tile_size
 	var target_tile := Vector2i(floori(target_global.x / tile_size), floori(target_global.y / tile_size))
 	if footprint > 1:
-		for covered in _footprint_tiles(target_tile):
+		for covered in footprint_tiles(target_tile):
 			if _is_blocked(Vector2(covered) * tile_size):
 				return false
 	elif _is_blocked(target_global):
@@ -322,9 +315,9 @@ func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> bool:
 		if footprint > 1:
 			entered.clear()
 			came_from.clear()
-			var already := _footprint_tiles(origin_tile)
+			var already := footprint_tiles(origin_tile)
 			var step := Vector2i(direction.round())
-			for covered in _footprint_tiles(target_tile):
+			for covered in footprint_tiles(target_tile):
 				if not already.has(covered):
 					entered.append(covered)
 					came_from.append(covered - step)
@@ -344,7 +337,7 @@ func move_one_tile(direction: Vector2, speed_scale: float = 1.0) -> bool:
 	facing_direction = direction
 	is_moving = true
 	note_move("step", direction)
-	var reserved_tiles: Array[Vector2i] = _footprint_tiles(target_tile)
+	var reserved_tiles: Array[Vector2i] = footprint_tiles(target_tile)
 	if not is_ghost:
 		for covered in reserved_tiles:
 			_reserved[covered] = _body

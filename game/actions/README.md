@@ -34,7 +34,7 @@ walks) and for the player (the order is the hotbar slot).
 | `effect` | A picture played when it is used: `texture`, `frame_count`, `speed`, `anchor`. A `projectile` adds `projectile` (a flying sprite) plus `attacker` and `target` animations. |
 | `shape` | For `destroy_tiles`: breaks the walls inside it (`line` with `length` and `width`, or `circle` with `radius`), leaving floor. Never breaks `barrier_*` tiles. |
 | `radius_tiles`, `duration`, `max_targets` | For `taunt`: forces minions within the radius (nearest `max_targets`) onto the user for `duration` seconds. |
-| `loudness` | For `throw`: how far the landing carries, in multiples of a footstep (`SenseHearing`). It flies at most `range_tiles` and stops short of a wall. |
+| `loudness` | For `throw`: how far the landing carries, in multiples of a footstep (`SenseHearing`), 1 to 10 (outside that it is clamped). It flies at most `range_tiles` and stops short of a wall. |
 | `needs_sight`, `only_through_walls` | Minion firing rules. The second fires only while a wall is between it and its target. |
 
 ## Every action

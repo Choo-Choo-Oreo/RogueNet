@@ -22,10 +22,9 @@ func _ready() -> void:
 
 	# Apply the saved volumes to the buses now: the sliders only ever read the
 	# bus, so without this a saved volume was never loaded on the next launch.
-	for bus_name in ["Master", "Music", "SFX", "UI"]:
-		var bus := AudioServer.get_bus_index(bus_name)
-		if bus == -1:
-			continue
+	# Every bus in the layout (resources/AudioBusLayout.tres), so a new bus needs no change here.
+	for bus in AudioServer.bus_count:
+		var bus_name := AudioServer.get_bus_name(bus)
 		var fallback: float = DEFAULT_MUSIC_VOLUME if bus_name == "Music" else 1.0
 		var volume: float = config.get_value("audio", bus_name + "_volume", fallback)
 		AudioServer.set_bus_volume_db(bus, linear_to_db(volume))

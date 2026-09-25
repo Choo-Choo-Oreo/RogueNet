@@ -14,3 +14,14 @@ The field-by-field format is in the root `README.md` under "Minions". Sprite PNG
 animation JSON live under `resources/gfx/entities/`, in the same folders as here, never in
 this folder. Projectile art is in `resources/gfx/entities/entities.projectiles/`; there is
 no projectile data yet.
+
+## Sense ranges
+
+Balance a creature's sense ranges around **15 tiles as the high end**, not as a default.
+The average room is about 15 x 14 tiles, so 15 is roughly "across a room".
+- Most senses sit well below 15.
+- A creature's best sense sits near 15.
+- A standout sense can go past it. 15 is not a hard maximum.
+
+Example: a dog smells at 25 and hears at 15, and everything else is lower. The `senses`
+format itself is in the root `README.md`.

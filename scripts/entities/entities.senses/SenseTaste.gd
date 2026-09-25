@@ -9,7 +9,7 @@ extends Node
 func detects(_origin: Vector2, _target: Node2D) -> bool:
 	return false
 
-## Debug overlay (show-minion-senses): nothing to draw until this sense is built (give it a
+## Debug overlay (show-taste): nothing to draw until this sense is built (give it a
 ## range ring like SenseHearing's).
 const DEBUG_COLOR := Color(1.0, 0.6, 0.2)
 

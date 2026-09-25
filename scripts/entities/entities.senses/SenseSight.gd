@@ -23,7 +23,7 @@ func detects(origin: Vector2, target: Node2D, is_blocked: Callable) -> bool:
 	var target_cell := Vector2i(floori(target.global_position.x / tile_size), floori(target.global_position.y / tile_size))
 	return LineOfSight.clear(origin_cell, target_cell, is_blocked)
 
-## Debug overlay (show-minion-senses): a ring at the sight range.
+## Debug overlay (show-sight): a ring at the sight range.
 const DEBUG_COLOR := Color(1.0, 0.9, 0.2)
 
 func debug_draw(canvas: CanvasItem, centre: Vector2) -> void:

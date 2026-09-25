@@ -8,7 +8,14 @@ extends RefCounted
 ## two cells, not an area, so it's cheap compared to a flood. Cell units are
 ## whatever the caller uses, same as LightFlood.
 
+## blocked_at's answer when nothing is in the way.
+const CLEAR := Vector2i(-2147483648, -2147483648)
+
 static func clear(from: Vector2i, to: Vector2i, is_blocked: Callable) -> bool:
+	return blocked_at(from, to, is_blocked) == CLEAR
+
+## The first cell that stops the line from `from` to `to`, or CLEAR (the debug sight line marks it).
+static func blocked_at(from: Vector2i, to: Vector2i, is_blocked: Callable) -> Vector2i:
 	var cell := from
 	var dx := absi(to.x - from.x)
 	var dy := absi(to.y - from.y)
@@ -29,9 +36,11 @@ static func clear(from: Vector2i, to: Vector2i, is_blocked: Callable) -> bool:
 		if move_x and move_y:
 			# Diagonal step -- both orthogonal neighbours must be open too,
 			# same corner rule LightFlood's diagonal flood steps use.
-			if is_blocked.call(Vector2i(cell.x + step_x, cell.y)) or is_blocked.call(Vector2i(cell.x, cell.y + step_y)):
-				return false
+			if is_blocked.call(Vector2i(cell.x + step_x, cell.y)):
+				return Vector2i(cell.x + step_x, cell.y)
+			if is_blocked.call(Vector2i(cell.x, cell.y + step_y)):
+				return Vector2i(cell.x, cell.y + step_y)
 		if is_blocked.call(next):
-			return false
+			return next
 		cell = next
-	return true
+	return CLEAR

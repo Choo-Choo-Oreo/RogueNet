@@ -25,6 +25,10 @@ const TERRAIN_SPEED := {
 @export var overlay_texture: Texture2D
 @export_range(0.0, 1.0) var overlay_density := 0.2
 
+## How much a sound spends crossing this tile (Sound.flood): JSON "muffle", or 3 for a wall and
+## 1 for a floor when the JSON leaves it out.
+@export var muffle := 1.0
+
 @export var glow_radius := 0.0
 @export var glow_color := Color.WHITE
 
@@ -55,9 +59,25 @@ func load_from_data(data: Dictionary) -> void:
 	orientable = data.get("orientable", false)
 	glow_radius = data.get("glow_radius", 0.0)
 	overlay_density = data.get("overlay_density", 0.2)
+	muffle = float(data.get("muffle", 3.0 if category == Category.WALL else 1.0))
 
 func load_from_file(path: String) -> void:
 	load_from_data(JsonOnloading.load_dict(path))
+
+const TILES_DIR := "res://game/tiles/"
+static var _by_id := {}
+
+## Every tile in game/tiles by its registry id (the source id a TileMapLayer reports), loaded
+## once and shared: GridMover reads floor speeds from it, Sound reads muffle.
+static func by_id() -> Dictionary:
+	if _by_id.is_empty():
+		var registry := TileTypeRegistry.new()
+		for file_name in DirAccess.get_files_at(TILES_DIR):
+			if file_name.ends_with(".json"):
+				var tile := TileType.new()
+				tile.load_from_file(TILES_DIR + file_name)
+				_by_id[registry.get_id(tile.tile_name)] = tile
+	return _by_id
 
 func _load_texture(path: String) -> Texture2D:
 	return load(path) if path != "" else null

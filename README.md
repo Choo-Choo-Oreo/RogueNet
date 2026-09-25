@@ -52,10 +52,15 @@ Notes:
   `"senses": { "hearing": false }`, or sets a sense's numbers, e.g.
   `"senses": { "hearing": { "range_tiles": 8.0 } }`. `touch`, `sight` and `hearing` are
   implemented; `smell`/`taste` exist but always report no detection. Hearing is by event:
-  a noise (a player's footstep, loudness 1.0; a thrown rock landing, 3.0) is heard within
-  `range_tiles * loudness` tiles (default range 3, through walls), and the minion
-  investigates the *spot* of the noise, not the player.
-- `pack` (optional) — a pack id (`"wolf"`). Minions of one pack within 16 tiles share alarms:
+  a noise (loudness 1 to 10: a player's footstep 1, a thrown rock landing 3) spreads tile by
+  tile and each tile spends some of it (its `muffle`: floor 1, wall 3, closed door 3). A
+  minion's budget is `range_tiles * loudness` (default range 3); it hears the noise when the
+  cheapest path from the noise to it costs no more than that, and it investigates the *spot*
+  of the noise, not the player. Debug toggle `show-sound` draws each noise's spread.
+  How long to make a sense's range: see "Sense ranges" in `game/entities/README.md`
+  (15 tiles is the high end, not a default or a hard cap).
+- `pack` (optional) — a pack id (any name; the wolves use `"wolf"`). Minions of one pack in the
+  same room (and within 16 tiles) share alarms:
   when one goes to Investigate the rest go to the same spot, when one goes to Attack they all
   attack the same player. A minion raised by its pack does not call it again.
 - Patrol (no JSON, every minion): while a player is in its room or a room next to it, an
@@ -202,6 +207,9 @@ JSON. DungeonMaker keeps it when re-saving.)
 }
 ```
 
+- `muffle` (optional) — how much of a sound's budget crossing this tile spends. Leave it out
+  for the default: 3 for `"category": "wall"`, 1 for a floor. Set it only on a tile that
+  differs (a thick bedrock wall, a carpet that deadens footsteps).
 - A new tile still needs a matching entry added to `game/tile_registry.json`
   to actually be usable from room JSON.
 - Tile art (and normal maps) live under `resources/gfx/tileset/`. Tileset

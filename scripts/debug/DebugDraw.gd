@@ -39,7 +39,7 @@ func _ready() -> void:
 	z_as_relative = false
 
 func _any_draw() -> bool:
-	for option in ["show-room-outlines", "show-room-ids", "show-connectors", "show-doors", "show-minion-state", "show-minion-routes", "show-minion-senses", "show-tile-grid", "show-mesh-grid", "show-mesh-tiles", "show-collision-rectangles", "show-active-minions", "show-vision", "show-flow-field"]:
+	for option in ["show-room-outlines", "show-room-ids", "show-connectors", "show-doors", "show-minion-state", "show-minion-routes", "show-sight", "show-sound", "show-touch", "show-smell", "show-taste", "show-minion-inspector", "show-tile-grid", "show-mesh-grid", "show-mesh-tiles", "show-collision-rectangles", "show-active-minions", "show-vision", "show-flow-field"]:
 		if DebugState.on(option):
 			return true
 	return false
@@ -73,8 +73,11 @@ func _draw() -> void:
 		_draw_doors()
 	if DebugState.on("show-minion-state") or DebugState.on("show-minion-routes"):
 		_draw_minions()
-	if DebugState.on("show-minion-senses"):
-		_draw_senses()
+	_draw_senses()
+	if DebugState.on("show-sound"):
+		_draw_sound()
+	if DebugState.on("show-minion-inspector"):
+		_draw_inspector()
 
 ## The tiles currently on screen (plus one of margin).
 func _visible_tiles() -> Rect2i:
@@ -305,25 +308,177 @@ func _draw_minions() -> void:
 			for i in range(from, path.size() - 1):
 				draw_line(Vector2(path[i]) * TILE + Vector2(8, 8), Vector2(path[i + 1]) * TILE + Vector2(8, 8), Color(1.0, 1.0, 1.0, 0.6), 1.0)
 
-## Every minion near the screen: each sense's own range (SenseX.debug_draw), what last alerted it
-## and which senses it has, and every noise spot (Sound markers, with the seconds left). A new sense
-## shows up here by getting a debug_draw of its own; nothing in this file changes.
+## One toggle per sense, each drawing that sense's own range (SenseX.debug_draw) on every minion
+## near the screen. A new sense gets a line here and a debug_draw of its own.
+const SENSE_OPTIONS := {"show-sight": "sight", "show-sound": "hearing", "show-touch": "touch", "show-smell": "smell", "show-taste": "taste"}
+
 func _draw_senses() -> void:
+	var shown: Array[String] = []
+	for option in SENSE_OPTIONS:
+		if DebugState.on(option):
+			shown.append(SENSE_OPTIONS[option])
+	if shown.is_empty():
+		return
 	var near := _visible_tiles().grow(8)
 	for minion in get_tree().get_nodes_in_group("antagonist"):
 		if not "senses" in minion or not near.has_point(Vector2i((minion.global_position / TILE).floor())):
 			continue
-		var senses: MinionSenses = minion.senses
 		var centre: Vector2 = minion.global_position + Vector2(TILE, TILE) / 2.0
-		senses.debug_draw(self, centre)
-		var trigger := senses.last_trigger if senses.state != MinionSenses.State.PATROL else ""
-		_label(centre + Vector2(-8, 13), "%s%s" % [senses.enabled_names(), " <- " + trigger if trigger != "" else ""], Color(1, 1, 1, 0.8))
+		for sense_name in shown:
+			minion.senses.get(sense_name).debug_draw(self, centre)
+		_label_rings(minion, shown, centre)
+		# Light is not a sense of the minion's (it is the player's light reaching it), but it is
+		# what sends a minion to look when you walk near it in the dark, so sight shows it too.
+		if "sight" in shown and minion.debug_lit:
+			_label(centre + Vector2(-6, 6), "in your light", Color(1.0, 0.8, 0.5))
+		if "sight" in shown:
+			_draw_sight_line(minion, centre)
+		if "hearing" in shown and minion.senses.state == MinionSenses.State.INVESTIGATE and is_instance_valid(minion.senses.investigate_marker):
+			draw_line(centre, minion.senses.investigate_marker.global_position, Color(SenseHearing.DEBUG_COLOR, 0.8), 1.0)
+
+## The number behind each ring, written on the ring at its point closest to the player (straight
+## up when there is none): sight range in tiles; on each hearing ring its loudness (1 footstep,
+## 3 rock, up to Sound.LOUDNESS_MAX).
+func _label_rings(minion: Node, shown: Array[String], centre: Vector2) -> void:
+	var senses: MinionSenses = minion.senses
+	var toward := Vector2.UP
+	var player := _nearest_player(centre)
+	if player != null and player.global_position + Vector2(TILE, TILE) / 2.0 != centre:
+		toward = centre.direction_to(player.global_position + Vector2(TILE, TILE) / 2.0)
+	if "sight" in shown and senses.sight.enabled:
+		_label(centre + toward * senses.sight.range_tiles * TILE, "sight %.0f" % senses.sight.range_tiles, SenseSight.DEBUG_COLOR)
+	if "hearing" in shown and senses.hearing.enabled:
+		for loudness in range(Sound.LOUDNESS_MIN, Sound.LOUDNESS_MAX + 1):
+			_label(centre + toward * senses.hearing.budget(loudness) * TILE, str(loudness), SenseHearing.DEBUG_COLOR)
+
+func _nearest_player(from: Vector2) -> Node2D:
+	var best: Node2D = null
+	for player: Node2D in get_tree().get_nodes_in_group("protagonist"):
+		if best == null or player.global_position.distance_to(from) < best.global_position.distance_to(from):
+			best = player
+	return best
+
+## What the minion's sight makes of its target right now: green = sees them, red = a wall is in
+## the way (the blocking tile is outlined), grey = farther than its sight range.
+func _draw_sight_line(minion: Node, centre: Vector2) -> void:
+	var target = minion._target
+	var sight: SenseSight = minion.senses.sight
+	if not sight.enabled or not is_instance_valid(target):
+		return
+	var block := _sight_block(minion, target)
+	var in_range: bool = minion.global_position.distance_to(target.global_position) <= sight.range_tiles * TILE
+	var color := Color(0.6, 0.6, 0.6, 0.5)
+	if in_range:
+		color = Color(0.3, 1.0, 0.4, 0.9) if block == LineOfSight.CLEAR else Color(1.0, 0.3, 0.3, 0.9)
+	draw_line(centre, target.global_position + Vector2(TILE, TILE) / 2.0, color, 1.0)
+	if in_range and block != LineOfSight.CLEAR:
+		draw_rect(Rect2(Vector2(block) * TILE, Vector2(TILE, TILE)), Color(1.0, 0.3, 0.3), false, 1.0)
+
+func _sight_block(minion: Node, target: Node2D) -> Vector2i:
+	var from := Vector2i((minion.global_position / TILE).floor())
+	var to := Vector2i((target.global_position / TILE).floor())
+	return LineOfSight.blocked_at(from, to, minion.grid_mover.blocks_sight)
+
+## Each recent sound's spread (Sound.flood), tinted by how much of a footstep-hearer's budget is
+## left there: bright at the source, faint at the edge; fades out over Sound.SHOW_SECONDS. Walls
+## show up as the tint stopping short. Plus every noise spot (Sound markers, with seconds left).
+func _draw_sound() -> void:
 	var now := Time.get_ticks_msec()
+	while not Sound.recent.is_empty() and now - int(Sound.recent[0]["msec"]) > Sound.SHOW_SECONDS * 1000.0:
+		Sound.recent.pop_front()
+	for sound in Sound.recent:
+		var fade := 1.0 - (now - int(sound["msec"])) / (Sound.SHOW_SECONDS * 1000.0)
+		var budget: float = sound["budget"]
+		var cells: Dictionary = sound["cells"]
+		for cell in cells:
+			var left := 1.0 - float(cells[cell]) / budget
+			draw_rect(Rect2(Vector2(cell) * TILE, Vector2(TILE, TILE)), Color(SenseHearing.DEBUG_COLOR, 0.5 * left * fade), true)
+	if not Sound.recent.is_empty():
+		_label_sound(Sound.recent.back())
 	for marker: Node2D in get_tree().get_nodes_in_group(Sound.GROUP):
 		var at := marker.global_position
-		var left := (int(marker.get_meta("until_msec", now)) - now) / 1000.0
-		draw_colored_polygon(PackedVector2Array([at + Vector2(0, -4), at + Vector2(4, 0), at + Vector2(0, 4), at + Vector2(-4, 0)]), Color(0.3, 0.9, 1.0, 0.7))
-		_label(at + Vector2(-8, -6), "noise %.0fs" % left, Color(0.3, 0.9, 1.0))
+		var seconds_left := (int(marker.get_meta("until_msec", now)) - now) / 1000.0
+		draw_colored_polygon(PackedVector2Array([at + Vector2(0, -4), at + Vector2(4, 0), at + Vector2(0, 4), at + Vector2(-4, 0)]), Color(SenseHearing.DEBUG_COLOR, 0.7))
+		_label(at + Vector2(-8, -6), "noise %.0fs" % seconds_left, SenseHearing.DEBUG_COLOR)
+
+## The numbers of the newest sound only (older ones would write over each other): on each tile
+## the cost the sound spent to get there, at the source its loudness, and on every minion that
+## was close enough to check "cost <= budget, heard" or "cost > budget, missed".
+func _label_sound(sound: Dictionary) -> void:
+	var cells: Dictionary = sound["cells"]
+	var tiles := _visible_tiles()
+	for cell: Vector2i in cells:
+		if tiles.has_point(cell):
+			_label(Vector2(cell) * TILE + Vector2(2, 6), "%.1f" % cells[cell], Color(1, 1, 1, 0.8))
+	var source: Vector2i = sound["source"]
+	_label(Vector2(source) * TILE + Vector2(-4, -2), "loud %.0f" % sound["loudness"], SenseHearing.DEBUG_COLOR)
+	for sum in sound["sums"]:
+		var at: Vector2 = sum[0] + Vector2(-4, TILE + 4)
+		var cost: float = sum[1]
+		var budget: float = sum[2]
+		if cost <= budget:
+			_label(at, "%.1f <= %.0f heard" % [cost, budget], Color(0.3, 1.0, 0.4))
+		elif cost == INF:
+			_label(at, "past the flood > %.0f missed" % budget, Color(1.0, 0.3, 0.3))
+		else:
+			_label(at, "%.1f > %.0f missed" % [cost, budget], Color(1.0, 0.3, 0.3))
+
+## The minion under the mouse (within 2 tiles): a panel with each thing it is tracking on its
+## own line, instead of everything stacked over every minion.
+func _draw_inspector() -> void:
+	var mouse := get_global_mouse_position()
+	var picked: Node = null
+	var best := 2.0 * TILE
+	for minion in get_tree().get_nodes_in_group("antagonist"):
+		if not "senses" in minion:
+			continue
+		var d: float = (minion.global_position + Vector2(TILE, TILE) / 2.0).distance_to(mouse)
+		if d < best:
+			best = d
+			picked = minion
+	if picked == null:
+		return
+	var lines := _inspect_lines(picked)
+	var at: Vector2 = picked.global_position + Vector2(TILE + 4, -4)
+	draw_rect(Rect2(at - Vector2(2, 5), Vector2(92, lines.size() * 5 + 3)), Color(0, 0, 0, 0.6), true)
+	for i in lines.size():
+		_label(at + Vector2(0, i * 5), lines[i][0], lines[i][1])
+
+func _inspect_lines(minion: Node) -> Array:
+	var senses: MinionSenses = minion.senses
+	var state := clampi(int(senses.state), 0, 2)
+	var lines: Array = []
+	var head := "%s  %s" % [minion.minion_id, STATE_NAMES[state]]
+	if state != 0:
+		head += "  %.1fs left  <- %s" % [senses._active_timer, senses.last_trigger]
+	lines.append([head, STATE_COLORS[state]])
+	var target = minion._target
+	var sight := senses.sight
+	if not sight.enabled:
+		lines.append(["sight: off", Color(0.6, 0.6, 0.6)])
+	elif is_instance_valid(target):
+		var d: float = minion.global_position.distance_to(target.global_position) / TILE
+		var block := _sight_block(minion, target)
+		var why := "too far" if d > sight.range_tiles else ("clear, sees you" if block == LineOfSight.CLEAR else "blocked at (%d,%d)" % [block.x, block.y])
+		lines.append(["sight: range %.0f, you %.1f tiles, %s" % [sight.range_tiles, d, why], SenseSight.DEBUG_COLOR])
+	lines.append(["light: %s" % ("lit by your light" if minion.debug_lit else "dark"), Color(1.0, 0.8, 0.5)])
+	lines.append(["touch: %s" % ("on" if senses.touch.enabled else "off"), SenseTouch.DEBUG_COLOR])
+	var hearing := senses.hearing
+	var heard := "  last sound spent %.1f" % senses.last_heard_cost if senses.last_heard_cost >= 0.0 else ""
+	lines.append(["hearing: %s%s" % ["budget %.0f step / %.0f rock" % [hearing.budget(1.0), hearing.budget(3.0)] if hearing.enabled else "off", heard], SenseHearing.DEBUG_COLOR])
+	lines.append(["smell, taste: not built", Color(0.6, 0.6, 0.6)])
+	if state == 1 and is_instance_valid(senses.investigate_marker):
+		var spot := Vector2i((senses.investigate_marker.global_position / TILE).floor())
+		lines.append(["going to (%d,%d)" % [spot.x, spot.y], STATE_COLORS[1]])
+	if minion.pack_id != "":
+		var leader = minion._pack_leader()
+		lines.append(["pack %s, %s" % [minion.pack_id, "leads" if leader == null else "follows %d" % leader.get_instance_id()], Color(0.8, 0.6, 1.0)])
+	if state == 0:
+		var patrol := "patrol: " + ("awake" if minion._patrol_active else "asleep (no player near)")
+		if minion._patrol_has_goal:
+			patrol += ", to (%d,%d)" % [minion._patrol_goal.x, minion._patrol_goal.y]
+		lines.append([patrol, STATE_COLORS[0]])
+	return lines
 
 ## Text is drawn at screen resolution and snapped to a whole screen pixel, so it
 ## stays sharp at any camera zoom instead of being a scaled-up world-size glyph.

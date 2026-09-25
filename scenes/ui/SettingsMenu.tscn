@@ -142,6 +142,32 @@ step = 0.01
 value = 1.0
 allow_greater = true
 
+[node name="VoiceChatHBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("2_audio")
+audio_bus_name = "VoiceChat"
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/VoiceChatHBoxContainer"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Voice Chat Volume"
+
+[node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/VoiceChatHBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="AudioTypeControl" type="SpinBox" parent="MarginContainer/VBoxContainer/VoiceChatHBoxContainer"]
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 1.0
+allow_greater = true
+
 [node name="FullscreenCheckButton" type="CheckButton" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(400, 15)
 layout_mode = 2

@@ -245,15 +245,19 @@ cell('hearing_rock_behind_wall', [
 # A blind rat (range 8) and a plain rat (range 3), each 7 tiles from one footstep. Only the blind
 # rat may come to look; the plain one must not react at all.
 cell('hearing_range', ['R.............r'] + ['...............'] * 12, door_x=6)
+# Muffling: a footstep 2 tiles from a plain rat (range 3) but through a wall (1 + 3 = 4 > 3): it
+# must not hear it, though the straight line is short. A blind rat (range 8) beside it hears it.
+cell('hearing_muffled_wall', ['.....r#........', '.....R#........'] + ['......#........'] * 11, door_x=11)
 
 
-# ---- packs: wolves share alarms (creature JSON "pack": "wolf"); a rat is not in the pack ----
+# ---- packs: creatures with one "pack" id share alarms; here the pack is three wolves, and a rat
+# (no pack) must not react ----
 # Three wolves and a rat spread out, the player far away in the bottom corner (more than the light's
 # 8 tiles from any of them). One wolf (top left) is the one that is alerted; the others are outside
 # its hearing and sight, so they can only react through the pack.
 _pack = ['..w.........w..'] + ['...............'] * 2 + ['.......w......r'] + ['...............'] * 9
-cell('pack_wolves_investigate', _pack, door_x=6)
-cell('pack_wolves_attack', _pack, door_x=6)
+cell('pack_investigate', _pack, door_x=6)
+cell('pack_attack', _pack, door_x=6)
 # Patrol: one rat, alone in a room with a player at the far end (outside its sight and light).
 cell('patrol_herd', ['..w.....w.....w'] + ['...............'] * 25, door_x=6)
 cell('patrol_wanders', ['.......r.......'] + ['...............'] * 25, door_x=6)
@@ -281,13 +285,13 @@ REACH = {
 # so only hearing can move them. HEAR: must get within 3 tiles of the noise and never attack.
 # NO_HEAR: must not react at all (never leave Patrol).
 NOISE_AT = {'hearing_rock_behind_wall': (12, 1, 3.0), 'hearing_range': (7, 1, 1.0),
-            'pack_wolves_investigate': (3, 1, 1.0)}
-HEAR = {'hearing_rock_behind_wall': ['rat_blind'], 'hearing_range': ['rat_blind'], 'pack_wolves_investigate': ['wolf']}
-NO_HEAR = {'hearing_range': ['rat'], 'pack_wolves_investigate': ['rat'], 'pack_wolves_attack': ['rat']}
+            'pack_investigate': (3, 1, 1.0), 'hearing_muffled_wall': (7, 0, 1.0)}
+HEAR = {'hearing_muffled_wall': ['rat_blind'], 'hearing_rock_behind_wall': ['rat_blind'], 'hearing_range': ['rat_blind'], 'pack_investigate': ['wolf']}
+NO_HEAR = {'hearing_muffled_wall': ['rat'], 'hearing_range': ['rat'], 'pack_investigate': ['rat'], 'pack_attack': ['rat']}
 # POKE: the first creature of this id is hit (as if shot from the dark) and goes to Attack; the
 # sim then does NOT tell the others anything. ATTACKS: every creature of these ids must reach Attack.
-POKE = {'pack_wolves_attack': 'wolf'}
-ATTACKS = {'pack_wolves_attack': ['wolf']}
+POKE = {'pack_attack': 'wolf'}
+ATTACKS = {'pack_attack': ['wolf']}
 # ALONE: the sim does not tell the creatures where the player is (like a noise cell, but no noise).
 # MOVES: a creature of this id must get at least this many tiles from where it started (patrol).
 ALONE = ['patrol_wanders', 'patrol_herd']
@@ -297,7 +301,7 @@ TOGETHER = {'patrol_herd': ('wolf', 10)}
 
 # Where the player stands instead of at the door (interior column, row), for cells that test a
 # straight line to the creature. The sim and the Test Lab both use it for "step inside".
-PLAYER_AT = {'terrain_lava': (13, 1), 'terrain_water': (13, 1), 'terrain_acid': (13, 1), 'hearing_rock_behind_wall': (14, 12), 'hearing_range': (7, 12), 'pack_wolves_investigate': (7, 12), 'pack_wolves_attack': (7, 12), 'patrol_wanders': (7, 25), 'patrol_herd': (7, 25)}
+PLAYER_AT = {'terrain_lava': (13, 1), 'terrain_water': (13, 1), 'terrain_acid': (13, 1), 'hearing_rock_behind_wall': (14, 12), 'hearing_muffled_wall': (14, 12), 'hearing_range': (7, 12), 'pack_investigate': (7, 12), 'pack_attack': (7, 12), 'patrol_wanders': (7, 25), 'patrol_herd': (7, 25)}
 
 # The Minotaur is expected to be skipped here, so the cell may spawn fewer creatures than it pins.
 MAY_SKIP = ['bug1_no_room_for_boss']
@@ -369,13 +373,16 @@ NOTES = {
     'hearing_rock_behind_wall': ('A blind rat (hears 8 tiles, sees nothing) on one side of a wall with a gap; you are on the other side.',
                                  'Do NOT press Enter (that tells them where you are). Press N: a rock lands at the far side. Or throw one yourself: key 5, click the far side.',
                                  'The rat should go to the spot the sound came from (through the gap), not to you. "-> going to" in the readout shows where. It must not attack you.'),
+    'hearing_muffled_wall': ('A plain rat (hears 3) and a blind rat (hears 8) behind a solid wall; the noise spot is just across it.',
+                             'Do NOT press Enter. Tick show-sound, then press N: one footstep across the wall.',
+                             'The tint should stop short at the wall for the plain rat: it must not react (2 tiles away, but 1 + 3 through the wall is more than 3). The blind rat should come to the wall.'),
     'hearing_range': ('A blind rat (hears 8) and a plain rat (hears 3), 7 tiles either side of a spot near the top.',
                       'Do NOT press Enter. Press N: one footstep at the spot. Then walk about yourself: every step you take is a footstep.',
                       'Only the blind rat should come to look at the spot. The plain rat should ignore it.'),
-    'pack_wolves_investigate': ('Three wolves (a pack) and a rat (not in it). Only the top-left wolf is close enough to hear a footstep.',
+    'pack_investigate': ('Three wolves (a pack) and a rat (not in it). Only the top-left wolf is close enough to hear a footstep.',
                                 'Do NOT press Enter. Press N: one footstep beside the top-left wolf.',
                                 'All three wolves should walk to the footstep (the readout says "-> going to"). The rat must ignore it.'),
-    'pack_wolves_attack': ('The same wolves and rat. The top-left wolf is shot from the dark (the sim pokes it).',
+    'pack_attack': ('The same wolves and rat. The top-left wolf is shot from the dark (the sim pokes it).',
                            'Do NOT press Enter. Wake one wolf yourself: open the door, press the backslash key to step inside, walk toward the top-left wolf until it attacks you.',
                            'When one wolf goes to Attack, every wolf attacks you. The rat should not care.'),
     'patrol_wanders': ('One rat alone in a room; you stand at the far end, outside its sight and your light.',

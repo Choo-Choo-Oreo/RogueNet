@@ -678,7 +678,7 @@
    "look": "Only the blind rat should come to look at the spot. The plain rat should ignore it."
   },
   {
-   "name": "pack_wolves_attack",
+   "name": "pack_investigate",
    "door": {
     "x": 321,
     "y": 27
@@ -698,15 +698,19 @@
    "zone_changes_max": -1,
    "wade_max": -1,
    "index": 39,
-   "noise_at": null,
+   "noise_at": {
+    "x": 318,
+    "y": 15,
+    "loudness": 1.0
+   },
    "alone": false,
    "together": [],
    "moves": {},
-   "poke": "wolf",
-   "attacks": [
+   "poke": "",
+   "attacks": [],
+   "hear": [
     "wolf"
    ],
-   "hear": [],
    "no_hear": [
     "rat"
    ],
@@ -714,12 +718,12 @@
     "x": 322,
     "y": 26
    },
-   "what": "The same wolves and rat. The top-left wolf is shot from the dark (the sim pokes it).",
-   "try": "Do NOT press Enter. Wake one wolf yourself: open the door, press the backslash key to step inside, walk toward the top-left wolf until it attacks you.",
-   "look": "When one wolf goes to Attack, every wolf attacks you. The rat should not care."
+   "what": "Three wolves (a pack) and a rat (not in it). Only the top-left wolf is close enough to hear a footstep.",
+   "try": "Do NOT press Enter. Press N: one footstep beside the top-left wolf.",
+   "look": "All three wolves should walk to the footstep (the readout says \"-> going to\"). The rat must ignore it."
   },
   {
-   "name": "patrol_wanders",
+   "name": "patrol_herd",
    "door": {
     "x": 338,
     "y": 27
@@ -741,9 +745,12 @@
    "index": 41,
    "noise_at": null,
    "alone": true,
-   "together": [],
+   "together": [
+    "wolf",
+    10
+   ],
    "moves": {
-    "rat": 3
+    "wolf": 3
    },
    "poke": "",
    "attacks": [],
@@ -753,9 +760,9 @@
     "x": 339,
     "y": 26
    },
-   "what": "One rat alone in a room; you stand at the far end, outside its sight and your light.",
-   "try": "Do NOT press Enter. Just watch it for about 20 seconds.",
-   "look": "It should walk to a few random spots (staying in the room), pausing between. Leave the room by the door: it should stop moving when no player is in or next to its room."
+   "what": "Three wolves (a pack) spread along the top of a room; you stand at the far end.",
+   "try": "Do NOT press Enter. Watch for about 30 seconds.",
+   "look": "The wolves should wander as a group, staying close to each other, not each in a different direction."
   },
   {
    "name": "minion_rat_blind",
@@ -1429,13 +1436,13 @@
    "look": "The rat should go to the spot the sound came from (through the gap), not to you. \"-> going to\" in the readout shows where. It must not attack you."
   },
   {
-   "name": "pack_wolves_investigate",
+   "name": "hearing_muffled_wall",
    "door": {
-    "x": 304,
+    "x": 309,
     "y": 33
    },
    "entry": {
-    "x": 304,
+    "x": 309,
     "y": 35
    },
    "rect": {
@@ -1450,8 +1457,8 @@
    "wade_max": -1,
    "index": 38,
    "noise_at": {
-    "x": 301,
-    "y": 35,
+    "x": 305,
+    "y": 34,
     "loudness": 1.0
    },
    "alone": false,
@@ -1460,21 +1467,21 @@
    "poke": "",
    "attacks": [],
    "hear": [
-    "wolf"
+    "rat_blind"
    ],
    "no_hear": [
     "rat"
    ],
    "player_at": {
-    "x": 305,
+    "x": 312,
     "y": 46
    },
-   "what": "Three wolves (a pack) and a rat (not in it). Only the top-left wolf is close enough to hear a footstep.",
-   "try": "Do NOT press Enter. Press N: one footstep beside the top-left wolf.",
-   "look": "All three wolves should walk to the footstep (the readout says \"-> going to\"). The rat must ignore it."
+   "what": "A plain rat (hears 3) and a blind rat (hears 8) behind a solid wall; the noise spot is just across it.",
+   "try": "Do NOT press Enter. Tick show-sound, then press N: one footstep across the wall.",
+   "look": "The tint should stop short at the wall for the plain rat: it must not react (2 tiles away, but 1 + 3 through the wall is more than 3). The blind rat should come to the wall."
   },
   {
-   "name": "patrol_herd",
+   "name": "pack_attack",
    "door": {
     "x": 321,
     "y": 33
@@ -1487,7 +1494,7 @@
     "x": 314,
     "y": 33,
     "w": 17,
-    "h": 28
+    "h": 15
    },
    "reach": [],
    "may_skip": false,
@@ -1495,25 +1502,63 @@
    "wade_max": -1,
    "index": 40,
    "noise_at": null,
-   "alone": true,
-   "together": [
-    "wolf",
-    10
+   "alone": false,
+   "together": [],
+   "moves": {},
+   "poke": "wolf",
+   "attacks": [
+    "wolf"
    ],
+   "hear": [],
+   "no_hear": [
+    "rat"
+   ],
+   "player_at": {
+    "x": 322,
+    "y": 46
+   },
+   "what": "The same wolves and rat. The top-left wolf is shot from the dark (the sim pokes it).",
+   "try": "Do NOT press Enter. Wake one wolf yourself: open the door, press the backslash key to step inside, walk toward the top-left wolf until it attacks you.",
+   "look": "When one wolf goes to Attack, every wolf attacks you. The rat should not care."
+  },
+  {
+   "name": "patrol_wanders",
+   "door": {
+    "x": 338,
+    "y": 33
+   },
+   "entry": {
+    "x": 338,
+    "y": 35
+   },
+   "rect": {
+    "x": 331,
+    "y": 33,
+    "w": 17,
+    "h": 28
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "wade_max": -1,
+   "index": 42,
+   "noise_at": null,
+   "alone": true,
+   "together": [],
    "moves": {
-    "wolf": 3
+    "rat": 3
    },
    "poke": "",
    "attacks": [],
    "hear": [],
    "no_hear": [],
    "player_at": {
-    "x": 322,
+    "x": 339,
     "y": 59
    },
-   "what": "Three wolves (a pack) spread along the top of a room; you stand at the far end.",
-   "try": "Do NOT press Enter. Watch for about 30 seconds.",
-   "look": "The wolves should wander as a group, staying close to each other, not each in a different direction."
+   "what": "One rat alone in a room; you stand at the far end, outside its sight and your light.",
+   "try": "Do NOT press Enter. Just watch it for about 20 seconds.",
+   "look": "It should walk to a few random spots (staying in the room), pausing between. Leave the room by the door: it should stop moving when no player is in or next to its room."
   }
  ]
 }

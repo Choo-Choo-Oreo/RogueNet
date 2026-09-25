@@ -15,6 +15,7 @@ extends Control
 func _ready() -> void:
 	MusicManager.stop()
 	refresh_player_list()
+	VoiceChat.speaking_changed.connect(_on_speaking_changed)
 	refresh_character_label()
 	_apply_session_mode()
 	# Tell everyone what this player wears: after joining a server, or coming back from a dive.
@@ -48,9 +49,22 @@ func refresh_player_list() -> void:
 	for child in player_list.get_children():
 		child.queue_free()
 	for peer_id in NetworkSync.peer_names:
+		var row := HBoxContainer.new()
 		var label := Label.new()
 		label.text = NetworkSync.peer_names[peer_id]
-		player_list.add_child(label)
+		if VoiceChat.is_speaking(peer_id):
+			label.text += "  (talking)"
+		row.add_child(label)
+		if peer_id != multiplayer.get_unique_id():
+			var mute := CheckBox.new()
+			mute.text = "Mute"
+			mute.button_pressed = VoiceChat.muted.has(peer_id)
+			mute.toggled.connect(func(on: bool): VoiceChat.set_muted(peer_id, on))
+			row.add_child(mute)
+		player_list.add_child(row)
+
+func _on_speaking_changed(_peer_id: int, _speaking: bool) -> void:
+	refresh_player_list()
 
 func _on_guild_button_pressed() -> void:
 	if not NetworkSync.is_dedicated:
