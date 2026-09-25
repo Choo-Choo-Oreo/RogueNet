@@ -20,7 +20,6 @@ extends RefCounted
 
 ## Walls whose tile name starts with this are never destroyed (barrier_bedrock ...).
 const PROTECTED_PREFIX := "barrier_"
-const VOID_TILE := "floor_void"
 const NEIGHBOURS_8: Array[Vector2i] = [
 	Vector2i(-1, -1), Vector2i(0, -1), Vector2i(1, -1), Vector2i(-1, 0),
 	Vector2i(1, 0), Vector2i(-1, 1), Vector2i(0, 1), Vector2i(1, 1),
@@ -61,18 +60,16 @@ static func plan(cells: Array[Vector2i], scene: Node) -> Array:
 	var floor_data := scene.find_child("FloorData", true, false) as TileMapLayer
 	if wall_data == null or floor_data == null:
 		return []
-	var void_id := _registry.get_id(VOID_TILE)
 	var broken := {}  # cell -> floor name to put there ("" = keep what is under it)
 	for cell in cells:
 		var wall_id := wall_data.get_cell_source_id(cell)
 		if wall_id == -1 or _name_of(wall_id).begins_with(PROTECTED_PREFIX) or DoorRegistry.is_door_cell(cell):
 			continue
-		var floor_id := floor_data.get_cell_source_id(cell)
-		if floor_id != -1 and floor_id != void_id:
+		if TileSolid.has_floor(floor_data, cell):
 			broken[cell] = ""  # the floor already under the wall (the room's own) shows through
 			continue
 		# No usable floor under it: borrow the ordinary floor of an open neighbour.
-		var borrowed := _neighbour_floor(cell, wall_data, floor_data, void_id)
+		var borrowed := _neighbour_floor(cell, wall_data, floor_data)
 		if borrowed != "":
 			broken[cell] = borrowed
 	var changes: Array = []
@@ -85,8 +82,7 @@ static func plan(cells: Array[Vector2i], scene: Node) -> Array:
 			var next: Vector2i = cell + offset
 			if broken.has(next) or covered.has(next) or wall_data.get_cell_source_id(next) != -1:
 				continue
-			var floor_id := floor_data.get_cell_source_id(next)
-			if floor_id != -1 and floor_id != void_id:
+			if TileSolid.has_floor(floor_data, next):
 				continue
 			var wall := _cover_wall(next, broken, wall_data)
 			if wall != "":
@@ -95,13 +91,13 @@ static func plan(cells: Array[Vector2i], scene: Node) -> Array:
 	return changes
 
 ## A random ordinary floor tile next to `cell` that is open (no wall on it).
-static func _neighbour_floor(cell: Vector2i, wall_data: TileMapLayer, floor_data: TileMapLayer, void_id: int) -> String:
+static func _neighbour_floor(cell: Vector2i, wall_data: TileMapLayer, floor_data: TileMapLayer) -> String:
 	var options: Array[String] = []
 	for offset in NEIGHBOURS_8:
 		var next: Vector2i = cell + offset
-		var floor_id := floor_data.get_cell_source_id(next)
-		if floor_id == -1 or floor_id == void_id or wall_data.get_cell_source_id(next) != -1:
+		if TileSolid.is_solid(wall_data, floor_data, next):
 			continue
+		var floor_id := floor_data.get_cell_source_id(next)
 		if _plain_floor.has(floor_id):
 			options.append(_name_of(floor_id))
 	return options[randi() % options.size()] if not options.is_empty() else ""

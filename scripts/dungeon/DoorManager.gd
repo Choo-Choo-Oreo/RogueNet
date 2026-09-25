@@ -158,7 +158,7 @@ func _on_tick(tick: int) -> void:
 	if not is_inside_tree():  # leaving with a scene change, not freed yet
 		return
 	DoorRegistry.tick()
-	if _is_authority() and tick % CHECK_TICKS == 0:
+	if NetworkSync.is_host() and tick % CHECK_TICKS == 0:
 		_auto_close()
 
 func _process(delta: float) -> void:
@@ -199,9 +199,6 @@ func _show_frame(visual: Dictionary, frame: int) -> void:
 		var size: Vector2i = sprite.get_meta("frame_size")
 		var column: int = frame if sprite.get_meta("animated") else 0
 		sprite.region_rect = Rect2(column * size.x, sprite.get_meta("atlas_y"), size.x, size.y)
-
-func _is_authority() -> bool:
-	return multiplayer.multiplayer_peer == null or multiplayer.is_server()
 
 ## An open door shuts again CLOSE_DELAY seconds after the last creature left
 ## it -- "near" means on one of its cells or on any tile touching one.

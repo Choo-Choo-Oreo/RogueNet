@@ -13,10 +13,7 @@ func _ready() -> void:
 
 func _on_create_button_pressed() -> void:
 	var privacy := "public" if privacy_option.selected == 0 else "password"
-	if multiplayer.is_server():
-		NetworkSync._create_mission(1, privacy, password_field.text)
-	else:
-		NetworkSync.report_create_mission.rpc_id(1, privacy, password_field.text)
+	NetworkSync.ask_host(NetworkSync.report_create_mission, [privacy, password_field.text])
 
 var mission_items: Dictionary = {}
 
@@ -37,10 +34,7 @@ func _on_join_button_pressed() -> void:
 		return
 	var mission_id: int = mission_list.get_item_metadata(selected[0])
 	var password := join_password_field.text
-	if multiplayer.is_server():
-		NetworkSync._join_mission(1, mission_id, password)
-	else:
-		NetworkSync.report_join_mission.rpc_id(1, mission_id, password)
+	NetworkSync.ask_host(NetworkSync.report_join_mission, [mission_id, password])
 
 func show_join_error(message: String) -> void:
 	status_label.text = message

@@ -18,7 +18,7 @@ func _ready() -> void:
 	GameTick.tick_ended.connect(_send_minion_batch)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 	multiplayer.peer_disconnected.connect(func(id):
-		if not multiplayer.is_server():
+		if not is_host():
 			return
 		var left_name: String = peer_names.get(id, "")
 		peer_steam_ids.erase(id)
@@ -28,19 +28,10 @@ func _ready() -> void:
 		for peer_id in multiplayer.get_peers():
 			receive_steam_ids.rpc_id(peer_id, peer_steam_ids)
 			receive_player_names.rpc_id(peer_id, peer_names)
-		# A disconnect never used to touch missions at all, so a dropped player stayed
-		# listed as a member forever. Clean them out the same way an explicit Leave does.
+		# A dropped player leaves their missions the same way an explicit Leave does.
 		for mission_id in missions.keys():
-			var mission: Dictionary = missions[mission_id]
-			if id not in mission["members"]:
-				continue
-			if id == mission["creator_id"]:
-				_end_mission(mission_id)
-			else:
-				mission["members"].erase(id)
-				mission.get("ready", {}).erase(id)
-				_cancel_countdown(mission_id, "Countdown cancelled — the party changed.")
-				_broadcast_members(mission_id)
+			if id in missions[mission_id]["members"]:
+				_leave_mission(id, mission_id)
 		var main_town := get_tree().current_scene
 		if main_town and main_town.has_method("refresh_player_list"):
 			main_town.refresh_player_list()
@@ -53,6 +44,23 @@ func is_online() -> bool:
 		return false
 	var peer := multiplayer.multiplayer_peer
 	return peer != null and not peer is OfflineMultiplayerPeer
+
+## True on the machine that decides: the host, or singleplayer (no peer, or the offline one).
+func is_host() -> bool:
+	return multiplayer.multiplayer_peer == null or multiplayer.is_server()
+
+## Runs one of this node's report_*/request_* rpcs on the host: straight away when this
+## machine is the host, otherwise sent to it. The rpc finds who asked with _sender().
+func ask_host(action: Callable, args: Array = []) -> void:
+	if is_host():
+		action.callv(args)
+	else:
+		callv("rpc_id", [1, action.get_method()] + args)
+
+## Inside a report_*/request_* rpc: the peer that asked. 1 (the host) when ask_host ran it here.
+func _sender() -> int:
+	var id := multiplayer.get_remote_sender_id() if multiplayer.multiplayer_peer != null else 0
+	return id if id != 0 else 1
 
 ## The name other players see: the Steam account's, never the character's (characters are
 ## swapped freely, the player stays the same). "Player" without Steam.
@@ -78,16 +86,13 @@ const MAX_CHAT_LENGTH := 200
 
 # Chat goes through the host, which stamps the sender's name and sends the line to everyone.
 func send_chat(text: String) -> void:
-	if multiplayer.is_server():
-		_broadcast_chat(1, text)
-	else:
-		report_chat.rpc_id(1, text)
+	ask_host(report_chat, [text])
 
 @rpc("any_peer", "reliable")
 func report_chat(text: String) -> void:
-	if not multiplayer.is_server():
+	if not is_host():
 		return
-	_broadcast_chat(multiplayer.get_remote_sender_id(), text)
+	_broadcast_chat(_sender(), text)
 
 func _broadcast_chat(sender_id: int, text: String) -> void:
 	var line := "%s: %s" % [peer_names.get(sender_id, str(sender_id)), text.substr(0, MAX_CHAT_LENGTH)]
@@ -113,9 +118,9 @@ func receive_steam_ids(ids: Dictionary) -> void:
 
 @rpc("any_peer", "unreliable_ordered")
 func report_position(pos: Vector2) -> void:
-	if not multiplayer.is_server():
+	if not is_host():
 		return
-	var sender_id := multiplayer.get_remote_sender_id()
+	var sender_id := _sender()
 	receive_position(sender_id, pos)
 	_relay_position(sender_id, pos)
 
@@ -144,9 +149,9 @@ const SHARED_MISSION_ID := 0
 
 @rpc("any_peer", "reliable")
 func report_join_shared_party() -> void:
-	if not multiplayer.is_server():
+	if not is_host():
 		return
-	_join_shared_party(multiplayer.get_remote_sender_id())
+	_join_shared_party(_sender())
 
 func _join_shared_party(peer_id: int) -> void:
 	if not missions.has(SHARED_MISSION_ID):
@@ -167,9 +172,9 @@ func receive_mission_created(mission_id: int, creator_id: int, privacy: String) 
 
 @rpc("any_peer", "reliable")
 func report_create_mission(privacy: String, password: String) -> void:
-	if not multiplayer.is_server():
+	if not is_host():
 		return
-	_create_mission(multiplayer.get_remote_sender_id(), privacy, password)
+	_create_mission(_sender(), privacy, password)
 
 func _create_mission(creator_id: int, privacy: String, password: String) -> void:
 	var mission_id := creator_id
@@ -182,9 +187,9 @@ var peer_names: Dictionary = {}
 
 @rpc("any_peer", "reliable")
 func report_player_name(player_name: String) -> void:
-	if not multiplayer.is_server():
+	if not is_host():
 		return
-	var sender_id := multiplayer.get_remote_sender_id()
+	var sender_id := _sender()
 	var is_new := not peer_names.has(sender_id)
 	peer_names[sender_id] = player_name
 	if is_new:
@@ -211,9 +216,9 @@ var peer_characters: Dictionary = {}
 
 @rpc("any_peer", "reliable")
 func report_player_character(character_id: String) -> void:
-	if not multiplayer.is_server():
+	if not is_host():
 		return
-	_set_character(multiplayer.get_remote_sender_id(), character_id)
+	_set_character(_sender(), character_id)
 
 func _set_character(peer_id: int, character_id: String) -> void:
 	peer_characters[peer_id] = character_id
@@ -241,16 +246,13 @@ var peer_equipment: Dictionary = {}
 
 ## Called by PlayerInventory whenever this machine's player changes what they wear.
 func share_equipment(worn: Dictionary) -> void:
-	if multiplayer.is_server():
-		_set_equipment(multiplayer.get_unique_id(), worn)
-	else:
-		report_player_equipment.rpc_id(1, worn)
+	ask_host(report_player_equipment, [worn])
 
 @rpc("any_peer", "reliable")
 func report_player_equipment(worn: Dictionary) -> void:
-	if not multiplayer.is_server():
+	if not is_host():
 		return
-	_set_equipment(multiplayer.get_remote_sender_id(), worn)
+	_set_equipment(_sender(), worn)
 
 func _set_equipment(peer_id: int, worn: Dictionary) -> void:
 	# Only item ids for the slot they claim, so a bad message can't put a sword on someone's head.
@@ -280,9 +282,9 @@ func receive_player_equipment(equipment: Dictionary) -> void:
 
 @rpc("any_peer", "reliable")
 func report_join_mission(mission_id: int, password: String) -> void:
-	if not multiplayer.is_server():
+	if not is_host():
 		return
-	_join_mission(multiplayer.get_remote_sender_id(), mission_id, password)
+	_join_mission(_sender(), mission_id, password)
 
 func _join_mission(peer_id: int, mission_id: int, password: String) -> void:
 	if not missions.has(mission_id):
@@ -311,7 +313,7 @@ func _join_mission(peer_id: int, mission_id: int, password: String) -> void:
 			var ready_map: Dictionary = mission.get("ready", {})
 			ready_map[peer_id] = false
 			mission["ready"] = ready_map
-		_cancel_countdown(mission_id, "Countdown cancelled — the party changed.")
+		_cancel_countdown(mission_id, PARTY_CHANGED)
 	print("Player %d joined mission %d" % [peer_id, mission_id])
 	_broadcast_members(mission_id)
 
@@ -326,12 +328,13 @@ func receive_join_rejected(_mission_id: int) -> void:
 
 @rpc("any_peer", "reliable")
 func report_start_mission(mission_id: int) -> void:
-	if not multiplayer.is_server():
+	if not is_host():
 		return
-	_start_mission(multiplayer.get_remote_sender_id(), mission_id)
+	_start_mission(_sender(), mission_id)
 
 const MISSION_COUNTDOWN_SECONDS := 10
 const MISSION_COUNTDOWN_READY_SKIP := 3
+const PARTY_CHANGED := "Countdown cancelled — the party changed."
 
 # mission_id -> {"remaining": int, "accum": float}, server-side only.
 var _countdowns: Dictionary = {}
@@ -387,9 +390,9 @@ func _all_non_creators_ready(mission_id: int) -> bool:
 
 @rpc("any_peer", "reliable")
 func report_set_ready(mission_id: int, is_ready: bool) -> void:
-	if not multiplayer.is_server():
+	if not is_host():
 		return
-	_set_ready(multiplayer.get_remote_sender_id(), mission_id, is_ready)
+	_set_ready(_sender(), mission_id, is_ready)
 
 func _set_ready(peer_id: int, mission_id: int, is_ready: bool) -> void:
 	if not missions.has(mission_id):
@@ -410,9 +413,9 @@ func _set_ready(peer_id: int, mission_id: int, is_ready: bool) -> void:
 
 @rpc("any_peer", "reliable")
 func report_cancel_countdown(mission_id: int) -> void:
-	if not multiplayer.is_server():
+	if not is_host():
 		return
-	var sender_id := multiplayer.get_remote_sender_id()
+	var sender_id := _sender()
 	if not missions.has(mission_id) or sender_id != missions[mission_id]["creator_id"]:
 		return
 	_cancel_countdown(mission_id, "Mission start cancelled.")
@@ -443,7 +446,7 @@ func receive_start_mission(mission_seed: int, mission_biome: String, members: Ar
 
 # Host only: sends the divers (not the players in the town) back to the town.
 func end_mission() -> void:
-	if not multiplayer.is_server():
+	if not is_host():
 		return
 	var divers := dive_members.duplicate()
 	# End each mission properly (not just clear the list) so every player's mission list and panel
@@ -534,14 +537,11 @@ func receive_minion_states(ids: PackedInt32Array, positions: PackedVector2Array,
 # despawn message needed, every peer just queue_frees itself once its own
 # copy hits 0.
 func report_minion_hit(minion_id: int, amount: int, type: String) -> void:
-	if multiplayer.multiplayer_peer == null or multiplayer.is_server():
-		_resolve_minion_hit(minion_id, amount, type)
-	else:
-		request_minion_hit.rpc_id(1, minion_id, amount, type)
+	ask_host(request_minion_hit, [minion_id, amount, type])
 
 @rpc("any_peer", "reliable")
 func request_minion_hit(minion_id: int, amount: int, type: String) -> void:
-	if not multiplayer.is_server():
+	if not is_host():
 		return
 	_resolve_minion_hit(minion_id, amount, type)
 
@@ -578,14 +578,11 @@ func open_door(id: int) -> void:
 	if now - _door_asked_msec.get(id, -DOOR_ASK_COOLDOWN_MSEC) < DOOR_ASK_COOLDOWN_MSEC:
 		return
 	_door_asked_msec[id] = now
-	if multiplayer.multiplayer_peer == null or multiplayer.is_server():
-		set_door(id, true)
-	else:
-		request_door_open.rpc_id(1, id)
+	ask_host(request_door_open, [id])
 
 @rpc("any_peer", "reliable")
 func request_door_open(id: int) -> void:
-	if multiplayer.is_server():
+	if is_host():
 		set_door(id, true)
 
 ## Host / singleplayer: apply a door state and tell every other peer.
@@ -614,9 +611,9 @@ func set_god_mode(on: bool) -> void:
 
 @rpc("any_peer", "reliable")
 func report_god_mode(on: bool) -> void:
-	if not multiplayer.is_server():
+	if not is_host():
 		return
-	var sender := multiplayer.get_remote_sender_id()
+	var sender := _sender()
 	_apply_god_mode(sender, on)
 	receive_god_mode.rpc(sender, on)
 
@@ -634,14 +631,11 @@ func _apply_god_mode(player_id: int, on: bool) -> void:
 
 ## Minions are host-owned, so a client asks the host to place one.
 func debug_spawn_minion(minion_id: String, tile: Vector2i) -> void:
-	if multiplayer.multiplayer_peer == null or multiplayer.is_server():
-		_host_debug_spawn(minion_id, tile)
-	else:
-		request_debug_spawn.rpc_id(1, minion_id, tile)
+	ask_host(request_debug_spawn, [minion_id, tile])
 
 @rpc("any_peer", "reliable")
 func request_debug_spawn(minion_id: String, tile: Vector2i) -> void:
-	if multiplayer.is_server():
+	if is_host():
 		_host_debug_spawn(minion_id, tile)
 
 func _host_debug_spawn(minion_id: String, tile: Vector2i) -> void:
@@ -652,14 +646,11 @@ func _host_debug_spawn(minion_id: String, tile: Vector2i) -> void:
 
 ## Opening works from anywhere (every door asks the host); closing is host only.
 func debug_all_doors(open: bool) -> void:
-	var is_host := multiplayer.multiplayer_peer == null or multiplayer.is_server()
 	if open:
 		for door: DoorRegistry.Door in DoorRegistry.doors:
-			if is_host:
-				set_door(door.id, true)
-			elif not door.is_open:
-				request_door_open.rpc_id(1, door.id)
-	elif is_host:
+			if not door.is_open:
+				ask_host(request_door_open, [door.id])
+	elif is_host():
 		for door: DoorRegistry.Door in DoorRegistry.doors:
 			set_door(door.id, false)
 
@@ -696,10 +687,10 @@ func _forward_effect(pos: Vector2, data: Dictionary, direction: Vector2, skip_id
 
 @rpc("any_peer", "unreliable")
 func request_effect(pos: Vector2, data: Dictionary, direction: Vector2) -> void:
-	if not multiplayer.is_server():
+	if not is_host():
 		return
 	_spawn_effect(pos, data, direction)
-	_forward_effect(pos, data, direction, multiplayer.get_remote_sender_id())
+	_forward_effect(pos, data, direction, _sender())
 
 @rpc("authority", "unreliable")
 func receive_effect(pos: Vector2, data: Dictionary, direction: Vector2) -> void:
@@ -723,10 +714,10 @@ func _forward_projectile(texture_path: String, from: Vector2, to: Vector2, skip_
 
 @rpc("any_peer", "unreliable")
 func request_projectile(texture_path: String, from: Vector2, to: Vector2) -> void:
-	if not multiplayer.is_server():
+	if not is_host():
 		return
 	_spawn_projectile_copy(texture_path, from, to)
-	_forward_projectile(texture_path, from, to, multiplayer.get_remote_sender_id())
+	_forward_projectile(texture_path, from, to, _sender())
 
 @rpc("authority", "unreliable")
 func receive_projectile(texture_path: String, from: Vector2, to: Vector2) -> void:
@@ -750,14 +741,11 @@ func _spawn_projectile_copy(texture_path: String, from: Vector2, to: Vector2) ->
 # cast is just a request to the host, which forces the nearest minions in
 # radius onto the caster. Clients need no reply -- they never run minion AI.
 func report_taunt(player_id: int, radius_tiles: float, duration: float, max_targets: int) -> void:
-	if multiplayer.multiplayer_peer == null or multiplayer.is_server():
-		_resolve_taunt(player_id, radius_tiles, duration, max_targets)
-	else:
-		request_taunt.rpc_id(1, player_id, radius_tiles, duration, max_targets)
+	ask_host(request_taunt, [player_id, radius_tiles, duration, max_targets])
 
 @rpc("any_peer", "reliable")
 func request_taunt(player_id: int, radius_tiles: float, duration: float, max_targets: int) -> void:
-	if not multiplayer.is_server():
+	if not is_host():
 		return
 	_resolve_taunt(player_id, radius_tiles, duration, max_targets)
 
@@ -782,14 +770,11 @@ func _resolve_taunt(player_id: int, radius_tiles: float, duration: float, max_ta
 # Noise (footsteps, a landing rock): like a taunt, minion AI only runs on the host, so a
 # client's noise is a request to it. Sound.make tells every minion that can hear the spot.
 func report_noise(position: Vector2, loudness: float) -> void:
-	if multiplayer.multiplayer_peer == null or multiplayer.is_server():
-		Sound.make(get_tree(), position, loudness)
-	else:
-		request_noise.rpc_id(1, position, loudness)
+	ask_host(request_noise, [position, loudness])
 
 @rpc("any_peer", "unreliable")
 func request_noise(position: Vector2, loudness: float) -> void:
-	if multiplayer.is_server():
+	if is_host():
 		Sound.make(get_tree(), position, loudness)
 
 # Minion-on-player damage only ever originates on the host (only the host ever
@@ -816,7 +801,7 @@ func receive_player_damage(player_id: int, amount: int, type: String) -> void:
 ## (0 = nothing there was breakable, nothing was sent). A peer that joins later does not
 ## get earlier changes, the same as doors.
 func destroy_tiles(cells: Array[Vector2i]) -> int:
-	if multiplayer.multiplayer_peer != null and not multiplayer.is_server():
+	if not is_host():
 		return 0
 	var changes := TileDestruction.plan(cells, get_tree().current_scene)
 	if changes.is_empty():
@@ -859,9 +844,9 @@ func receive_mission_members(mission_id: int, members: Array, ready_states: Dict
 
 @rpc("any_peer", "reliable")
 func report_leave_mission(mission_id: int) -> void:
-	if not multiplayer.is_server():
+	if not is_host():
 		return
-	_leave_mission(multiplayer.get_remote_sender_id(), mission_id)
+	_leave_mission(_sender(), mission_id)
 
 func _leave_mission(peer_id: int, mission_id: int) -> void:
 	if not missions.has(mission_id):
@@ -873,14 +858,14 @@ func _leave_mission(peer_id: int, mission_id: int) -> void:
 	var members: Array = mission["members"]
 	members.erase(peer_id)
 	mission.get("ready", {}).erase(peer_id)
-	_cancel_countdown(mission_id, "Countdown cancelled — the party changed.")
+	_cancel_countdown(mission_id, PARTY_CHANGED)
 	_broadcast_members(mission_id)
 
 @rpc("any_peer", "reliable")
 func report_set_location(mission_id: int, location: String) -> void:
-	if not multiplayer.is_server():
+	if not is_host():
 		return
-	_set_location(multiplayer.get_remote_sender_id(), mission_id, location)
+	_set_location(_sender(), mission_id, location)
 
 func _set_location(peer_id: int, mission_id: int, location: String) -> void:
 	if not missions.has(mission_id):

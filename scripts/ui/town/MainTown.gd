@@ -67,10 +67,7 @@ func _on_speaking_changed(_peer_id: int, _speaking: bool) -> void:
 
 func _on_guild_button_pressed() -> void:
 	if not NetworkSync.is_dedicated:
-		if multiplayer.is_server():
-			NetworkSync._join_shared_party(1)
-		else:
-			NetworkSync.report_join_shared_party.rpc_id(1)
+		NetworkSync.ask_host(NetworkSync.report_join_shared_party)
 		return
 	panel_main.hide()
 	panel_guild.show()
@@ -107,7 +104,4 @@ func _on_storage_back_pressed() -> void:
 func _choose_character(character_id: String) -> void:
 	if not PlayerInventory.hero.is_empty():
 		PlayerInventory.hero["skin"] = character_id
-	if multiplayer.is_server():
-		NetworkSync._set_character(1, character_id)
-	else:
-		NetworkSync.report_player_character.rpc_id(1, character_id)
+	NetworkSync.ask_host(NetworkSync.report_player_character, [character_id])

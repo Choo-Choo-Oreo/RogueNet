@@ -53,8 +53,8 @@ func _spawn_minions(rooms: Dictionary, placements: Array, defines: Dictionary) -
 	MinionSpawning.spawn_antagonists(DungeonAssembler.collect_antagonist_spawns(rooms, placements), minions_root)
 	MinionSpawning.spawn_in_unseen_cells(spawn_cells, defines.get("monsters", {}), light_map, minions_root, DungeonAssembler.collect_spawn_favors(rooms, placements), DungeonAssembler.collect_spawn_minions(rooms, placements))
 
-## Dev aid: checks each spawn cell against what was actually PAINTED (the same
-## wall / void test GridMover uses), and names the room, its local cell, what
+## Dev aid: checks each spawn cell against what was actually PAINTED (TileSolid, the
+## test GridMover uses), and names the room, its local cell, what
 ## the room data says is there, and any other room overlapping that world
 ## cell -- so a bad spawn can be traced to the room JSON or to the assembly.
 ## Returns the bad world cells so the caller can skip spawning on them.
@@ -62,19 +62,12 @@ func _warn_bad_spawn_cells(rooms: Dictionary, placements: Array) -> Dictionary:
 	var bad_cells := {}
 	var floor_data: TileMapLayer = tile_initialize.get_node("FloorData")
 	var wall_data: TileMapLayer = tile_initialize.get_node("WallData")
-	var registry: TileTypeRegistry = tile_initialize.tile_registry
-	var void_id := registry.get_id("floor_void")
 	for p in placements:
 		var room: Dictionary = rooms[p.room_id]
 		for cell in room.get("spawn_cells", []):
 			var local := Vector2i(int(cell["position"]["x"]), int(cell["position"]["y"]))
 			var world: Vector2i = p.offset + local
-			var problem := ""
-			var wall_id := wall_data.get_cell_source_id(world)
-			if wall_id != -1:
-				problem = "painted wall"
-			elif floor_data.get_cell_source_id(world) == void_id:
-				problem = "painted void"
+			var problem := TileSolid.reason(wall_data, floor_data, world)
 			if problem == "":
 				continue
 			bad_cells[world] = true
@@ -88,7 +81,7 @@ func _warn_bad_spawn_cells(rooms: Dictionary, placements: Array) -> Dictionary:
 				var qr: Dictionary = rooms[q.room_id]
 				if Rect2i(q.offset, Vector2i(qr["width"], qr["height"])).has_point(world):
 					overlaps.append(str(q.room_id))
-			push_warning("Bad spawn cell: room '%s' local %s world %s -- %s. Room data: wall=%s floor=%s, sealed door=%s, overlapped by rooms %s" % [
+			push_warning("Bad spawn cell: room '%s' local %s world %s -- painted %s. Room data: wall=%s floor=%s, sealed door=%s, overlapped by rooms %s" % [
 				p.room_id, local, world, problem, data_wall, data_floor, p.locked_connectors.has(local), overlaps])
 	return bad_cells
 

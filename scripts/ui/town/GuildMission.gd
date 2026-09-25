@@ -31,10 +31,7 @@ func _select_location_option(location: String) -> void:
 
 func _on_location_option_item_selected(index: int) -> void:
 	var location: String = location_option.get_item_metadata(index)
-	if multiplayer.is_server():
-		NetworkSync._set_location(1, current_mission_id, location)
-	else:
-		NetworkSync.report_set_location.rpc_id(1, current_mission_id, location)
+	NetworkSync.ask_host(NetworkSync.report_set_location, [current_mission_id, location])
 
 func set_members(mission_id: int, members: Array, ready_states: Dictionary, creator_id: int, location: String) -> void:
 	current_mission_id = mission_id
@@ -57,25 +54,16 @@ func set_members(mission_id: int, members: Array, ready_states: Dictionary, crea
 		ready_button.text = "Unready" if _is_ready else "Ready"
 
 func _on_start_button_pressed() -> void:
-	if multiplayer.is_server():
-		NetworkSync._start_mission(1, current_mission_id)
-	else:
-		NetworkSync.report_start_mission.rpc_id(1, current_mission_id)
+	NetworkSync.ask_host(NetworkSync.report_start_mission, [current_mission_id])
 
 func _on_ready_button_pressed() -> void:
 	_is_ready = not _is_ready
 	ready_button.text = "Unready" if _is_ready else "Ready"
-	if multiplayer.is_server():
-		NetworkSync._set_ready(1, current_mission_id, _is_ready)
-	else:
-		NetworkSync.report_set_ready.rpc_id(1, current_mission_id, _is_ready)
+	NetworkSync.ask_host(NetworkSync.report_set_ready, [current_mission_id, _is_ready])
 
 func _on_back_button_pressed() -> void:
 	if multiplayer.get_unique_id() == current_creator_id:
-		if multiplayer.is_server():
-			NetworkSync._cancel_countdown(current_mission_id, "Mission start cancelled.")
-		else:
-			NetworkSync.report_cancel_countdown.rpc_id(1, current_mission_id)
+		NetworkSync.ask_host(NetworkSync.report_cancel_countdown, [current_mission_id])
 	get_tree().current_scene.get_node_or_null("PanelMission").hide()
 	if not NetworkSync.is_dedicated:
 		get_tree().current_scene.get_node_or_null("PanelMain").show()
@@ -83,9 +71,6 @@ func _on_back_button_pressed() -> void:
 		get_tree().current_scene.get_node_or_null("PanelGuild").show()
 
 func _on_leave_button_pressed() -> void:
-	if multiplayer.is_server():
-		NetworkSync._leave_mission(1, current_mission_id)
-	else:
-		NetworkSync.report_leave_mission.rpc_id(1, current_mission_id)
+	NetworkSync.ask_host(NetworkSync.report_leave_mission, [current_mission_id])
 	get_tree().current_scene.get_node_or_null("PanelMission").hide()
 	get_tree().current_scene.get_node_or_null("PanelGuild").show()

@@ -27,10 +27,8 @@ static var _next_id: int = 1
 static func spawn_in_unseen_cells(spawn_cells: Array[Vector2i], monster_weights: Dictionary, light_map: LightMap, minions_root: Node, favors: Dictionary = {}, fixed_minions: Dictionary = {}) -> void:
 	if monster_weights.is_empty() and fixed_minions.is_empty():
 		return
-	var mp := minions_root.get_multiplayer()
-	# Fails open (acts as host) when no peer is assigned at all -- eg. running
-	# Dungeon.tscn directly in the editor, bypassing the menu's peer setup.
-	if mp.multiplayer_peer != null and not mp.is_server():
+	# Acts as host with no peer at all too -- eg. running Dungeon.tscn directly in the editor.
+	if not NetworkSync.is_host():
 		return
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
@@ -60,8 +58,7 @@ static func spawn_in_unseen_cells(spawn_cells: Array[Vector2i], monster_weights:
 ## placed (no roll, not gated by the fog), host only, and told to every peer the same
 ## way as the normal spawns.
 static func spawn_antagonists(entries: Array, minions_root: Node) -> void:
-	var mp := minions_root.get_multiplayer()
-	if mp.multiplayer_peer != null and not mp.is_server():
+	if not NetworkSync.is_host():
 		return
 	var spawned: Array = []
 	for entry in entries:
