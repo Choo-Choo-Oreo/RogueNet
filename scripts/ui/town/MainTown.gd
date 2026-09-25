@@ -87,6 +87,7 @@ func _on_swap_characters_button_pressed() -> void:
 	panel_main.hide()
 	panel_character.show()
 	var select = preload("res://scenes/ui/protagonist/CharacterSelect.tscn").instantiate()
+	select.in_town = true
 	panel_character.add_child(select)
 	select.picked.connect(func(hero: Dictionary):
 		_choose_character(hero["skin"])

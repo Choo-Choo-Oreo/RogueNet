@@ -48,6 +48,8 @@ func _process(_delta: float) -> bool:
 		var select := _select_screen(current_scene.panel_character)
 		if select == null:
 			return _finish("Swap Characters did not open the Characters screen")
+		if select._play_button.text != "Back to Town":
+			_problems.append("in town the screen's button is not Back to Town")
 		if not _pick(select, "Second Hero"):
 			return _finish("the second hero is not listed and selected")
 	elif _frames == 55:
@@ -72,7 +74,11 @@ func _pick(select: Node, hero_name: String) -> bool:
 	var picked_items: PackedInt32Array = select._list.get_selected_items()
 	if picked_items.is_empty() or select._heroes[picked_items[0]]["name"] != hero_name:
 		return false
-	select._play()
+	# In town, Back to Town plays the selected one.
+	if select.in_town:
+		select._back_to_town()
+	else:
+		select._play()
 	return true
 
 func _select_screen(panel: Node) -> Node:

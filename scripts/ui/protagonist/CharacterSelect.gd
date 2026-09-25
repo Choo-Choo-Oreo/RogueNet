@@ -12,6 +12,10 @@ signal picked(hero: Dictionary)
 
 const NAME_MAX_LENGTH := 24
 
+## Opened from the town's Swap Characters (set before adding it): one "Back to Town" button,
+## which plays the selected adventurer, instead of Play and Back.
+var in_town := false
+
 var _saves := ProtagonistSave.new()
 var _heroes: Array[Dictionary] = []
 var _list: ItemList
@@ -71,13 +75,16 @@ func _ready() -> void:
 	_message = Label.new()
 	column.add_child(_message)
 
-	# Play and Back side by side under both halves: the two ways off this screen.
+	# The ways off this screen, centred under both halves.
 	var buttons := HBoxContainer.new()
 	buttons.alignment = BoxContainer.ALIGNMENT_CENTER
 	buttons.add_theme_constant_override("separation", 10)
 	page.add_child(buttons)
-	_play_button = _button(buttons, "Play", _play)
-	_button(buttons, "Back", _close)
+	if in_town:
+		_play_button = _button(buttons, "Back to Town", _back_to_town)
+	else:
+		_play_button = _button(buttons, "Play", _play)
+		_button(buttons, "Back", _close)
 
 	_confirm_delete = ConfirmationDialog.new()
 	_confirm_delete.confirmed.connect(_delete)
@@ -129,7 +136,8 @@ func _selected() -> Dictionary:
 func _update_buttons() -> void:
 	var hero := _selected()
 	_new_button.disabled = _name_edit.text.strip_edges() == ""
-	_play_button.disabled = hero.is_empty()
+	# The town can be gone back to with nothing selected, as long as someone is still being played.
+	_play_button.disabled = hero.is_empty() and (not in_town or PlayerInventory.hero.is_empty())
 	_delete_button.disabled = hero.is_empty()
 	if not hero.is_empty():
 		_confirm_delete.dialog_text = "Delete %s for good? Their items go with them." % hero["name"]
@@ -152,6 +160,14 @@ func _play() -> void:
 	PlayerInventory.use_hero(hero)
 	picked.emit(hero)
 	_close()
+
+## Plays the selected adventurer if it is a different one, then closes.
+func _back_to_town() -> void:
+	var hero := _selected()
+	if hero.is_empty() or hero["id"] == PlayerInventory.hero.get("id", ""):
+		_close()
+	else:
+		_play()
 
 func _delete() -> void:
 	var hero := _selected()
