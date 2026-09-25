@@ -37,11 +37,6 @@ var active_slot: int = 0
 var _attack_timer := 0.0
 var _is_dead := false
 
-## True on this machine once its OWN player has died. A dead player's ghost
-## (and its light, see LightMap) is only shown to other ghosts, never to the
-## living. Static so LightMap can ask without holding a player reference.
-static var local_is_ghost := false
-
 func set_skin(skin_id: String) -> void:
 	var data := JsonOnloading.load_dict(SKINS.get(skin_id, SKINS[DEFAULT_SKIN]))
 	$AnimatedSprite2D.sprite_frames = SpriteFramesLoader.build(data["sprite_frames"])
@@ -123,8 +118,6 @@ func _on_died() -> void:
 	stats.is_ghost = true
 	viewer.ghost = true
 	grid_mover.become_ghost()
-	if is_multiplayer_authority():
-		local_is_ghost = true
 	# Above every other entity (players/minions sit at 1000), but below
 	# LightMap's own overlay sprites (2000/2001) so it doesn't fight lighting.
 	z_index = 1500
@@ -142,8 +135,6 @@ func _on_touch_area_body_exited(body: Node2D) -> void:
 
 func _ready() -> void:
 	set_multiplayer_authority(int(str(name)))
-	if is_multiplayer_authority():
-		local_is_ghost = false
 	add_to_group("protagonist")
 	viewer.is_local = is_multiplayer_authority()
 	Viewer.register(viewer)
@@ -180,7 +171,7 @@ func _process(delta: float) -> void:
 		# Debug "unseen": your own sprite goes see-through as the reminder.
 		$AnimatedSprite2D.modulate.a = 0.4 if DebugState.unseen else 1.0
 	else:
-		visible = not stats.is_ghost or local_is_ghost
+		visible = not stats.is_ghost or Viewer.local_is_ghost()
 		animator.animate_from_position(delta, global_position)
 
 ## Vector2i(pos / tile_size) truncates toward zero, which rounds the wrong

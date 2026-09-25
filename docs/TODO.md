@@ -326,7 +326,9 @@ Duplication:
 - [✓] D. `PlayerVision.gd` (new, beside `LightMap` in `scripts/cells/tiles/`, node in `Dungeon.tscn`) draws the darkness: the team's sight (`adventurer.json` sight 16, flood per tile, walls and closed doors stop it) on lit cells, plus touch (1 tile, drawn dim). Minion spawning now skips tiles any living player sees (`PlayerVision.is_tile_seen`), not the host's light
 - [✓] E. Debug menu in sections (General, Protagonist, Antagonist, World); new `show-torch-light`, `show-adventurer-sight`, `show-adventurer-touch`; `show-vision` is now the team's vision
 - [✓] F. `test/unit/test_light_and_senses.gd`, `test/sim/vision_torch.gd`; `dev_sim` and `debug_senses` hand the player the poacher torch
-- [✗] Two-player playtest: a client's torch alerting minions, teammates' sight and torches drawn, ghosts
+- [~] Two-player playtest (2026-09-25, Orea + a friend): shared vision works; ghosts and skins look right. Not checked yet: a client's torch alerting minions
+- [✗] Client bug (2026-09-25 playtest): the client sees his own light without a torch equipped. Not found by reading the code. Check: is the starter fallback torch worn (equipment panel), a big circle or only the 8 touch tiles, does it stay away from the host
+- [✗] Client bug (2026-09-25 playtest): the client can't see his own walk animation; others' animate for him. Not known if older than today. Check: one frozen frame or tile jumps, does his gear animate
 - [✗] Look in game: touch dimness (`light_smooth.gdshader` `touch_fraction` 0.6, a look, not a rule), lava seen far off, sight edge at 16 tiles
 - [✗] Hearing 8 for adventurers is in `adventurer.json` but nothing reads it yet (sound parked)
 - [✓] `cells` no longer reaches into players for light and vision: `PlayerController` registers a `Viewer` (`scripts/cells/Viewer.gd`: position, held light, sight, touch, ghost, is_local) that `LightMap` and `PlayerVision` read; their `player_root` export is gone

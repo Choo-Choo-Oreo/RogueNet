@@ -44,12 +44,12 @@ func _ready() -> void:
 	_sprite.texture = ImageTexture.create_from_image(blank)
 	_sprite.centered = false
 	_sprite.scale = Vector2(TILE, TILE)
-	var material := ShaderMaterial.new()
-	material.shader = load("res://resources/shaders/light_smooth.gdshader")
-	material.set_shader_parameter("window_cell", float(TILE))
-	material.set_shader_parameter("light_cell", float(LightMap.CELL))
-	material.set_shader_parameter("sight_cell", float(TILE))
-	_sprite.material = material
+	var shader := ShaderMaterial.new()
+	shader.shader = load("res://resources/shaders/light_smooth.gdshader")
+	shader.set_shader_parameter("window_cell", float(TILE))
+	shader.set_shader_parameter("light_cell", float(LightMap.CELL))
+	shader.set_shader_parameter("sight_cell", float(TILE))
+	_sprite.material = shader
 	_sprite.z_index = 2000
 	add_child(_sprite)
 
@@ -141,20 +141,20 @@ static func _inside(view: View, pixel: Vector2i) -> bool:
 	return pixel.x >= 0 and pixel.y >= 0 and pixel.x < view.image.get_width() and pixel.y < view.image.get_height()
 
 func _send_to_shader() -> void:
-	var material: ShaderMaterial = _sprite.material
-	material.set_shader_parameter("window_origin", _sprite.position)
-	material.set_shader_parameter("glow_map", light_map.glow_texture)
-	material.set_shader_parameter("glow_origin", light_map.glow_origin())
-	material.set_shader_parameter("glow_size", light_map.glow_size())
+	var shader: ShaderMaterial = _sprite.material
+	shader.set_shader_parameter("window_origin", _sprite.position)
+	shader.set_shader_parameter("glow_map", light_map.glow_texture)
+	shader.set_shader_parameter("glow_origin", light_map.glow_origin())
+	shader.set_shader_parameter("glow_size", light_map.glow_size())
 	var lights := light_map.drawn
 	for i in lights.size():
-		material.set_shader_parameter("light_map_%d" % (i + 1), lights[i].texture)
-		material.set_shader_parameter("light_origin_%d" % (i + 1), Vector2(lights[i].top_left * LightMap.CELL))
-	material.set_shader_parameter("light_count", lights.size())
+		shader.set_shader_parameter("light_map_%d" % (i + 1), lights[i].texture)
+		shader.set_shader_parameter("light_origin_%d" % (i + 1), Vector2(lights[i].top_left * LightMap.CELL))
+	shader.set_shader_parameter("light_count", lights.size())
 	for i in _drawn.size():
-		material.set_shader_parameter("sight_map_%d" % (i + 1), _drawn[i].texture)
-		material.set_shader_parameter("sight_origin_%d" % (i + 1), Vector2(_drawn[i].top_left * TILE))
-	material.set_shader_parameter("sight_count", _drawn.size())
+		shader.set_shader_parameter("sight_map_%d" % (i + 1), _drawn[i].texture)
+		shader.set_shader_parameter("sight_origin_%d" % (i + 1), Vector2(_drawn[i].top_left * TILE))
+	shader.set_shader_parameter("sight_count", _drawn.size())
 
 ## True if any living player sees this tile (in sight and lit) or feels it (touch). Minion
 ## spawning skips these, so nothing appears in front of the party.
