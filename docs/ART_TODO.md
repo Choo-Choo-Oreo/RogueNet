@@ -384,7 +384,8 @@ and nothing about its look is decided, so all of this is **(decide first)**.
 Not art, but nobody owns it yet. `resources/sfx/effects` and `resources/sfx/ambiance` are empty;
 only three music tracks exist (Groovy, Menu-Music, The-Lone-Forest). Direction from Silvery Foxy.
 
-- [✗] Sound effects: hits, doors, footsteps, UI
+- [~] Combat sounds, 2026-09-25: swings, hits by material, hurt by damage type, deaths, monster voices, grunts, heartbeat (`resources/sfx/combat/`, see its README). Synthesised placeholders, waiting on Foxy's ears and a Pixabay list. Also new art for it: damage digits and hurt vignette (`resources/gfx/ui/hud/`), bone/stone/goo/wisp chips (`effects.particles/Hit_Chips.png`)
+- [✗] Sound effects: doors, footsteps
 - [✗] Ambiance per biome
 - [✗] More music (dungeon, boss, town)
 
