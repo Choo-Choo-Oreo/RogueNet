@@ -114,7 +114,7 @@ func _begin() -> bool:
 	# In a corner of the middle room, out of the way through it.
 	_player.grid_mover.teleport(Vector2(_free_cell(_player, rects[best[1]], rects[best[1]].position) * ts))
 	_heard_msec = -REHEAR_MSEC
-	print("minion %s in room %d, noise at %s in room %d via room %d (%d tiles away)" % [_minion.name, _home_room, _spot, _far_room, best[1], FlowField.cheb(_spot - _cell_of(_minion))])
+	print("minion %s in room %d, noise at %s in room %d via room %d (%d tiles away)" % [_minion.name, _home_room, _spot, _far_room, best[1], _cheb(_spot - _cell_of(_minion))])
 	return true
 
 func _touches(graph, a: int, b: int) -> bool:
@@ -133,7 +133,7 @@ func _free_cell(m: Node2D, rect: Rect2i, centre := Vector2i(-99999, -99999)) -> 
 			var cell := Vector2i(x, y)
 			if m.grid_mover.is_tile_blocked(cell):
 				continue
-			if best.x == -99999 or FlowField.cheb(cell - centre) < FlowField.cheb(best - centre):
+			if best.x == -99999 or _cheb(cell - centre) < _cheb(best - centre):
 				best = cell
 	return best
 
@@ -154,3 +154,7 @@ func _finish() -> bool:
 	print("PASS investigate_far_room" if _problems.is_empty() else "FAIL investigate_far_room: " + "; ".join(_problems))
 	quit(0 if _problems.is_empty() else 1)
 	return true
+
+## FlowField.cheb, loaded when first used: an -s script cannot name classes that use autoloads.
+func _cheb(v: Vector2i) -> int:
+	return load("res://scripts/cells/FlowField.gd").cheb(v)
