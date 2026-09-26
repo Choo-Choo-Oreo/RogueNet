@@ -54,7 +54,7 @@ Notes:
   implemented; `smell`/`taste` exist but always report no detection. Hearing is by event and
   in decibels: a noise (a player's footstep 30 dB, a thrown rock landing 55, a voice 0 to 90, normal talking 50)
   spreads across the 8px quads and loses dB on the way: each tile's `muffle` (floor 1, wall
-  35, closed door 20 per tile) and 3 more for bending round a corner
+  35, closed door its type's `muffle`, default 20, per tile) and 3 more for bending round a corner
   (`scripts/cells/SoundSpread.gd`). Hearing is `{"threshold_db": n}`, the quietest level the
   creature hears (default 27; lower is keener): it hears the noise when at least that much is
   left where it stands, and it investigates the *spot* of the noise, not the player. Across
@@ -187,6 +187,9 @@ JSON. DungeonMaker keeps it when re-saving.)
   `"none"` (default, can't), `"open"` (see-through doors any time, solid ones
   only while investigating or pursuing) or `"phase"` (passes through closed
   doors without opening them).
+- `muffle` (optional) — how many dB a sound loses crossing the closed door, per tile
+  (floor 1, wall 35). Leave it out for the default 20 (solid wood); bars let almost
+  everything through (`3` for `iron`), the heavy boss door nearly as much as a wall (`30`).
 - `open_seconds` — how long the swing / slide takes.
 - `passable_at` — how far through that swing (0..1) the door can be walked through; until then it still blocks walking and shots (not sight or light), for monsters too. `0.5` for wood (swings clear early), `1.0` for bars that have to lift fully. Default `1.0`.
 - `min_width` / `max_width` — joint widths (in tiles) this door type can fill (`2`/`2` for a fixed-width door, `1`/`5` for a full set).

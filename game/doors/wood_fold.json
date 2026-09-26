@@ -6,6 +6,7 @@
 		"5": "res://resources/gfx/doors/Wood_Fold_W5.json"
 	},
 	"transparent": false,
+	"muffle": 16,
 	"min_width": 3,
 	"max_width": 5,
 	"open_seconds": 0.6,

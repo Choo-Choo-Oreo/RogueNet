@@ -2,6 +2,7 @@
 	"name": "iron",
 	"art": "res://resources/gfx/doors/Iron_W1-5.json",
 	"transparent": true,
+	"muffle": 3,
 	"min_width": 1,
 	"max_width": 5,
 	"open_seconds": 0.6,

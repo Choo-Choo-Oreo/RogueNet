@@ -6,6 +6,7 @@
 	},
 	"tier": "wood",
 	"transparent": false,
+	"muffle": 30,
 	"min_width": 4,
 	"max_width": 5,
 	"open_seconds": 1.2,

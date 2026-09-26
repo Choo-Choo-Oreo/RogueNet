@@ -3,8 +3,8 @@ extends RefCounted
 
 ## How a sound spreads through the map, in decibels. A sound starts at its source level and
 ## loses dB on every step across the 8px quads (4 per tile, LightMap.CELL): what a tile costs
-## is its TileType `muffle` (dB per tile, so half of it per quad), a closed door DOOR_DB_PER_TILE,
-## and a step that turns beside a wall or door (the sound bending round a corner) more: CORNER_DB
+## is its TileType `muffle` (dB per tile, so half of it per quad), a closed door its type's
+## game/doors JSON `muffle` (else DOOR_DB_PER_TILE), and a step that turns beside a wall or door (the sound bending round a corner) more: CORNER_DB
 ## for a right angle, half that per 45 degrees, so cutting a corner diagonally costs the same.
 ## It takes the cheapest way, so it goes round a wall through a doorway when that loses less
 ## than going through. Whoever still gets at least their hearing threshold hears it
@@ -107,8 +107,9 @@ static func reader(tree: SceneTree) -> Callable:
 	var tiles := TileType.by_id()
 	return func(quad: Vector2i) -> float:
 		var cell := Vector2i(floori(quad.x / 2.0), floori(quad.y / 2.0))
-		if DoorRegistry.closed_door_at(cell) != null:
-			return DOOR_DB_PER_TILE / 2.0
+		var door := DoorRegistry.closed_door_at(cell)
+		if door != null:
+			return float(DoorRegistry.get_def(door.type).get("muffle", DOOR_DB_PER_TILE)) / 2.0
 		var wall_id := walls.get_cell_source_id(cell) if walls else -1
 		if wall_id != -1:
 			return (tiles[wall_id].muffle if tiles.has(wall_id) else WALL_DB_PER_TILE) / 2.0
