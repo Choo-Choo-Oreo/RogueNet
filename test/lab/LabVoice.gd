@@ -20,6 +20,7 @@ var db := 50.0
 var heard_volume_db := VoiceChat.SILENT_DB
 var _phase := 0.0
 var _next_noise_msec := 0
+var _last_noise_db := -INF
 const DOT_COLOR := Color(0.3, 0.9, 1.0)
 var _playback: AudioStreamGeneratorPlayback
 
@@ -40,7 +41,8 @@ func _process(_delta: float) -> void:
 	volume_db = heard_volume_db + SoundPlayer.CENTRE_PAN_MAKEUP_DB
 	queue_redraw()
 	var now := Time.get_ticks_msec()
-	if now >= _next_noise_msec:
+	if VoiceChat.noise_due(now, _next_noise_msec, db, _last_noise_db):
+		_last_noise_db = db
 		_next_noise_msec = now + int(VoiceChat.VOICE_NOISE_SECONDS * 1000.0)
 		NetworkSync.report_noise(global_position, db)
 	# A sawtooth's RMS is its peak / sqrt(3).

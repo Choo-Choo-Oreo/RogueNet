@@ -18,8 +18,8 @@ extends SceneTree
 ## the spread (a bug in Sound.make's hearing).
 
 const DISTANCES := [1, 2, 3, 4, 6, 8, 10, 13, 16, 20, 25, 30, 35, 40]
-## [name, dB]: what a player makes; the fight's sounds are added in _initialize.
-var SOUNDS := [["footstep", 30.0], ["whisper", 30.0], ["talking", 50.0], ["yell", 70.0]]
+## [name, dB]: what a player makes and a fight's sounds, from the game's own numbers (_initialize).
+var SOUNDS := []
 ## [creature, hearing threshold dB], from the creature JSONs; filled in _initialize.
 var _creatures: Array = []
 
@@ -36,6 +36,9 @@ var _sound_msec := 0
 var _problems: Array[String] = []
 
 func _initialize() -> void:
+	var voice = load("res://singletons/VoiceChat.gd")
+	SOUNDS = [["footstep", load("res://scripts/entities/entities.protagonist/player/PlayerController.gd").FOOTSTEP_DB],
+		["whisper", voice.WHISPER_DB], ["talking", voice.TALK_DB], ["yell", voice.YELL_DB]]
 	_tick = root.get_node("GameTick")
 	_seed = randi() % 100000
 	for arg in OS.get_cmdline_user_args():

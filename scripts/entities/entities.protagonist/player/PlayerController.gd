@@ -111,8 +111,9 @@ func take_damage(amount: int, type: String = "", cause: String = "") -> void:
 ## stays on, since a ghost that can still drift around to watch the rest of
 ## the party fits the usual sense of "ghost" better than freezing in place.
 ## Each step into a new tile is a noise minions can hear (Sound, SenseHearing). Only the
-## player's own machine reports it; a ghost or a debug-unseen player is silent.
-const FOOTSTEP_DB := 30.0
+## player's own machine reports it; a ghost or a debug-unseen player is silent. Over a whisper
+## (VoiceChat.WHISPER_DB), so whispering is quieter than walking.
+const FOOTSTEP_DB := 35.0
 
 func _on_stepped(tile: Vector2i) -> void:
 	if not is_multiplayer_authority() or stats.is_ghost or DebugState.unseen:

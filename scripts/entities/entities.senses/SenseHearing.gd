@@ -4,10 +4,10 @@ extends Node
 ## Hears noises (see Sound): unlike sight and touch it is not a check made every tick against a
 ## player, it is told when something made a sound. A sound arrives at some level in dB (what is
 ## left after SoundSpread's walls, doors and distance); this creature hears it when that is at
-## least `threshold_db`. Lower is keener: across open floor (1 dB per tile) it hears a footstep
-## (PlayerController.FOOTSTEP_DB) from FOOTSTEP_DB - threshold_db tiles away. A blind rat's is low.
+## least `threshold_db`. Lower is keener: across open floor (SoundSpread.AIR_DB_PER_TILE) it
+## hears a footstep (PlayerController.FOOTSTEP_DB) from reach_tiles(FOOTSTEP_DB) tiles away.
 ## What a hit does is MinionSenses.hear(): the creature goes to look at where the noise was.
-## Fallback only (a footstep from 3 tiles): every creature JSON defines its own.
+## Fallback only (a footstep from 5 tiles): every creature JSON defines its own.
 const DEFAULT_THRESHOLD_DB := 27.0
 @export var enabled: bool = true
 @export var threshold_db: float = DEFAULT_THRESHOLD_DB

@@ -47,6 +47,10 @@ const WHISPER_DB := 30.0
 const TALK_DB := 50.0
 const YELL_DB := 70.0
 const DEFAULT_TALK_MIC_DB := -25.0
+## A calibration take is kept within this of DEFAULT_TALK_MIC_DB (before the mic gain), so
+## shouting while calibrating can make your talking at most this much quieter in the dungeon.
+## A mic outside it evens out with the gain slider.
+const TALK_MIC_RANGE_DB := 15.0
 ## Quieter than this far under a whisper (TALK_DB - WHISPER_DB under talking) is not talking:
 ## not sent, no noise.
 const GATE_UNDER_WHISPER_DB := 6.0
@@ -74,8 +78,14 @@ const PREBUFFER_SECONDS := 0.1
 const MAX_QUEUE_SECONDS := 0.3
 ## The gate stays open this long after the last chunk over it, so words keep their ends.
 const GATE_HOLD_MSEC := 300
-## At most one voice noise this often while talking, as loud as the loudest bit since the last.
-const VOICE_NOISE_SECONDS := 0.5
+## At most one voice noise this often while talking, as loud as the loudest bit since the last
+## (each one floods the map and restarts a listener's search, so a sentence isn't a stream of
+## them), sooner if the voice got NOISE_LOUDER_DB louder than the last noise (a sudden yell).
+const VOICE_NOISE_SECONDS := 2.0
+const NOISE_LOUDER_DB := 6.0
+## The auto gate is never under the room's background noise plus this (a loud fan can't keep the
+## mic open and alert minions).
+const GATE_OVER_BACKGROUND_DB := 6.0
 ## How quickly background_db follows each new quiet chunk (its share of the average).
 const BACKGROUND_FOLLOW := 0.05
 
@@ -118,6 +128,7 @@ var _lost: Dictionary = {}        # speaker -> [msec, dB their voice loses on th
 const SPREAD_SECONDS := 0.25
 var _last_heard: Dictionary = {}  # peer_id -> msec of their last packet
 var _next_noise_msec := 0
+var _last_noise_db := -INF
 ## The loudest voice level (dB) not yet made into a noise; -INF when there is none.
 var _loudest_db := -INF
 var _gate_open_until := 0
@@ -257,6 +268,10 @@ func set_stereo(on: bool) -> void:
 	stereo = on
 	ConfigFileHandler.save_setting("voice", "stereo", on)
 
+## A take's talking level (`level`, after the mic `gain`) kept within TALK_MIC_RANGE_DB.
+static func allowed_talk_mic(level: float, gain: float) -> float:
+	return clampf(level, DEFAULT_TALK_MIC_DB - TALK_MIC_RANGE_DB + gain, DEFAULT_TALK_MIC_DB + TALK_MIC_RANGE_DB + gain)
+
 ## `recorded`: false puts back the default (Reset).
 func set_calibration(talk_mic: float, recorded := true) -> void:
 	talk_mic_db = talk_mic
@@ -351,16 +366,24 @@ func _on_mic_chunk(pcm: PackedByteArray) -> void:
 ## as loud as the loudest the player talked since the last one. A ghost makes no noise.
 func _make_noise() -> void:
 	var now := Time.get_ticks_msec()
-	if now < _next_noise_msec or _loudest_db == -INF:
+	if _loudest_db == -INF:
 		return
 	var db := my_voice_db(_loudest_db)
+	if not noise_due(now, _next_noise_msec, db, _last_noise_db):
+		return
 	_loudest_db = -INF
 	var me: Node2D = NetworkSync._player(my_id())
 	if me == null or _is_ghost(me):
 		return
 	_next_noise_msec = now + int(VOICE_NOISE_SECONDS * 1000.0)
+	_last_noise_db = db
 	NetworkSync.report_noise(me.global_position, db)
 	voice_noise.emit(db)
+
+## Whether a voice of `db` makes a noise now: VOICE_NOISE_SECONDS since the last (due at
+## `next_msec`), or NOISE_LOUDER_DB louder than it (`last_db`).
+static func noise_due(now: int, next_msec: int, db: float, last_db: float) -> bool:
+	return now >= next_msec or db >= last_db + NOISE_LOUDER_DB
 
 ## This player's peer id; 1 (as offline) while no peer is set (the menus, or a match still
 ## setting up), when the mic can still run.
@@ -369,7 +392,9 @@ func my_id() -> int:
 
 ## The mic level under which this player is not talking.
 func gate_db() -> float:
-	return talk_mic_db - (TALK_DB - WHISPER_DB) - GATE_UNDER_WHISPER_DB if auto_gate else manual_gate_db
+	if not auto_gate:
+		return manual_gate_db
+	return maxf(talk_mic_db - (TALK_DB - WHISPER_DB) - GATE_UNDER_WHISPER_DB, background_db + GATE_OVER_BACKGROUND_DB)
 
 ## This player's mic level as dB in the dungeon, with their calibration.
 func my_voice_db(mic_db: float) -> float:

@@ -135,3 +135,22 @@ func test_a_high_gain_bends_instead_of_clipping() -> void:
 	assert_eq(MicInput.soft_limit(0.5), 0.5, "under the limit: untouched")
 	assert_lt(MicInput.soft_limit(4.0), 1.0, "far over: still under the top")
 	assert_gt(MicInput.soft_limit(4.0), MicInput.soft_limit(1.0), "louder stays louder")
+
+func test_the_auto_gate_stays_over_the_background() -> void:
+	var chat := VoiceChat.new()
+	chat.background_db = chat.talk_mic_db  # a fan as loud as talking
+	assert_eq(chat.gate_db(), chat.background_db + VoiceChat.GATE_OVER_BACKGROUND_DB)
+	chat.mic.free()
+	chat.free()
+
+func test_talking_makes_a_noise_every_few_seconds_or_when_louder() -> void:
+	var wait := int(VoiceChat.VOICE_NOISE_SECONDS * 1000.0)
+	assert_false(VoiceChat.noise_due(0, wait, 50.0, 50.0), "same voice, too soon")
+	assert_true(VoiceChat.noise_due(wait, wait, 50.0, 50.0), "time for the next")
+	assert_true(VoiceChat.noise_due(0, wait, 50.0 + VoiceChat.NOISE_LOUDER_DB, 50.0), "a yell goes at once")
+
+func test_a_calibration_take_cannot_move_talking_too_far() -> void:
+	var top := VoiceChat.DEFAULT_TALK_MIC_DB + VoiceChat.TALK_MIC_RANGE_DB
+	assert_eq(VoiceChat.allowed_talk_mic(-2.0, 0.0), top, "shouting is capped")
+	assert_eq(VoiceChat.allowed_talk_mic(-2.0, 10.0), minf(-2.0, top + 10.0), "after the gain")
+	assert_eq(VoiceChat.allowed_talk_mic(-25.0, 0.0), -25.0, "normal talking kept")

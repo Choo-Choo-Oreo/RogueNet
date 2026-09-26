@@ -12,8 +12,9 @@ extends RefCounted
 
 const QUAD := LightMap.CELL
 const TILE := 16
-## What open floor and a wall cost when their tile JSON has no "muffle" (TileType).
-const AIR_DB_PER_TILE := 1.0
+## What open floor and a wall cost when their tile JSON has no "muffle" (TileType). Air was 1
+## until 2026-09-25: a yell carried 40+ tiles.
+const AIR_DB_PER_TILE := 1.5
 const WALL_DB_PER_TILE := 35.0
 const DOOR_DB_PER_TILE := 20.0
 ## Bending 90 degrees round a wall or door.

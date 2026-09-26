@@ -1,7 +1,7 @@
 extends GutTest
 
-## SoundSpread.flood: how many dB a sound still has on each 8px quad. Open floor loses 0.5 per
-## quad (1 per tile; 1.41x diagonally), a wall quad 17.5 (35 per tile), a turn beside a wall 3
+## SoundSpread.flood: how many dB a sound still has on each 8px quad. Open floor loses AIR_DB_PER_TILE
+## per tile, half per quad (1.41x diagonally), a wall quad 17.5 (35 per tile), a turn beside a wall 3
 ## more, and a quad the sound cannot enter (INF) is never reached. The maps here are made up
 ## with a small loss function, no scene needed.
 
@@ -26,13 +26,13 @@ func _corridor(quad: Vector2i) -> float:
 	var up := quad.x == 5 and quad.y <= 0 and quad.y >= -5
 	return AIR if along or up else WALL
 
-func test_open_floor_loses_one_db_per_tile() -> void:
+func test_open_floor_loses_air_db_per_tile() -> void:
 	var levels := SoundSpread.flood(Vector2i.ZERO, 30.0, 0.0, _open)
-	assert_almost_eq(levels[Vector2i(6, 0)], 27.0, 0.001, "3 tiles = 6 quads")
+	assert_almost_eq(levels[Vector2i(6, 0)], 30.0 - 6.0 * AIR, 0.001, "3 tiles = 6 quads")
 	assert_almost_eq(levels[Vector2i(2, 2)], 30.0 - 2.0 * AIR * SoundSpread.DIAGONAL, 0.001, "diagonals lose 1.41x")
 
 func test_nothing_quieter_than_the_stop_level() -> void:
-	var levels := SoundSpread.flood(Vector2i.ZERO, 30.0, 27.0, _open)
+	var levels := SoundSpread.flood(Vector2i.ZERO, 30.0, 30.0 - 6.0 * AIR, _open)
 	assert_true(levels.has(Vector2i(6, 0)), "exactly the stop level is still heard")
 	assert_false(levels.has(Vector2i(7, 0)))
 

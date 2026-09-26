@@ -11,7 +11,7 @@
 	"speed_tiles_per_second": 6.0,
 	"actions": [{"action": "bite", "amount": 3}],
 	"senses": {
-		"_comment": "Canine (README dog example: smell 25, hearing 15). Smell 25 is its standout. Hearing is held at threshold 27 dB (a footstep from 3 tiles) and sight at 8 by the pack_investigate cell (only the top-left wolf may hear the footstep: 30 - 1.41 dB left vs about 30 - 4.1 for the middle wolf; the middle wolf is 9 tiles from the player). Smell is not built yet.",
+		"_comment": "Canine (README dog example: smell 25, hearing 15). Smell 25 is its standout. Hearing is held at threshold 27 dB (a footstep from about 5 tiles) and sight at 8 by the pack_investigate cell (only the top-left wolf may hear the footstep; the middle wolf is 9 tiles from the player). Smell is not built yet.",
 		"touch": {"range_tiles": 1.0},
 		"sight": {"range_tiles": 8.0},
 		"hearing": {"threshold_db": 27.0},

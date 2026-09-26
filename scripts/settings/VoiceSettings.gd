@@ -227,9 +227,12 @@ func _finish_take() -> void:
 		return
 	# The typical chunk, not the average: an average of power is dragged up by a few loud chunks,
 	# which once saved a yell of -4.5 when the yell was really about -22.
-	var level := VoiceChatScript.median_db(talking)
+	var heard := VoiceChatScript.median_db(talking)
+	var level := VoiceChatScript.allowed_talk_mic(heard, VoiceChat.mic.gain_db)
 	VoiceChat.set_calibration(level)
 	_status.text = "Saved your talking: %.0f dB." % level
+	if level != heard:
+		_status.text += " (you were %.0f; that is as far as it goes, the mic gain can make up the rest)" % heard
 
 func _reset_calibration() -> void:
 	VoiceChat.set_calibration(VoiceChat.DEFAULT_TALK_MIC_DB, false)
