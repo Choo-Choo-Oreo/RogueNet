@@ -14,7 +14,9 @@ Last checked: 2026-09-25 against branch tip `8771fd9` (36 commits since the spli
 `d0b8a02`) and main `90b7f2d`. **Checked again 2026-09-26** against tip `94900e2` (41 commits)
 and main `3bd9586`: the 5 new commits are sorted into the chunks marked "new 2026-09-26" below.
 **Checked again 2026-09-26 (morning)** against tip `4a3854d` (43 commits) and main `f0e0966`: two new
-commits, in BARD PERFORMANCE and MORE MAPS below. Labels compare against committed `main`: if you have
+commits, in BARD PERFORMANCE and MORE MAPS below. **Checked again 2026-09-26 (evening)** against tip
+`e755904` (44 commits) and main `fdfd884`: one new commit "re", sorted into GEAR FOR OTHER BODIES,
+ELF AND DWARF REDRAW, ITEM ICONS REDRAW and STORAGE below. Labels compare against committed `main`: if you have
 uncommitted edits in a "take" file, treat it as MERGE.
 
 ## How to import a chunk
@@ -31,6 +33,106 @@ git restore --source=origin/silvery/art-and-gear -- <path> <path> ...
   Taking one of them brings every branch change to that file, including the other chunk's.
   The **Shared files** table at the bottom lists them.
 - Commit each chunk on its own: `Import Silvery: <chunk name>`.
+
+- **The branch reverts your "Pack AI Tweaks" (`6a09959` undoes `3baf9d4`).** So a
+  `git diff main <branch>` on these files shows your pack AI being removed; keep main's side:
+  `MinionController.gd`, `RoomGraph.gd`, `test_room_graph.gd`, `test/sim/dev_sim.gd`,
+  `dev_cells.json`, `test/lab/development/*`, `docs/AGGRO_AI_TRACKER.md`, `docs/TODO.md`. For a
+  MERGE file, read his own commits' changes (`git log -p d0b8a02..origin/silvery/art-and-gear -- <path>`,
+  skipping `6a09959`) rather than the tip diff.
+
+## Import plan (2026-09-26)
+Phases in order. Each chunk is its own commit (`Import Silvery: <chunk>`), and after each one:
+`--import` if it brings a new `class_name`, then GUT and the sims (character_select,
+debug_senses, throw_rock, vision_torch, dev_sim), then a look in game where the chunk says so.
+Claude does the steps and reports; Orea commits.
+
+**Sound placement (decided 2026-09-26):** `resources/sfx/` mirrors `resources/gfx/`.
+`sfx/effects/` stays damage families only (`effects.<family>/`).
+- Door sounds: `resources/sfx/doors/` (like `gfx/doors/`). His names stay: `<door type>_open.wav`,
+  `_close.wav` (`wood`, `iron`, `iron_sink`, `dungeon`); his `DoorManager.SFX_DIR` points there.
+- Floor sounds (liquids and footsteps): `resources/sfx/tileset/<footsteps>/` (like `gfx/tileset/`),
+  the folder named by the floor's `footsteps` value (`TileType.footsteps`, the same key as
+  `game/sounds.json` `footstep_db`): `water`, `lava`, `acid`, `carpet`, `dirt`, `flesh`, `grass`,
+  `stone`, `wood`. His `Wading.SFX_ROOT` points there. **Orea to confirm the `tileset` name.**
+- Main's `resources/sfx/effects/water/` (5 sounds + README, nothing in code reads the path yet)
+  moves to `sfx/tileset/water/` in phase 3 (a move: confirm first).
+- `docs/STRUCTURE.md` tree and `resources/sfx/README.md` get the two new folders.
+
+### Phase 0: decisions still open (Orea)
+- `GearEffects.gd` (particles on gear): still wanted? Blocks the code half of THINGS RESTORE only.
+- Main menu battle: bring back the weapon-and-scrolls menu your Pack AI Tweaks deleted? Blocks
+  MAIN MENU only.
+- Smaller, decided when their chunk comes up: `DeathCountdown` (PARTY WIPE), props key (PROPS),
+  bard song as a noise (BARD), liquid flag in the tile JSON vs "has a sound folder" (WADING).
+
+### Phase 1: files only, no code
+Nothing here runs new code, so it's the safest start and shows the git steps.
+1. **APP ICON.** `restore` `resources/gfx/ui/app_icon/`. Add `config/icon` and
+   `config/windows_native_icon` to `project.godot` by hand (needs a grant). Check: the window
+   and taskbar icon.
+2. **REAL SOUNDS (files).** Copy the 60 re-cut sounds to main's names (table in REAL SOUNDS), the
+   7 attack variants next to their base sound in `effects.melee/`, the 5 voices into
+   `entities/entities.antagonist/voice/`, and take `resources/sfx/SOURCES.md` (fix its paths to
+   main's). Existing names are only replaced, so the game plays the new sounds at once; the variants
+   and voices wait for phase 3's code. Check: a swing, a hit, a death in the dev sim.
+3. **GEAR ART.** `restore` `resources/gfx/gear/` and `human/`, except `human.json` (MERGE, main's
+   10 fps). This also brings about 11,500 other-body gear files, unused until phase 6. Check:
+   walk in every direction with a full set on; the 1px bob and the held items.
+
+### Phase 2: base data
+4. **THINGS RESTORE + ITEM ICONS REDRAW + MINION ART.** `restore` (not `git revert`, since main
+   changed 394 of the icons since): the ~30 minion sheets and 34 JSONs, the 12 rings, the 205 redrawn
+   icons (newest, `e755904`), the minion `.aseprite` sources. MERGE the minion JSONs main has
+   (e.g. `wolf.json`) and keep main's `size_tiles`, stats and senses: they are Orea's numbers.
+   `GearEffects.gd` per phase 0. Check: `MinionIndex` loads them all; a room of each biome spawns.
+5. **NEW TILE SETS + TILE VARIANTS.** The 22 new tile JSONs, `floor_water.json`, `tile_registry.json`,
+   their art and overlays; the variant leftovers (`floor_flesh`, `floor_smooth_stone`,
+   `wall_rough_cave`, 4 lines of `TileInitialize.gd`); regenerate normal maps. Before committing,
+   give each new wall a `muffle` and each new footstep material a `footstep_db` row (Orea's numbers:
+   Claude proposes, Orea sets). Check: the Dungeon Maker palette; one room per new floor.
+
+### Phase 3: sound systems (placement above)
+6. **AUDIO leftovers.** Create `sfx/doors/` and `sfx/tileset/`, move main's water folder, take
+   acid, lava, doors and the footstep folders into them. Update STRUCTURE.md and the sfx README.
+7. **BIOME AMBIENCE.** `MusicManager.gd` (take; BARD needs the same file later), 12 loops in
+   `sfx/ambiance/`, one `"ambience"` line per `defines.json`. Check: walk between two biomes.
+8. **FOOTSTEPS AND DUST.** His dust and step sound, but played from main's one step event
+   (`PlayerController._on_stepped`, which already reports the noise), not a second one.
+   `ParticleBurst.gd` and `GridMover.gd` (MERGE, also takes the FIXES speed cache).
+9. **WADING AND LIQUIDS.** `Wading.gd`, the shader, acid/lava floors; MERGE `TileType.gd`,
+   `PlayerController`, `MinionController` (his part only). Check: the 529-rat room for speed.
+10. **LIQUID AMBIENCE** (needs `SoundPlayer.numbered`, already on main) and **DOOR SOUNDS**
+    (MERGE `DoorManager.gd`, 30 lines).
+11. **REAL SOUNDS code.** Port `attack_variants`, the 9 voices and `attack_sound` into main's
+    `CombatSounds.gd`; MERGE `ItemDatabase.weapon_kind`.
+
+### Phase 4: combat and bodies
+12. **COMBAT FEEDBACK.** His flash, recoil, numbers, spray, shake and hit-stop go into main's
+    `HitFeedback.gd`; take `DamageNumber.gd`, `HurtOverlay.gd` (drop its heartbeat), the
+    `hit_feedback` sim (fix paths). Fix the non-whole scales (Pixel-perfect checks) and the
+    `current_scene` reads (GameView section) as they come in.
+13. **ANIMATIONS + WOLF BITE.** `DirectionalAnimator.gd` once for both, `human.json` (lunge + main's
+    fps), the wolf sheets and JSON entries, `AttackEffect.play_attack` onto main's version.
+
+### Phase 5: interface (640x360: half his sizes, whole numbers, UiTheme fonts)
+14. **SETTINGS.** His parchment page, main's voice rows on it (one audio page).
+15. **MAIN MENU** (per phase 0): `MenuWeapon`, `MenuScrollButton`, `MenuBattle`, menu art; merge
+    `MainMenu.gd/.tscn` onto `MenuPanel` and the character pick.
+16. **STORAGE AND INVENTORY**, its four parts; merge onto main's UiTheme variations.
+17. **PARTY WIPE.** `RunLog`, `PartyWipeScreen` into `MissionHud.tscn`, headstones.
+
+### Phase 6: adventurer looks
+18. **SKINS + ELF AND DWARF REDRAW**, renamed to main's words (`skins/`, `skin_id`), the picker in
+    `CharacterSelect`; remove the old `dwarf/` and `knight/` folders (confirm first).
+19. **GEAR FOR OTHER BODIES.** `GearLayers.set_body`, `ItemDatabase` by body, `DollStage.gd`.
+
+### Phase 7: content
+20. **NEW BIOMES** then **MORE MAPS**: strip `"biome"` from every room; test the 81×81 room.
+21. **PROPS**, then **NEON OUTLAW** and **BARD PERFORMANCE** (`ask_host`, a controller button).
+
+`PlayerController.gd`, `NetworkSync.gd`, `ItemDatabase.gd` and `MinionController.gd` are in
+many chunks: merge only that chunk's part each time, from his commits (see above).
 
 ### Pixel-perfect checks (2026-09-26)
 One grid, unit = one UI pixel (640×360), world art pixel = 2 units (`resources/gfx/TODO.md`).
@@ -194,9 +296,9 @@ Steps on dry ground play the floor's `footsteps` sound folder and puff dust in t
 floor's colours. **Sound files arrived in `8771fd9`:** `step_1..3.wav` in
 `resources/sfx/effects/carpet|dirt|flesh|grass|stone|wood/` (take).
 - **Folder placement:** on main, `sfx/effects/` now holds damage families
-  (`effects.<family>/`, `docs/STRUCTURE.md`). Floor footsteps and liquids (`water/`, `lava/`,
-  `acid/`) there don't fit that tree. Decide where floor sounds live (e.g. `sfx/tiles/<floor>/`)
-  before taking them, and point his `SFX_ROOT` (in `Wading.gd`) at it. His liquid check looks for
+  (`effects.<family>/`, `docs/STRUCTURE.md`). Floor footsteps and liquids go in
+  `sfx/tileset/<footsteps>/` (Import plan, sound placement); point his `SFX_ROOT` (in `Wading.gd`)
+  there, and his `DoorManager.SFX_DIR` at `sfx/doors/`. His liquid check looks for
   `<folder>/enter.wav`, so footstep folders are never mistaken for liquids.
 - MERGE: `scripts/entities/GridMover.gd` (it also has the FIXES speed cache)
 - take: `scripts/actions/ParticleBurst.gd` (also changed in COMBAT FEEDBACK), `test/unit/test_footsteps.gd`
@@ -222,6 +324,9 @@ Rarer tile variants picked by weight: cracked or mossy stone, bone flecks in fle
 - MERGE: `scripts/cells/tiles/TileType.gd` (also in WADING)
 - **Now MERGE (easy), not take** (main `f911627` added a `footsteps` or `muffle` line to each): the
   tile JSONs above except `floor_flesh`. His change to each is the variant list; keep main's line too.
+  **2026-09-26:** the 5 carpets, `floor_smooth_cave` and `floor_wood_planks` are already identical
+  to the branch; left: `floor_flesh`, `floor_smooth_stone`, `wall_rough_cave`, and 4 lines of
+  `TileInitialize.gd`.
   `TileInitialize.gd` and `DualGridRender.gd` stay as the GameView section says.
 - Regenerate the normal maps after importing the tileset PNGs.
 
@@ -279,7 +384,10 @@ No code. After importing, look at it in game.
 - `38c0a53`, `6727e9a` off-hand left-facing sheets and their import settings
 - `29088d3` import files for the greatsword, codex, aegis and main menu fireball/scroll
 - Import: `restore` `resources/gfx/gear/` and `resources/gfx/entities/entities.protagonist/human/`
-  (all take; the latest version already includes every earlier commit)
+  (all take; the latest version already includes every earlier commit), **except `human.json`**:
+  MERGE, main changed its frame speeds in `04a93d5` (10 fps)
+- `resources/gfx/gear/` on the branch also holds the other-body copies (GEAR FOR OTHER BODIES,
+  about 11,500 files since `e755904`). Restoring the whole folder brings them in unused until SKINS.
 
 ### MINION ART ✗
 - `2c67188` minion `.aseprite` sources and updated sprite sheets (112 files, no code)
@@ -289,7 +397,12 @@ No code. After importing, look at it in game.
 
 ### MAIN MENU SOUNDS ✗
 - `scripts/ui/MenuWeapon.gd` (take): hover, sword cut, staff charge, burn
-- Sounds: `resources/sfx/ui/main_menu/` (in AUDIO)
+- Sounds: `resources/sfx/ui/main_menu/` (in AUDIO; already identical on main)
+- **Found 2026-09-26:** the scrolls-and-weapon menu itself comes from his revert `6a09959`:
+  `MenuBattle.gd`, `MenuScrollButton.gd`, `MenuWeapon.gd` and 7 PNGs in `resources/gfx/ui/main_menu/`
+  (none on main), plus MERGE `scripts/ui/MainMenu.gd` and `scenes/ui/MainMenu.tscn`. Main's MainMenu
+  is now 640x360, uses `MenuPanel.open()` and picks the character first (`_pick_character`); his
+  wires the buttons to the weapon. Decision 0c.
 - ⚠️ Leave out `.claude/settings.json`. That commit removes the team-wide block on Claude
   running `git commit` and `git push`.
 
@@ -301,8 +414,8 @@ Hit sounds, damage numbers, hurt overlay. Close to your sound work.
   his looks to main's file (see AUDIO)
 - Hurt overlay (take): `scripts/ui/HurtOverlay.gd`
 - Actions, **MERGE now** (2026-09-26; main changed them for the sound work: attack noise, `cause`):
-  `scripts/actions/AttackEffect.gd`, `verbs/HitVerb.gd`, `ProjectileVerb.gd`, `TauntVerb.gd`,
-  `DestroyTilesVerb.gd`, `TileHit.gd`. Take: `ParticleBurst.gd`, `scripts/ui/MenuBattle.gd`,
+  `scripts/actions/AttackEffect.gd`, `ProjectileVerb.gd`, `TileHit.gd`. (`HitVerb.gd`,
+  `TauntVerb.gd`, `DestroyTilesVerb.gd` are already identical to the branch, 2026-09-26.) Take: `ParticleBurst.gd`, `scripts/ui/MenuBattle.gd`,
   `.claude/docs/combat-feedback.md`
 - MERGE (easy): `game/actions/slash.json`, `arrow_shot.json`, `entropia_bolt.json`,
   `perditio_touch.json`, `MouseFollowCamera.gd`
@@ -358,6 +471,7 @@ The biggest chunk. Do it in these four parts.
   `InventoryPanel.gd` (182), `singletons/PlayerInventory.gd` (150),
   `scripts/items/ItemDatabase.gd` (117)
 - [✗] Later fixes, already in the files above: scroll jump fix (`2e36c02`) and shift-sweep (`5f22889`)
+- `DollStage.gd` changed again in `e755904` (35 lines, the other-body gear on the doll); still take
 - Needs: THINGS RESTORE (rings, icons)
 
 ### ANIMATIONS ✗
@@ -453,7 +567,9 @@ Take with SKINS; nothing on main to merge.
 ### ITEM ICONS REDRAW (new 2026-09-26, `6bcacf0`) ✗
 All 205 item icons in `resources/gfx/ui/icons/items/` redrawn, made by the new scripts in
 `.claude/tools/item_icons/`. Main deleted those icons in the revert (THINGS RESTORE), so take them
-with THINGS RESTORE, from this newer commit. MERGE: `docs/ART_TODO.md` (one line).
+with THINGS RESTORE, from this newer commit. MERGE: `docs/ART_TODO.md` (one line). `e755904`
+redrew five helmet icons again (abyssal fin, clockwork goggle cap, hamster, infernal horned, magma
+horned) and `item_icons/slot_head.py`; taking the folder gets them.
 
 ### NEW BIOMES (new 2026-09-26, `94900e2` "r") ✗
 Five new biomes, 45 rooms each with a `defines.json`: `foundry`, `garden`, `glacier`, `library`,
@@ -519,8 +635,10 @@ READMEs for the five new biomes and headstones for them.
 Skins with a body of their own (`"fits_gear": false`: elf, dwarf) now wear their own copy of
 each piece instead of none: `resources/gfx/gear/<slot>/<set>/<skin>/`, made by
 `.claude/tools/character_gear.py`. So far militia (all slots) and a few weapons (poacher, rogue,
-wraith). This answers most of SKINS' "skins that show no gear" decision.
-- take: the 602 gear files (main has not changed `resources/gfx/gear/`),
+wraith). This answers most of SKINS' "skins that show no gear" decision. **New `e755904`:** every
+set now has other-body copies (all 6 skins, every slot, plus `back/pennant/` and neon outlaw), about
+11,500 files, and `dwarf_female` sheets redrawn (ELF AND DWARF REDRAW).
+- take: the gear files (main has not changed `resources/gfx/gear/`),
   `.claude/tools/character_gear.py`, `test/unit/test_character_skins.gd`
 - MERGE: `scripts/entities/GearLayers.gd` (`body_id`, `set_body`), `scripts/items/ItemDatabase.gd`
   (`sheet_path`/`sprite_frames`/`held_left` take a body), `PlayerController.gd` (`gear.set_body`;
@@ -530,8 +648,8 @@ wraith). This answers most of SKINS' "skins that show no gear" decision.
 ## Skip
 - `6f0293b` / `5739548`: a scratch screenshot script added and then removed
 - `ac7ed86`, `ac75de7`, `6f6d2c9`: restore and merge commits (THINGS RESTORE covers them)
-- `6a09959` "Revert Pack AI Tweaks": **decision.** Skip it unless `main` should also lose
-  the Pack AI Tweaks (`test/unit/test_room_graph.gd`, 29 lines of `RoomGraph.gd`)
+- `6a09959` "Revert Pack AI Tweaks": skip the pack AI part (see "How to import"). The main menu
+  battle and `GearEffects.gd` it brings back are in MAIN MENU SOUNDS and THINGS RESTORE.
 
 ## Shared files
 Taking one of these brings in the other chunks' changes too.

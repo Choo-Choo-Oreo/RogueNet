@@ -126,7 +126,7 @@ Two decisions gate most of these (see "Decisions needed" below): what `power` me
 - [✓] Favored enemies and tags, 2026-09-24: rooms can have `favored_minion` (enemy id or `main` / `main.secondary` tag, weight default 3), enemies carry `tags`; it only boosts the biome's `monsters` table. Docs in `game/TAGS.md`, `game/entities/entities.enemies/README.md`, `game/rooms/README.md`
 - [✓] Several entrance and boss rooms per biome, 2026-09-24 (one is picked at random; a boss that does not fit falls back to the next). The entrance is still never rotated
 - [✓] Two 2-wide treasure rooms (`Dungeon_Treasure_Reliquary_8x8`, `Dungeon_Treasure_Armory_8x10`) with 4 spawn cells each, and 2 more spawn cells in the Hoard, 2026-09-24. In the Python port this took first-attempt generation success from about 73% to 99.9% (treasure and boss failures caused the seed retry warnings). Not yet seen in Godot
-- [✗] Treasure rooms are tried in file-name order, so `Armory` is picked most often; shuffling the order in `_place_any_locked` would give variety (offered 2026-09-24, not decided)
+- [✗] Treasure rooms are tried in file-name order, so `Armory` is picked most often; shuffling the order in `_place_any_locked` would give variety (offered 2026-09-24, not decided). 2026-09-26: moved into `DUNGEON_GENERATION_TRACKER.md` (S tier, with the treasure-next-to-entrance bug); the rest of the generation audit is tracked there too
 - [✓] Wood rooms in the pool (part of the dungeon biome)
 - [✓] Floors under walls (`elif` in `DungeonPainter.gd`)
 - [✓] Tan strip at wall bases: Orea thinks later changes fixed it, so no longer tracked (not specifically checked)
