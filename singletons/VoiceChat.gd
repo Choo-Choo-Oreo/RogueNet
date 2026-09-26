@@ -187,7 +187,7 @@ var _in_mission := false
 ## mic off, so a toggled-on mic does not follow the player into the town or the menus.
 func _on_scene_changed() -> void:
 	var was_in_mission := _in_mission
-	var scene := get_tree().current_scene
+	var scene := GameView.world_scene(get_tree())
 	_in_mission = scene != null and scene.scene_file_path.ends_with("Dungeon.tscn")
 	if was_in_mission and not _in_mission and talking and not voice_activation:
 		set_talking(false)

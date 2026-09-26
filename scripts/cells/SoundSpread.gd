@@ -102,7 +102,7 @@ static func _beside_solid(quad: Vector2i, loss: Callable, cache: Dictionary) -> 
 ## What a straight step onto each quad costs, read from the dungeon's tile layers: a closed
 ## door, else the wall tile's muffle, else the floor tile's; no floor at all is outside the map.
 static func reader(tree: SceneTree) -> Callable:
-	var scene := tree.current_scene
+	var scene := GameView.world_scene(tree)
 	var walls: TileMapLayer = scene.find_child("WallData", true, false) if scene else null
 	var floors: TileMapLayer = scene.find_child("FloorData", true, false) if scene else null
 	var tiles := TileType.by_id()

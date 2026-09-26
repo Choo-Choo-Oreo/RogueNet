@@ -219,7 +219,7 @@ func receive_network_state(pos: Vector2, state: int) -> void:
 func _ready() -> void:
 	add_to_group("antagonist")
 	_base_move_time = grid_mover.move_time
-	_light_map = get_tree().current_scene.find_child("LightMap", true, false)
+	_light_map = GameView.world_scene(get_tree()).find_child("LightMap", true, false)
 	# The AI thinks on the game tick; steps end on it too (GridMover.on_tick).
 	grid_mover.on_tick = true
 	GameTick.ticked.connect(_on_tick)

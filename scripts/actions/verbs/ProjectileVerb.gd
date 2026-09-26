@@ -33,7 +33,7 @@ static func perform(caster: Node2D, target_global: Vector2, attack: Dictionary) 
 	var footprint: int = caster.get_meta("footprint", 1)
 	var from: Vector2 = caster.global_position + Vector2(footprint, footprint) * tile_size / 2.0
 	var projectile: ProjectileController = PROJECTILE_SCENE.instantiate()
-	caster.get_tree().current_scene.add_child(projectile)
+	GameView.world_scene(caster.get_tree()).add_child(projectile)
 	projectile.global_position = from
 	var hit_on_the_way := func(pos: Vector2) -> bool:
 		var tile := Vector2i((pos / tile_size).floor())

@@ -42,8 +42,8 @@ func _place_doors(rooms: Dictionary, placements: Array, defines: Dictionary) -> 
 ## as unseen and gets rolled -- exactly the "fill everything at generation
 ## time" behavior MinionSpawning is meant to have at t=0.
 func _spawn_minions(rooms: Dictionary, placements: Array, defines: Dictionary) -> void:
-	var vision: PlayerVision = get_tree().current_scene.find_child("PlayerVision", true, false)
-	var minions_root := get_tree().current_scene.get_node_or_null("Minions")
+	var vision: PlayerVision = GameView.world_scene(get_tree()).find_child("PlayerVision", true, false)
+	var minions_root := GameView.world_scene(get_tree()).get_node_or_null("Minions")
 	if vision == null or minions_root == null:
 		return
 	var bad_cells := _warn_bad_spawn_cells(rooms, placements)

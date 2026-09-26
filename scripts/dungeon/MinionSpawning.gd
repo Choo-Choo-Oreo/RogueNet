@@ -117,7 +117,7 @@ static func fit_tile(minion_id: String, tile: Vector2i, minions_root: Node) -> V
 	var size := int(MinionIndex.load_data(minion_id).get("size_tiles", 1))
 	if size <= 1:
 		return tile
-	var scene := minions_root.get_tree().current_scene
+	var scene := GameView.world_scene(minions_root.get_tree())
 	var wall_data := scene.find_child("WallData", true, false) as TileMapLayer
 	var floor_data := scene.find_child("FloorData", true, false) as TileMapLayer
 	if wall_data == null or floor_data == null:

@@ -52,7 +52,7 @@ static func blood(body: Node) -> void:
 		return
 	var tile_size: float = body.grid_mover.tile_size if "grid_mover" in body else 16.0
 	var footprint: int = body.get_meta("footprint", 1)
-	var burst := _spawn(body.get_tree().current_scene, (body as Node2D).global_position)
+	var burst := _spawn(GameView.world_scene(body.get_tree()), (body as Node2D).global_position)
 	for y in footprint:
 		for x in footprint:
 			var centre := (Vector2(x, y) + Vector2(0.5, 0.5)) * tile_size

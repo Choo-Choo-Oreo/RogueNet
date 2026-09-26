@@ -27,7 +27,7 @@ func open() -> void:
 
 # Only the host, and only during a mission, can end it for everyone.
 func _open() -> void:
-	var in_mission := get_tree().current_scene.scene_file_path.ends_with("Dungeon.tscn")
+	var in_mission := GameView.world_scene(get_tree()).scene_file_path.ends_with("Dungeon.tscn")
 	end_mission_button.visible = multiplayer.is_server() and in_mission
 	voices.visible = in_mission and voice_list.has_others()
 	if voices.visible:

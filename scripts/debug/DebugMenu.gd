@@ -414,7 +414,7 @@ func _regenerate(new_biome: bool) -> void:
 		NetworkSync.dungeon_biome = DungeonAssembler.pick_biome(NetworkSync.dungeon_seed)
 	DebugLog.add("regenerating dungeon: seed %d, biome %s" % [NetworkSync.dungeon_seed, NetworkSync.dungeon_biome])
 	DebugState.click_tool = ""
-	get_tree().reload_current_scene()
+	GameView.reload(get_tree())
 
 func _set_god(on: bool) -> void:
 	DebugState.god_mode = on

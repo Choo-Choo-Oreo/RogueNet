@@ -40,7 +40,7 @@ static func perform(caster: Node2D, target_global: Vector2, attack: Dictionary) 
 		return true
 	var from: Vector2 = caster.global_position + Vector2(tile_size, tile_size) / 2.0
 	var flying: ProjectileController = ProjectileVerb.PROJECTILE_SCENE.instantiate()
-	caster.get_tree().current_scene.add_child(flying)
+	GameView.world_scene(caster.get_tree()).add_child(flying)
 	flying.global_position = from
 	flying.launch(texture, landing_global, tile_size, land, mover.is_position_blocked)
 	NetworkSync.share_projectile(texture, from, landing_global)

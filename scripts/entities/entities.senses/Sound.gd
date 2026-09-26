@@ -116,7 +116,7 @@ static func play_heard(from: Node, path: String, position: Vector2, db: float, o
 ## The live marker within REUSE_TILES of `position` (kept alive another MARKER_SECONDS), or a
 ## new one there. Null when there is no scene to put it in.
 static func marker_at(tree: SceneTree, position: Vector2) -> Node2D:
-	var scene := tree.current_scene
+	var scene := GameView.world_scene(tree)
 	if scene == null:
 		return null
 	var marker: Node2D = null

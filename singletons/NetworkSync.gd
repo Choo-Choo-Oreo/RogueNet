@@ -70,7 +70,7 @@ func account_name() -> String:
 ## The node at `path` under the current scene ("Minions", "Player/3"), or null: none there, or
 ## no scene for a moment while the scene changes (packets keep arriving then).
 func _in_scene(path: String) -> Node:
-	var scene := get_tree().current_scene
+	var scene := GameView.world_scene(get_tree())
 	return scene.get_node_or_null(path) if scene != null else null
 
 func _player(peer_id: int) -> Node:
@@ -121,7 +121,7 @@ func _broadcast_chat(sender_id: int, text: String) -> void:
 
 @rpc("authority", "reliable")
 func receive_chat(line: String) -> void:
-	var scene := get_tree().current_scene
+	var scene := GameView.world_scene(get_tree())
 	if scene and scene.has_method("add_chat_line"):
 		scene.add_chat_line(line)
 
@@ -439,7 +439,7 @@ func receive_start_mission(mission_seed: int, mission_biome: String, members: Ar
 	dungeon_seed = mission_seed
 	dungeon_biome = mission_biome
 	dive_members = members.duplicate()
-	get_tree().change_scene_to_file("res://scenes/dungeon/Dungeon.tscn")
+	GameView.change_to(get_tree(), "res://scenes/dungeon/Dungeon.tscn")
 
 # Host only: sends the divers (not the players in the town) back to the town.
 func end_mission() -> void:
@@ -656,7 +656,7 @@ func play_effect(pos: Vector2, data: Dictionary, direction: Vector2) -> void:
 		request_effect.rpc_id(1, pos, data, direction)
 
 func _spawn_effect(pos: Vector2, data: Dictionary, direction: Vector2) -> void:
-	var scene := get_tree().current_scene
+	var scene := GameView.world_scene(get_tree())
 	if scene == null:
 		return
 	CombatSounds.on_effect(scene, pos, data)
@@ -711,7 +711,7 @@ func receive_projectile(texture_path: String, from: Vector2, to: Vector2) -> voi
 	_spawn_projectile_copy(texture_path, from, to)
 
 func _spawn_projectile_copy(texture_path: String, from: Vector2, to: Vector2) -> void:
-	var scene := get_tree().current_scene
+	var scene := GameView.world_scene(get_tree())
 	if scene == null:
 		return
 	var projectile: ProjectileController = PROJECTILE_SCENE.instantiate()
@@ -784,7 +784,7 @@ func receive_player_damage(player_id: int, amount: int, type: String, cause: Str
 func destroy_tiles(cells: Array[Vector2i]) -> int:
 	if not is_host():
 		return 0
-	var changes := TileDestruction.plan(cells, get_tree().current_scene)
+	var changes := TileDestruction.plan(cells, GameView.world_scene(get_tree()))
 	if changes.is_empty():
 		return 0
 	receive_tile_changes(changes)
@@ -794,7 +794,7 @@ func destroy_tiles(cells: Array[Vector2i]) -> int:
 
 @rpc("authority", "reliable")
 func receive_tile_changes(changes: Array) -> void:
-	var scene := get_tree().current_scene
+	var scene := GameView.world_scene(get_tree())
 	if scene != null:
 		TileDestruction.apply(changes, scene)
 

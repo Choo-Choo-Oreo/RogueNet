@@ -42,6 +42,33 @@ the branch (Silvery's work: tell Orea, don't edit):
 - Not a grid problem, but alpha fades blend colours off the palette: `GearEffects._fade_ramp`,
   `Wading.gd` (about line 241), `ParticleBurst.gd` (about line 183), `DamageNumber.gd` (about line 68)
 
+### GameView: the world is no longer `current_scene` (main 2026-09-26)
+The dungeon now loads into `GameView` (`scripts/util/GameView.gd`, a 322×182 SubViewport), and
+the GameView is the current scene. So in world code, on import:
+- `get_tree().current_scene` / `tree.current_scene` → `GameView.world_scene(get_tree())` /
+  `GameView.world_scene(tree)` (town code keeps `current_scene`: `main_town`, GuildMission, GuildTown)
+- `get_tree().reload_current_scene()` → `GameView.reload(get_tree())`
+- loading `Dungeon.tscn` → `GameView.change_to(get_tree(), "res://scenes/dungeon/Dungeon.tscn")`
+
+Main changed these files; Silvery's branch changes them too, so MERGE (keep main's swapped line):
+- `scripts/actions/ParticleBurst.gd` (his line 79 is a new `current_scene` read: swap it too)
+- `scripts/actions/verbs/ProjectileVerb.gd`, `ThrowVerb.gd`
+- `scripts/dungeon/DungeonPainter.gd` (also calls `tile_initialize.refresh_all()` after painting),
+  `scripts/dungeon/MinionSpawning.gd`
+- `scripts/entities/GridMover.gd`, `scripts/entities/entities.antagonist/minions/ai/MinionController.gd`
+- `singletons/NetworkSync.gd`: his branch has about 15 dungeon-side reads (lines 93-859 there); swap
+  each, leave the `main_town` ones
+- `scripts/cells/tiles/DualGridRender.gd` (performance fix, not GameView: wall renderers scan own
+  cells only, `changed` listened to in the editor only)
+- `project.godot` `[display]`: 640×360 base, window 1280×720, `scale_mode="integer"`; keep main's
+
+Files only on his branch that read `current_scene` (swap when taking them):
+`scripts/actions/AttackEffect.gd:41`, `scripts/entities/DamageNumber.gd:32`,
+`scripts/entities/Wading.gd:199`, `scripts/ui/HurtOverlay.gd:28`, `test/sim/hit_feedback.gd`.
+
+**Next (planned, not built):** the HUD moves out of `Dungeon.tscn` into GameView, next to the
+viewport. His branch changes `Dungeon.tscn` and the HUD scenes, so those will need a merge too.
+
 ## Chunks
 
 ### AUDIO (sound files and buses) [~]

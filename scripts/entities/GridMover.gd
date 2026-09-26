@@ -10,8 +10,8 @@ extends Node
 
 @onready var _body: Node2D = get_parent()
 
-@onready var wall_data: TileMapLayer = get_tree().current_scene.find_child("WallData", true, false)
-@onready var floor_data: TileMapLayer = get_tree().current_scene.find_child("FloorData", true, false)
+@onready var wall_data: TileMapLayer = GameView.world_scene(get_tree()).find_child("WallData", true, false)
+@onready var floor_data: TileMapLayer = GameView.world_scene(get_tree()).find_child("FloorData", true, false)
 
 ## Emitted when a step finishes, with the tile stepped onto. Not for teleports.
 signal stepped(tile: Vector2i)
