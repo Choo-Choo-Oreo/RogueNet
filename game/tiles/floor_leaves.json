@@ -1,0 +1,12 @@
+{
+	"tile_name": "floor_leaves",
+	"atlas_texture": "res://resources/gfx/tileset/floor_leaves.png",
+	"normal_texture": "res://resources/gfx/tileset/floor_leaves_normal.png",
+	"specular_color": [0.02, 0.02, 0.02, 1],
+	"sort_order": 3,
+	"footsteps": "grass",
+	"variant_weights": [1, 1, 1, 1],
+	"overlay_texture": "res://resources/gfx/tileset/overlay_leaves_falling.png",
+	"overlay_density": 0.1,
+	"marker_color": [0.580392, 0.313725, 0.172549, 1]
+}

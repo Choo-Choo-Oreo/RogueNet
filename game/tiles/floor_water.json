@@ -5,5 +5,7 @@
 	"specular_color": [0.75, 0.75, 0.75, 1],
 	"sort_order": 5,
 	"terrain": "difficult",
+	"overlay_texture": "res://resources/gfx/tileset/overlay_water_ripples.png",
+	"overlay_density": 0.15,
 	"marker_color": [0.356863, 0.431373, 0.882353, 1]
 }

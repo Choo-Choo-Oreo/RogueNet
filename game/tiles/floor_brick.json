@@ -1,0 +1,10 @@
+{
+	"tile_name": "floor_brick",
+	"atlas_texture": "res://resources/gfx/tileset/floor_brick.png",
+	"normal_texture": "res://resources/gfx/tileset/floor_brick_normal.png",
+	"specular_color": [0.05, 0.05, 0.05, 1],
+	"sort_order": 1,
+	"footsteps": "stone",
+	"variant_weights": [6, 1, 1],
+	"marker_color": [0.603922, 0.27451, 0.188235, 1]
+}

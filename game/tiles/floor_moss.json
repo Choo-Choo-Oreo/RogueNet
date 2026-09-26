@@ -1,0 +1,12 @@
+{
+	"tile_name": "floor_moss",
+	"atlas_texture": "res://resources/gfx/tileset/floor_moss.png",
+	"normal_texture": "res://resources/gfx/tileset/floor_moss_normal.png",
+	"specular_color": [0.02, 0.02, 0.02, 1],
+	"sort_order": 3,
+	"footsteps": "grass",
+	"variant_weights": [3, 3, 3, 1, 1],
+	"overlay_texture": "res://resources/gfx/tileset/overlay_moss_spores.png",
+	"overlay_density": 0.12,
+	"marker_color": [0.247059, 0.384314, 0.188235, 1]
+}

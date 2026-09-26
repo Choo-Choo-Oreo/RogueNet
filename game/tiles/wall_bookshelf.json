@@ -1,0 +1,10 @@
+{
+	"tile_name": "wall_bookshelf",
+	"atlas_texture": "res://resources/gfx/tileset/wall_bookshelf.png",
+	"normal_texture": "res://resources/gfx/tileset/wall_bookshelf_normal.png",
+	"specular_color": [0.05, 0.05, 0.05, 1],
+	"sort_order": 100,
+	"category": "wall",
+	"variant_weights": [1, 1, 1],
+	"marker_color": [0.415686, 0.227451, 0.141176, 1]
+}

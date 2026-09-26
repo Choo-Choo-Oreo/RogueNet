@@ -1,0 +1,12 @@
+{
+	"tile_name": "floor_snow",
+	"atlas_texture": "res://resources/gfx/tileset/floor_snow.png",
+	"normal_texture": "res://resources/gfx/tileset/floor_snow_normal.png",
+	"specular_color": [0.1, 0.1, 0.1, 1],
+	"sort_order": 3,
+	"footsteps": "dirt",
+	"variant_weights": [1, 1, 1],
+	"overlay_texture": "res://resources/gfx/tileset/overlay_frost_glints.png",
+	"overlay_density": 0.1,
+	"marker_color": [0.909804, 0.933333, 0.964706, 1]
+}

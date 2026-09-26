@@ -1,0 +1,9 @@
+{
+	"tile_name": "wall_iron",
+	"atlas_texture": "res://resources/gfx/tileset/wall_iron.png",
+	"normal_texture": "res://resources/gfx/tileset/wall_iron_normal.png",
+	"specular_color": [0.4, 0.4, 0.4, 1],
+	"sort_order": 100,
+	"category": "wall",
+	"marker_color": [0.368627, 0.415686, 0.447059, 1]
+}

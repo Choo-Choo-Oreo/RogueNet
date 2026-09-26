@@ -1,0 +1,11 @@
+{
+	"tile_name": "floor_grate",
+	"atlas_texture": "res://resources/gfx/tileset/floor_grate.png",
+	"normal_texture": "res://resources/gfx/tileset/floor_grate_normal.png",
+	"specular_color": [0.3, 0.3, 0.3, 1],
+	"sort_order": 1,
+	"footsteps": "stone",
+	"overlay_texture": "res://resources/gfx/tileset/overlay_grate_drips.png",
+	"overlay_density": 0.15,
+	"marker_color": [0.352941, 0.392157, 0.4, 1]
+}

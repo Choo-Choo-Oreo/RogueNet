@@ -1,0 +1,12 @@
+{
+	"tile_name": "floor_flowers",
+	"atlas_texture": "res://resources/gfx/tileset/floor_flowers.png",
+	"normal_texture": "res://resources/gfx/tileset/floor_flowers_normal.png",
+	"specular_color": [0.02, 0.02, 0.02, 1],
+	"sort_order": 3,
+	"footsteps": "grass",
+	"variant_weights": [1, 1, 1, 1],
+	"overlay_texture": "res://resources/gfx/tileset/overlay_flower_life.png",
+	"overlay_density": 0.15,
+	"marker_color": [0.227451, 0.415686, 0.164706, 1]
+}

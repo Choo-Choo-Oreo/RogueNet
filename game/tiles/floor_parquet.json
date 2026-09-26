@@ -1,0 +1,9 @@
+{
+	"tile_name": "floor_parquet",
+	"atlas_texture": "res://resources/gfx/tileset/floor_parquet.png",
+	"normal_texture": "res://resources/gfx/tileset/floor_parquet_normal.png",
+	"specular_color": [0.1, 0.1, 0.1, 1],
+	"sort_order": 1,
+	"footsteps": "wood",
+	"marker_color": [0.627451, 0.415686, 0.235294, 1]
+}

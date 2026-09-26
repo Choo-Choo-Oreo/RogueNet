@@ -1,0 +1,15 @@
+{
+	"tile_name": "floor_lava_crust",
+	"atlas_texture": "res://resources/gfx/tileset/floor_lava_crust.png",
+	"normal_texture": "res://resources/gfx/tileset/floor_lava_crust_normal.png",
+	"specular_color": [0.75, 0.75, 0.75, 1],
+	"sort_order": 6,
+	"terrain": "severe",
+	"overlay_texture": "res://resources/gfx/tileset/overlay_lava_embers.png",
+	"overlay_density": 0.2,
+	"glow_radius": 64.0,
+	"glow_color": [0.87451, 0.443137, 0.14902, 1],
+	"see_through": 0.12,
+	"footsteps": "lava",
+	"marker_color": [0.87451, 0.443137, 0.14902, 1]
+}

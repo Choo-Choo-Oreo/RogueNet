@@ -1,0 +1,9 @@
+{
+	"tile_name": "wall_ice",
+	"atlas_texture": "res://resources/gfx/tileset/wall_ice.png",
+	"normal_texture": "res://resources/gfx/tileset/wall_ice_normal.png",
+	"specular_color": [0.5, 0.5, 0.5, 1],
+	"sort_order": 100,
+	"category": "wall",
+	"marker_color": [0.658824, 0.8, 0.909804, 1]
+}

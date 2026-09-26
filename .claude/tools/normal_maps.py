@@ -18,7 +18,7 @@ Every method works per 16x16 tile (or 8x8 quarter for bevel) so nothing leaks be
 import math, os, re, sys
 from PIL import Image
 
-ROOT = "C:/Users/Orea/Documents/Project-Godot/RogueNet/"
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")).replace("\\", "/") + "/"   # the repo, wherever it is checked out
 ART = ROOT + "resources/gfx/tileset/"
 DOORS = ROOT + "resources/gfx/doors/"
 T = 16          # atlas tile size
@@ -226,12 +226,18 @@ FLESH = {
     (0x77, 0x14, 0x14): None,  # painted shadow accent
     (0xFF, 0xFF, 0xFF): None,  # painted vein glare
 }
-WATER = {(0x5B, 0x6E, 0xE1): 0.0, (0x44, 0x55, 0xBA): 0.0, (0x63, 0x9B, 0xFF): 0.5}   # shallows, deep (same level: calm), ripple highlight
-ACID = {(0x4F, 0x7A, 0x12): 0.0, (0x37, 0x94, 0x6E): 0.5}    # base, teal highlight
 STONE_TOPS ={(0x92, 0x96, 0xA1), (0x76, 0x7A, 0x84), (0x67, 0x6B, 0x75)}
 
 MATERIALS = {
-    "wall_smooth_stone": (wall, dict(bump=0.8, tilt=0.25, bevel=1.2)),
+    "wall_smooth_stone": (wall, dict(bump=2.0, tilt=0.25, bevel=1.2)),   # ashlar blocks since 2026-09-25
+    "wall_mossy_stone":  (wall, dict(bump=3.0, tilt=0.25, bevel=1.2)),
+    "wall_brick":        (wall, dict(bump=3.0, tilt=0.25, bevel=1.2)),
+    "wall_mine_ore":     (wall, dict(bump=3.0, tilt=0.25, bevel=1.2)),
+    "wall_bookshelf":    (wall, dict(bump=2.0, tilt=0.25, bevel=1.2)),
+    "wall_stained_glass": (wall, dict(bump=1.5, tilt=0.25, bevel=1.2)),
+    "wall_ice":          (wall, dict(bump=1.5, tilt=0.25, bevel=1.2)),
+    "wall_sandstone":    (wall, dict(bump=2.5, tilt=0.25, bevel=1.2)),
+    "wall_iron":         (wall, dict(bump=2.0, tilt=0.25, bevel=1.2)),
     "wall_cobble_brick": (wall, dict(bump=4.0, tilt=0.25, bevel=1.2)),
     "wall_wood_plank":   (wall, dict(bump=2.5, tilt=0.25, bevel=1.2)),
     "wall_rough_cave":   (wall, dict(bump=3.0, tilt=0.25, bevel=1.2)),
@@ -242,9 +248,23 @@ MATERIALS = {
     "floor_flesh":       (palette, dict(heights=FLESH)),
     "floor_smooth_stone": (bevel, dict(tops=STONE_TOPS)),
     "floor_smooth_cave": (luminance_floor, dict(strength=3.0)),   # flat worn pads: gentle bumps from the art's brightness
-    "floor_water":       (palette, dict(heights=WATER, strength=3.0)),
+    "floor_water":       (luminance_floor, dict(strength=2.0)),   # ripples since 2026-09-25: brighter = raised
+    "floor_cobblestone": (luminance_floor, {}),
+    "floor_mossy_cobblestone": (luminance_floor, {}),
+    "floor_gravel":      (luminance_floor, {}),
+    "floor_grate":       (luminance_floor, {}),
+    "floor_moss":        (luminance_floor, {}),
+    "floor_leaves":      (luminance_floor, {}),
+    "floor_sand":        (luminance_floor, dict(strength=3.0)),
+    "floor_snow":        (luminance_floor, dict(strength=2.0)),
+    "floor_ice":         (luminance_floor, dict(strength=2.0)),
+    "floor_metal_plate": (luminance_floor, {}),
+    "floor_parquet":     (luminance_floor, {}),
+    "floor_brick":       (luminance_floor, {}),
+    "floor_flowers":     (luminance_floor, {}),
     "floor_lava":        (plain, {}),   # emits its own light, so no shading from the player's
-    "floor_acid":        (palette, dict(heights=ACID, strength=3.0)),
+    "floor_lava_crust":  (plain, {}),   # the same, with dark crust plates
+    "floor_acid":        (luminance_floor, dict(strength=2.0)),
     "floor_void":        (plain, {}),   # pure black nothing: no surface to shade
     "Wood":              (door, dict(tops=WOOD_TOPS, bump=2.5)),
     "Wood_Fold":         (door, dict(tops=WOOD_TOPS, bump=2.5)),

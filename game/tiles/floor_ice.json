@@ -1,0 +1,11 @@
+{
+	"tile_name": "floor_ice",
+	"atlas_texture": "res://resources/gfx/tileset/floor_ice.png",
+	"normal_texture": "res://resources/gfx/tileset/floor_ice_normal.png",
+	"specular_color": [0.5, 0.5, 0.5, 1],
+	"sort_order": 1,
+	"footsteps": "stone",
+	"overlay_texture": "res://resources/gfx/tileset/overlay_frost_glints.png",
+	"overlay_density": 0.12,
+	"marker_color": [0.705882, 0.831373, 0.933333, 1]
+}

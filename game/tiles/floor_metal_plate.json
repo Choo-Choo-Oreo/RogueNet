@@ -1,0 +1,10 @@
+{
+	"tile_name": "floor_metal_plate",
+	"atlas_texture": "res://resources/gfx/tileset/floor_metal_plate.png",
+	"normal_texture": "res://resources/gfx/tileset/floor_metal_plate_normal.png",
+	"specular_color": [0.4, 0.4, 0.4, 1],
+	"sort_order": 1,
+	"footsteps": "stone",
+	"variant_weights": [8, 1],
+	"marker_color": [0.368627, 0.415686, 0.447059, 1]
+}

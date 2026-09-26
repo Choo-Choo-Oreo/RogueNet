@@ -1,0 +1,11 @@
+{
+	"tile_name": "floor_sand",
+	"atlas_texture": "res://resources/gfx/tileset/floor_sand.png",
+	"normal_texture": "res://resources/gfx/tileset/floor_sand_normal.png",
+	"specular_color": [0.02, 0.02, 0.02, 1],
+	"sort_order": 2,
+	"footsteps": "dirt",
+	"overlay_texture": "res://resources/gfx/tileset/overlay_sand_wisps.png",
+	"overlay_density": 0.12,
+	"marker_color": [0.831373, 0.690196, 0.470588, 1]
+}

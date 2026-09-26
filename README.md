@@ -40,6 +40,10 @@ The filename (minus `.json`) is the minion's id, used everywhere else
 ```
 
 Notes:
+- `sprite_frames` may also have attack frames: an animation named `"Attack"` + a walk
+  animation (`AttackFront`, `AttackSideRight`...), with `"loop": false`. It plays once, on
+  every screen, when the creature attacks facing that way (`DirectionalAnimator.play_attack`);
+  a direction without one just faces the target. The wolf has a full set.
 - `resistances` maps a damage type (see `game/damage_types.json`) to a
   multiplier; omit a type for no resistance.
 - `actions` is what the creature can do: a list of action ids, each a file in
@@ -214,8 +218,11 @@ JSON. DungeonMaker keeps it when re-saving.)
 - Naming is subject-first: `wall_forest_dense`, not `wall_dense_forest`.
 - `footsteps` (floors, optional): the folder in `resources/sfx/effects/` whose
   `step_1.wav`, `step_2.wav`... play as a creature walks over the floor (`Wading`), so
-  floors that sound alike share one: `floor_smooth_stone` and `floor_smooth_cave` use
-  `stone`, the five carpets `carpet`, `floor_wood_planks` `wood`. Left out, it is the tile's
+  floors that sound alike share one: `floor_smooth_stone`, `floor_smooth_cave`, both
+  cobblestones, `floor_gravel`, `floor_grate`, `floor_ice`, `floor_metal_plate` and `floor_brick` use
+  `stone`, the five carpets `carpet`, `floor_wood_planks` and `floor_parquet` `wood`,
+  `floor_moss`, `floor_leaves` and `floor_flowers` `grass`,
+  `floor_sand` and `floor_snow` `dirt`, `floor_lava_crust` `lava`. Left out, it is the tile's
   name without `floor_` (`dirt`, `grass`, `flesh`, and the liquids' own folders). Every step
   on dry ground also puffs a little dust in the floor's colours.
 - Variants: a tile's art can hold more than one 64x64 set, stacked top to bottom

@@ -18,7 +18,7 @@ Two artists, two tracks that don't collide:
 - **Track A, objects.** Every room in the game is bare: the only objects that exist are
   one torch, one chest and the graves. Section 2, "Everywhere" then "Dungeon". This is the biggest
   visible win for the least work, and each object is one small 16x16 sprite.
-- **Track B, tiles.** The 24 existing tiles (15 floors, 7 walls, 2 barriers) are done, so start on what's missing:
+- **Track B, tiles.** The 46 existing tiles (29 floors, 15 walls, 2 barriers) are done, so start on what's missing:
   doors per biome, then new floors. Section 1 lists the palettes to stay consistent with.
 
 Enemies (section 4) come next: 14 enemy files exist already, but bosses, attack and death frames don't, so check with Orea first.
@@ -103,30 +103,32 @@ for the bottom wall of a room and the game rotates it for the other three sides.
 ### New floors
 
 Ten biomes exist as room pools (see below). Existing floors: acid, carpet (crimson, gold,
-indigo, verdigris, violet), dirt, flesh, grass, lava, smooth cave, smooth stone, void, water,
-wood planks, plus the overlays `overlay_acid_bubbles` and `overlay_lava_embers`. A new floor
+indigo, verdigris, violet), brick, cobblestone, dirt, flesh, flowers, grate, gravel, grass, ice, lava, lava crust, leaves, metal plate,
+moss, mossy cobblestone, parquet, sand, smooth cave, snow, smooth stone, void, water, wood planks, plus the overlays `overlay_acid_bubbles`, `overlay_lava_embers` (also on lava crust), and since 2026-09-25 `overlay_water_ripples`, `overlay_frost_glints` (snow and ice), `overlay_leaves_falling`, `overlay_flower_life` (bees, butterflies, petals), `overlay_moss_spores`, `overlay_sand_wisps` and `overlay_grate_drips`. A new floor
 gives room builders something to make paths, rugs and hazards with.
 
 - [✓] Carpet or rug (dungeon, cathedral). Five colours exist, `floor_carpet_*`; a red runner with a trim edge is not separate
-- [✗] Cobblestone floor (dungeon). Rougher than smooth stone.
+- [✓] Cobblestone floor (dungeon), 2026-09-25: `floor_cobblestone`, rounded grey cobbles; `floor_mossy_cobblestone` has moss in the gaps (ruins, cave). Drawn by Claude in the style of a 16x16 texture pack Foxy picked as reference (own pixels, not the pack's)
 - [✓] Cracked or mossy smooth stone (dungeon, cave): variant sets of `floor_smooth_stone` that turn up now and then (`variant_weights`), not a separate tile
+- [✓] Redrawn 2026-09-25 in the reference style: `wall_smooth_stone` (was a flat white face, now pale ashlar blocks), `floor_water` (drifting ripples, same shoreline colours) and `floor_acid` (sludge swirls). `floor_lava` was kept as it was on purpose; the new crusted lava is its own tile, `floor_lava_crust` (dark plates, cracks whose glow walks, 4 frames; same hazard settings as lava, copied)
 - [✗] Rail track on dirt (mine). Rooms already have plank "tracks" waiting for this.
-- [✗] Gravel or rubble (mine, cave)
+- [✓] Gravel (mine, cave), 2026-09-25: `floor_gravel`, pebbles on dark earth
 - [✓] Shallow water (cave): `floor_water` exists. Could later slow movement the way flesh does.
-- [~] Mushroom or moss ground (cave), a stranger cousin of grass (the cave uses `floor_grass` as moss; no dedicated tile)
-- [~] Bone or tooth floor (flesh). Pale, to break up all the red. `floor_flesh` now has two variant sets with skulls, teeth, ribs and small bones scattered in it; a whole bone floor is still to do
+- [✓] Mushroom or moss ground (cave), 2026-09-25: `floor_moss`, thick moss with rare red or pale-blue mushroom variants
+- [✓] Also added 2026-09-25, no room uses them yet: `floor_leaves` (autumn leaf litter, forest), `floor_sand`, `floor_snow`, `floor_ice`, `floor_metal_plate` (riveted plates, a rusty variant; sewer or forge), `floor_parquet` (basket-weave oak, manor), `floor_brick` (red brick paving, cracked and dark variants), `floor_flowers` (meadow grass with pink, white and yellow flowers). Leaves, snow, moss and flowers each have several equally common layouts, so the 16px repeat never lines up
+- [~] Bone or tooth floor (flesh). Pale, to break up all the red. `floor_flesh` now has two variant sets with skulls, teeth, ribs and small bones scattered in it; a whole bone floor is still to do (a first try, 2026-09-25, was rejected: scattered bones read as a repeating pattern)
 - [✗] Pulsing or wet flesh variant (flesh)
 
 ### New walls
 
-Existing walls: cobble brick, flesh, forest, rough cave, smooth cave, smooth stone, wood plank.
+Existing walls: bookshelf, brick, cobble brick, flesh, forest, ice, iron, mine ore, mossy stone, sandstone, stained glass, rough cave, smooth cave, smooth stone, wood plank.
 Barriers: bedrock, dense forest. The catacomb, manor and sewer stand in for missing walls
 with these, so each item below removes a workaround.
 
-- [✗] Mossy or damp stone wall (cave meets dungeon)
-- [~] Ore vein wall (mine): rough cave rock with a metal or crystal streak. `wall_rough_cave` now has gold flecks in its rock faces now and then (two variant sets), everywhere that wall is used; a mine-only ore wall or crystal is still to do
-- [✗] Bookshelf wall (dungeon)
-- [✗] Window or stained glass wall (cathedral)
+- [✓] Mossy or damp stone wall (cave meets dungeon), 2026-09-25: `wall_mossy_stone`
+- [~] Ore vein wall (mine): rough cave rock with a metal or crystal streak. `wall_rough_cave` now has gold flecks in its rock faces now and then (two variant sets), everywhere that wall is used; `wall_mine_ore` (2026-09-25) is a mine-only dark rock wall with rare blue, pink or green ore variants
+- [✓] Bookshelf wall (dungeon, manor library), 2026-09-25: `wall_bookshelf` (one shelf of separate books with gold bands, three arrangements)
+- [✓] Window or stained glass wall (cathedral), 2026-09-25: `wall_stained_glass`, a small coloured window in every wall tile
 - [✗] Iron bars (dungeon). Special: you should see the floor through it **(decide first)**
 - [✗] Bone wall (flesh)
 
@@ -137,8 +139,9 @@ flesh, forest, mine, sewer and volcano (`game/rooms/`; a manor folder was added 
 `BIOMES.md`). All of them reuse the shared tile set, so none has its own palette yet. The
 last new one should be a color none of them has. **(decide first)**, pick one:
 
-- [~] Sewer or flooded ruin: teal water, slimy brick (the sewer rooms exist, drawn with cobble brick and `floor_water`; no teal or slime art)
-- [✗] Ice cavern: pale blue, white
+- [~] Sewer or flooded ruin: teal water, slimy brick (the sewer rooms exist, drawn with cobble brick and `floor_water`; `floor_grate` and the red `wall_brick` exist since 2026-09-25 but no room uses them yet; no teal or slime art)
+- [~] Ice cavern: pale blue, white (`floor_snow`, `floor_ice` and `wall_ice` exist since 2026-09-25; no rooms or door)
+- [~] Desert tomb: sand, sandstone (`floor_sand` and `wall_sandstone` exist since 2026-09-25; no rooms or door)
 - [~] Lava forge: black rock, orange glow (the volcano rooms exist, using rough cave, smooth cave and `floor_lava`; no forge art)
 - [~] Crypt: bone white, purple (the catacomb rooms exist, using smooth stone and violet carpet; no bone or purple wall)
 
@@ -146,9 +149,13 @@ A biome is at least: 1 wall, 2 floors, 1 door, about 6 objects.
 
 ## 2. Objects
 
-16x16, transparent background, placed freely in a room (not locked to the grid). Only
-`Torch.png`, `Chest_Wood.png`, `sign.png` and the grave set exist. Objects aren't spawned in a live dive yet (that's a code job),
-but they show up in the Dungeon Maker as soon as Orea registers them, so art can run ahead.
+16x16, transparent background, placed freely in a room (not locked to the grid). Torch, chest
+and sign aren't spawned in a live dive yet (that's a code job), but they show up in the Dungeon
+Maker as soon as Orea registers them, so art can run ahead.
+
+**Props** need no registering: a PNG in `objects/props/` (plus its `.aseprite`) is in the
+Dungeon Maker's object list under its file name in lower case, and is drawn in a live dive
+wherever a room places it (cosmetic: nothing bumps into it yet). No room places any yet.
 
 If something should animate, put the frames side by side in one PNG like `Torch.png` does.
 
@@ -160,17 +167,17 @@ If something should animate, put the frames side by side in one PNG like `Torch.
 - [✗] Torch: more flame frames (it has 2)
 - [✗] Chest: open frame
 - [✗] Chest rarity variants: iron, gold, something cursed **(decide first:** how many rarities)
-- [✗] Barrel
-- [✗] Crate
-- [✗] Clay pot or urn, plus a broken version
+- [✓] Barrel, 2026-09-25 (`objects/props/Barrel.png`): the chest's wood with iron hoops
+- [✓] Crate, 2026-09-25 (`objects/props/Crate.png`): planks with a cross brace, iron corners
+- [~] Clay pot, plus a broken version: grey pass shown 2026-09-25, colour after Foxy's yes
 - [✗] Stairs down or exit hatch
 - [✗] Key
 - [✗] Lever or floor switch, on and off
 - [✗] Pressure plate
 - [✗] Spike trap, in and out
-- [✗] Rubble pile
-- [✗] Bones or skeleton remains
-- [✗] Cobweb (corner piece)
+- [~] Rubble pile: grey pass shown 2026-09-25
+- [~] Bones or skeleton remains (a skull on a long bone): grey pass shown 2026-09-25
+- [~] Cobweb (corner piece, top-left): grey pass shown 2026-09-25
 - [✗] Blood or stain decal
 
 ### Dungeon
@@ -319,7 +326,11 @@ monsters, so this section is Silvery Foxy's or a teammate's. These are the obvio
 - [~] Cave: spider, bat, mushroom creature (bat exists; spider and mushroom do not)
 - [✗] Mine: kobold or undead miner, rock golem
 - [~] Flesh: blob, eye stalk, tooth worm (a flesh leech exists; the three listed do not)
-- [✗] Attack and death frames for every enemy above
+- [~] Attack and death frames for every enemy above. Death: every enemy topples (code, no frames).
+  Attack: the wolf and hellhound bite, 2026-09-25 (`Wolf-Attack-<Dir>.png`, 4 frames: crouch,
+  lunge with jaws open, held, recover). Any creature gets them the same way: a sheet per direction,
+  named in its `sprite_frames` as `"Attack" + the walk animation` (`AttackFront`, `AttackSideRight`),
+  `"loop": false`, played once on every screen when it attacks
 - [✗] One boss per biome, bigger than a tile (32x32 or 48x48). The boss rooms exist and are empty.
 
 Each enemy needs what the rat has, plus an attack and a death.

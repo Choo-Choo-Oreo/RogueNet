@@ -1,0 +1,9 @@
+{
+	"tile_name": "wall_sandstone",
+	"atlas_texture": "res://resources/gfx/tileset/wall_sandstone.png",
+	"normal_texture": "res://resources/gfx/tileset/wall_sandstone_normal.png",
+	"specular_color": [0.05, 0.05, 0.05, 1],
+	"sort_order": 100,
+	"category": "wall",
+	"marker_color": [0.768627, 0.603922, 0.368627, 1]
+}

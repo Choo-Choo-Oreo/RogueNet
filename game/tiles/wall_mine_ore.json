@@ -1,0 +1,10 @@
+{
+	"tile_name": "wall_mine_ore",
+	"atlas_texture": "res://resources/gfx/tileset/wall_mine_ore.png",
+	"normal_texture": "res://resources/gfx/tileset/wall_mine_ore_normal.png",
+	"specular_color": [0.1, 0.1, 0.1, 1],
+	"sort_order": 100,
+	"category": "wall",
+	"variant_weights": [8, 1, 1, 1],
+	"marker_color": [0.25098, 0.235294, 0.27451, 1]
+}

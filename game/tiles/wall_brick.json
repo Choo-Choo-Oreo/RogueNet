@@ -1,0 +1,9 @@
+{
+	"tile_name": "wall_brick",
+	"atlas_texture": "res://resources/gfx/tileset/wall_brick.png",
+	"normal_texture": "res://resources/gfx/tileset/wall_brick_normal.png",
+	"specular_color": [0.05, 0.05, 0.05, 1],
+	"sort_order": 100,
+	"category": "wall",
+	"marker_color": [0.603922, 0.27451, 0.188235, 1]
+}
