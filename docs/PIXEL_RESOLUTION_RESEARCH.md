@@ -38,7 +38,7 @@ Tags:
 | Texture filter | Nearest (crisp) | `project.godot` `default_texture_filter=0` |
 | 2D pixel snap | off | not set |
 | Player camera zoom | 5× (world view 256×144) | `scenes/entities/PlayerController.tscn:28` |
-| HUD font sizes | 11 / 14 | `resources/HudTheme.tres` |
+| HUD font sizes | 8 (was 11 / 14; since 2026-09-26 one theme, three sizes 8 / 11 / 15) | `resources/UiTheme.tres` (`HudTheme.tres` merged in and deleted) |
 
 What that means:
 - Art is crisp but **not pixel-perfect**: sprites can sit between art pixels.

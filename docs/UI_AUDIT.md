@@ -442,7 +442,9 @@ There are four styles today:
 - Godot's default grey (menus, town, guild, settings);
 - pure black (lobby, character select);
 - purple (inventory, storage, hard-coded in `InventoryPanel.gd:18-21`);
-- grey/gold (`resources/HudTheme.tres`, the HUD only).
+- grey/gold (the HUD only; was `resources/HudTheme.tres`, now the Hud* styles in `resources/UiTheme.tres` since 2026-09-26).
+
+Since 2026-09-26 the purple is in `UiTheme.tres` too (`InventoryFrame`, `DollFrame`, `ItemSlot*`), no longer hard-coded.
 
 Also:
 - Titles vary: "MULTIPLAYER LOBBY" 30pt capitals, "Characters" 28pt title case, "Settings" centred,

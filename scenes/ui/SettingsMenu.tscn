@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://c1bslvamdvulm" path="res://scripts/settings/FullscreenControl.gd" id="3_fullscreen"]
 [ext_resource type="Script" uid="uid://dj21umeulwan0" path="res://scripts/settings/VSyncControl.gd" id="4_vsync"]
 [ext_resource type="Script" path="res://scripts/settings/VoiceSettings.gd" id="5_voice"]
+[ext_resource type="Theme" path="res://resources/UiTheme.tres" id="6_theme"]
 
 [node name="SettingsMenu" type="Control"]
 layout_mode = 3
@@ -15,6 +16,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("6_theme")
 script = ExtResource("1_settings")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -24,18 +26,18 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 40
-theme_override_constants/margin_top = 40
-theme_override_constants/margin_right = 40
-theme_override_constants/margin_bottom = 40
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 6
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 30
+theme_type_variation = &"MenuTitle"
 text = "Settings"
 horizontal_alignment = 1
 
@@ -52,17 +54,17 @@ metadata/_tab_index = 0
 [node name="List" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Tabs/Audio"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 8
+theme_override_constants/separation = 4
 
 [node name="VolumeHeading" type="Label" parent="MarginContainer/VBoxContainer/Tabs/Audio/List"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_type_variation = &"MenuHeading"
 text = "Volume"
 
 [node name="Video" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Tabs"]
 visible = false
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 6
 metadata/_tab_index = 1
 
 [node name="MasterHBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Tabs/Audio/List"]
@@ -71,13 +73,13 @@ script = ExtResource("2_audio")
 audio_bus_name = "Master"
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/MasterHBoxContainer"]
-custom_minimum_size = Vector2(140, 0)
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "Master Volume"
 
 [node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/MasterHBoxContainer"]
 scrollable = false
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -98,13 +100,13 @@ script = ExtResource("2_audio")
 audio_bus_name = "Music"
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/MusicHBoxContainer"]
-custom_minimum_size = Vector2(140, 0)
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "Music Volume"
 
 [node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/MusicHBoxContainer"]
 scrollable = false
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -125,13 +127,13 @@ script = ExtResource("2_audio")
 audio_bus_name = "SFX"
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/SFXHBoxContainer"]
-custom_minimum_size = Vector2(140, 0)
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "SFX Volume"
 
 [node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/SFXHBoxContainer"]
 scrollable = false
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -152,13 +154,13 @@ script = ExtResource("2_audio")
 audio_bus_name = "UI"
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/UIHBoxContainer"]
-custom_minimum_size = Vector2(140, 0)
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "UI Volume"
 
 [node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/UIHBoxContainer"]
 scrollable = false
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -179,13 +181,13 @@ script = ExtResource("2_audio")
 audio_bus_name = "VoiceChat"
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/VoiceChatHBoxContainer"]
-custom_minimum_size = Vector2(140, 0)
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "Voice Chat Volume"
 
 [node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/VoiceChatHBoxContainer"]
 scrollable = false
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -202,17 +204,17 @@ allow_greater = true
 
 [node name="VoiceHeading" type="Label" parent="MarginContainer/VBoxContainer/Tabs/Audio/List"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_type_variation = &"MenuHeading"
 text = "Voice"
 
 [node name="Voice" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Tabs/Audio/List"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 8
+theme_override_constants/separation = 4
 script = ExtResource("5_voice")
 
 [node name="FullscreenCheckButton" type="CheckButton" parent="MarginContainer/VBoxContainer/Tabs/Video"]
-custom_minimum_size = Vector2(400, 15)
+custom_minimum_size = Vector2(200, 8)
 layout_mode = 2
 text = "Fullscreen"
 script = ExtResource("3_fullscreen")
@@ -223,7 +225,7 @@ text = "VSync"
 script = ExtResource("4_vsync")
 
 [node name="ButtonBack" type="Button" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(220, 50)
+custom_minimum_size = Vector2(110, 25)
 layout_mode = 2
 text = "Back"
 

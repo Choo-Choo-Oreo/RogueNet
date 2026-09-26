@@ -6,6 +6,8 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/PauseMenu.tscn" id="4_pausemenu"]
 [ext_resource type="PackedScene" path="res://scenes/ui/town/TownStorage.tscn" id="5_townstorage"]
 [ext_resource type="Script" path="res://scripts/ui/PlayerVoiceList.gd" id="6_playervoicelist"]
+[ext_resource type="PackedScene" path="res://scenes/ui/ChatBox.tscn" id="7_chatbox"]
+[ext_resource type="Theme" path="res://resources/UiTheme.tres" id="8_theme"]
 
 [node name="MainTown" type="Control" unique_id=748747690]
 layout_mode = 3
@@ -17,10 +19,10 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 tooltip_text = "This will be the main \"Lobby\" once joined before people decide to go into the depths of a dungeon"
+theme = ExtResource("8_theme")
 script = ExtResource("2_maintown")
 
 [node name="Background" type="Panel" parent="." unique_id=1102938475]
-custom_minimum_size = Vector2(1280, 720)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -29,7 +31,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Sidebar" type="Panel" parent="." unique_id=1653544042]
-custom_minimum_size = Vector2(260, 0)
+custom_minimum_size = Vector2(130, 0)
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -42,19 +44,19 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-split_offsets = PackedInt32Array(260)
+split_offsets = PackedInt32Array(130)
 dragging_enabled = false
-split_offset = 260
+split_offset = 130
 
 [node name="PlayerListPanel" type="VSplitContainer" parent="HSplitContainer" unique_id=384756192]
-custom_minimum_size = Vector2(260, 0)
+custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 dragging_enabled = false
 
 [node name="PlayersBox" type="VBoxContainer" parent="HSplitContainer/PlayerListPanel" unique_id=1547615517]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 8
+theme_override_constants/separation = 4
 
 [node name="Title" type="Label" parent="HSplitContainer/PlayerListPanel/PlayersBox" unique_id=938475610]
 layout_mode = 2
@@ -69,24 +71,11 @@ script = ExtResource("6_playervoicelist")
 [node name="ChatPanel" type="VBoxContainer" parent="HSplitContainer/PlayerListPanel" unique_id=1082611912]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 8
+theme_override_constants/separation = 4
 
-[node name="ChatLog" type="RichTextLabel" parent="HSplitContainer/PlayerListPanel/ChatPanel" unique_id=1370474165]
+[node name="ChatBox" parent="HSplitContainer/PlayerListPanel/ChatPanel" instance=ExtResource("7_chatbox")]
 layout_mode = 2
 size_flags_vertical = 3
-
-[node name="ChatInputRow" type="HBoxContainer" parent="HSplitContainer/PlayerListPanel/ChatPanel" unique_id=1705145101]
-layout_mode = 2
-
-[node name="ChatInput" type="LineEdit" parent="HSplitContainer/PlayerListPanel/ChatPanel/ChatInputRow" unique_id=299086416]
-layout_mode = 2
-size_flags_horizontal = 3
-placeholder_text = "Say something..."
-
-[node name="SendButton" type="Button" parent="HSplitContainer/PlayerListPanel/ChatPanel/ChatInputRow" unique_id=831121711]
-custom_minimum_size = Vector2(80, 0)
-layout_mode = 2
-text = "Send"
 
 [node name="Whitespace" type="Panel" parent="HSplitContainer" unique_id=284739610]
 self_modulate = Color(1, 1, 1, 0)
@@ -98,44 +87,47 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 280.0
-offset_top = 20.0
-offset_right = -20.0
-offset_bottom = -20.0
+offset_left = 140.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelMain" unique_id=847561924]
+[node name="Center" type="CenterContainer" parent="PanelMain"]
 layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 110.0
 grow_vertical = 2
-theme_override_constants/separation = 14
 
-[node name="Title" type="Label" parent="PanelMain/VBoxContainer" unique_id=847561923]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelMain/Center" unique_id=847561924]
 layout_mode = 2
-theme_override_font_sizes/font_size = 30
+theme_override_constants/separation = 7
+
+[node name="Title" type="Label" parent="PanelMain/Center/VBoxContainer" unique_id=847561923]
+layout_mode = 2
+theme_type_variation = &"MenuTitle"
 text = "TOWN"
 horizontal_alignment = 1
 
-[node name="GuildButton" type="Button" parent="PanelMain/VBoxContainer" unique_id=561923847]
-custom_minimum_size = Vector2(220, 50)
+[node name="GuildButton" type="Button" parent="PanelMain/Center/VBoxContainer" unique_id=561923847]
+custom_minimum_size = Vector2(110, 25)
 layout_mode = 2
 text = "Guild"
 
-[node name="SwapCharactersButton" type="Button" parent="PanelMain/VBoxContainer" unique_id=1126673908]
-custom_minimum_size = Vector2(220, 50)
+[node name="SwapCharactersButton" type="Button" parent="PanelMain/Center/VBoxContainer" unique_id=1126673908]
+custom_minimum_size = Vector2(110, 25)
 layout_mode = 2
 text = "Swap Characters"
 
-[node name="StorageButton" type="Button" parent="PanelMain/VBoxContainer" unique_id=1330444518]
-custom_minimum_size = Vector2(220, 50)
+[node name="StorageButton" type="Button" parent="PanelMain/Center/VBoxContainer" unique_id=1330444518]
+custom_minimum_size = Vector2(110, 25)
 layout_mode = 2
 text = "Storage"
 
-[node name="LeaveButton" type="Button" parent="PanelMain/VBoxContainer" unique_id=923847561]
-custom_minimum_size = Vector2(220, 50)
+[node name="LeaveButton" type="Button" parent="PanelMain/Center/VBoxContainer" unique_id=923847561]
+custom_minimum_size = Vector2(110, 25)
 layout_mode = 2
 text = "Leave"
 
@@ -146,10 +138,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 280.0
-offset_top = 20.0
-offset_right = -20.0
-offset_bottom = -20.0
+offset_left = 140.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -160,10 +152,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 280.0
-offset_top = 20.0
-offset_right = -20.0
-offset_bottom = -20.0
+offset_left = 140.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -177,10 +169,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 280.0
-offset_top = 20.0
-offset_right = -20.0
-offset_bottom = -20.0
+offset_left = 140.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -194,10 +186,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 280.0
-offset_top = 20.0
-offset_right = -20.0
-offset_bottom = -20.0
+offset_left = 140.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -208,8 +200,8 @@ layout_mode = 1
 visible = false
 layout_mode = 1
 
-[connection signal="pressed" from="PanelMain/VBoxContainer/GuildButton" to="." method="_on_guild_button_pressed"]
-[connection signal="pressed" from="PanelMain/VBoxContainer/SwapCharactersButton" to="." method="_on_swap_characters_button_pressed"]
-[connection signal="pressed" from="PanelMain/VBoxContainer/StorageButton" to="." method="_on_storage_button_pressed"]
-[connection signal="pressed" from="PanelMain/VBoxContainer/LeaveButton" to="." method="_on_leave_button_pressed"]
+[connection signal="pressed" from="PanelMain/Center/VBoxContainer/GuildButton" to="." method="_on_guild_button_pressed"]
+[connection signal="pressed" from="PanelMain/Center/VBoxContainer/SwapCharactersButton" to="." method="_on_swap_characters_button_pressed"]
+[connection signal="pressed" from="PanelMain/Center/VBoxContainer/StorageButton" to="." method="_on_storage_button_pressed"]
+[connection signal="pressed" from="PanelMain/Center/VBoxContainer/LeaveButton" to="." method="_on_leave_button_pressed"]
 [connection signal="back_pressed" from="PanelStorage/TownStorage" to="." method="_on_storage_back_pressed"]

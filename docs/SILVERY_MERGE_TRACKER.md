@@ -12,7 +12,9 @@ Still combine it by hand: copying his file over would wipe out your changes.
 
 Last checked: 2026-09-25 against branch tip `8771fd9` (36 commits since the split at
 `d0b8a02`) and main `90b7f2d`. **Checked again 2026-09-26** against tip `94900e2` (41 commits)
-and main `3bd9586`: the 5 new commits are sorted into the chunks marked "new 2026-09-26" below. Labels compare against committed `main`: if you have
+and main `3bd9586`: the 5 new commits are sorted into the chunks marked "new 2026-09-26" below.
+**Checked again 2026-09-26 (morning)** against tip `4a3854d` (43 commits) and main `f0e0966`: two new
+commits, in BARD PERFORMANCE and MORE MAPS below. Labels compare against committed `main`: if you have
 uncommitted edits in a "take" file, treat it as MERGE.
 
 ## How to import a chunk
@@ -66,8 +68,27 @@ Files only on his branch that read `current_scene` (swap when taking them):
 `scripts/actions/AttackEffect.gd:41`, `scripts/entities/DamageNumber.gd:32`,
 `scripts/entities/Wading.gd:199`, `scripts/ui/HurtOverlay.gd:28`, `test/sim/hit_feedback.gd`.
 
-**Next (planned, not built):** the HUD moves out of `Dungeon.tscn` into GameView, next to the
-viewport. His branch changes `Dungeon.tscn` and the HUD scenes, so those will need a merge too.
+**HUD split (main 2026-09-26):** the dive HUD moved out of `Dungeon.tscn` (its `UILayer` is gone)
+into `scenes/ui/protagonist/MissionHud.tscn` (script `scripts/ui/protagonist/MissionHud.gd`), which
+GameView puts next to the viewport. On import:
+- **HUD pieces his branch adds to `Dungeon.tscn`'s `UILayer` go into `MissionHud.tscn` instead**
+  (PARTY WIPE: `PartyWipeScreen`)
+- **640x360 grid (2026-09-26):** MissionHud and its pieces are at half the old 1280x720 sizes.
+  His HUD pieces (`PartyWipeScreen`) go in at half his sizes, whole numbers only, no 0.5 anchors
+  (centre with a CenterContainer), fonts only from `UiTheme.tres` (8 / `MenuHeading` 11 /
+  `MenuTitle` 15), and `theme = UiTheme` on each root Control (a theme does not pass through the
+  CanvasLayer). `HudTheme.tres` is merged into `UiTheme.tres`: point anything of his at UiTheme.
+- `HealthBar.gd` / `Hotbar.gd`: MERGE. Main sizes the health fill and cooldown cover in whole
+  pixels (`_size_fill`, `set_cooldown`) instead of fractional anchors; keep main's.
+- `scenes/dungeon/Dungeon.tscn`: MERGE, never take (main has no `UILayer`)
+- `scripts/dungeon/Dungeon.gd`: MERGE (main removed its chat forwarding; the HUD does it now; and
+  adds DebugDraw through `GameView.debug_parent(self)`, the full-resolution debug layer; since
+  2026-09-26 DebugMenu goes there too, drawing at real screen pixels)
+- `PlayerController.gd`: main asks `get_tree().root` for the chat focus (line ~294) and the
+  click blockers (`_attack_blocked`), since the HUD is no longer in the player's viewport; keep
+  that when merging his changes
+- Any new HUD code of his that reaches the world through `get_viewport()` or `current_scene`
+  needs the same check
 
 ## Chunks
 
@@ -199,6 +220,9 @@ Rarer tile variants picked by weight: cracked or mossy stone, bone flecks in fle
   `floor_smooth_stone`, `floor_wood_planks`, `wall_rough_cave`), 6 tileset PNGs in
   `resources/gfx/tileset/`, `test/unit/test_tile_variants.gd`, `.claude/tools/normal_maps.py`
 - MERGE: `scripts/cells/tiles/TileType.gd` (also in WADING)
+- **Now MERGE (easy), not take** (main `f911627` added a `footsteps` or `muffle` line to each): the
+  tile JSONs above except `floor_flesh`. His change to each is the variant list; keep main's line too.
+  `TileInitialize.gd` and `DualGridRender.gd` stay as the GameView section says.
 - Regenerate the normal maps after importing the tileset PNGs.
 
 ### APP ICON (new, `de59911`) ✗
@@ -223,7 +247,11 @@ and kemono (a fox with ears and a tail). They're made by a script
     "Human" button panel. Main no longer uses that panel: the skin is chosen per adventurer
     in `CharacterSelect`, saved, and shared through `NetworkSync.report_skin`. Keep his
     art and his `like`/`art` loading; put the choice into `CharacterSelect` and don't take
-    his `MainTown` changes.
+    his `MainTown` changes. `CharacterSelect` is at 640x360 now (2026-09-26): his picker
+    goes in at half his sizes, fonts only through `UiTheme.tres`, whole numbers only.
+  - `MainTown` (2026-09-26) is at 640x360 too, and its own chat log/input/Send button is
+    replaced by the shared `ChatBox` scene (`add_chat_line` forwards to it). Merge his town
+    changes onto that; don't bring the old chat nodes back.
   - Main's `SKINS` comment says only the Human is left because gear only fits its body.
     His `"fits_gear": false` answers that: gear is hidden on the elf, dwarf and kemono
     (the items still count). **Decision:** do you want skins that show no gear yet?
@@ -297,15 +325,23 @@ one while you know that code.
   changed it again in `70d972c`), `singletons/ConfigFileHandler.gd`
 - Art: settings textures from `3bad3b3`
 - Make sure your voice settings end up on the same parchment page as his volume rows, not a second audio page.
+- 640x360 (2026-09-26): main halved every size in `SettingsMenu.tscn` and `VoiceSettings.gd`
+  and moved its font sizes to `resources/UiTheme.tres` (`MenuTitle` 15, `MenuHeading` 11; the
+  root sets `theme`). His parchment layout comes in at half his sizes, fonts only through the
+  theme, whole numbers only (see Pixel-perfect checks).
 - Needs: COMBAT FEEDBACK (the feedback settings in `FeedbackControl.gd`)
 
 ### PARTY WIPE ✗
 Graves, dive history and End votes.
 - take: `scripts/dungeon/RunLog.gd`, `scripts/ui/PartyWipeScreen.gd`,
-  `scenes/ui/PartyWipeScreen.tscn`, `scripts/dungeon/Dungeon.gd`, `test/unit/test_run_log.gd`,
+  `scenes/ui/PartyWipeScreen.tscn`, `test/unit/test_run_log.gd`,
   `.claude/docs/party-wipe-screen.md`, background art (`f7d1984`, church on a hill)
 - MERGE (easy): `scripts/entities/SpriteFramesLoader.gd`
-- MERGE: `scenes/dungeon/Dungeon.tscn` (Hotbar path moved to `ui/protagonist/`),
+- MERGE: `scripts/dungeon/Dungeon.gd` (2026-09-26, was take: add only his `RunLog.begin()`; main
+  removed the chat forwarding for the HUD split)
+- MERGE: `scenes/dungeon/Dungeon.tscn` (Hotbar path moved to `ui/protagonist/`; since 2026-09-26
+  the HUD is in `scenes/ui/protagonist/MissionHud.tscn`, so `PartyWipeScreen` goes there, not in
+  `Dungeon.tscn`),
   `scripts/entities/entities.antagonist/MinionIndex.gd`
 - **Decision:** `DeathCountdown`. Main moved it to `ui/protagonist/` and changed it, the branch deleted it.
 
@@ -358,7 +394,8 @@ Unrelated fixes bundled into one commit. Take each one with the chunk it belongs
   players in the dive. MERGE, check it against your own host-check refactor (`8fde56b`)
 - `scripts/dungeon/MinionSpawning.gd`: roll and fit minion together. MERGE
 - `scripts/ui/LobbyMenu.gd` (MERGE easy), `scripts/ui/MenuScrollButton.gd` (take): timers no
-  longer resume on a freed menu (a crash fix)
+  longer resume on a freed menu (a crash fix). Main's `_build_toast` changed for 640x360
+  (2026-09-26: halved, centred by a container column, font from `UiTheme.tres`): keep main's.
 - `HurtOverlay.gd`, `PartyWipeScreen.gd`, `RunLog.gd`, `PlayerInventory.gd`,
   `AudioBusLayout.tres`: already covered by their chunks
 
@@ -435,8 +472,48 @@ and four instruments: laser keytar, plasma guitar, holo drum gauntlets, theremin
   `resources/gfx/ui/icons/items/`, gear art in `resources/gfx/gear/*/neon_outlaw/` and
   `back/amp_backpack/`, `.claude/tools/neon_outlaw.py`
 - Sound: 4 whole songs in `resources/sfx/music/bard/` (Pixabay, credited in `SOURCES.md`). Each
-  instrument's JSON names its `"song"`; **nothing plays it yet** on the branch either.
+  instrument's JSON names its `"song"`. BARD PERFORMANCE (`4c160c8`) is what plays them.
 - Needs: THINGS RESTORE / STORAGE (main has no `game/sets/`)
+
+### BARD PERFORMANCE (new 2026-09-26, `4c160c8`) ✗
+Press **B** while holding an instrument: its song loops. The performer hears it at full volume while
+the music ducks (`MusicManager.duck()`), and everyone else hears it from where the performer stands.
+Unequipping the instrument or dying ends it. The keytar, guitar and drums are now `"weapon": "blunt"`
+(their swing sound, see REAL SOUNDS).
+- take (new): `scripts/entities/entities.protagonist/player/BardPerformance.gd`
+- take: `singletons/MusicManager.gd` (`duck()`, `DUCK_DB`/`DUCK_FADE`; also in BIOME AMBIENCE, which
+  takes the same file)
+- The 3 instrument JSONs (`laser_keytar`, `plasma_guitar`, `holo_drum_gauntlets`): take with NEON
+  OUTLAW (not on main yet)
+- MERGE: `PlayerController.gd` (`performance` node, `_toggle_performing`, `set_performing`, the
+  held-song check when gear changes), `scripts/items/ItemDatabase.gd` (`song()`),
+  `singletons/NetworkSync.gd` (`share_performing`, `report_performing`, `peer_songs`)
+- MERGE (easy): `project.godot`: a new `perform` input on **B** (nothing on main uses B). Add a
+  controller button too (the HUD must work on keyboard+mouse and controller).
+- **On merge:** his `share_performing` does its own `is_server()` / `rpc_id(1, …)`. Main has one
+  helper for that, `NetworkSync.ask_host(...)` (`8fde56b`); use it instead of a second copy.
+- **Check against your hearing work:** the song plays through a bare `AudioStreamPlayer2D` on the
+  Music bus, not `SoundPlayer`/`Sound`. So walls don't muffle it and minions can't hear it.
+  **Decision:** should a performance be a noise the hearing system knows about?
+- Needs: NEON OUTLAW (the instruments and songs)
+
+### MORE MAPS (new 2026-09-26, `4a3854d`) ✗
+Sixteen new rooms in existing biomes, four of them huge and tagged `vast`: Dungeon Undercroft
+70×70, Mine Grand Excavation 81×81, Cave Moss Cathedral 71×61, Sewer Great Cistern 71×71. Also
+READMEs for the five new biomes and headstones for them.
+- take: the 16 room JSONs (cave 4, dungeon 5, mine 4, sewer 3), **then remove `"biome"` from
+  each** (all 16 have it; see NEW BIOMES)
+- take: `game/rooms/cave|dungeon|mine/README.md`; the five new-biome READMEs (with NEW BIOMES);
+  5 headstone PNGs in `resources/gfx/ui/party_wipe/` (with PARTY WIPE); `.claude/tools/room_maps/`
+  (the seeded generators that made the rooms)
+- MERGE (easy): `game/rooms/cave|dungeon|mine|sewer/defines.json` (adds `"vast": 0.35` to
+  `tag_weights`; the same files get `ambience` from BIOME AMBIENCE), `game/rooms/sewer/README.md`
+- MERGE: `game/rooms/BIOMES.md`, `game/rooms/README.md` (the `vast` tag), `docs/STRUCTURE.md`
+- Needs: NEW TILE SETS. The new rooms use 11 floors and walls main doesn't have: `floor_brick`,
+  `floor_cobblestone`, `floor_grate`, `floor_gravel`, `floor_ice`, `floor_moss`,
+  `floor_mossy_cobblestone`, `wall_brick`, `wall_ice`, `wall_mine_ore`, `wall_mossy_stone`.
+- **Check performance:** an 81×81 room is far bigger than anything on main. Test the pathfinding
+  and minion count in the Grand Excavation before it goes into the normal room pool.
 
 ### GEAR FOR OTHER BODIES (new 2026-09-26, `94900e2` "r") ✗
 Skins with a body of their own (`"fits_gear": false`: elf, dwarf) now wear their own copy of
@@ -461,16 +538,19 @@ Taking one of these brings in the other chunks' changes too.
 
 | File | Chunks |
 |---|---|
-| `PlayerController.gd` | COMBAT FEEDBACK, ANIMATIONS, WADING, SKINS, WOLF BITE, GEAR FOR OTHER BODIES |
+| `PlayerController.gd` | COMBAT FEEDBACK, ANIMATIONS, WADING, SKINS, WOLF BITE, GEAR FOR OTHER BODIES, BARD PERFORMANCE |
+| `MusicManager.gd` | BIOME AMBIENCE, BARD PERFORMANCE |
+| `project.godot` | APP ICON, BARD PERFORMANCE |
+| `game/rooms/*/defines.json` | BIOME AMBIENCE, MORE MAPS |
 | `MinionController.gd` | COMBAT FEEDBACK, ANIMATIONS, WADING |
 | `GridMover.gd` | FOOTSTEPS, FIXES |
 | `TileType.gd` | WADING, TILE VARIANTS |
 | `ParticleBurst.gd` | COMBAT FEEDBACK, FOOTSTEPS |
 | `SettingsMenu.gd` | SETTINGS, BIOME AMBIENCE |
 | `GearLayers.gd` | ANIMATIONS, WADING, GEAR FOR OTHER BODIES |
-| `ItemDatabase.gd` | STORAGE, WADING, GEAR FOR OTHER BODIES |
+| `ItemDatabase.gd` | STORAGE, WADING, GEAR FOR OTHER BODIES, REAL SOUNDS, BARD PERFORMANCE |
 | `DollStage.gd` | STORAGE, WADING |
-| `NetworkSync.gd` | COMBAT FEEDBACK, FIXES, WOLF BITE |
+| `NetworkSync.gd` | COMBAT FEEDBACK, FIXES, WOLF BITE, BARD PERFORMANCE |
 | `AttackEffect.gd` | COMBAT FEEDBACK, WOLF BITE |
 | `DirectionalAnimator.gd` | ANIMATIONS, WOLF BITE |
 | `human.json` | ANIMATIONS, WOLF BITE |

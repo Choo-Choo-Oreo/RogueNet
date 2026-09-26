@@ -19,22 +19,24 @@ func _build_toast() -> void:
 	_toast = PanelContainer.new()
 	_toast.visible = false
 	_toast.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	# Pinned to the right edge, vertically centred, whatever the window size.
-	_toast.anchor_left = 1.0
-	_toast.anchor_right = 1.0
-	_toast.anchor_top = 0.5
-	_toast.anchor_bottom = 0.5
-	_toast.offset_left = -460.0
-	_toast.offset_right = -40.0
-	_toast.offset_top = -40.0
-	_toast.offset_bottom = 40.0
-	_toast.grow_vertical = Control.GROW_DIRECTION_BOTH
+	# Pinned to the right edge, vertically centred, whatever the window size: a full-height
+	# column on the right centres it (a container, so it lands on whole UI pixels).
+	var column := VBoxContainer.new()
+	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.alignment = BoxContainer.ALIGNMENT_CENTER
+	column.anchor_left = 1.0
+	column.anchor_right = 1.0
+	column.anchor_bottom = 1.0
+	column.offset_left = -230.0
+	column.offset_right = -20.0
+	_toast.custom_minimum_size.y = 40
 	_toast_label = Label.new()
 	_toast_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_toast_label.add_theme_color_override("font_color", Color(1.0, 0.45, 0.4))
-	_toast_label.add_theme_font_size_override("font_size", 20)
+	_toast_label.theme_type_variation = &"MenuHeading"
 	_toast.add_child(_toast_label)
-	add_child(_toast)
+	column.add_child(_toast)
+	add_child(column)
 
 ## seconds = 0 keeps the toast up until the next one replaces it (used while joining).
 func _show_error(text: String, color := Color(1.0, 0.45, 0.4), seconds := ERROR_SECONDS) -> void:

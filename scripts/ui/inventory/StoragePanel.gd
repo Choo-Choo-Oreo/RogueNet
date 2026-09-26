@@ -11,7 +11,7 @@ var _slots: Array[ItemSlot] = []
 var _count: Label
 
 func _ready() -> void:
-	add_theme_stylebox_override("panel", InventoryPanel.frame_style())
+	theme_type_variation = &"InventoryFrame"
 	_build()
 	InventoryPanel.block_clicks(self)
 	PlayerInventory.changed.connect(refresh)
@@ -19,16 +19,16 @@ func _ready() -> void:
 
 func _build() -> void:
 	var column := VBoxContainer.new()
-	column.add_theme_constant_override("separation", 10)
+	column.add_theme_constant_override("separation", 5)
 	add_child(column)
 
 	var header := HBoxContainer.new()
 	column.add_child(header)
-	header.add_child(InventoryPanel._label("Storage", InventoryPanel.COLOR_TEXT, 20))
+	header.add_child(InventoryPanel._label("Storage", &"InventoryHeading"))
 	var spacer := Control.new()
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(spacer)
-	_count = InventoryPanel._label("", InventoryPanel.COLOR_DIM, 14)
+	_count = InventoryPanel._label("", &"InventoryDim")
 	header.add_child(_count)
 	if OS.has_feature("editor"):
 		_debug_button(column, "Populate all items", ItemDatabase.all_ids)
@@ -37,8 +37,7 @@ func _build() -> void:
 
 	var grid := GridContainer.new()
 	grid.columns = PlayerInventory.STORAGE_COLUMNS
-	grid.add_theme_constant_override("h_separation", 4)
-	grid.add_theme_constant_override("v_separation", 4)
+	grid.theme_type_variation = &"ItemGrid"
 	for i in PlayerInventory.storage.size():
 		var cell := ItemSlot.new(PlayerInventory.place(PlayerInventory.STORAGE, i))
 		cell.quick_action = PlayerInventory.equip_from
@@ -51,13 +50,13 @@ func _build() -> void:
 	if rows > MAX_VISIBLE_ROWS:
 		var scroll := ScrollContainer.new()
 		scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-		scroll.custom_minimum_size.y = MAX_VISIBLE_ROWS * (ItemSlot.SIZE + 4)
+		scroll.custom_minimum_size.y = MAX_VISIBLE_ROWS * (ItemSlot.SIZE + grid.get_theme_constant("v_separation"))
 		scroll.add_child(grid)
 		column.add_child(scroll)
 	else:
 		column.add_child(grid)
 
-	column.add_child(InventoryPanel._label("Drag gear onto your character, or right-click it", InventoryPanel.COLOR_DIM, 12))
+	column.add_child(InventoryPanel._label("Drag gear onto your character, or right-click it", &"InventoryDim"))
 
 ## Adds one of each item `ids` returns that the adventurer lacks (PlayerInventory.add_to_storage).
 func _debug_button(column: VBoxContainer, text: String, ids: Callable) -> void:

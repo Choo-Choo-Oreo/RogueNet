@@ -7,9 +7,7 @@ extends Control
 @onready var player_list: PlayerVoiceList = $HSplitContainer/PlayerListPanel/PlayersBox/PlayerList
 @onready var sidebar: Panel = $Sidebar
 @onready var player_list_panel: VSplitContainer = $HSplitContainer/PlayerListPanel
-@onready var chat_log: RichTextLabel = $HSplitContainer/PlayerListPanel/ChatPanel/ChatLog
-@onready var chat_input: LineEdit = $HSplitContainer/PlayerListPanel/ChatPanel/ChatInputRow/ChatInput
-@onready var send_button: Button = $HSplitContainer/PlayerListPanel/ChatPanel/ChatInputRow/SendButton
+@onready var chat_box: ChatBox = $HSplitContainer/PlayerListPanel/ChatPanel/ChatBox
 
 func _ready() -> void:
 	MusicManager.stop()
@@ -21,26 +19,15 @@ func _ready() -> void:
 	player_list_panel.visible = NetworkSync.is_online()
 	# Tell everyone what this player wears: after joining a server, or coming back from a dive.
 	NetworkSync.share_equipment(PlayerInventory.worn())
-	chat_log.scroll_following = true
-	send_button.pressed.connect(_send_chat)
-	chat_input.text_submitted.connect(func(_text): _send_chat())
 	PlayerInventory.save_adventurer()
 
 # Leaving the town any way (Leave, a dive starting, the host going) saves the adventurer.
 func _exit_tree() -> void:
 	PlayerInventory.save_adventurer()
 
-# Enter in the input box or the Send button both come here.
-func _send_chat() -> void:
-	var text := chat_input.text.strip_edges()
-	chat_input.clear()
-	if not text.is_empty():
-		NetworkSync.send_chat(text)
-	chat_input.grab_focus()
-
+## NetworkSync.receive_chat() calls this on the current scene: the same ChatBox as in a dive.
 func add_chat_line(line: String) -> void:
-	# [lb] stops a player's text from being read as formatting tags.
-	chat_log.append_text(line.replace("[", "[lb]") + "\n")
+	chat_box.add_chat_line(line)
 
 ## NetworkSync calls this when someone joins or leaves (the list itself is PlayerVoiceList).
 func refresh_player_list() -> void:

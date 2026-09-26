@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" uid="uid://cw4p2iop2rv0i" path="res://scripts/ui/MainMenu.gd" id="1_vjtqc"]
 [ext_resource type="PackedScene" path="res://scenes/ui/SettingsMenu.tscn" id="2_iwbf0"]
+[ext_resource type="Theme" path="res://resources/UiTheme.tres" id="3_theme"]
+[ext_resource type="Script" path="res://scripts/ui/MenuPanel.gd" id="4_menupanel"]
 
 [node name="MainMenu" type="Control" unique_id=1510708277]
 layout_mode = 3
@@ -12,10 +14,10 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("3_theme")
 script = ExtResource("1_vjtqc")
 
 [node name="Background" type="Panel" parent="." unique_id=1911439092]
-custom_minimum_size = Vector2(1280, 720)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -30,51 +32,51 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-split_offsets = PackedInt32Array(260)
+split_offsets = PackedInt32Array(130)
 dragging_enabled = false
-split_offset = 260
+split_offset = 130
 
 [node name="VSplitContainer" type="VSplitContainer" parent="HSplitContainer" unique_id=1668331263]
 layout_mode = 2
 dragging_enabled = false
 
 [node name="Icon" type="Panel" parent="HSplitContainer/VSplitContainer" unique_id=2133664891]
-custom_minimum_size = Vector2(220, 220)
+custom_minimum_size = Vector2(110, 110)
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer/VSplitContainer" unique_id=1038033847]
 layout_mode = 2
 size_flags_vertical = 4
-theme_override_constants/separation = 14
+theme_override_constants/separation = 7
 
 [node name="Singleplayer" type="Button" parent="HSplitContainer/VSplitContainer/VBoxContainer" unique_id=183422601]
-custom_minimum_size = Vector2(220, 50)
+custom_minimum_size = Vector2(110, 25)
 layout_mode = 2
 text = "Singleplayer"
 
 [node name="Multiplayer" type="Button" parent="HSplitContainer/VSplitContainer/VBoxContainer" unique_id=921803609]
-custom_minimum_size = Vector2(220, 50)
+custom_minimum_size = Vector2(110, 25)
 layout_mode = 2
 text = "Multiplayer"
 
 [node name="DungeonMaker" type="Button" parent="HSplitContainer/VSplitContainer/VBoxContainer" unique_id=604245429]
-custom_minimum_size = Vector2(220, 50)
+custom_minimum_size = Vector2(110, 25)
 layout_mode = 2
 text = "Dungeon Maker"
 
 [node name="Options" type="Button" parent="HSplitContainer/VSplitContainer/VBoxContainer" unique_id=959549795]
-custom_minimum_size = Vector2(220, 50)
+custom_minimum_size = Vector2(110, 25)
 layout_mode = 2
 text = "Options"
 
 [node name="Exit" type="Button" parent="HSplitContainer/VSplitContainer/VBoxContainer" unique_id=1539011995]
-custom_minimum_size = Vector2(220, 50)
+custom_minimum_size = Vector2(110, 25)
 layout_mode = 2
 text = "Exit"
 
 [node name="Whitespace" type="Panel" parent="HSplitContainer/VSplitContainer/VBoxContainer" unique_id=168903097]
 self_modulate = Color(1, 1, 1, 0)
-custom_minimum_size = Vector2(0, 25)
+custom_minimum_size = Vector2(0, 12)
 layout_mode = 2
 
 [node name="Whitespace" type="Panel" parent="HSplitContainer" unique_id=183791862]
@@ -87,12 +89,13 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 280.0
-offset_top = 20.0
-offset_right = -20.0
-offset_bottom = -20.0
+offset_left = 140.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("4_menupanel")
 
 [node name="SettingsMenu" parent="PanelSettings" unique_id=1044778914 instance=ExtResource("2_iwbf0")]
 layout_mode = 1

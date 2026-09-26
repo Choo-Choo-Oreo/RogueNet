@@ -13,9 +13,9 @@ const HALF := 8
 ## Opacity of the mesh-tile overlay: floors 35%, walls 50% (walls are harder to see).
 const MESH_ALPHA_FLOOR := 0.35
 const MESH_ALPHA_WALL := 0.5
-## Text height in WORLD pixels (half of what it was). The glyphs themselves are
-## rasterised at screen resolution, see _label.
-const FONT_SIZE := 4
+## Label text size in screen pixels of a 720-high window (times GameView.debug_scale), the same
+## as the DebugMenu overlay. Not tied to the world zoom; see _label.
+const LABEL_SIZE := 11
 
 const ROLE_COLORS := {
 	"entrance": Color(0.3, 1.0, 0.4),
@@ -88,8 +88,9 @@ func _draw() -> void:
 
 ## The tiles currently on screen (plus one of margin).
 func _visible_tiles() -> Rect2i:
-	var viewport := get_viewport()
-	var world: Rect2 = viewport.get_canvas_transform().affine_inverse() * viewport.get_visible_rect()
+	var view := GameView.of(self)
+	var shown := view.get_global_rect() if view else get_viewport().get_visible_rect()
+	var world: Rect2 = get_canvas_transform().affine_inverse() * shown
 	var from := Vector2i(floori(world.position.x / TILE) - 1, floori(world.position.y / TILE) - 1)
 	var to := Vector2i(ceili(world.end.x / TILE) + 1, ceili(world.end.y / TILE) + 1)
 	return Rect2i(from, to - from)
@@ -284,8 +285,8 @@ func _draw_rooms() -> void:
 		if DebugState.on("show-room-outlines"):
 			draw_rect(rect, color, false, 1.0)
 		if DebugState.on("show-room-ids"):
-			_label(rect.position + Vector2(2, FONT_SIZE + 1), "#%d %s" % [i, p.room_id], color)
-			_label(rect.position + Vector2(2, FONT_SIZE * 2 + 2), "%s  depth %d" % [room.get("role", "normal"), p.depth], color)
+			_label(rect.position + Vector2(2, _line_height()), "#%d %s" % [i, p.room_id], color)
+			_label(rect.position + Vector2(2, _line_height() * 2), "%s  depth %d" % [room.get("role", "normal"), p.depth], color)
 
 ## Green = joined to another room, red = sealed dead end, magenta = left open
 ## with no partner (should not happen).
@@ -477,9 +478,13 @@ func _draw_inspector() -> void:
 		return
 	var lines := _inspect_lines(picked)
 	var at: Vector2 = picked.global_position + Vector2(TILE + 4, -4)
-	draw_rect(Rect2(at - Vector2(2, 5), Vector2(92, lines.size() * 5 + 3)), Color(0, 0, 0, 0.6), true)
+	var line := _line_height()
+	var width := 0.0
+	for entry in lines:
+		width = maxf(width, _label_width(entry[0]))
+	draw_rect(Rect2(at - Vector2(2, line), Vector2(width + 4, lines.size() * line + 3)), Color(0, 0, 0, 0.6), true)
 	for i in lines.size():
-		_label(at + Vector2(0, i * 5), lines[i][0], lines[i][1])
+		_label(at + Vector2(0, i * line), lines[i][0], lines[i][1])
 
 func _inspect_lines(minion: Node) -> Array:
 	var senses: MinionSenses = minion.senses
@@ -526,16 +531,29 @@ func _inspect_lines(minion: Node) -> Array:
 		lines.append([patrol, STATE_COLORS[0]])
 	return lines
 
-## Text is drawn at screen resolution and snapped to a whole screen pixel, so it
-## stays sharp at any camera zoom instead of being a scaled-up world-size glyph.
-## Only its anchor point lives in the world, so it still follows the map.
+## Text is drawn in real screen pixels and snapped to a whole one, so it stays sharp at any
+## camera zoom and window size; its size is LABEL_SIZE times GameView.debug_scale, like the
+## DebugMenu. Only its anchor point lives in the world, so it still follows the map.
 func _label(pos: Vector2, text: String, color: Color) -> void:
-	var font := ThemeDB.fallback_font
-	var to_screen: Transform2D = get_viewport().get_canvas_transform()
-	var zoom := to_screen.get_scale().x
-	var screen := (to_screen * pos).round()
-	draw_set_transform(to_screen.affine_inverse() * screen, 0.0, Vector2(1.0 / zoom, 1.0 / zoom))
-	var size := maxi(int(round(FONT_SIZE * zoom)), 6)
-	draw_string_outline(font, Vector2.ZERO, text, HORIZONTAL_ALIGNMENT_LEFT, -1, size, 3, Color.BLACK)
-	draw_string(font, Vector2.ZERO, text, HORIZONTAL_ALIGNMENT_LEFT, -1, size, color)
+	var to_window := _to_window()
+	var screen := (to_window * pos).round()
+	draw_set_transform_matrix(to_window.affine_inverse() * Transform2D(0.0, screen))
+	var size := _label_size()
+	draw_string_outline(ThemeDB.fallback_font, Vector2.ZERO, text, HORIZONTAL_ALIGNMENT_LEFT, -1, size, 3, Color.BLACK)
+	draw_string(ThemeDB.fallback_font, Vector2.ZERO, text, HORIZONTAL_ALIGNMENT_LEFT, -1, size, color)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+## World position to real window pixels (this layer's canvas, then the window's stretch).
+func _to_window() -> Transform2D:
+	return get_viewport().get_final_transform() * get_canvas_transform()
+
+func _label_size() -> int:
+	return maxi(roundi(LABEL_SIZE * GameView.debug_scale(get_tree())), 6)
+
+## One label line, in world pixels.
+func _line_height() -> float:
+	return (_label_size() + 2) / _to_window().get_scale().x
+
+## A label's width, in world pixels.
+func _label_width(text: String) -> float:
+	return ThemeDB.fallback_font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, _label_size()).x / _to_window().get_scale().x

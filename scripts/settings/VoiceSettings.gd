@@ -67,7 +67,7 @@ func _ready() -> void:
 	_gain.max_value = 20.0
 	_gain.step = 1.0
 	_gain.value = VoiceChat.mic.gain_db
-	_gain.custom_minimum_size = Vector2(200, 0)
+	_gain.custom_minimum_size = Vector2(100, 0)
 	_gain.scrollable = false  # the wheel scrolls the tab, not the setting
 	_gain.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_gain.value_changed.connect(_on_gain_changed)
@@ -89,12 +89,12 @@ func _ready() -> void:
 	_meter.min_value = METER_FLOOR_DB
 	_meter.max_value = 0.0
 	_meter.show_percentage = false
-	_meter.custom_minimum_size = Vector2(200, 16)
+	_meter.custom_minimum_size = Vector2(100, 8)
 	_meter.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_row("Mic level", _meter)
 	_gate_mark = ColorRect.new()
 	_gate_mark.color = Color.RED
-	_gate_mark.size = Vector2(2, 16)
+	_gate_mark.size = Vector2(1, 8)
 	_meter.add_child(_gate_mark)
 	_meter_label = Label.new()
 	# Wraps rather than widening the tab when the message is long.
@@ -168,11 +168,11 @@ func _row(title: String, control: Control) -> Label:
 	var row := HBoxContainer.new()
 	var label := Label.new()
 	label.text = title
-	label.custom_minimum_size = Vector2(140, 0)
+	label.custom_minimum_size = Vector2(80, 0)
 	row.add_child(label)
 	row.add_child(control)
 	var value := Label.new()
-	value.custom_minimum_size = Vector2(60, 0)
+	value.custom_minimum_size = Vector2(30, 0)
 	row.add_child(value)
 	add_child(row)
 	return value
@@ -191,7 +191,8 @@ func _process(_delta: float) -> void:
 	var level := VoiceChat.envelope_db
 	_meter.value = maxf(level, METER_FLOOR_DB)
 	var gate := VoiceChat.gate_db()
-	_gate_mark.position.x = _meter.size.x * inverse_lerp(METER_FLOOR_DB, 0.0, clampf(gate, METER_FLOOR_DB, 0.0))
+	# Whole UI pixels: the menus sit on the 640x360 grid.
+	_gate_mark.position.x = floorf(_meter.size.x * inverse_lerp(METER_FLOOR_DB, 0.0, clampf(gate, METER_FLOOR_DB, 0.0)))
 	# The number box shows a manual gate; the label only the automatic one.
 	_gate_label.text = "auto: %.0f dB" % gate if VoiceChat.auto_gate else ""
 	var talking := "in the dungeon %.0f dB" % VoiceChat.my_voice_db(level) if VoiceChat.gate_open else "silent"

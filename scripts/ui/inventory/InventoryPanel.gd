@@ -10,13 +10,9 @@ extends PanelContainer
 
 const UI_DIR := "res://resources/gfx/ui/inventory/"
 const BODY_SHEET := "res://resources/gfx/entities/entities.protagonist/human/Human-%s.png"
-const DOLL_SCALE := 8
+const DOLL_SCALE := 4
 const BAG_COLUMNS := 7
 
-const COLOR_PANEL := Color("#211d29")
-const COLOR_PANEL_BORDER := Color("#3b3447")
-const COLOR_TEXT := Color("#d8d2e4")
-const COLOR_DIM := Color("#8f879e")
 
 ## Two columns, the way the slots sit in the mockup: worn pieces on the left,
 ## neck / back / hands on the right.
@@ -57,7 +53,7 @@ static func mouse_over_open_panel(viewport: Viewport) -> bool:
 
 ## The character preview is drawn this many times bigger (the wide layout uses a
 ## smaller one so the panel stays short).
-const DOLL_SCALE_WIDE := 6
+const DOLL_SCALE_WIDE := 3
 
 var _slots: Array[ItemSlot] = []
 var _facing := 0
@@ -67,7 +63,11 @@ var _bag_count: Label
 var _body_sheets: Dictionary = {}
 
 func _ready() -> void:
-	add_theme_stylebox_override("panel", (StyleBoxEmpty.new() as StyleBox) if embedded else frame_style())
+	# The purple frame is InventoryFrame in UiTheme.tres (shared with storage and the GameMenu).
+	if embedded:
+		add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+	else:
+		theme_type_variation = &"InventoryFrame"
 	for sheet in ItemDatabase.DRAW_ORDER:
 		_body_sheets[sheet] = load(BODY_SHEET % sheet)
 	_build()
@@ -75,35 +75,25 @@ func _ready() -> void:
 	PlayerInventory.changed.connect(refresh)
 	refresh()
 
-## The purple frame the inventory windows share (also the dungeon GameMenu's).
-static func frame_style() -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = COLOR_PANEL
-	style.border_color = COLOR_PANEL_BORDER
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(4)
-	style.set_content_margin_all(14)
-	return style
-
 func _build() -> void:
 	var column := VBoxContainer.new()
-	column.add_theme_constant_override("separation", 10)
+	column.add_theme_constant_override("separation", 5)
 	add_child(column)
 
 	if not embedded:
 		var header := HBoxContainer.new()
-		header.add_theme_constant_override("separation", 8)
+		header.add_theme_constant_override("separation", 4)
 		column.add_child(header)
-		header.add_child(_pixel_icon(load(UI_DIR + "backpack.png"), 2))
-		header.add_child(_label("Inventory", COLOR_TEXT, 20))
+		header.add_child(_pixel_icon(load(UI_DIR + "backpack.png"), 1))
+		header.add_child(_label("Inventory", &"InventoryHeading"))
 
 	var top := HBoxContainer.new()
-	top.add_theme_constant_override("separation", 18 if wide_layout else 14)
+	top.add_theme_constant_override("separation", 9 if wide_layout else 7)
 	column.add_child(top)
 
 	# Wide: [worn pieces] [character] [neck/back/hands], each a column of slots.
 	var paper := HBoxContainer.new()
-	paper.add_theme_constant_override("separation", 10)
+	paper.add_theme_constant_override("separation", 5)
 	top.add_child(paper)
 	var left_slots: VBoxContainer = null
 	if wide_layout:
@@ -113,12 +103,7 @@ func _build() -> void:
 	var doll_column := VBoxContainer.new()
 	paper.add_child(doll_column)
 	var doll_frame := PanelContainer.new()
-	var doll_style := StyleBoxFlat.new()
-	doll_style.bg_color = ItemSlot.COLOR_BG
-	doll_style.border_color = ItemSlot.COLOR_BORDER
-	doll_style.set_border_width_all(2)
-	doll_style.set_content_margin_all(8)
-	doll_frame.add_theme_stylebox_override("panel", doll_style)
+	doll_frame.theme_type_variation = &"DollFrame"
 	doll_column.add_child(doll_frame)
 	_doll = Control.new()
 	_doll.custom_minimum_size = Vector2.ONE * ItemDatabase.FRAME_SIZE * (DOLL_SCALE_WIDE if wide_layout else DOLL_SCALE)
@@ -129,8 +114,8 @@ func _build() -> void:
 	var left := _flat_button("<")
 	left.pressed.connect(_turn.bind(-1))
 	turn_row.add_child(left)
-	_facing_label = _label("", COLOR_DIM, 14)
-	_facing_label.custom_minimum_size.x = 100
+	_facing_label = _label("", &"InventoryDim")
+	_facing_label.custom_minimum_size.x = 50
 	_facing_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	turn_row.add_child(_facing_label)
 	var right := _flat_button(">")
@@ -147,8 +132,8 @@ func _build() -> void:
 	else:
 		var equip_grid := GridContainer.new()
 		equip_grid.columns = 2
-		equip_grid.add_theme_constant_override("h_separation", 6)
-		equip_grid.add_theme_constant_override("v_separation", 6)
+		equip_grid.add_theme_constant_override("h_separation", 3)
+		equip_grid.add_theme_constant_override("v_separation", 3)
 		top.add_child(equip_grid)
 		for slot in EQUIP_LAYOUT:
 			_add_equip_cell(equip_grid, slot)
@@ -157,22 +142,21 @@ func _build() -> void:
 	var bag_parent := column
 	if wide_layout:
 		bag_parent = VBoxContainer.new()
-		bag_parent.add_theme_constant_override("separation", 8)
+		bag_parent.add_theme_constant_override("separation", 4)
 		top.add_child(bag_parent)
 
 	var bag_header := HBoxContainer.new()
 	bag_parent.add_child(bag_header)
-	bag_header.add_child(_label("Bag", COLOR_TEXT, 16))
+	bag_header.add_child(_label("Bag", &"InventoryText"))
 	var bag_spacer := Control.new()
 	bag_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	bag_header.add_child(bag_spacer)
-	_bag_count = _label("", COLOR_DIM, 14)
+	_bag_count = _label("", &"InventoryDim")
 	bag_header.add_child(_bag_count)
 
 	var bag_grid := GridContainer.new()
 	bag_grid.columns = BAG_COLUMNS
-	bag_grid.add_theme_constant_override("h_separation", 4)
-	bag_grid.add_theme_constant_override("v_separation", 4)
+	bag_grid.theme_type_variation = &"ItemGrid"
 	bag_parent.add_child(bag_grid)
 	for i in PlayerInventory.BAG_SIZE:
 		var cell := ItemSlot.new(PlayerInventory.place(PlayerInventory.BAG, i))
@@ -181,12 +165,12 @@ func _build() -> void:
 		_slots.append(cell)
 
 	if not embedded:   # the GameMenu shows its own prompts, for keyboard and controller
-		var hint := _label("Drag, right-click or double-click to equip and unequip", COLOR_DIM, 12)
+		var hint := _label("Drag, right-click or double-click to equip and unequip", &"InventoryDim")
 		column.add_child(hint)
 
 func _slot_column() -> VBoxContainer:
 	var slots := VBoxContainer.new()
-	slots.add_theme_constant_override("separation", 6)
+	slots.add_theme_constant_override("separation", 3)
 	return slots
 
 func _add_equip_cell(parent: Container, slot: String) -> void:
@@ -269,11 +253,12 @@ static func _flat_button(text: String) -> Button:
 	button.focus_mode = Control.FOCUS_NONE
 	return button
 
-static func _label(text: String, color: Color, font_size: int) -> Label:
+## `variation`: its colour (and size) from UiTheme.tres: InventoryText, InventoryDim or
+## InventoryHeading (MenuHeading's size).
+static func _label(text: String, variation: StringName) -> Label:
 	var label := Label.new()
 	label.text = text
-	label.add_theme_color_override("font_color", color)
-	label.add_theme_font_size_override("font_size", font_size)
+	label.theme_type_variation = variation
 	return label
 
 static func _pixel_icon(texture: Texture2D, factor: int) -> TextureRect:

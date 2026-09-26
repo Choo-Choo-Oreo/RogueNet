@@ -1,14 +1,10 @@
 extends Node2D
 
-## NetworkSync.receive_chat() looks for add_chat_line() on the current scene
-## root -- this just forwards to the actual UI.
-
-@onready var chat_box: ChatBox = $UILayer/ChatBox
+## The HUD is not in this scene: GameView puts it next to the world's viewport (MissionHud).
 
 func _ready() -> void:
-	add_child(DebugDraw.new())
+	GameView.debug_parent(self).add_child(DebugDraw.new())
 	add_child(BodySweep.new())
-	add_child(DebugMenu.new())
+	# Root layer (real screen pixels): outside the world's viewport, next to DebugDraw.
+	GameView.debug_parent(self).add_child(DebugMenu.new())
 
-func add_chat_line(line: String) -> void:
-	chat_box.add_chat_line(line)

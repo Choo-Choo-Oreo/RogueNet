@@ -13,6 +13,9 @@ extends Camera2D
 @export var free_cam_speed := 1200.0
 
 var _normal_zoom := Vector2.ONE
+## Index into GameView.ZOOM_LEVELS while free; _normal_level is the usual view (1.0).
+var _normal_level := GameView.ZOOM_LEVELS.find(1.0)
+var _level := _normal_level
 
 func _process(delta: float) -> void:
 	# Checked every frame, not just in _ready(): a Node's _ready() fires before
@@ -25,8 +28,8 @@ func _process(delta: float) -> void:
 		_set_free(DebugState.free_cam)
 	if top_level:
 		var dir := Input.get_vector("move_left", "move_right", "move_up", "move_down")
-		# Divided by zoom so the pan feels the same speed at any zoom level.
-		global_position += dir * free_cam_speed * delta / zoom.x
+		# Divided by the zoom so the pan feels the same speed at any zoom level.
+		global_position += dir * free_cam_speed * delta / (_normal_zoom.x * GameView.ZOOM_LEVELS[_level])
 		return
 	var owner_global: Vector2 = get_parent().global_position
 	# The aim point: the mouse, or the left stick on a controller (PlayerController.aim_position).
@@ -46,13 +49,23 @@ func _set_free(on: bool) -> void:
 		global_position = here
 		_normal_zoom = zoom
 	else:
-		zoom = _normal_zoom
+		set_zoom_level(_normal_level)
 
-## Mouse wheel zooms, only while free.
+## Mouse wheel steps through GameView.ZOOM_LEVELS, only while free, stopping at the ends.
 func _unhandled_input(event: InputEvent) -> void:
 	if not (top_level and event is InputEventMouseButton and event.pressed):
 		return
 	if event.button_index == MOUSE_BUTTON_WHEEL_UP:
-		zoom = (zoom * 1.1).clamp(Vector2.ONE, Vector2(12, 12))
+		set_zoom_level(_level + 1)
 	elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-		zoom = (zoom / 1.1).clamp(Vector2.ONE, Vector2(12, 12))
+		set_zoom_level(_level - 1)
+
+## Zooming in is the camera's zoom (2x, 4x); zooming out is GameView.set_view_scale (more world at
+## fewer UI pixels per art pixel), since a camera zoom below 1 drops art pixels.
+func set_zoom_level(index: int) -> void:
+	_level = clampi(index, 0, GameView.ZOOM_LEVELS.size() - 1)
+	var level: float = GameView.ZOOM_LEVELS[_level]
+	zoom = _normal_zoom * maxf(level, 1.0)
+	var view := GameView.of(self)
+	if view:
+		view.set_view_scale(roundi(1.0 / minf(level, 1.0)))

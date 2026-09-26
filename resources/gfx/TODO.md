@@ -12,7 +12,9 @@ exception (below). Debug drawing stays sharp at full screen resolution, outside 
 `docs/PIXEL_RESOLUTION_RESEARCH.md`.
 
 - [✓] Pick the setup (Orea 2026-09-26): two layers. Dungeon in a 320×180 SubViewport, UI at 640×360 (2× the game grid), debug at full screen resolution so it stays sharp
-- [✗] Non-16:9 screens: undecided, Orea leans to resizing the game viewport (more world on the long side; vision is limited anyway) over black bars
+- [✓] Non-16:9 screens (decided for now, Orea 2026-09-26): `window/stretch/aspect="keep"` (`project.godot`), black bars. Resizing the game viewport for more world on the long side can come back later
 - [✓] Camera (Orea 2026-09-26): the camera is never meant to be pixel perfect, it looks over the world. The world is one pixel grid; the camera slides over it at screen resolution (1 px margin + camera fraction offset), no steppy camera and no switch for it. Sprites still move in whole art pixels within the world
-- [✗] Before any UI redo: a pixel font, and move the hardcoded font sizes into the theme
+- [✓] Font sizes in the theme (2026-09-26): only in `resources/UiTheme.tres`, three sizes: 8 (default) / 11 (`MenuHeading`) / 15 (`MenuTitle`). `HudTheme.tres` merged in and deleted
+- [✗] A pixel font (still open)
+- [✗] Godot's default theme icons, art for Silvery (the UI still uses Godot's built-in ones): slider grabber, CheckButton on/off toggle, SpinBox up/down arrows, OptionButton dropdown arrow, TabContainer/TabBar styles, ScrollBar, PopupMenu/ConfirmationDialog close "X"
 - [✗] Texture packs (later): one standalone JSON in this folder holding only `texel_scale`; view size is never a pack setting (it would be a cheat)

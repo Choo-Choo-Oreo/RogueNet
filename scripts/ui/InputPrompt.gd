@@ -4,7 +4,7 @@ extends HBoxContainer
 ## A button prompt: the key or pad button, then what it does ("[Space] Attack",
 ## "(A) Open door"). It follows InputDevice, so it shows the key while the player
 ## uses keyboard + mouse and the pad button while they use a controller.
-## The look of each glyph comes from HudTheme.tres (PromptKey, PromptA, PromptShoulder...).
+## The look of each glyph comes from UiTheme.tres (PromptKey, PromptA, PromptShoulder...).
 
 ## What the prompt says after the glyph. Empty = glyph only.
 @export var text := ""
@@ -21,10 +21,10 @@ var _glyphs: HBoxContainer
 var _label: Label
 
 func _ready() -> void:
-	add_theme_constant_override("separation", 5)
+	add_theme_constant_override("separation", 3)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_glyphs = HBoxContainer.new()
-	_glyphs.add_theme_constant_override("separation", 3)
+	_glyphs.add_theme_constant_override("separation", 2)
 	add_child(_glyphs)
 	_label = Label.new()
 	_label.theme_type_variation = &"HudSmall"

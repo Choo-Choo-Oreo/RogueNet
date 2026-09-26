@@ -28,15 +28,15 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-split_offsets = PackedInt32Array(260)
+split_offsets = PackedInt32Array(130)
 dragging_enabled = false
-split_offset = 260
+split_offset = 130
 
 [node name="ActionPanel" type="VBoxContainer" parent="HSplitContainer" unique_id=1938952575]
-custom_minimum_size = Vector2(260, 0)
+custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 size_flags_vertical = 4
-theme_override_constants/separation = 14
+theme_override_constants/separation = 7
 alignment = 1
 
 [node name="LocationLabel" type="Label" parent="HSplitContainer/ActionPanel"]
@@ -45,41 +45,41 @@ text = "PICK LOCATION"
 horizontal_alignment = 1
 
 [node name="LocationOption" type="OptionButton" parent="HSplitContainer/ActionPanel"]
-custom_minimum_size = Vector2(220, 0)
+custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 
 [node name="Title" type="Label" parent="HSplitContainer/ActionPanel" unique_id=578555796]
 layout_mode = 2
-theme_override_font_sizes/font_size = 30
+theme_type_variation = &"MenuTitle"
 text = "GUILD MISSION"
 horizontal_alignment = 1
 
 [node name="StartButton" type="Button" parent="HSplitContainer/ActionPanel" unique_id=1186317681]
-custom_minimum_size = Vector2(220, 50)
+custom_minimum_size = Vector2(110, 25)
 layout_mode = 2
 text = "Start Mission"
 
 [node name="ReadyButton" type="Button" parent="HSplitContainer/ActionPanel" unique_id=3894175620]
 visible = false
-custom_minimum_size = Vector2(220, 50)
+custom_minimum_size = Vector2(110, 25)
 layout_mode = 2
 text = "Ready"
 
 [node name="BackButton" type="Button" parent="HSplitContainer/ActionPanel" unique_id=2027529182]
 visible = false
-custom_minimum_size = Vector2(220, 50)
+custom_minimum_size = Vector2(110, 25)
 layout_mode = 2
 text = "Back to Guild"
 
 [node name="LeaveButton" type="Button" parent="HSplitContainer/ActionPanel" unique_id=1045806768]
-custom_minimum_size = Vector2(220, 50)
+custom_minimum_size = Vector2(110, 25)
 layout_mode = 2
 text = "Leave"
 
 [node name="MemberListPanel" type="VBoxContainer" parent="HSplitContainer" unique_id=1954885666]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 8
+theme_override_constants/separation = 4
 
 [node name="Title" type="Label" parent="HSplitContainer/MemberListPanel" unique_id=2016495787]
 layout_mode = 2

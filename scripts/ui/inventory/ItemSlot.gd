@@ -7,14 +7,11 @@ extends Panel
 ## _can_drop_data / _drop_data), or by right-click / double-click, which calls
 ## `quick_action` -- the panel that owns the slot decides what that does.
 
-const SIZE := 40
-const ICON_BOX := 32
+const SIZE := 20
+const ICON_BOX := 16
 
-const COLOR_BG := Color("#15131b")
-const COLOR_BORDER := Color("#2e2938")
-const COLOR_HOVER := Color("#5a5068")
-const COLOR_FITS := Color("#58a15a")
-const COLOR_REFUSES := Color("#a14a4a")
+## Its looks are styles in UiTheme.tres: ItemSlot, and ItemSlotHover / ItemSlotFits /
+## ItemSlotRefuses for the border while hovered or while something is dragged.
 
 var at: Dictionary
 var placeholder: Texture2D
@@ -22,18 +19,14 @@ var quick_action: Callable
 var quick_hint := ""
 
 var _icon := TextureRect.new()
-var _style := StyleBoxFlat.new()
 var _hover := false
-var _drag_color := Color.TRANSPARENT
+## ItemSlotFits / ItemSlotRefuses while a drag is on, else empty.
+var _drag_variation := &""
 
 func _init(place: Dictionary, empty_icon: Texture2D = null) -> void:
 	at = place
 	placeholder = empty_icon
 	custom_minimum_size = Vector2(SIZE, SIZE)
-	_style.bg_color = COLOR_BG
-	_style.set_border_width_all(2)
-	_style.set_corner_radius_all(2)
-	add_theme_stylebox_override("panel", _style)
 	var center := CenterContainer.new()
 	center.set_anchors_preset(Control.PRESET_FULL_RECT)
 	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -75,10 +68,10 @@ func _tooltip(item: String) -> String:
 	return "%s\n%s%s" % [data.get("name", item), line, ("\n" + quick_hint) if quick_hint != "" else ""]
 
 func _update_border() -> void:
-	if _drag_color != Color.TRANSPARENT:
-		_style.border_color = _drag_color
+	if _drag_variation != &"":
+		theme_type_variation = _drag_variation
 	else:
-		_style.border_color = COLOR_HOVER if _hover else COLOR_BORDER
+		theme_type_variation = &"ItemSlotHover" if _hover else &"ItemSlot"
 
 func _gui_input(event: InputEvent) -> void:
 	if not (event is InputEventMouseButton and event.pressed):
@@ -98,7 +91,7 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	preview.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	preview.size = _icon.custom_minimum_size
-	preview.position = -preview.size / 2.0
+	preview.position = (-preview.size / 2.0).floor()
 	var holder := Control.new()
 	holder.add_child(preview)
 	set_drag_preview(holder)
@@ -116,8 +109,8 @@ func _notification(what: int) -> void:
 		var data = get_viewport().gui_get_drag_data()
 		if data is Dictionary and data.has("inventory_from"):
 			var dragged := PlayerInventory.get_at(data["inventory_from"])
-			_drag_color = COLOR_FITS if PlayerInventory.fits(dragged, at) else COLOR_REFUSES
+			_drag_variation = &"ItemSlotFits" if PlayerInventory.fits(dragged, at) else &"ItemSlotRefuses"
 			_update_border()
 	elif what == NOTIFICATION_DRAG_END:
-		_drag_color = Color.TRANSPARENT
+		_drag_variation = &""
 		_update_border()

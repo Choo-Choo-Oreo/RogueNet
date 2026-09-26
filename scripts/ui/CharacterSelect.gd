@@ -11,6 +11,7 @@ extends Control
 signal picked(adventurer: Dictionary)
 
 const NAME_MAX_LENGTH := 24
+const UI_THEME := preload("res://resources/UiTheme.tres")
 
 ## Opened from the town's Swap Characters (set before adding it): one "Back to Town" button,
 ## which plays the selected adventurer, instead of Play and Back.
@@ -27,25 +28,27 @@ var _message: Label
 var _confirm_delete: ConfirmationDialog
 
 func _ready() -> void:
+	# Its own theme: the town opens it too, outside the main menu.
+	theme = UI_THEME
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	var margin := MarginContainer.new()
 	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
 	for side in ["left", "top", "right", "bottom"]:
-		margin.add_theme_constant_override("margin_" + side, 20)
+		margin.add_theme_constant_override("margin_" + side, 10)
 	add_child(margin)
 	var page := VBoxContainer.new()
-	page.add_theme_constant_override("separation", 10)
+	page.add_theme_constant_override("separation", 5)
 	margin.add_child(page)
 
 	var title := Label.new()
 	title.text = "Characters"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 28)
+	title.theme_type_variation = &"MenuTitle"
 	page.add_child(title)
 
 	var sides := HBoxContainer.new()
 	sides.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	sides.add_theme_constant_override("separation", 30)
+	sides.add_theme_constant_override("separation", 15)
 	page.add_child(sides)
 	var column := _side(sides, "Adventurers")
 	var warden := _side(sides, "Wardens")
@@ -78,7 +81,7 @@ func _ready() -> void:
 	# The ways off this screen, centred under both halves.
 	var buttons := HBoxContainer.new()
 	buttons.alignment = BoxContainer.ALIGNMENT_CENTER
-	buttons.add_theme_constant_override("separation", 10)
+	buttons.add_theme_constant_override("separation", 5)
 	page.add_child(buttons)
 	if in_town:
 		_play_button = _button(buttons, "Back to Town", _back_to_town)
@@ -96,12 +99,12 @@ func _ready() -> void:
 func _side(parent: Control, heading: String) -> VBoxContainer:
 	var column := VBoxContainer.new()
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	column.add_theme_constant_override("separation", 10)
+	column.add_theme_constant_override("separation", 5)
 	parent.add_child(column)
 	var label := Label.new()
 	label.text = heading
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 22)
+	label.theme_type_variation = &"MenuHeading"
 	column.add_child(label)
 	return column
 
@@ -112,7 +115,7 @@ func set_message(text: String) -> void:
 func _button(parent: Control, text: String, action: Callable) -> Button:
 	var button := Button.new()
 	button.text = text
-	button.custom_minimum_size = Vector2(120, 40)
+	button.custom_minimum_size = Vector2(60, 20)
 	button.pressed.connect(action)
 	parent.add_child(button)
 	return button

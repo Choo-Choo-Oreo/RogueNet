@@ -16,7 +16,7 @@ func show_at(screen_position: Vector2, what: String) -> void:
 	prompt.set_text(what)
 	show()
 	await get_tree().process_frame   # the box only knows its width after layout
-	box.position = screen_position - Vector2(box.size.x / 2.0, box.size.y + 8.0)
+	box.position = (screen_position - Vector2(box.size.x / 2.0, box.size.y + 4.0)).floor()
 
 func hide_prompt() -> void:
 	hide()

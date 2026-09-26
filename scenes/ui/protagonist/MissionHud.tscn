@@ -1,0 +1,28 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://cxc8bqs0tivc3" path="res://scripts/ui/protagonist/MissionHud.gd" id="1_missionhud"]
+[ext_resource type="PackedScene" path="res://scenes/ui/PauseMenu.tscn" id="1_pausemenu"]
+[ext_resource type="PackedScene" path="res://scenes/ui/protagonist/Hotbar.tscn" id="1_hotbar"]
+[ext_resource type="PackedScene" path="res://scenes/ui/protagonist/HealthBar.tscn" id="1_healthbar"]
+[ext_resource type="PackedScene" path="res://scenes/ui/protagonist/DeathCountdown.tscn" id="1_deathcountdown"]
+[ext_resource type="PackedScene" path="res://scenes/ui/ChatBox.tscn" id="1_chatbox"]
+[ext_resource type="PackedScene" path="res://scenes/ui/protagonist/InventoryHud.tscn" id="1_inventoryhud"]
+[ext_resource type="PackedScene" path="res://scenes/ui/protagonist/InteractPrompt.tscn" id="1_interactprompt"]
+
+[node name="MissionHud" type="CanvasLayer"]
+script = ExtResource("1_missionhud")
+
+[node name="PauseMenu" parent="." instance=ExtResource("1_pausemenu")]
+visible = false
+
+[node name="Hotbar" parent="." instance=ExtResource("1_hotbar")]
+
+[node name="HealthBar" parent="." instance=ExtResource("1_healthbar")]
+
+[node name="DeathCountdown" parent="." instance=ExtResource("1_deathcountdown")]
+
+[node name="ChatBox" parent="." instance=ExtResource("1_chatbox")]
+
+[node name="InventoryHud" parent="." instance=ExtResource("1_inventoryhud")]
+
+[node name="InteractPrompt" parent="." instance=ExtResource("1_interactprompt")]

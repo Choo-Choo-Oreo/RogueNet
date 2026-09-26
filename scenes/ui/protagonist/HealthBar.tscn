@@ -1,14 +1,14 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/protagonist/HealthBar.gd" id="1_healthbar"]
-[ext_resource type="Theme" path="res://resources/HudTheme.tres" id="2_theme"]
+[ext_resource type="Theme" path="res://resources/UiTheme.tres" id="2_theme"]
 [ext_resource type="Script" path="res://scripts/ui/InputPrompt.gd" id="3_prompt"]
 
 [node name="HealthBar" type="PanelContainer"]
-offset_left = 16.0
-offset_top = 16.0
-offset_right = 312.0
-offset_bottom = 84.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 156.0
+offset_bottom = 42.0
 mouse_filter = 2
 theme = ExtResource("2_theme")
 theme_type_variation = &"HudPanel"
@@ -17,10 +17,10 @@ script = ExtResource("1_healthbar")
 [node name="Row" type="HBoxContainer" parent="."]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 5
 
 [node name="Portrait" type="Panel" parent="Row"]
-custom_minimum_size = Vector2(50, 50)
+custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"HudSlot"
@@ -29,7 +29,7 @@ theme_type_variation = &"HudSlot"
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 3
 alignment = 1
 
 [node name="Top" type="HBoxContainer" parent="Row/Column"]
@@ -51,7 +51,7 @@ key_text = "V"
 pad_text = "Share"
 
 [node name="Background" type="ColorRect" parent="Row/Column"]
-custom_minimum_size = Vector2(0, 16)
+custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
 mouse_filter = 2
 color = Color(0.227, 0.082, 0.071, 1)
@@ -76,14 +76,13 @@ grow_vertical = 2
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 11
 text = "20 / 20"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ResourceBar" type="ColorRect" parent="Row/Column"]
 visible = false
-custom_minimum_size = Vector2(0, 6)
+custom_minimum_size = Vector2(0, 3)
 layout_mode = 2
 mouse_filter = 2
 color = Color(0.3, 0.45, 0.8, 1)

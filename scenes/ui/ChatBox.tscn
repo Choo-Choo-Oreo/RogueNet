@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/ChatBox.gd" id="1_chatbox"]
+[ext_resource type="Theme" path="res://resources/UiTheme.tres" id="2_theme"]
 
 [node name="ChatBox" type="Control"]
 layout_mode = 3
@@ -9,12 +10,13 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -336.0
-offset_top = -300.0
-offset_right = -16.0
-offset_bottom = -124.0
+offset_left = -168.0
+offset_top = -150.0
+offset_right = -8.0
+offset_bottom = -62.0
 grow_horizontal = 0
 grow_vertical = 0
+theme = ExtResource("2_theme")
 script = ExtResource("1_chatbox")
 
 [node name="Log" type="RichTextLabel" parent="."]
@@ -22,10 +24,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_bottom = -28.0
+offset_bottom = -14.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
+mouse_filter = 1
 bbcode_enabled = false
 scroll_following = true
 theme_override_colors/default_color = Color(1, 1, 1, 1)
@@ -39,7 +41,7 @@ anchors_preset = -1
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -24.0
+offset_top = -12.0
 grow_horizontal = 2
 grow_vertical = 0
 placeholder_text = "Press Enter to chat..."

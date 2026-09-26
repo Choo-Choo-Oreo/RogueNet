@@ -55,15 +55,19 @@ func _restyle(index: int) -> void:
 	else:
 		slot.theme_type_variation = &"HudSlot"
 
+## The name is clipped to the slot (icons replace it later); the tooltip shows it whole.
 func set_slot(index: int, text: String) -> void:
 	_slots[index].get_node("Name").text = text
+	_slots[index].tooltip_text = text
 	_restyle(index)
 
 ## `fraction` of the cooldown still to go: 1.0 just used, 0.0 ready (hidden).
 func set_cooldown(index: int, fraction: float) -> void:
 	var cover: ColorRect = _slots[index].get_node("Cooldown")
 	cover.visible = fraction > 0.0
-	cover.anchor_top = 1.0 - clampf(fraction, 0.0, 1.0)
+	# Whole UI pixels: a fractional anchor would put the edge between pixels.
+	cover.anchor_top = 0.0
+	cover.offset_top = floorf(cover.get_parent().size.y * (1.0 - clampf(fraction, 0.0, 1.0)))
 
 func set_consumable(item_name: String, count: int) -> void:
 	_consumable_name.text = item_name if item_name != "" else "Consumable"

@@ -1,11 +1,11 @@
 extends Control
 
-## The dungeon's menu buttons (bottom-left) and the GameMenu they open: tabs
+## The dungeon's menu buttons (a column, bottom-left, beside the hotbar) and the GameMenu they open: tabs
 ## (Inventory, Character, Skills, Help, System) over the inventory window.
 ## "inventory" (I, Tab, Y) opens it on Inventory; Esc / B closes it.
 ## Only the Inventory tab has content; the other pages are placeholders to hook up.
 
-@onready var menu_buttons: HBoxContainer = $MenuButtons
+@onready var menu_buttons: VBoxContainer = $MenuButtons
 @onready var backpack_button: Button = $MenuButtons/BackpackButton
 @onready var menu_button: Button = $MenuButtons/MenuButton
 @onready var pad_strip: PanelContainer = $PadStrip
@@ -17,9 +17,10 @@ extends Control
 
 ## Tab index of System: picking it opens the pause menu instead of a page.
 const SYSTEM_TAB := 4
+## UI pixels between the button column and the open menu.
+const GAP := 4
 
 func _ready() -> void:
-	game_menu.add_theme_stylebox_override("panel", InventoryPanel.frame_style())
 	for control in [menu_buttons, pad_strip, game_menu]:
 		InventoryPanel.block_clicks(control)
 	backpack_button.pressed.connect(toggle)
@@ -28,7 +29,19 @@ func _ready() -> void:
 	tabs.tab_changed.connect(_show_page)
 	InputDevice.changed.connect(_on_device_changed)
 	_on_device_changed(InputDevice.using_pad)
+	menu_buttons.resized.connect(_place_beside_buttons)
+	_place_beside_buttons()
 	game_menu.hide()
+
+## The open menu starts right of the button column, so it covers none of the buttons.
+func _place_beside_buttons() -> void:
+	game_menu.offset_left = menu_buttons.offset_left + menu_buttons.size.x + GAP
+	game_menu.offset_right = game_menu.offset_left
+
+## MissionHud puts the open menu's bottom edge above the hotbar (`offset` from the screen bottom).
+func place_above(offset: float) -> void:
+	game_menu.offset_bottom = offset
+	game_menu.offset_top = offset
 
 func toggle() -> void:
 	if game_menu.visible:

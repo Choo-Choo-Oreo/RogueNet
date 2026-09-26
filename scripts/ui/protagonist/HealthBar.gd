@@ -18,6 +18,10 @@ const MIC_IDLE := Color(1, 1, 1, 0.45)
 const MIC_LIVE := Color(0.6, 1.0, 0.6, 1)
 
 var _stats: EntityStats
+var _health_fraction := 1.0
+
+func _ready() -> void:
+	fill.get_parent().resized.connect(_size_fill)
 
 func _process(_delta: float) -> void:
 	if _stats == null:
@@ -29,9 +33,15 @@ func _process(_delta: float) -> void:
 	mic.modulate = MIC_LIVE if VoiceChat.talking else MIC_IDLE
 
 func _on_health_changed(current: int, max_health: int) -> void:
-	fill.anchor_right = 0.0 if max_health <= 0 else float(current) / float(max_health)
+	_health_fraction = 0.0 if max_health <= 0 else float(current) / float(max_health)
+	_size_fill()
 	label.text = "%d / %d" % [current, max_health]
 	visible = current > 0
+
+## The fill in whole UI pixels (a fractional anchor would put its edge between pixels).
+func _size_fill() -> void:
+	fill.anchor_right = 0.0
+	fill.offset_right = floorf(fill.get_parent().size.x * _health_fraction)
 
 func set_player_name(player_name: String) -> void:
 	name_label.text = player_name

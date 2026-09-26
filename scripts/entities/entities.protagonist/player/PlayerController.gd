@@ -291,7 +291,7 @@ const SLOT_ACTIONS := ["hotbar_1", "hotbar_2", "hotbar_3", "hotbar_4", "hotbar_5
 func _input(event: InputEvent) -> void:
 	if not is_multiplayer_authority():
 		return
-	if get_viewport().gui_get_focus_owner() is LineEdit:
+	if get_tree().root.gui_get_focus_owner() is LineEdit:
 		return
 	for slot in SLOT_ACTIONS.size():
 		if event.is_action_pressed(SLOT_ACTIONS[slot]) and _slot_usable(slot):
@@ -330,7 +330,7 @@ func _step_slot(step: int) -> void:
 
 ## A click on a menu (the debug menu, the open inventory) is not an attack.
 func _attack_blocked() -> bool:
-	return DebugState.blocks_attack() or InventoryPanel.mouse_over_open_panel(get_viewport())
+	return DebugState.blocks_attack() or InventoryPanel.mouse_over_open_panel(get_tree().root)
 
 ## Melee (target_mode "melee", the default) always hits one of the 8 tiles
 ## adjacent to the player -- whichever _melee_target_tile() picks for the

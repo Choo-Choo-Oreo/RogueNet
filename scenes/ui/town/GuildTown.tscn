@@ -28,15 +28,15 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-split_offsets = PackedInt32Array(260)
+split_offsets = PackedInt32Array(130)
 dragging_enabled = false
-split_offset = 260
+split_offset = 130
 
 [node name="CreatePanel" type="VBoxContainer" parent="HSplitContainer" unique_id=88084808]
-custom_minimum_size = Vector2(260, 0)
+custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 size_flags_vertical = 4
-theme_override_constants/separation = 14
+theme_override_constants/separation = 7
 alignment = 1
 
 [node name="Title" type="Label" parent="HSplitContainer/CreatePanel" unique_id=88084809]
@@ -45,29 +45,29 @@ text = "CREATE MISSION"
 horizontal_alignment = 1
 
 [node name="PrivacyOption" type="OptionButton" parent="HSplitContainer/CreatePanel" unique_id=88084810]
-custom_minimum_size = Vector2(220, 40)
+custom_minimum_size = Vector2(110, 20)
 layout_mode = 2
 
 [node name="PasswordField" type="LineEdit" parent="HSplitContainer/CreatePanel" unique_id=88084811]
-custom_minimum_size = Vector2(220, 40)
+custom_minimum_size = Vector2(110, 20)
 layout_mode = 2
 placeholder_text = "Password (optional)"
 secret = true
 
 [node name="CreateButton" type="Button" parent="HSplitContainer/CreatePanel" unique_id=88084812]
-custom_minimum_size = Vector2(220, 50)
+custom_minimum_size = Vector2(110, 25)
 layout_mode = 2
 text = "Create"
 
 [node name="BackButton" type="Button" parent="HSplitContainer/CreatePanel" unique_id=88084813]
-custom_minimum_size = Vector2(220, 50)
+custom_minimum_size = Vector2(110, 25)
 layout_mode = 2
 text = "Back"
 
 [node name="MissionListPanel" type="VBoxContainer" parent="HSplitContainer" unique_id=88084804]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 8
+theme_override_constants/separation = 4
 
 [node name="Title" type="Label" parent="HSplitContainer/MissionListPanel" unique_id=88084805]
 layout_mode = 2
@@ -79,13 +79,13 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="JoinPasswordField" type="LineEdit" parent="HSplitContainer/MissionListPanel" unique_id=88084814]
-custom_minimum_size = Vector2(0, 40)
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 placeholder_text = "Password (if required)"
 secret = true
 
 [node name="JoinButton" type="Button" parent="HSplitContainer/MissionListPanel" unique_id=88084807]
-custom_minimum_size = Vector2(0, 50)
+custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
 text = "Join"
 

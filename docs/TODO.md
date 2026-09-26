@@ -110,6 +110,8 @@ Two decisions gate most of these (see "Decisions needed" below): what `power` me
 - [✗] Minotaur walking into walls: cause unconfirmed; the debug body sweep logs "BODY ON BAD TILE" lines (`scripts/debug/BodySweep.gd`).
 
 ## Small cleanups
+- [✗] One toast (2026-09-26, from the UI conversion): `LobbyMenu._build_toast` builds its own pop-up in code; any later toast should share one piece instead of copying it
+- [✗] Side-panel offsets (2026-09-26, from the UI conversion): `MainMenu.tscn` and `MainTown.tscn` repeat the same panel offsets on 5 side panels; one shared layout (or MenuPanel) for them
 - [✓] Unused `_pieces()` in `DualGridRender.gd` removed
 - [✓] Stray `floor_flesh_normal.png~` deleted
 - [✓] Dev scenes (`SilverTest`, `HubMPTest`) removed (only harmless `.godot/editor` cache files remain)

@@ -121,7 +121,7 @@ func _broadcast_chat(sender_id: int, text: String) -> void:
 
 @rpc("authority", "reliable")
 func receive_chat(line: String) -> void:
-	var scene := GameView.world_scene(get_tree())
+	var scene := get_tree().current_scene
 	if scene and scene.has_method("add_chat_line"):
 		scene.add_chat_line(line)
 
@@ -439,7 +439,7 @@ func receive_start_mission(mission_seed: int, mission_biome: String, members: Ar
 	dungeon_seed = mission_seed
 	dungeon_biome = mission_biome
 	dive_members = members.duplicate()
-	GameView.change_to(get_tree(), "res://scenes/dungeon/Dungeon.tscn")
+	GameView.change_to(get_tree(), "res://scenes/dungeon/Dungeon.tscn", "res://scenes/ui/protagonist/MissionHud.tscn")
 
 # Host only: sends the divers (not the players in the town) back to the town.
 func end_mission() -> void:

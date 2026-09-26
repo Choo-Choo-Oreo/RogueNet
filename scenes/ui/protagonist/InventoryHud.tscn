@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/ui/protagonist/InventoryHud.gd" id="1_hud"]
 [ext_resource type="Script" path="res://scripts/ui/inventory/InventoryPanel.gd" id="2_inventory"]
 [ext_resource type="Texture2D" path="res://resources/gfx/ui/inventory/backpack.png" id="3_backpack"]
-[ext_resource type="Theme" path="res://resources/HudTheme.tres" id="4_theme"]
+[ext_resource type="Theme" path="res://resources/UiTheme.tres" id="4_theme"]
 [ext_resource type="Script" path="res://scripts/ui/InputPrompt.gd" id="5_prompt"]
 
 [node name="InventoryHud" type="Control"]
@@ -17,30 +17,29 @@ mouse_filter = 2
 theme = ExtResource("4_theme")
 script = ExtResource("1_hud")
 
-[node name="MenuButtons" type="HBoxContainer" parent="."]
+[node name="MenuButtons" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 16.0
-offset_top = -60.0
-offset_right = 16.0
-offset_bottom = -16.0
+offset_left = 8.0
+offset_top = -30.0
+offset_right = 8.0
+offset_bottom = -8.0
 grow_vertical = 0
-theme_override_constants/separation = 6
+theme_override_constants/separation = 3
 
 [node name="BackpackButton" type="Button" parent="MenuButtons"]
 texture_filter = 1
-custom_minimum_size = Vector2(44, 44)
+custom_minimum_size = Vector2(22, 22)
 layout_mode = 2
 focus_mode = 0
 tooltip_text = "Inventory (I)"
 icon = ExtResource("3_backpack")
 icon_alignment = 1
-expand_icon = true
 
 [node name="CharacterButton" type="Button" parent="MenuButtons"]
-custom_minimum_size = Vector2(0, 44)
+custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
 focus_mode = 0
 tooltip_text = "Character: not built yet"
@@ -48,7 +47,7 @@ disabled = true
 text = "Character"
 
 [node name="SkillsButton" type="Button" parent="MenuButtons"]
-custom_minimum_size = Vector2(0, 44)
+custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
 focus_mode = 0
 tooltip_text = "Skills: not built yet"
@@ -56,7 +55,7 @@ disabled = true
 text = "Skills"
 
 [node name="HelpButton" type="Button" parent="MenuButtons"]
-custom_minimum_size = Vector2(0, 44)
+custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
 focus_mode = 0
 tooltip_text = "Help: not built yet"
@@ -64,7 +63,7 @@ disabled = true
 text = "Help"
 
 [node name="MenuButton" type="Button" parent="MenuButtons"]
-custom_minimum_size = Vector2(0, 44)
+custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
 focus_mode = 0
 tooltip_text = "Menu (Esc)"
@@ -75,17 +74,17 @@ layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 16.0
-offset_top = -52.0
-offset_right = 16.0
-offset_bottom = -16.0
+offset_left = 8.0
+offset_top = -26.0
+offset_right = 8.0
+offset_bottom = -8.0
 grow_vertical = 0
 mouse_filter = 2
 theme_type_variation = &"HudPanel"
 
 [node name="Row" type="HBoxContainer" parent="PadStrip"]
 layout_mode = 2
-theme_override_constants/separation = 14
+theme_override_constants/separation = 7
 
 [node name="InventoryPrompt" type="HBoxContainer" parent="PadStrip/Row"]
 layout_mode = 2
@@ -107,19 +106,20 @@ layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 16.0
-offset_top = -72.0
-offset_right = 16.0
-offset_bottom = -72.0
+offset_left = 8.0
+offset_top = -36.0
+offset_right = 8.0
+offset_bottom = -36.0
 grow_vertical = 0
+theme_type_variation = &"InventoryFrame"
 
 [node name="Column" type="VBoxContainer" parent="GameMenu"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 5
 
 [node name="Tabs" type="HBoxContainer" parent="GameMenu/Column"]
 layout_mode = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 3
 
 [node name="PrevPrompt" type="HBoxContainer" parent="GameMenu/Column/Tabs"]
 layout_mode = 2
@@ -168,7 +168,7 @@ embedded = true
 
 [node name="CharacterPage" type="Label" parent="GameMenu/Column/Pages"]
 visible = false
-custom_minimum_size = Vector2(0, 120)
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 theme_type_variation = &"HudSmall"
 text = "Character: not built yet"
@@ -177,7 +177,7 @@ vertical_alignment = 1
 
 [node name="SkillsPage" type="Label" parent="GameMenu/Column/Pages"]
 visible = false
-custom_minimum_size = Vector2(0, 120)
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 theme_type_variation = &"HudSmall"
 text = "Skills: not built yet"
@@ -186,7 +186,7 @@ vertical_alignment = 1
 
 [node name="HelpPage" type="Label" parent="GameMenu/Column/Pages"]
 visible = false
-custom_minimum_size = Vector2(0, 120)
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 theme_type_variation = &"HudSmall"
 text = "Help: not built yet"
@@ -195,7 +195,7 @@ vertical_alignment = 1
 
 [node name="PromptBar" type="HBoxContainer" parent="GameMenu/Column"]
 layout_mode = 2
-theme_override_constants/separation = 14
+theme_override_constants/separation = 7
 
 [node name="EquipPrompt" type="HBoxContainer" parent="GameMenu/Column/PromptBar"]
 layout_mode = 2

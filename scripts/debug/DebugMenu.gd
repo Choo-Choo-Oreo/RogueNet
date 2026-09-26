@@ -11,6 +11,9 @@ extends CanvasLayer
 ## Performance capture: tick it, play, press save. The capture (build info,
 ## the debug log, one sample per second) is written to Godot's user folder,
 ## and "open" jumps to that folder. Nothing here is sent to chat.
+## Root layer, not UI: it draws at real screen pixels, off the 640x360 grid. Its transform undoes
+## the window's stretch, and `_screen` is the real window size (kept up to date), so the panel
+## and overlay anchor to the whole window. It lives next to DebugDraw, outside the world's viewport.
 
 const TILE := 16
 const REFRESH_SECONDS := 0.25
@@ -61,6 +64,8 @@ const TABS_SIZE := Vector2(310, 400)
 const HINT_HEIGHT := 36.0
 const FONT_SIZE := 10
 
+## Full-window Control, in real screen pixels, that the overlay and panel sit in.
+var _screen := Control.new()
 var _panel: PanelContainer
 var _overlay: Label
 var _hint: Label
@@ -86,11 +91,26 @@ var _capture_box: CheckBox
 
 func _ready() -> void:
 	layer = 100
+	_screen.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_screen)
+	_fit_screen()
 	DebugState.load_settings()
 	_build_overlay()
 	_build_panel()
 	_panel.visible = false
 	DebugLog.add("debug menu ready (build: %s)" % _build_kind())
+
+## Undoes the window's stretch (its scale and black-bar offset) and applies GameView.debug_scale,
+## so one unit here is one screen pixel of a 720-high window, and sizes `_screen` to the whole
+## window. Checked every frame (_process): the root's size_changed does not fire on a window
+## resize, since its 640x360 UI area stays the same.
+func _fit_screen() -> void:
+	var window := get_tree().root
+	var factor := GameView.debug_scale(get_tree())
+	var screen := Vector2(window.size) / factor
+	if _screen.size != screen:
+		transform = window.get_final_transform().affine_inverse() * Transform2D(0.0, Vector2.ONE * factor, 0.0, Vector2.ZERO)
+		_screen.size = screen
 
 # ---------------------------------------------------------------- building
 
@@ -98,10 +118,10 @@ func _build_overlay() -> void:
 	_overlay = Label.new()
 	_overlay.position = Vector2(8, 8)
 	_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_overlay.add_theme_font_size_override("font_size", 11)
+	_overlay.add_theme_font_size_override("font_size", DebugDraw.LABEL_SIZE)
 	_overlay.add_theme_color_override("font_outline_color", Color.BLACK)
 	_overlay.add_theme_constant_override("outline_size", 4)
-	add_child(_overlay)
+	_screen.add_child(_overlay)
 
 func _build_panel() -> void:
 	_panel = PanelContainer.new()
@@ -117,7 +137,7 @@ func _build_panel() -> void:
 	_panel.mouse_entered.connect(func(): DebugState.mouse_over_menu = true)
 	_panel.mouse_exited.connect(func(): DebugState.mouse_over_menu = false)
 	_panel.theme = _make_theme()
-	add_child(_panel)
+	_screen.add_child(_panel)
 	var root := VBoxContainer.new()
 	_panel.add_child(root)
 
@@ -298,7 +318,7 @@ func _index_of(options: OptionButton, text: String) -> int:
 func _input(event: InputEvent) -> void:
 	# A click anywhere outside the search box gives the keyboard back to the game.
 	if event is InputEventMouseButton and event.pressed and _search.has_focus() \
-			and not _search.get_global_rect().has_point(event.position):
+			and not _search.get_global_rect().has_point(_search.get_global_mouse_position()):
 		_search.release_focus()
 	if not (event is InputEventKey and event.pressed and not event.echo):
 		return
@@ -333,9 +353,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	get_viewport().set_input_as_handled()
 
-## The viewport's canvas transform is the camera's, so this is the world position
-## under the mouse (this layer's own transform is not involved).
+## The world position under the mouse. In a GameView this menu is outside the world's viewport,
+## so it uses the debug layer's world-to-screen mapping (the one DebugDraw draws with, snapped
+## camera included). A scene loaded on its own (a test) uses its viewport's camera.
 func _mouse_world() -> Vector2:
+	var view := GameView.of(self)
+	if view:
+		return view.debug_layer.transform.affine_inverse() * view.get_viewport().get_mouse_position()
 	var viewport := get_viewport()
 	return viewport.get_canvas_transform().affine_inverse() * viewport.get_mouse_position()
 
@@ -492,6 +516,7 @@ func _save_capture() -> void:
 # ---------------------------------------------------------------- overlay
 
 func _process(delta: float) -> void:
+	_fit_screen()
 	if _hint != null and DebugState.click_tool != "":
 		if DebugState.click_tool == "spawn":
 			_hint.text = "Click the map to spawn %s. Right click cancels." % DebugState.spawn_type
