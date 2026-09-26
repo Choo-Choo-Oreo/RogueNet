@@ -3,5 +3,6 @@
 	"default_door": "none",
 	"tag_weights": { "corridor": 0.7, "maze": 0.6, "killzone": 0.5, "peaceful": 0.7 },
 	"monsters": { "wolf_hellhound": 3, "hamster_demonic": 3, "bat": 1, "fire_spirit": 3, "imp": 2, "scorpion": 1 },
-	"music": "res://resources/sfx/music/Groovy.mp3"
+	"music": "res://resources/sfx/music/Groovy.mp3",
+	"ambience": "res://resources/sfx/ambiance/volcano.mp3"
 }

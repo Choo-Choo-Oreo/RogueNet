@@ -354,14 +354,12 @@ func _spawn_player(cell: Vector2i, gear_set: Dictionary) -> void:
 	f.step_time = PLAYER_STEP_TIME
 	f.animator.animate_facing(Vector2.RIGHT)
 
-## The weapon decides the attack: staffs and wands cast, bows shoot, the rest slash.
+## The weapon decides the attack (ItemDatabase.weapon_kind): staffs and wands cast, bows
+## shoot, the rest slash.
+const WEAPON_ATTACKS := {"staff": "entropia_bolt", "bow": "arrow_shot"}
 ## Picked from the player's own action list (player.json), so its numbers apply.
 func _player_attack(entries: Array, main_hand: String) -> Dictionary:
-	var wanted := "slash"
-	if main_hand.contains("staff") or main_hand.contains("wand"):
-		wanted = "entropia_bolt"
-	elif main_hand.contains("bow"):
-		wanted = "arrow_shot"
+	var wanted: String = WEAPON_ATTACKS.get(ItemDatabase.weapon_kind(main_hand), "slash")
 	for entry in entries:
 		var id: String = entry if entry is String else str((entry as Dictionary).get("action", ""))
 		if id == wanted:

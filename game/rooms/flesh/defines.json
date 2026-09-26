@@ -3,5 +3,6 @@
 	"default_door": "none",
 	"tag_weights": { "corridor": 0.7, "maze": 0.6, "killzone": 0.5, "peaceful": 0.7 },
 	"monsters": { "hamster": 3, "hamster_flying": 2, "hamster_demonic": 1, "leech_flesh": 0.1 },
-	"music": "res://resources/sfx/music/Groovy.mp3"
+	"music": "res://resources/sfx/music/Groovy.mp3",
+	"ambience": "res://resources/sfx/ambiance/flesh.mp3"
 }

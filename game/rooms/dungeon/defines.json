@@ -22,5 +22,6 @@
 		"mimic": 0.3
 	},
 	"music": "res://resources/sfx/music/Groovy.mp3",
+	"ambience": "res://resources/sfx/ambiance/dungeon.mp3",
 	"default_door": "none"
 }

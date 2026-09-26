@@ -387,11 +387,11 @@ and nothing about its look is decided, so all of this is **(decide first)**.
 
 ## 9. Sound
 
-Not art, but nobody owns it yet. `resources/sfx/effects` and `resources/sfx/ambiance` are empty;
-only three music tracks exist (Groovy, Menu-Music, The-Lone-Forest). Direction from Silvery Foxy.
+Not art, but nobody owns it yet. Only three music tracks exist (Groovy, Menu-Music,
+The-Lone-Forest). Direction from Silvery Foxy. Where every sound came from: `resources/sfx/SOURCES.md`.
 
-- [~] Combat sounds, 2026-09-25: swings, hits by material, hurt by damage type, deaths, monster voices, grunts, heartbeat (`resources/sfx/combat/`, see its README). Synthesised placeholders, waiting on Foxy's ears and a Pixabay list. Also new art for it: damage digits and hurt vignette (`resources/gfx/ui/hud/`), bone/stone/goo/wisp chips (`effects.particles/Hit_Chips.png`)
-- [~] Sound effects: doors (per type) and liquids (water, lava, acid: in, out, steps; lava also bubbles and sizzles nearby), 2026-09-25, synthesised placeholders (`resources/sfx/effects/`, see its README). Footsteps on dry ground are wired (each floor names a folder, `stone/`, `carpet/`, `wood/`, `dirt/`, `grass/`, `flesh/`) but have no sound files yet
-- [✗] Ambiance per biome
+- [~] Combat sounds, 2026-09-25: swings, hits by material, hurt by damage type, deaths, monster voices, grunts, heartbeat (`resources/sfx/combat/`, see its README). Cut from Pixabay picks (Claude, without listening; waiting on Foxy's ears), taunt and hurt/drone still placeholders. Swings match the weapon (sword, knife, blunt, spear, staff) and the monster (big ones deeper, beasts' slash is claws); every monster has a voice. Also new art for it: damage digits and hurt vignette (`resources/gfx/ui/hud/`), bone/stone/goo/wisp chips (`effects.particles/Hit_Chips.png`)
+- [~] Sound effects: doors (per type) and liquids (water, lava, acid: in, out, steps; lava also bubbles and sizzles nearby), and footsteps on dry ground (`stone/`, `carpet/`, `wood/`, `dirt/`, `grass/`, `flesh/`), 2026-09-25, cut from Pixabay picks, not yet listened to (`resources/sfx/effects/`, see its README); lava steps still placeholders
+- [~] Ambiance per biome, 2026-09-25: one loop per biome (cathedral shares dungeon's), first 90 s of a Pixabay pick each, not yet listened to (`resources/sfx/ambiance/`)
 - [✗] More music (dungeon, boss, town)
 

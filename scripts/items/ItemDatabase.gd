@@ -71,6 +71,16 @@ const HELD_SLOTS: Array[String] = ["main_hand", "off_hand"]
 ## else its right-facing art mirrored.
 const HELD_LEFT := {"Left": "Left", "DownLeft": "Down", "UpLeft": "Up"}
 
+## How a held weapon attacks, from a word in its id (first match wins): the menu battle
+## picks its attack by this and CombatSounds its swing sound. An item's own "weapon"
+## overrides it, for one whose id doesn't say.
+const WEAPON_WORDS := [
+	["staff", "staff"], ["wand", "staff"], ["bow", "bow"],
+	["sword", "sword"], ["blade", "sword"], ["knife", "knife"], ["fang", "knife"], ["dagger", "knife"],
+	["mace", "blunt"], ["club", "blunt"], ["wrench", "blunt"], ["scepter", "blunt"], ["hammer", "blunt"],
+	["spear", "spear"], ["trident", "spear"],
+]
+
 static var _items: Dictionary = {}
 static var _sets: Dictionary = {}   # set id -> its game/sets JSON
 static var _loaded := false
@@ -150,6 +160,19 @@ static func sound(item_id: String) -> String:
 	if SLOT_SOUNDS.has(item.get("slot", "")):
 		return SLOT_SOUNDS[item["slot"]]
 	return set_info(item.get("set", "")).get("sound", TYPE_SOUNDS.get(item_type(item_id), "cloth"))
+
+## "sword", "knife", "blunt", "spear", "staff" or "bow" for a held weapon (WEAPON_WORDS);
+## "" for anything else, and for "".
+static func weapon_kind(item_id: String) -> String:
+	var item := get_item(item_id)
+	if item.has("weapon"):
+		return item["weapon"]
+	if item.get("slot", "") != "main_hand":
+		return ""
+	for pair in WEAPON_WORDS:
+		if item_id.contains(pair[0]):
+			return pair[1]
+	return ""
 
 ## The item's own flavour text ("" when it has none; its set's lore is set_info()).
 static func description(item_id: String) -> String:

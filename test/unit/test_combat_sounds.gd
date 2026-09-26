@@ -41,7 +41,12 @@ func test_voice_by_id_then_tag_and_none_for_a_plain_beast() -> void:
 	assert_eq(CombatSounds.voice("bat", ["beast"]), "screech")
 	assert_eq(CombatSounds.voice("wolf", ["beast.canine"]), "growl")
 	assert_eq(CombatSounds.voice("zombie", ["undead.ghoul"]), "moan")
-	assert_eq(CombatSounds.voice("crab", ["beast"]), "")
+	assert_eq(CombatSounds.voice("nobody", ["beast"]), "")
+
+func test_every_minion_has_a_voice() -> void:
+	for id in MinionIndex.ids():
+		var data := JsonOnloading.load_dict(MinionIndex.path_of(id))
+		assert_ne(CombatSounds.voice(id, data.get("tags", [])), "", id)
 
 func test_every_voice_has_a_file() -> void:
 	for v in CombatSounds.VOICE_BY_TAG.values() + CombatSounds.VOICE_BY_ID.values():
@@ -50,6 +55,61 @@ func test_every_voice_has_a_file() -> void:
 func test_every_action_with_damage_has_a_swing_sound() -> void:
 	for id in ["slash", "bite", "bludgeon", "arrow_shot", "entropia_bolt", "perditio_touch", "wall_smash", "taunt", "throw_rock"]:
 		assert_ne(CombatSounds.attack_sound({"id": id}), "", id)
+
+func test_a_weapon_kind_comes_from_its_id() -> void:
+	assert_eq(ItemDatabase.weapon_kind("militia_rusty_sword"), "sword")
+	assert_eq(ItemDatabase.weapon_kind("assassin_fang"), "knife")
+	assert_eq(ItemDatabase.weapon_kind("cleric_mace"), "blunt")
+	assert_eq(ItemDatabase.weapon_kind("abyssal_trident"), "spear")
+	assert_eq(ItemDatabase.weapon_kind("necromancer_bone_wand"), "staff")
+	assert_eq(ItemDatabase.weapon_kind("wraith_bonebow"), "bow")
+	assert_eq(ItemDatabase.weapon_kind(""), "", "empty hand")
+
+func test_every_main_hand_item_has_a_weapon_kind() -> void:
+	for id in ItemDatabase.all_ids():
+		if ItemDatabase.item_slot(id) == "main_hand":
+			assert_ne(ItemDatabase.weapon_kind(id), "", id)
+
+func test_a_players_swing_matches_their_weapon() -> void:
+	var player := Node.new()
+	player.name = "7"
+	player.add_to_group("protagonist")
+	NetworkSync.peer_equipment[7] = {"main_hand": "cleric_mace"}
+	assert_eq(CombatSounds.attack_sound({"id": "slash"}, player), DIR + "attacks/slash_blunt.wav")
+	NetworkSync.peer_equipment[7] = {"main_hand": "rogue_longbow"}
+	assert_eq(CombatSounds.attack_sound({"id": "arrow_shot"}, player), DIR + "attacks/arrow_shot.wav", "no variant: the plain one")
+	NetworkSync.peer_equipment.erase(7)
+	assert_eq(CombatSounds.attack_sound({"id": "slash"}, player), DIR + "attacks/slash.wav", "bare hands")
+	player.free()
+
+func test_a_minions_swing_matches_its_size_then_its_kind() -> void:
+	var tagged := GDScript.new()   # a stand-in minion: all attack_variants reads is tags
+	tagged.source_code = "extends Node
+var tags: Array = []
+"
+	tagged.reload()
+	var minion: Node = tagged.new()
+	minion.set_meta("footprint", 3)
+	minion.tags = ["beast.canine"]
+	assert_eq(CombatSounds.attack_sound({"id": "bite"}, minion), DIR + "attacks/bite_big.wav")
+	assert_eq(CombatSounds.attack_sound({"id": "slash"}, minion), DIR + "attacks/slash_beast.wav", "no slash_big: by tag")
+	minion.set_meta("footprint", 1)
+	assert_eq(CombatSounds.attack_sound({"id": "bite"}, minion), DIR + "attacks/bite.wav")
+	minion.free()
+
+func test_every_attack_variant_file_is_one_something_picks() -> void:
+	var variants := ["big"]
+	for pair in ItemDatabase.WEAPON_WORDS:
+		variants.append(pair[1])
+	for id in MinionIndex.ids():
+		for tag in JsonOnloading.load_dict(MinionIndex.path_of(id)).get("tags", []):
+			variants.append(str(tag).get_slice(".", 0))
+	for file in DirAccess.get_files_at(DIR + "attacks/"):
+		if file.ends_with(".wav") and file.get_basename().contains("_"):
+			var parts := file.get_basename().rsplit("_", true, 1)
+			if ResourceLoader.exists("res://game/actions/%s.json" % file.get_basename()):
+				continue   # an action's own name (arrow_shot), not a variant
+			assert_has(variants, parts[1], file)
 
 func test_every_action_type_is_a_listed_damage_type() -> void:
 	var types: Array = JSON.parse_string(FileAccess.get_file_as_string("res://game/damage_types.json"))

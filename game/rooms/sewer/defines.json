@@ -3,5 +3,6 @@
 	"default_door": "none",
 	"tag_weights": { "corridor": 0.7, "maze": 0.6, "killzone": 0.5, "peaceful": 0.7 },
 	"monsters": { "rat": 3, "rat_blind": 2, "rat_toothless": 2, "leech": 1, "slime": 2, "octopus": 1, "toad": 1, "crab": 1, "turtle": 1, "clam": 0.5 },
-	"music": "res://resources/sfx/music/Groovy.mp3"
+	"music": "res://resources/sfx/music/Groovy.mp3",
+	"ambience": "res://resources/sfx/ambiance/sewer.mp3"
 }

@@ -138,8 +138,8 @@ instead of rolling the biome table. The Dungeon Maker's minion spawner sets this
 - `ambience` (optional) — path to a sound that loops under the music for the
   whole dive (dripping water in a cave, wind through ruins), on the effects
   volume; biomes that sound alike name the same file. It fades in when the
-  dungeon starts and out on leaving. None yet: the files go in
-  `resources/sfx/ambiance/` (import them looping).
+  dungeon starts and out on leaving. The files are in
+  `resources/sfx/ambiance/` (imported looping; see its README).
 - `default_door` (optional) — a door type name (`"wood"`) or `"none"`; missing
   means `"none"`. It is what a joint gets when neither connector asks for
   anything specific (see below). A type that is too narrow for a joint is

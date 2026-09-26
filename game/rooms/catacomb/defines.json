@@ -3,5 +3,6 @@
 	"default_door": "none",
 	"tag_weights": { "corridor": 0.7, "maze": 0.6, "killzone": 0.5, "peaceful": 0.7 },
 	"monsters": { "wraith": 3, "skeleton_archer": 2, "rat": 1, "skeleton_warrior": 2, "zombie": 2, "ghost": 1, "spiderling": 1 },
-	"music": "res://resources/sfx/music/Groovy.mp3"
+	"music": "res://resources/sfx/music/Groovy.mp3",
+	"ambience": "res://resources/sfx/ambiance/catacomb.mp3"
 }

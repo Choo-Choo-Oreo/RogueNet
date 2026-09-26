@@ -5,7 +5,9 @@ extends RefCounted
 ## Files are resources/sfx/combat/<folder>/<name>.wav; see the README there. Nothing here is
 ## stored per creature or per action: every choice is derived from what already exists.
 ## - **attacks/<action id>**: the swing or cast, heard when the attack starts (on every peer,
-##   carried by the attack's effect, see tag_effect). An action with no file is silent.
+##   carried by the attack's effect, see tag_effect). An action with no file is silent. Who
+##   attacks can pick a variant, attacks/<action id>_<variant>, where there is one (see
+##   attack_variants): a player's by the weapon in hand, a minion's by its size and kind.
 ## - **hurt/**: a player being hit. hurt/<action id> if there is one (a bite), else by damage
 ##   type, most specific first (HURT_BY_TYPE), else hurt/thump.
 ## - **impact/<material>**, **death/<material>**: a minion hit or killed, by its tags (material()).
@@ -73,6 +75,9 @@ const VOICE_BY_ID := {
 	"bat": "screech", "bat_echo": "screech", "owl": "screech", "eagle": "screech",
 	"snake": "hiss", "scorpion": "hiss", "spider": "hiss", "spiderling": "hiss",
 	"toad": "gurgle", "dragon": "roar", "minotaur": "roar",
+	"cat": "cat", "penguin": "squawk", "crab": "click", "clam": "clack", "mimic": "clack",
+	"gargoyle": "grind", "leech": "gurgle", "leech_flesh": "gurgle", "octopus": "gurgle",
+	"turtle": "gurgle",
 }
 ## A minion cries out on about one attack in VOICE_CHANCE, and never twice in a row per species.
 const VOICE_CHANCE := 5
@@ -83,7 +88,7 @@ static var _last_voice_species := ""
 ## they share the effect (AttackEffect.play_between), so the sound reaches everyone with it.
 static func tag_effect(caster: Node, attack: Dictionary, effect: Dictionary) -> Dictionary:
 	var tagged := effect.duplicate()
-	tagged["sound"] = attack_sound(attack)
+	tagged["sound"] = attack_sound(attack, caster)
 	tagged["team"] = "protagonist" if caster.is_in_group("protagonist") else "antagonist"
 	tagged["peer"] = int(str(caster.name)) if caster.is_in_group("protagonist") else 0
 	tagged["boss"] = bool(caster.get_meta("is_boss", false))
@@ -91,10 +96,37 @@ static func tag_effect(caster: Node, attack: Dictionary, effect: Dictionary) -> 
 		tagged["voice"] = roll_voice(caster.minion_id, caster.tags)
 	return tagged
 
-## res:// path of an attack's swing sound ("" if it has none).
-static func attack_sound(attack: Dictionary) -> String:
-	var path := DIR + "attacks/" + str(attack.get("sound", attack.get("id", ""))) + ".wav"
-	return path if ResourceLoader.exists(path) else ""
+## res:// path of an attack's swing sound ("" if it has none): the caster's first variant
+## that has a file, else the plain one.
+static func attack_sound(attack: Dictionary, caster: Node = null) -> String:
+	var base := DIR + "attacks/" + str(attack.get("sound", attack.get("id", "")))
+	for variant in attack_variants(caster):
+		if ResourceLoader.exists(base + "_" + variant + ".wav"):
+			return base + "_" + variant + ".wav"
+	return base + ".wav" if ResourceLoader.exists(base + ".wav") else ""
+
+## The variants a caster's attacks try, best first. A player: the kind of weapon in their main
+## hand (ItemDatabase.weapon_kind: a knife's slash is a quick flick, a mace's a heavy whoosh).
+## A minion: "big" when it is more than one tile across (a deeper bite), then the top of each
+## of its tags ("beast": a slash is claws, not steel).
+static func attack_variants(caster: Node) -> Array[String]:
+	var variants: Array[String] = []
+	if caster == null:
+		return variants
+	if caster.is_in_group("protagonist"):
+		var worn: Dictionary = NetworkSync.peer_equipment.get(int(str(caster.name)), {})
+		var kind := ItemDatabase.weapon_kind(worn.get("main_hand", ""))
+		if kind != "":
+			variants.append(kind)
+		return variants
+	if int(caster.get_meta("footprint", 1)) > 1:
+		variants.append("big")
+	if "tags" in caster:
+		for tag in caster.tags:
+			var top := str(tag).get_slice(".", 0)
+			if not variants.has(top):
+				variants.append(top)
+	return variants
 
 ## Called wherever an effect is spawned (NetworkSync._spawn_effect), on every peer.
 static func on_effect(from: Node, at: Vector2, data: Dictionary) -> void:

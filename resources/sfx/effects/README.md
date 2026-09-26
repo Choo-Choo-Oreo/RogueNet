@@ -1,8 +1,9 @@
 # World sound effects
 
 Sounds the dungeon itself makes. Like the combat sounds, no JSON names a file: the file is
-found by name, so adding or replacing a file is all it takes. All of them were synthesised
-on 2026-09-25 (no licence to track) and are placeholders until someone picks better ones.
+found by name, so adding or replacing a file is all it takes. They are cut from Pixabay
+recordings (2026-09-25, not yet listened to; sources in [../SOURCES.md](../SOURCES.md)), except
+lava's steps, which are still synthesised placeholders.
 
 ## Liquids: `water/`, `lava/`, `acid/`
 
@@ -39,7 +40,6 @@ Played by `scripts/entities/Wading.gd` each time a creature on the ground steps 
 tile of a dry floor, 14 dB under its combat sounds, taken in turn: `step_1.wav`,
 `step_2.wav`... (as many as there are). Which folder a floor uses is its `footsteps` in
 `game/tiles/` (the root README, "Tiles"); a floor whose folder is missing or empty is silent.
-**None of these folders exist yet:** every dry floor is silent until the files are added.
 Wading steps come from the same place (the liquid's own folder, `step_1.wav`...).
 
 ## Doors: `doors/`
