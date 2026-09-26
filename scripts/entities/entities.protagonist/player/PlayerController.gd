@@ -16,6 +16,12 @@ const CHARACTERS := {
 	"human": "res://resources/gfx/entities/entities.protagonist/human/human.json",
 }
 const DEFAULT_CHARACTER := "human"
+## More skins to pick from: one folder each, named by its id, holding <id>.json. A skin
+## that is a character with other art says {"like": "human", "art": "<its sheets' path
+## minus -<Direction>.png>"} and gets everything else (animations, blink) from "like".
+## A skin with a body of its own says "fits_gear": false: gear is drawn for the Human's
+## body, so it isn't shown on that skin until the race has gear of its own.
+const VARIANTS_DIR := "res://resources/gfx/entities/entities.protagonist/variants/"
 
 ## Stats/attack shared by every character skin.
 const PLAYER_DATA_PATH := "res://game/entities/entities.protagonist/player.json"
@@ -43,10 +49,43 @@ var _ghost_look := false
 ## living. Static so LightMap can ask without holding a player reference.
 static var local_is_ghost := false
 
+## Every character id there is to pick (CHARACTERS and the skins in VARIANTS_DIR), by race,
+## the default's first, and "<race>_male" before "<race>_female".
+static func character_ids() -> Array[String]:
+	var ids: Array[String] = []
+	ids.assign(CHARACTERS.keys())
+	for folder in DirAccess.get_directories_at(VARIANTS_DIR):
+		if ResourceLoader.exists(VARIANTS_DIR + folder + "/" + folder + ".json"):
+			ids.append(folder)
+	ids.sort_custom(func(a: String, b: String) -> bool: return _pick_order(a) < _pick_order(b))
+	return ids
+
+static func _pick_order(character_id: String) -> String:
+	var race := character_id.get_slice("_", 0)
+	return "%d%s%d" % [0 if race == DEFAULT_CHARACTER else 1, race, 1 if character_id.ends_with("_female") else 0]
+
+## A character's JSON (sprite_frames, idle); an unknown id gets the default one.
+static func character_data(character_id: String) -> Dictionary:
+	var path: String = CHARACTERS.get(character_id, VARIANTS_DIR + character_id + "/" + character_id + ".json")
+	if not ResourceLoader.exists(path):
+		path = CHARACTERS[DEFAULT_CHARACTER]
+	var data := JsonOnloading.load_dict(path)
+	if not data.has("like"):
+		return data
+	# the base character's data with its sheets swapped for this one's
+	var base := character_data(data["like"])
+	var base_art: String = base["sprite_frames"]["animations"]["Front"]["texture"].trim_suffix("-Down.png")
+	var skin: Dictionary = JSON.parse_string(JSON.stringify(base, "", false).replace(base_art + "-", data["art"] + "-"))
+	for key in data:
+		if key not in ["like", "art"]:
+			skin[key] = data[key]
+	return skin
+
 func set_character(character_id: String) -> void:
-	var data := JsonOnloading.load_dict(CHARACTERS.get(character_id, CHARACTERS[DEFAULT_CHARACTER]))
+	var data := character_data(character_id)
 	$AnimatedSprite2D.sprite_frames = SpriteFramesLoader.build(data["sprite_frames"])
 	animator.set_idle_life(data.get("idle", {}))
+	gear.hidden = not data.get("fits_gear", true)
 
 ## worn: slot -> item id (NetworkSync.peer_equipment). Cosmetic only for now.
 func set_equipment(worn: Dictionary) -> void:

@@ -1,5 +1,8 @@
 extends Control
 
+## The character picker's buttons per row.
+const CHARACTER_COLUMNS := 4
+
 @onready var panel_main: Panel = $PanelMain
 @onready var panel_guild: Panel = $PanelGuild
 @onready var panel_character: Panel = $PanelCharacter
@@ -15,6 +18,7 @@ extends Control
 func _ready() -> void:
 	MusicManager.stop()
 	refresh_player_list()
+	_build_character_buttons()
 	refresh_character_label()
 	_apply_session_mode()
 	# Tell everyone what this player wears: after joining a server, or coming back from a dive.
@@ -98,5 +102,22 @@ func _choose_character(character_id: String) -> void:
 		NetworkSync.report_player_character.rpc_id(1, character_id)
 	refresh_character_label()
 
-func _on_human_button_pressed() -> void:
-	_choose_character("human")
+# One button per character (PlayerController.character_ids), with its front view, above Back.
+func _build_character_buttons() -> void:
+	var grid := GridContainer.new()
+	grid.columns = CHARACTER_COLUMNS
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 8)
+	for character_id in PlayerController.character_ids():
+		var button := Button.new()
+		button.text = character_id.capitalize()
+		button.custom_minimum_size = Vector2(200, 44)
+		button.icon = SpriteFramesLoader.first_frame(PlayerController.character_data(character_id)["sprite_frames"])
+		button.expand_icon = true
+		button.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		button.pressed.connect(_choose_character.bind(character_id))
+		grid.add_child(button)
+	var column: VBoxContainer = $PanelCharacter/VBoxContainer
+	column.add_child(grid)
+	column.move_child(grid, $PanelCharacter/VBoxContainer/BackButton.get_index())

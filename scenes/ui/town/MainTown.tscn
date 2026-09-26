@@ -170,11 +170,6 @@ layout_mode = 2
 text = "Current: Human"
 horizontal_alignment = 1
 
-[node name="HumanButton" type="Button" parent="PanelCharacter/VBoxContainer" unique_id=1126673920]
-custom_minimum_size = Vector2(220, 50)
-layout_mode = 2
-text = "Human"
-
 [node name="BackButton" type="Button" parent="PanelCharacter/VBoxContainer" unique_id=1126673915]
 custom_minimum_size = Vector2(220, 50)
 layout_mode = 2
@@ -239,6 +234,5 @@ layout_mode = 1
 [connection signal="pressed" from="PanelMain/VBoxContainer/SwapCharactersButton" to="." method="_on_swap_characters_button_pressed"]
 [connection signal="pressed" from="PanelMain/VBoxContainer/StorageButton" to="." method="_on_storage_button_pressed"]
 [connection signal="pressed" from="PanelMain/VBoxContainer/LeaveButton" to="." method="_on_leave_button_pressed"]
-[connection signal="pressed" from="PanelCharacter/VBoxContainer/HumanButton" to="." method="_on_human_button_pressed"]
 [connection signal="pressed" from="PanelCharacter/VBoxContainer/BackButton" to="." method="_on_character_back_button_pressed"]
 [connection signal="back_pressed" from="PanelStorage/TownStorage" to="." method="_on_storage_back_pressed"]
