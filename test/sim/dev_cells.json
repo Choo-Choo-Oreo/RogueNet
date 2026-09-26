@@ -1,6 +1,6 @@
 {
- "hub": "Development_Hub_385x61",
- "width": 385,
+ "hub": "Development_Hub_392x61",
+ "width": 392,
  "height": 61,
  "cells": [
   {
@@ -819,7 +819,7 @@
     "x": 320,
     "y": 26
    },
-   "what": "The same wolves and rat. The top-left wolf is shot from the dark (the sim pokes it).",
+   "what": "The same wolves, and the rat walled in (the fight is a noise it would hear). The top-left wolf is shot from the dark (the sim pokes it).",
    "try": "Do NOT press Enter. Wake one wolf yourself: open the door, press the backslash key to step inside, walk toward the top-left wolf until it attacks you.",
    "look": "When one wolf goes to Attack, every wolf attacks you. The rat should not care."
   },
@@ -866,13 +866,13 @@
    "look": "It should walk to a few random spots (staying in the room), pausing between. Leave the room by the door: it should stop moving when no player is in or next to its room."
   },
   {
-   "name": "voice_whisper",
+   "name": "light_notices",
    "door": {
-    "x": 348,
+    "x": 358,
     "y": 27
    },
    "entry": {
-    "x": 348,
+    "x": 358,
     "y": 25
    },
    "rect": {
@@ -887,30 +887,28 @@
    "wade_max": -1,
    "index": 43,
    "noise_at": null,
-   "alone": false,
+   "alone": true,
    "together": [],
    "moves": {},
    "poke": "",
    "attacks": [],
    "hear": [],
    "no_hear": [],
-   "notices": [],
-   "voice_at": {
-    "x": 350,
-    "y": 16,
-    "db": 30.0
-   },
+   "notices": [
+    "rat"
+   ],
+   "voice_at": null,
    "mic_check": false,
    "player_at": {
-    "x": 360,
-    "y": 25
+    "x": 354,
+    "y": 21
    },
-   "what": "A fake teammate whispering (30 dB) without a break, left of a wall. It sounds like a buzz, as quiet as a real whisper comes off the mic.",
-   "try": "Open the door, press backslash to step inside, and walk up to it: in the open, behind the wall, round the end of the wall.",
-   "look": "The blue dot is the talker; under it, what reaches you. You hear from 22 dB, so a whisper carries 8 tiles over open floor and never through the wall. Tick show-sound to see its spread (it is a noise, like real talking). The rat shut in behind the wall must not come."
+   "what": "A plain rat 7 tiles from where you stand (past its sight, inside your light).",
+   "try": "Do NOT press Enter. Open the door, press backslash to step inside, and stand still.",
+   "look": "The rat should come to look: your light reached it."
   },
   {
-   "name": "voice_yell",
+   "name": "voice_talk",
    "door": {
     "x": 365,
     "y": 27
@@ -942,16 +940,53 @@
    "voice_at": {
     "x": 367,
     "y": 16,
-    "db": 70.0
+    "db": 50.0
    },
    "mic_check": false,
    "player_at": {
     "x": 377,
     "y": 25
    },
-   "what": "The same, yelling (70 dB).",
+   "what": "The same, talking (50 dB).",
    "try": "Walk up to it the same way.",
-   "look": "Heard through the wall, quieter than in the open. The rat shut in behind the wall should hear it (about 29 dB reaches it; it hears from 27) and try to come to look. Say if the dB feels wrong anywhere."
+   "look": "Heard across the room (28 tiles in the open) and round the end of the wall (quieter), but not through it (35 dB off leaves about 10). The rat shut in behind the wall (hears from 27) must not come."
+  },
+  {
+   "name": "voice_mic_check",
+   "door": {
+    "x": 384,
+    "y": 27
+   },
+   "entry": {
+    "x": 384,
+    "y": 25
+   },
+   "rect": {
+    "x": 380,
+    "y": 21,
+    "w": 11,
+    "h": 7
+   },
+   "reach": [],
+   "may_skip": false,
+   "zone_changes_max": -1,
+   "wade_max": -1,
+   "index": 47,
+   "noise_at": null,
+   "alone": false,
+   "together": [],
+   "moves": {},
+   "poke": "",
+   "attacks": [],
+   "hear": [],
+   "no_hear": [],
+   "notices": [],
+   "voice_at": null,
+   "mic_check": true,
+   "player_at": null,
+   "what": "Records your own voice (the mic, gain and calibration from Settings > Audio > Voice) to see what dB the game makes of it.",
+   "try": "Press M: it turns your mic on and asks you to whisper, then talk, then yell, a few seconds each.",
+   "look": "The table compares, for each: what minions hear (the game), the dB of the recording, and the target (30 / 50 / 70). The takes are saved as WAVs you can play back."
   },
   {
    "name": "minion_rat_blind",
@@ -1771,21 +1806,19 @@
    "no_hear": [
     "rat_blind"
    ],
-   "notices": [
-    "rat"
-   ],
+   "notices": [],
    "voice_at": null,
    "mic_check": false,
    "player_at": {
     "x": 347,
     "y": 41
    },
-   "what": "A blind rat 4 tiles from where you stand, and a plain rat 7 tiles away (past its sight, inside your light).",
+   "what": "A blind rat 4 tiles from where you stand, inside your light.",
    "try": "Do NOT press Enter. Open the door, press backslash to step inside, and stand still.",
-   "look": "The plain rat should come to look (your light reached it). The blind rat must not move: it cannot see your light."
+   "look": "The blind rat must not move: it cannot see your light."
   },
   {
-   "name": "voice_talk",
+   "name": "voice_whisper",
    "door": {
     "x": 358,
     "y": 33
@@ -1817,32 +1850,32 @@
    "voice_at": {
     "x": 360,
     "y": 36,
-    "db": 50.0
+    "db": 30.0
    },
    "mic_check": false,
    "player_at": {
     "x": 370,
     "y": 45
    },
-   "what": "The same, talking (50 dB).",
-   "try": "Walk up to it the same way.",
-   "look": "Heard across the room (28 tiles in the open) and round the end of the wall (quieter), but not through it (35 dB off leaves about 10). The rat shut in behind the wall (hears from 27) must not come."
+   "what": "A fake teammate whispering (30 dB) without a break, left of a wall. It sounds like a buzz, as quiet as a real whisper comes off the mic.",
+   "try": "Open the door, press backslash to step inside, and walk up to it: in the open, behind the wall, round the end of the wall.",
+   "look": "The blue dot is the talker; under it, what reaches you. You hear from 22 dB, so a whisper carries 8 tiles over open floor and never through the wall. Tick show-sound to see its spread (it is a noise, like real talking). The rat shut in behind the wall must not come."
   },
   {
-   "name": "voice_mic_check",
+   "name": "voice_yell",
    "door": {
-    "x": 377,
+    "x": 375,
     "y": 33
    },
    "entry": {
-    "x": 377,
+    "x": 375,
     "y": 35
    },
    "rect": {
     "x": 373,
     "y": 33,
-    "w": 11,
-    "h": 7
+    "w": 17,
+    "h": 15
    },
    "reach": [],
    "may_skip": false,
@@ -1858,12 +1891,19 @@
    "hear": [],
    "no_hear": [],
    "notices": [],
-   "voice_at": null,
-   "mic_check": true,
-   "player_at": null,
-   "what": "Records your own voice (the mic, gain and calibration from Settings > Audio > Voice) to see what dB the game makes of it.",
-   "try": "Press M: it turns your mic on and asks you to whisper, then talk, then yell, a few seconds each.",
-   "look": "The table compares, for each: what minions hear (the game), the dB of the recording, and the target (30 / 50 / 70). The takes are saved as WAVs you can play back."
+   "voice_at": {
+    "x": 377,
+    "y": 36,
+    "db": 70.0
+   },
+   "mic_check": false,
+   "player_at": {
+    "x": 387,
+    "y": 45
+   },
+   "what": "The same, yelling (70 dB).",
+   "try": "Walk up to it the same way.",
+   "look": "Heard through the wall, quieter than in the open. The rat shut in behind the wall should hear it (about 29 dB reaches it; it hears from 27) and try to come to look. Say if the dB feels wrong anywhere."
   }
  ]
 }

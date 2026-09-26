@@ -26,7 +26,7 @@ const CELLS_FILE := "res://test/sim/dev_cells.json"
 const DEFAULT_CELLS := ["minion_minotaur", "bug1_spawn_fit", "bug1_no_room_for_boss", "bug1_hole_band",
 	"bug2_two_wide_gap", "bug2_one_wide_gap", "bug6_boss_blocks_gap", "bug3_smash_plain", "bug3_smash_door", "bug3_smash_pillar",
 	"bug4_corridor_archer", "bug4_open_archer", "bug5_boss_crowd", "terrain_lava", "terrain_water", "terrain_acid",
-	"hearing_rock_behind_wall", "hearing_range", "hearing_muffled_wall", "pack_investigate", "pack_attack", "patrol_wanders", "patrol_herd", "light_blind_ignores"]
+	"hearing_rock_behind_wall", "hearing_range", "hearing_muffled_wall", "pack_investigate", "pack_attack", "patrol_wanders", "patrol_herd", "light_blind_ignores", "light_notices"]
 const SAMPLE_SECONDS := 0.25
 ## A creature that moved less than this (tiles) over STALL_SECONDS while the player was farther
 ## than STALL_MIN_DISTANCE is reported as stalled.
@@ -140,7 +140,7 @@ func _process(_delta: float) -> bool:
 func _begin_run() -> void:
 	_player = get_nodes_in_group("protagonist")[0]
 	_player.set("debug_god", true)
-	# Light comes from a held torch. light_blind_ignores puts a rat 7 tiles off, inside the
+	# Light comes from a held torch. light_notices puts a rat 7 tiles off, inside the
 	# poacher torch's 8 (the fallback torch only reaches 6).
 	_player.set_equipment({"off_hand": "poacher_torch"})
 	_set_patrol()

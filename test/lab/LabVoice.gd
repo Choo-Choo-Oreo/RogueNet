@@ -37,7 +37,7 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	heard_volume_db = VoiceChat.heard_volume_db(self, global_position, db)
-	volume_db = heard_volume_db + VoiceChat.CENTRE_PAN_MAKEUP_DB
+	volume_db = heard_volume_db + SoundPlayer.CENTRE_PAN_MAKEUP_DB
 	queue_redraw()
 	var now := Time.get_ticks_msec()
 	if now >= _next_noise_msec:

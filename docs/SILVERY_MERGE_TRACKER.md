@@ -10,8 +10,8 @@ copied over as-is. **MERGE** = you both changed it; open both and combine by han
 **MERGE (easy)** = you both changed it, but in different lines, so nothing overlaps.
 Still combine it by hand: copying his file over would wipe out your changes.
 
-Last checked: 2026-09-25 against branch tip `1b46e21` (35 commits since the split at
-`d0b8a02`) and main `7ee9de3`. Labels compare against committed `main`: if you have
+Last checked: 2026-09-25 against branch tip `8771fd9` (36 commits since the split at
+`d0b8a02`) and main `90b7f2d`. Labels compare against committed `main`: if you have
 uncommitted edits in a "take" file, treat it as MERGE.
 
 ## How to import a chunk
@@ -61,10 +61,54 @@ Your current area. The sound files only; the scripts that play them are in the o
 - Note: `SoundPlayer` is the one shared place sounds are started from. Creature, ambient
   and door sounds should go through it too, not through a second player.
 
-### BIOME AMBIENCE (new, `d300b27`) ✗
+### REAL SOUNDS (new, `8771fd9`) ✗
+Silvery swapped his synthesised placeholders for sounds cut from Pixabay recordings (sources and
+licences listed in `resources/sfx/SOURCES.md`). Taunt, hurt/drone and lava steps are still placeholders.
+**He saved them under the old `sfx/combat/` paths and names**, which main moved in `1fb3956`. So
+don't `restore` the folders. Copy each file to its main name:
+
+| Branch (`resources/sfx/…`) | Main (`resources/sfx/…`) |
+|---|---|
+| `combat/death/*`, `combat/impact/*` | `entities/death/*`, `entities/impact/*` (same names) |
+| `combat/player/*` (grunts, heartbeat) | `entities/entities.protagonist/*` (same names) |
+| `combat/voice/*` | `entities/entities.antagonist/voice/*` (same names) |
+| `combat/attacks/slash`, `bite`, `bludgeon`, `wall_smash` | `effects/effects.melee/<same>.wav` |
+| `combat/attacks/arrow_shot`, `throw_rock` | `effects/effects.range/<same>.wav` |
+| `combat/attacks/entropia_bolt` / `perditio_touch` | `effects/effects.arcana/` / `effects/effects.necrotic/` |
+| `combat/hurt/thump`, `cut`, `stab`, `crunch`, `choke`, `bite` | `effects.melee/physical`, `physical.slashing`, `physical.piercing`, `physical.bludgeoning`, `physical.strangling`, `bite_hurt` |
+| `combat/hurt/zap`, `ice`, `rock`, `burn`, `splash`, `void` | `effects.arcana/arcana`, `arcana.ordo.frigid`, `arcana.ordo.solum`, `arcana.entropia.zeal`, `arcana.entropia.fluentia`, `arcana.entropia.inanis` |
+| `combat/hurt/hiss`, `poison`, `decay` | `effects.necrotic/necrotic`, `necrotic.perditio.virulentia`, `necrotic.perditio.ruina` |
+| `effects/water/*` | same path |
+
+- [✗] The re-cut sounds above (60 files, table)
+- [✗] New attack variants (7): `slash_knife`, `slash_blunt`, `slash_spear`, `slash_staff`,
+  `slash_beast`, `bite_big`, `bludgeon_big` → next to their base sound in `effects.melee/`
+- [✗] New voices (5): `cat`, `clack`, `click`, `grind`, `squawk` → `entities/entities.antagonist/voice/`.
+  The "ten silent monsters" now have one each (cat, penguin, crab, clam, mimic, gargoyle,
+  leech, octopus, turtle).
+- [✗] Code, ported by hand into main's `scripts/actions/CombatSounds.gd` (you changed it in
+  `90b7f2d`), because his copy is in `scripts/audio/`: `attack_variants()` (a player's swing
+  by the weapon in hand; a minion's by being big, or by its tag, e.g. `beast` gives claws),
+  the 9 new entries in `VOICE_BY_ID`, and `attack_sound(attack, caster)`. Build his
+  `attacks/<id>_<variant>` paths the same way main builds `effects.<family>/<id>`.
+- [✗] `ItemDatabase.weapon_kind()` + `WEAPON_WORDS` (MERGE; guesses the weapon kind from a
+  word in the item id, and an item's own `"weapon"` field overrides it),
+  `scripts/ui/MenuBattle.gd` (take; the menu battle uses the same `weapon_kind`),
+  `test/unit/test_combat_sounds.gd` (MERGE)
+- [✗] `resources/sfx/SOURCES.md` (take). Keep it: it's the licence record for every Pixabay clip.
+- Re-cut sounds for chunks not imported yet: `effects/acid/`, `lava/`, `doors/` (take with
+  AUDIO/WADING/DOOR SOUNDS; the whole folder is the latest version).
+- New footsteps and ambience files: see FOOTSTEPS and BIOME AMBIENCE.
+- `resources/sfx/combat/README.md` changed again. Main deleted it (now `resources/sfx/README.md`), so copy the new lines across.
+
+### BIOME AMBIENCE (new, `d300b27`; files in `8771fd9`) ✗
 Your current area. A biome's `"ambience"` loop plays quietly under the music on the SFX bus
-and fades between biomes. There are no ambience files yet; this adds the player only.
+and fades between biomes.
 - take: `singletons/MusicManager.gd`, `test/unit/test_biome_ambience.gd`
+- take (new `8771fd9`): 12 loops in `resources/sfx/ambiance/` (acid, catacomb, cave, dungeon,
+  flesh, forest, manor, mine, ruins, sewer, void, volcano) + its README. Main's `ambiance/` is empty.
+- MERGE (easy, one line each): `"ambience": "res://resources/sfx/ambiance/<biome>.mp3"` in
+  `game/rooms/*/defines.json` for those 12 biomes (`flesh` is take). `cathedral` reuses `dungeon.mp3`.
 - Also: the SFX slider text in `scripts/ui/SettingsMenu.gd` now says "…minions, ambience."
   (one line; see SETTINGS)
 
@@ -77,7 +121,13 @@ Lava loops and pops near players (players only, not minions).
 
 ### FOOTSTEPS AND DUST (new, `d300b27`) ✗
 Steps on dry ground play the floor's `footsteps` sound folder and puff dust in the
-floor's colours. No footstep sound files exist yet.
+floor's colours. **Sound files arrived in `8771fd9`:** `step_1..3.wav` in
+`resources/sfx/effects/carpet|dirt|flesh|grass|stone|wood/` (take).
+- **Folder placement:** on main, `sfx/effects/` now holds damage families
+  (`effects.<family>/`, `docs/STRUCTURE.md`). Floor footsteps and liquids (`water/`, `lava/`,
+  `acid/`) there don't fit that tree. Decide where floor sounds live (e.g. `sfx/tiles/<floor>/`)
+  before taking them, and point his `SFX_ROOT` (in `Wading.gd`) at it. His liquid check looks for
+  `<folder>/enter.wav`, so footstep folders are never mistaken for liquids.
 - MERGE: `scripts/entities/GridMover.gd` (it also has the FIXES speed cache)
 - take: `scripts/actions/ParticleBurst.gd` (also changed in COMBAT FEEDBACK), `test/unit/test_footsteps.gd`
 - **Check against your hearing work:** Silvery's steps are only a sound you hear. Your

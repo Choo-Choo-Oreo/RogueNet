@@ -146,7 +146,7 @@ static func apply(changes: Array, scene: Node) -> void:
 		for change: Dictionary in changes:
 			cells.append(change["cell"])
 		tiles.refresh_cells(cells)
-	last_applied_msec = Time.get_ticks_msec()
+	last_applied_msec = GameTick.msec()
 	# Shared flow fields were flooded around the old walls; the light re-floods when the
 	# door version moves (LightMap polls it), the same way it does for a door opening.
 	FlowField.clear()

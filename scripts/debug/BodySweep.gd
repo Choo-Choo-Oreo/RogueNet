@@ -70,7 +70,7 @@ func _describe(body: Node2D, mover: GridMover, top_left: Vector2i, problem: Stri
 	var kind = body.get("minion_id")
 	if kind != null and str(kind) != "":
 		label += " (%s)" % kind
-	var now := Time.get_ticks_msec()
+	var now := GameTick.msec()
 	var move: Dictionary = mover.last_move
 	var how := str(move["kind"])
 	if how == "":

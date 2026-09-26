@@ -3,6 +3,7 @@
 	"amount": 1,
 	"type": "Physical",
 	"interval": 1.0,
+	"db": 40.0,
 	"effect": {
 		"texture": "res://resources/gfx/effects/effects.melee/physical.biting.png",
 		"frame_count": 10,

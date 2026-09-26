@@ -55,6 +55,22 @@ func test_every_action_with_damage_has_a_swing_sound() -> void:
 	for id in ["slash", "bite", "bludgeon", "arrow_shot", "entropia_bolt", "perditio_touch", "wall_smash", "taunt", "throw_rock"]:
 		assert_ne(CombatSounds.attack_sound({"id": id}), "", id)
 
+func test_every_action_with_a_sound_has_a_db() -> void:
+	# No db is silent (CombatSounds.on_effect), so a sound file without one would never play.
+	for file in DirAccess.get_files_at("res://game/actions/"):
+		if file.ends_with(".json"):
+			var action: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://game/actions/" + file))
+			if CombatSounds.attack_sound({"id": file.get_basename()}) != "":
+				assert_gt(float(action.get("db", 0.0)), 0.0, file)
+
+func test_the_shared_effect_carries_the_sound_and_its_db() -> void:
+	var caster := Node2D.new()
+	var tagged := CombatSounds.tag_effect(caster, {"id": "slash", "db": 45.0}, {"texture": "x"})
+	assert_eq(tagged["sound"], MELEE + "slash.wav")
+	assert_eq(tagged["db"], 45.0)
+	assert_eq(tagged["texture"], "x", "the picture is kept")
+	caster.free()
+
 func test_every_action_type_is_a_listed_damage_type() -> void:
 	var types: Array = JSON.parse_string(FileAccess.get_file_as_string("res://game/damage_types.json"))
 	for id in ["slash", "bite", "bludgeon", "arrow_shot", "entropia_bolt", "perditio_touch"]:

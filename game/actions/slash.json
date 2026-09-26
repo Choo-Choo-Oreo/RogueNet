@@ -3,6 +3,7 @@
 	"amount": 3,
 	"type": "Physical",
 	"interval": 0.5,
+	"db": 45.0,
 	"target_mode": "melee",
 	"effect": {
 		"texture": "res://resources/gfx/effects/effects.melee/physical.slashing.png",

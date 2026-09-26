@@ -168,7 +168,7 @@ func finish_step() -> void:
 var last_move := {"kind": "", "dir": Vector2.ZERO, "msec": 0}
 
 func note_move(kind: String, dir: Vector2 = Vector2.ZERO) -> void:
-	last_move = {"kind": kind, "dir": dir, "msec": Time.get_ticks_msec()}
+	last_move = {"kind": kind, "dir": dir, "msec": GameTick.msec()}
 
 ## Debug (BodySweep): why a body should not be standing on `tile` -- "wall", "void" or
 ## "no floor" -- or "" if it is fine (TileSolid, the same rule _is_blocked uses).

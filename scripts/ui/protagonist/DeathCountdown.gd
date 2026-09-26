@@ -9,6 +9,7 @@ extends Control
 ## already host-only (a no-op on clients), so in practice only the host's
 ## own countdown actually sends anyone back; good enough for solo/local
 ## testing, real multiplayer death sync is later work.
+## Counts game time (GameTick.ticked): it pauses and speeds up with the game.
 
 const COUNTDOWN_SECONDS := 10.0
 
@@ -19,15 +20,16 @@ var _triggered := false
 
 func _ready() -> void:
 	hide()
+	GameTick.ticked.connect(_on_tick)
 
-func _process(delta: float) -> void:
-	if _triggered:
+func _on_tick(_tick: int) -> void:
+	if _triggered or not is_inside_tree():
 		return
 	if _all_players_dead():
 		if not visible:
 			show()
 			_time_left = COUNTDOWN_SECONDS
-		_time_left = maxf(_time_left - delta, 0.0)
+		_time_left = maxf(_time_left - GameTick.TICK_SECONDS, 0.0)
 		label.text = "Returning to town in %d..." % ceili(_time_left)
 		if _time_left <= 0.0:
 			_triggered = true

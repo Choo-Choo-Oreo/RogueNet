@@ -4,6 +4,7 @@
 	"needs_sight": false,
 	"only_through_walls": true,
 	"interval": 6.0,
+	"db": 80.0,
 	"shape": {
 		"type": "line",
 		"length": 3,

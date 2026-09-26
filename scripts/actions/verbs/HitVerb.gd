@@ -9,8 +9,7 @@ extends RefCounted
 ## pixel of the aimed tile.
 static func perform(caster: Node2D, target_global: Vector2, attack: Dictionary) -> void:
 	var effect: Dictionary = attack.get("effect", {})
-	if not effect.is_empty():
-		AttackEffect.play_between(caster.global_position, target_global, effect)
+	AttackEffect.play_attack(caster, target_global, attack, effect)
 	var tile_size: float = caster.grid_mover.tile_size
 	var half := Vector2(tile_size, tile_size) / 2.0
 	TileHit.apply(caster, Vector2i(((target_global + half) / tile_size).floor()), attack.get("amount", 0), attack.get("type", ""))

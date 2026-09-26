@@ -23,8 +23,7 @@ static func perform(caster: Node2D, target_global: Vector2, attack: Dictionary) 
 	var amount: int = attack.get("amount", 0)
 	var type: String = attack.get("type", "")
 	var attacker_data: Dictionary = effect.get("attacker", {})
-	if not attacker_data.is_empty():
-		AttackEffect.play_between(caster.global_position, target_global, attacker_data)
+	AttackEffect.play_attack(caster, target_global, attack, attacker_data)
 	var texture: String = effect.get("projectile", "")
 	if texture == "":
 		_play_target(caster, effect, target_global)

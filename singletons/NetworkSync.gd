@@ -559,8 +559,9 @@ const DOOR_ASK_COOLDOWN_MSEC := 300
 
 func open_door(id: int) -> void:
 	# A held movement key bumps the door every physics tick until the answer
-	# comes back, so don't ask more than once per cooldown.
-	var now := Time.get_ticks_msec()
+	# comes back, so don't ask more than once per cooldown (game time, so a sped-up game asks
+	# as often per game second as a real one).
+	var now := GameTick.msec()
 	if now - _door_asked_msec.get(id, -DOOR_ASK_COOLDOWN_MSEC) < DOOR_ASK_COOLDOWN_MSEC:
 		return
 	_door_asked_msec[id] = now
@@ -657,6 +658,9 @@ func _spawn_effect(pos: Vector2, data: Dictionary, direction: Vector2) -> void:
 	var scene := get_tree().current_scene
 	if scene == null:
 		return
+	CombatSounds.on_effect(scene, pos, data)
+	if not data.has("texture"):
+		return  # a sound with no picture (AttackEffect.play_attack)
 	var effect: AttackEffect = ATTACK_EFFECT_SCENE.instantiate()
 	scene.add_child(effect)
 	effect.global_position = pos

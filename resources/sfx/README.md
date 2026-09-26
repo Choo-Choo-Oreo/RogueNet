@@ -39,6 +39,10 @@ meant as one) and lava tiles slow you but don't hurt. That is a gameplay decisio
 
 ### Volume and crowds
 
+- An attack's sound is a sound in the dungeon at its action's `db` (`game/actions/README.md`):
+  walls, doors and distance take it down the same as voices, and one you can't hear doesn't play.
+  An action of 60 dB heard beside you plays as recorded; each dB more or less is a dB louder
+  or quieter (`CombatSounds.PLAYBACK_DB`). A thrown rock's sound plays where it lands.
 - Your own attacks and hits on you are loudest; your party's are 5 dB quieter, enemies' 8 dB,
   a hit landing on a minion 3 dB. A boss is 2 dB louder and skips every limit below.
 - The same file at most 3 times at once; extras are dropped.

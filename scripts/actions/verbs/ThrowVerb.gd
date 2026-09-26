@@ -4,7 +4,8 @@ extends RefCounted
 ## Throws something to a spot that makes a noise where it lands (see Sound), and does no damage.
 ## It flies at most `range_tiles` toward the aimed tile and stops short of the first wall, so
 ## aiming at a wall lands it just in front. `db` is the landing's dB (Sound;
-## a footstep is 30); without it the landing is silent. The `effect.projectile` sprite is only the flight.
+## a footstep is 30); without it the landing is silent. Players hear the action's sound
+## (CombatSounds) at the landing, at that dB. The `effect.projectile` sprite is only the flight.
 ## Who hears it is the host's business (NetworkSync.report_noise).
 
 static func perform(caster: Node2D, target_global: Vector2, attack: Dictionary) -> bool:
@@ -27,7 +28,12 @@ static func perform(caster: Node2D, target_global: Vector2, attack: Dictionary) 
 		return false
 	var landing_global := (Vector2(landing) + Vector2(0.5, 0.5)) * tile_size
 	var db: float = attack.get("db", 0.0)
-	var land := func(): NetworkSync.report_noise(landing_global, db)
+	# Tagged now: the caster may be gone by the time it lands.
+	var sound := CombatSounds.tag_effect(caster, attack, {})
+	var land := func():
+		NetworkSync.report_noise(landing_global, db)
+		if sound["sound"] != "":
+			NetworkSync.play_effect(landing_global, sound, Vector2.ZERO)
 	var texture: String = attack.get("effect", {}).get("projectile", "")
 	if texture == "":
 		land.call()

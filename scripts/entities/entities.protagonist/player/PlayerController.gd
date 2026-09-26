@@ -34,7 +34,8 @@ var _attacks: Array = []
 var _own_actions: Array = []
 var _worn: Dictionary = {}
 var active_slot: int = 0
-var _attack_timer := 0.0
+## Game time (GameTick.msec) the attacks can be used again, like the taunt's _taunt_ready_msec.
+var _attack_ready_msec := 0
 var _is_dead := false
 
 func set_skin(skin_id: String) -> void:
@@ -168,7 +169,6 @@ func _process(delta: float) -> void:
 			animator.animate_moving(grid_mover.facing_direction)
 		else:
 			animator.animate_idle()
-		_attack_timer = maxf(_attack_timer - delta, 0.0)
 		_update_tile_hover()
 		if _attack_held:
 			if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) or Input.is_action_pressed("attack"):
@@ -336,7 +336,7 @@ func _try_attack() -> void:
 	if attack.get("verb", "") == "taunt":
 		_try_taunt(attack)
 		return
-	if _is_dead or _attack_timer > 0.0 or attack.is_empty():
+	if _is_dead or GameTick.msec() < _attack_ready_msec or attack.is_empty():
 		return
 	var own_tile := _own_tile()
 	var ranged: bool = attack.get("target_mode", "melee") == "ranged"
@@ -350,10 +350,10 @@ func _try_attack() -> void:
 	# A thrown rock may be aimed at a wall (ThrowVerb lands it in front).
 	if attack.get("verb", "") != "throw" and grid_mover.is_tile_blocked(target_tile):
 		return
-	_attack_timer = attack.get("interval", 0.5)
+	_attack_ready_msec = GameTick.msec() + int(attack.get("interval", 0.5) * 1000.0)
 	var target_global := Vector2(target_tile) * grid_mover.tile_size
 	if not ActionRunner.perform(self, target_global, attack):
-		_attack_timer = 0.0
+		_attack_ready_msec = 0
 
 ## Taunt slot (an action whose verb is "taunt", see TauntVerb). Its own cooldown
 ## (`interval`) so it never locks out the attacks.

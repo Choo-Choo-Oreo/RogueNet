@@ -1,6 +1,7 @@
 {
 	"verb": "taunt",
 	"interval": 12.0,
+	"db": 70.0,
 	"radius_tiles": 6.0,
 	"duration": 4.0,
 	"max_targets": 24,

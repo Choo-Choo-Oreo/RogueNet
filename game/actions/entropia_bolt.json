@@ -3,6 +3,7 @@
 	"amount": 2,
 	"type": "Arcana.Entropia",
 	"interval": 1.6,
+	"db": 50.0,
 	"range_tiles": 4,
 	"effect": {
 		"texture": "res://resources/gfx/effects/effects.arcana/arcana.entropia.png",

@@ -15,6 +15,9 @@ extends RefCounted
 ##   (voice()).
 ## Who is involved sets the volume: your own attacks and hits on you loudest, your party's
 ## quieter, enemies' quieter still. A boss is loud and skips the crowd limits.
+## An attack's sound is also a sound in the dungeon: its action's `db` (game/actions), heard
+## through the same spread as voices (Sound.play_heard), so walls, doors and distance take it
+## down and past hearing it is not played. An action with no `db` is silent.
 
 const EFFECTS_DIR := "res://resources/sfx/effects/"
 const ENTITIES_DIR := "res://resources/sfx/entities/"
@@ -26,6 +29,9 @@ const ENEMY_DB := -8.0
 const IMPACT_DB := -3.0
 const BOSS_DB := 2.0
 const JITTER := 0.06
+## An attack of this many dB, heard right beside you, plays its file as recorded; each dB more
+## or less plays a dB louder or quieter.
+const PLAYBACK_DB := 60.0
 
 ## The hurt sound when a damage type has none of its own, nor any of its parents.
 const HURT_FALLBACK := "physical"
@@ -68,16 +74,17 @@ static var _last_voice_species := ""
 static var _effect_paths := {}
 
 ## A copy of an attack's effect that also carries what every peer needs to play its sound:
-## the file, the caster's team and peer, and whether it's a boss. Called by the verbs where
-## they share the effect (AttackEffect.play_between), so the sound reaches everyone with it.
+## the file and its dB, the caster's team and peer, and whether it's a boss. Called by the verbs
+## where they share the effect (AttackEffect.play_attack), so the sound reaches everyone with it.
 static func tag_effect(caster: Node, attack: Dictionary, effect: Dictionary) -> Dictionary:
 	var tagged := effect.duplicate()
 	tagged["sound"] = attack_sound(attack)
+	tagged["db"] = float(attack.get("db", 0.0))
 	tagged["team"] = "protagonist" if caster.is_in_group("protagonist") else "antagonist"
 	tagged["peer"] = int(str(caster.name)) if caster.is_in_group("protagonist") else 0
-	tagged["boss"] = bool(caster.get_meta("is_boss", false))
+	tagged["boss"] = "is_boss" in caster and caster.is_boss
 	if tagged["team"] == "antagonist" and "minion_id" in caster:
-		tagged["voice"] = roll_voice(caster.minion_id, caster.tags)
+		tagged["voice"] = roll_voice(caster.minion_id)
 	return tagged
 
 ## res:// path of an attack's swing sound ("" if it has none).
@@ -95,15 +102,18 @@ static func effect_sound(name: String) -> String:
 	return _effect_paths[name]
 
 ## Called wherever an effect is spawned (NetworkSync._spawn_effect), on every peer.
+## Heard as a sound of the action's dB made at `at` (see the top).
 static func on_effect(from: Node, at: Vector2, data: Dictionary) -> void:
 	var sound: String = data.get("sound", "")
-	if sound == "":
+	var db: float = data.get("db", 0.0)
+	if sound == "" or db <= 0.0:
 		return
-	var db := who_db(from, data.get("team", ""), int(data.get("peer", 0)), bool(data.get("boss", false)))
-	SoundPlayer.play(from, sound, {"at": at, "volume_db": db, "jitter": JITTER, "always": data.get("boss", false)})
+	var boss: bool = data.get("boss", false)
+	var volume := who_db(from, data.get("team", ""), int(data.get("peer", 0)), boss) + db - PLAYBACK_DB
+	Sound.play_heard(from, sound, at, db, {"volume_db": volume, "jitter": JITTER, "always": boss})
 	var cry: String = data.get("voice", "")
 	if cry != "":
-		SoundPlayer.play(from, VOICE_DIR + cry + ".wav", {"at": at, "volume_db": db - 2.0, "jitter": JITTER, "max_voices": 2})
+		Sound.play_heard(from, VOICE_DIR + cry + ".wav", at, db, {"volume_db": volume - 2.0, "jitter": JITTER, "max_voices": 2})
 
 ## Volume for something done by (or to) a member of `team`, as heard on this machine.
 static func who_db(from: Node, team: String, peer: int, boss: bool) -> float:
@@ -143,11 +153,12 @@ static func voice(species: String, tags: Array) -> String:
 	return ""
 
 ## Picks the voice for one attack: "" most of the time, and never the same species twice running.
-static func roll_voice(species: String, tags: Array) -> String:
+## Its tags come from its json (MinionIndex), read only when it does cry out.
+static func roll_voice(species: String) -> String:
 	if randi() % VOICE_CHANCE != 0 or species == _last_voice_species:
 		return ""
 	_last_voice_species = species
-	return voice(species, tags)
+	return voice(species, MinionIndex.load_data(species).get("tags", []))
 
 ## `tag` or its nearest listed parent ("undead.ghoul" -> "undead").
 static func _by_tag(table: Dictionary, tag: String) -> String:

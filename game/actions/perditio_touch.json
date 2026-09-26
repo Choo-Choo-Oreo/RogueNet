@@ -3,6 +3,7 @@
 	"amount": 2,
 	"type": "Necrotic.Perditio",
 	"interval": 1.4,
+	"db": 40.0,
 	"effect": {
 		"texture": "res://resources/gfx/effects/effects.necrotic/necrotic.perditio.png",
 		"frame_count": 8,

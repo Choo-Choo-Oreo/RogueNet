@@ -67,9 +67,6 @@ const ENVELOPE_RELEASE := 0.1
 ## bus's own volume comes after its effects).
 const PLAYBACK_TALK_DBFS := -18.0
 const MAX_BOOST_DB := 36.0
-## A 2D player in the middle of the screen gives each ear half (-6 dB, Godot's panning): voices
-## get it back, so a voice from the centre plays at its volume.
-const CENTRE_PAN_MAKEUP_DB := 6.0
 ## A voice starts playing once this much of it has arrived (and again after it ran dry), so a
 ## late chunk doesn't leave a gap; more than MAX_QUEUE_SECONDS waiting is dropped, so the delay
 ## can't build up.
@@ -549,7 +546,7 @@ func _place_voice(peer_id: int, player: AudioStreamPlayer2D, db: float) -> void:
 	var body: Node2D = NetworkSync._player(peer_id)
 	var me := Viewer.local()
 	var heard := _in_mission and me != null and body != null and not _is_ghost(body) and peer_id != my_id()
-	player.volume_db = (heard_volume_db(peer_id, body.global_position, db) if heard else 0.0) + CENTRE_PAN_MAKEUP_DB + linear_to_db(maxf(player_volume(peer_id), 0.0001))
+	player.volume_db = (heard_volume_db(peer_id, body.global_position, db) if heard else 0.0) + SoundPlayer.CENTRE_PAN_MAKEUP_DB + linear_to_db(maxf(player_volume(peer_id), 0.0001))
 	player.global_position = SoundPlayer.screen_centre(self)
 	if heard and stereo:
 		player.global_position += body.global_position - me.position

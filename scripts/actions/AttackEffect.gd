@@ -32,6 +32,18 @@ static func effect_position(attacker_global: Vector2, target_global: Vector2, da
 static func play_between(caster_global: Vector2, at_global: Vector2, data: Dictionary) -> void:
 	NetworkSync.play_effect(effect_position(caster_global, at_global, data), data, at_global - caster_global)
 
+## An attack's opening: its `effect` picture (may be empty) plus its sound
+## (CombatSounds.tag_effect), shared with every peer. An attack with neither sends nothing; one
+## with a sound but no picture sends just the sound (NetworkSync._spawn_effect skips the picture).
+## Its `db` is also a noise minions hear (Sound.make), from where the effect plays.
+static func play_attack(caster: Node2D, at_global: Vector2, attack: Dictionary, effect: Dictionary) -> void:
+	var tagged := CombatSounds.tag_effect(caster, attack, effect)
+	if tagged["db"] > 0.0:
+		NetworkSync.report_noise(effect_position(caster.global_position, at_global, tagged), tagged["db"])
+	if effect.is_empty() and tagged["sound"] == "":
+		return
+	play_between(caster.global_position, at_global, tagged)
+
 ## direction points from attacker to target. The art is drawn attacking
 ## left-to-right (attacker on the left, swinging right), so that's the
 ## rotation/flip baseline: right needs neither, left is the same swing

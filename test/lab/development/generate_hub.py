@@ -257,7 +257,10 @@ cell('hearing_muffled_wall', ['.....r#........', '.....R#........'] + ['......#.
 # its hearing and sight, so they can only react through the pack.
 _pack = ['..w.........w..'] + ['...............'] * 2 + ['.......w......r'] + ['...............'] * 9
 cell('pack_investigate', _pack, door_x=6)
-cell('pack_attack', _pack, door_x=6)
+# pack_attack: the same, but the rat is walled in. The wolves biting you is a noise (an attack's
+# `db`, since 2026-09-25) that a rat in the open hears and comes to; the cell checks the pack alarm,
+# so the rat must not be reached by it, and a wall (35 dB) keeps the fight out.
+cell('pack_attack', ['..w.........w..', '.............##', '.......w.....#r', '.............##'] + ['...............'] * 9, door_x=6)
 # Patrol: one rat, alone in a room with a player at the far end (outside its sight and light).
 cell('patrol_herd', ['..w.....w.....w'] + ['...............'] * 25, door_x=6)
 cell('patrol_wanders', ['.......r.......'] + ['...............'] * 25, door_x=6)
@@ -265,9 +268,11 @@ cell('patrol_wanders', ['.......r.......'] + ['...............'] * 25, door_x=6)
 
 # ---- light: a creature your light reaches comes to look, if it can see ----
 # You stand still (no footsteps). A blind rat 4 tiles from you, lit: it must ignore the light (it
-# once reacted to it). A plain rat 7 tiles away: lit, but past its sight (5), so light is what
-# must make it notice you.
-cell('light_blind_ignores', ['...............'] * 3 + ['.......R.......'] + ['...............'] * 3 + ['r..............'] + ['...............'] * 5, door_x=11)
+# once reacted to it). A plain rat 7 tiles away (light_notices): lit, but past its sight (5), so light
+# is what must make it notice you. Two cells since 2026-09-25: the plain rat biting you is a noise
+# the blind rat hears.
+cell('light_blind_ignores', ['...............'] * 3 + ['.......R.......'] + ['...............'] * 9, door_x=11)
+cell('light_notices', ['...............'] * 7 + ['r..............'] + ['...............'] * 5, door_x=11)
 
 
 # ---- voice: fake teammates talking without a break, to walk up to and listen (Test Lab only) ----
@@ -316,18 +321,18 @@ NO_HEAR = {'hearing_muffled_wall': ['rat'], 'hearing_range': ['rat'], 'pack_inve
 POKE = {'pack_attack': 'wolf'}
 ATTACKS = {'pack_attack': ['wolf']}
 # NOTICES: every creature of these ids must leave Patrol (here: light, with no sound and no help).
-NOTICES = {'light_blind_ignores': ['rat']}
+NOTICES = {'light_notices': ['rat']}
 NO_HEAR['light_blind_ignores'] = ['rat_blind']
 # ALONE: the sim does not tell the creatures where the player is (like a noise cell, but no noise).
 # MOVES: a creature of this id must get at least this many tiles from where it started (patrol).
-ALONE = ['patrol_wanders', 'patrol_herd', 'light_blind_ignores']
+ALONE = ['patrol_wanders', 'patrol_herd', 'light_blind_ignores', 'light_notices']
 MOVES = {'patrol_wanders': {'rat': 3}, 'patrol_herd': {'wolf': 3}}
 # TOGETHER: at the end the creatures of these ids must all be within this many tiles of each other (a herd).
 TOGETHER = {'patrol_herd': ('wolf', 10)}
 
 # Where the player stands instead of at the door (interior column, row), for cells that test a
 # straight line to the creature. The sim and the Test Lab both use it for "step inside".
-PLAYER_AT = {'terrain_lava': (13, 1), 'terrain_water': (13, 1), 'terrain_acid': (13, 1), 'hearing_rock_behind_wall': (14, 12), 'hearing_muffled_wall': (14, 12), 'hearing_range': (7, 12), 'pack_investigate': (7, 12), 'pack_attack': (7, 12), 'patrol_wanders': (7, 25), 'patrol_herd': (7, 25), 'light_blind_ignores': (7, 7),
+PLAYER_AT = {'terrain_lava': (13, 1), 'terrain_water': (13, 1), 'terrain_acid': (13, 1), 'hearing_rock_behind_wall': (14, 12), 'hearing_muffled_wall': (14, 12), 'hearing_range': (7, 12), 'pack_investigate': (7, 12), 'pack_attack': (7, 12), 'patrol_wanders': (7, 25), 'patrol_herd': (7, 25), 'light_blind_ignores': (7, 7), 'light_notices': (7, 7),
              'voice_whisper': (13, 11), 'voice_talk': (13, 11), 'voice_yell': (13, 11)}
 
 # The Minotaur is expected to be skipped here, so the cell may spawn fewer creatures than it pins.
@@ -409,15 +414,18 @@ NOTES = {
     'pack_investigate': ('Three wolves (a pack) and a rat (not in it). Only the top-left wolf is close enough to hear a footstep.',
                                 'Do NOT press Enter. Press N: one footstep beside the top-left wolf.',
                                 'All three wolves should walk to the footstep (the readout says "-> going to"). The rat must ignore it.'),
-    'pack_attack': ('The same wolves and rat. The top-left wolf is shot from the dark (the sim pokes it).',
+    'pack_attack': ('The same wolves, and the rat walled in (the fight is a noise it would hear). The top-left wolf is shot from the dark (the sim pokes it).',
                            'Do NOT press Enter. Wake one wolf yourself: open the door, press the backslash key to step inside, walk toward the top-left wolf until it attacks you.',
                            'When one wolf goes to Attack, every wolf attacks you. The rat should not care.'),
     'patrol_wanders': ('One rat alone in a room; you stand at the far end, outside its sight and your light.',
                        'Do NOT press Enter. Just watch it for about 20 seconds.',
                        'It should walk to a few random spots (staying in the room), pausing between. Leave the room by the door: it should stop moving when no player is in or next to its room.'),
-    'light_blind_ignores': ('A blind rat 4 tiles from where you stand, and a plain rat 7 tiles away (past its sight, inside your light).',
+    'light_blind_ignores': ('A blind rat 4 tiles from where you stand, inside your light.',
                             'Do NOT press Enter. Open the door, press backslash to step inside, and stand still.',
-                            'The plain rat should come to look (your light reached it). The blind rat must not move: it cannot see your light.'),
+                            'The blind rat must not move: it cannot see your light.'),
+    'light_notices': ('A plain rat 7 tiles from where you stand (past its sight, inside your light).',
+                      'Do NOT press Enter. Open the door, press backslash to step inside, and stand still.',
+                      'The rat should come to look: your light reached it.'),
     'patrol_herd': ('Three wolves (a pack) spread along the top of a room; you stand at the far end.',
                     'Do NOT press Enter. Watch for about 30 seconds.',
                     'The wolves should wander as a group, staying close to each other, not each in a different direction.'),

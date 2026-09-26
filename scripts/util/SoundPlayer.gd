@@ -13,7 +13,8 @@ extends RefCounted
 ## - **at**: a world position makes it a positional sound (quieter with distance from the
 ##   camera) that is skipped entirely when the spot is off screen.
 ## - **heard**: with `at`, the caller already set the volume from what reaches the listener
-##   (Sound.play_heard): no off-screen skip and no fade with distance, only left/right.
+##   (Sound.play_heard): no off-screen skip and no fade with distance, only left/right, and
+##   CENTRE_PAN_MAKEUP_DB on top.
 ## `always` skips merge, max_voices and the off-screen check (a boss's attack).
 
 const DEFAULTS := {
@@ -36,6 +37,9 @@ const OFF_SCREEN_MARGIN := 48.0
 const HEARING_DISTANCE := 480.0
 ## A `heard` sound is never cut off by distance (the flood already decided it reaches).
 const HEARD_MAX_DISTANCE := 1000000.0
+## A 2D player in the middle of the screen gives each ear half (-6 dB, Godot's panning): heard
+## sounds and voices get it back, so one from the centre plays at its volume.
+const CENTRE_PAN_MAKEUP_DB := 6.0
 
 static var _streams := {}   # path -> AudioStream (null if missing)
 static var _playing := {}   # path -> Array of players still sounding
@@ -79,7 +83,7 @@ static func play(from: Node, path: String, options: Dictionary = {}) -> Node:
 		player = AudioStreamPlayer.new()
 	player.stream = stream
 	player.bus = o["bus"]
-	player.volume_db = o["volume_db"]
+	player.volume_db = float(o["volume_db"]) + (CENTRE_PAN_MAKEUP_DB if o["heard"] else 0.0)
 	var jitter: float = o["jitter"]
 	player.pitch_scale = float(o["pitch"]) * randf_range(1.0 - jitter, 1.0 + jitter)
 	player.finished.connect(player.queue_free)

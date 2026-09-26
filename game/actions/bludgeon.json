@@ -3,6 +3,7 @@
 	"amount": 6,
 	"type": "Physical.Bludgeoning",
 	"interval": 1.5,
+	"db": 55.0,
 	"effect": {
 		"texture": "res://resources/gfx/effects/effects.melee/physical.bludgeoning.png",
 		"frame_count": 8,
