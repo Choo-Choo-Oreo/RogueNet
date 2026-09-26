@@ -1,7 +1,8 @@
 class_name DollStage
 extends Control
 
-## The inventory's character preview: the Human wearing the current gear, standing on a
+## The inventory's character preview: your chosen character (NetworkSync.peer_characters)
+## wearing the current gear, standing on a
 ## rug in a candlelit stone alcove (resources/gfx/ui/storage/Stage.png).
 ## - Drag sideways, scroll, or press the brass arrows to turn them (8 ways).
 ## - Drop a piece of gear on them to put it on (PlayerInventory.equip_from).
@@ -10,7 +11,6 @@ extends Control
 ## The candle glow flickers and dust drifts in the light. InventoryPanel owns one and calls
 ## refresh() whenever the inventory changes.
 
-const BODY_SHEET := "res://resources/gfx/entities/entities.protagonist/human/Human-%s.png"
 const STAGE := "res://resources/gfx/ui/storage/Stage.png"
 const ARROW := "res://resources/gfx/ui/storage/Arrow.png"
 ## Screen pixels per art pixel: the alcove, and the Human in it.
@@ -33,7 +33,10 @@ const FACINGS := [
 
 var _facing := 0
 var _doll := Control.new()
-var _body_sheets: Dictionary = {}
+var _body_sheets: Dictionary = {}   # DRAW_ORDER sheet -> the character's texture for it
+var _character := ""
+## The skin whose own copy of the gear is drawn ("" = the Human's; see GearLayers.body_id).
+var _body_id := ""
 var _glows: Array[TextureRect] = []
 var _sparks := CPUParticles2D.new()
 var _time := 0.0
@@ -43,8 +46,6 @@ var _worn_key := ""
 var _drag_from := -1.0
 
 func _init() -> void:
-	for sheet in ItemDatabase.DRAW_ORDER:
-		_body_sheets[sheet] = load(BODY_SHEET % sheet)
 	var art := Parchment.pixel_texture(STAGE, STAGE_PX)
 	custom_minimum_size = art.get_size()
 	size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -130,8 +131,26 @@ func _celebrate(item_id: String) -> void:
 	_sparks.amount = 12 + 6 * ItemDatabase.rarity_rank(item_id)
 	_sparks.restart()
 
+func _notification(what: int) -> void:
+	# the character may have been changed in town while the panel was shut
+	if what == NOTIFICATION_VISIBILITY_CHANGED and is_visible_in_tree():
+		_draw_doll()
+
+# Loads the body sheets of the character this machine's player picked, when it changes.
+func _update_character() -> void:
+	var character_id: String = NetworkSync.peer_characters.get(multiplayer.get_unique_id(), PlayerController.DEFAULT_CHARACTER)
+	if character_id == _character:
+		return
+	_character = character_id
+	var data := PlayerController.character_data(character_id)
+	_body_id = "" if data.get("fits_gear", true) else character_id
+	var animations: Dictionary = data["sprite_frames"]["animations"]
+	for animation in ItemDatabase.ANIMATION_SHEETS:
+		_body_sheets[ItemDatabase.ANIMATION_SHEETS[animation]] = load(animations[animation]["texture"])
+
 # The same layering the game uses (ItemDatabase.DRAW_ORDER); one frame of each sheet.
 func _draw_doll() -> void:
+	_update_character()
 	for child in _doll.get_children():
 		child.queue_free()
 	var sheet: String = FACINGS[_facing][0]
@@ -149,10 +168,12 @@ func _draw_doll() -> void:
 			var item_sheet := sheet
 			# facing left, held items keep to their own hand (ItemDatabase.held_left)
 			if mirrored and slot in ItemDatabase.HELD_SLOTS:
-				var view := ItemDatabase.held_left(item_id, facing)
+				var view := ItemDatabase.held_left(item_id, facing, _body_id)
 				item_sheet = view[0]
 				flip = view[1]
-			texture = load(ItemDatabase.sheet_path(item_id, item_sheet))
+			var path := ItemDatabase.sheet_path(item_id, item_sheet, _body_id)
+			# a skin with its own body only wears the pieces drawn for it so far
+			texture = load(path) if ResourceLoader.exists(path) else null
 		if texture == null:
 			continue
 		# gear drawn without step frames has fewer frames than the body

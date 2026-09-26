@@ -94,35 +94,157 @@ def I_():
                                           "..SSSSSSTTTUU...",
                                           "..UUUUUUUUUUU...",
                                           "................"])), {})
-    inf = place(over(shade(dome(), 'wlmdx', rim='STU'),
-                     [(5, 8, 'A'), (6, 8, 'B'), (9, 8, 'B'), (10, 8, 'A'), (4, 8, 'x'), (7, 8, 'x'), (8, 8, 'x'),
-                      (11, 8, 'x'), (7, 10, 'x'), (8, 10, 'x'), (7, 11, 'x'), (8, 11, 'x')]))
-    horns = place([(0, 1, 'E'), (0, 2, 'E'), (1, 3, 'E'), (1, 4, 'F'), (2, 5, 'F'), (2, 6, 'G'), (1, 2, 'F'),
-                   (15, 1, 'E'), (15, 2, 'F'), (14, 3, 'E'), (14, 4, 'F'), (13, 5, 'F'), (13, 6, 'G'), (14, 2, 'G')])
-    I['infernal_horned_helm'] = (comp(horns, inf), {})
-    mg = shade(dome(r=5.8, top=3), 'wlmdx')
-    mg = over(mg, [(4, 8, 'B'), (5, 9, 'A'), (6, 9, 'B'), (10, 7, 'C'), (11, 8, 'B'), (7, 5, 'C'),
-                   (5, 11, 'x'), (6, 11, 'x'), (9, 11, 'x'), (10, 11, 'x')])
-    spikes = place([(4, 0, 'B'), (4, 1, 'l'), (4, 2, 'm'), (5, 2, 'l'), (7, 0, 'A'), (7, 1, 'l'), (8, 1, 'm'),
-                    (7, 2, 'l'), (8, 2, 'm'), (11, 0, 'B'), (11, 1, 'm'), (11, 2, 'd'), (10, 2, 'm')])
-    I['magma_horned_helm'] = (comp(spikes, place(mg)), {})
-    ab = shade(dome(r=5.6, top=5, cy=9.5), 'wlmdx')
-    ab = over(ab, [(x, 10, 'x') for x in range(4, 12)] + [(6, 10, 'C'), (9, 10, 'C'), (7, 12, 'x'), (8, 12, 'x')])
-    fin = place(canvas_pts([(p[0], p[1], p[2]) for p in at(4, 0, ["..S.....",
-                                                                   "..SS.S..",
-                                                                   ".STSSS.S",
-                                                                   ".STUSTSS",
-                                                                   "..TUTUTU",
-                                                                   "...UUUU."])]))
-    sidefins = place([(1, 9, 'S'), (1, 10, 'T'), (2, 10, 'S'), (2, 11, 'T'), (14, 9, 'T'), (14, 10, 'U'),
-                      (13, 10, 'T'), (13, 11, 'U')])
-    I['abyssal_fin_helm'] = (comp(fin, sidefins, place(ab)), {})
-    hm = shade(dome(r=5.7, top=3), 'wlmdx')
-    hm = over(hm, [(x, 11, 'S') for x in range(4, 12)] + [(x, 12, 'T') for x in range(5, 11)] +
-              [(5, 9, 'x'), (10, 9, 'x'), (7, 10, 'A'), (8, 10, 'A')])
-    ears = place([(3, 2, 'l'), (4, 2, 'l'), (3, 3, 'A'), (4, 3, 'm'), (11, 2, 'l'), (12, 2, 'm'),
-                  (11, 3, 'm'), (12, 3, 'B')])
-    I['hamster_helm'] = (comp(ears, place(hm)), {})
+    # Infernal: a closed great-helm, gold brow band, T-slit with glowing eyes, bone horns sweeping up
+    inf_helm = ["................",
+                "................",
+                "................",
+                "......wlll......",
+                "....wwlllllm....",
+                "...wllllllmmd...",
+                "...wllllllmmd...",
+                "...ABBBBBBBBC...",
+                "...lxxBxxBxxd...",
+                "...llllxxmmmd...",
+                "...llllxxmmmd...",
+                "...wlllxxmmmd...",
+                "....lllxxmmd....",
+                ".....llmmmd.....",
+                "................",
+                "................"]
+    horn = ["................",
+            ".E..............",
+            ".EF.............",
+            ".EF.............",
+            "..FG............",
+            "..FGG...........",
+            "...GG...........",
+            "................"]
+    infernal = comp(place(horn), place(horn, mirror=True), place(inf_helm))
+
+    # Magma: a pointed bascinet of dark rock, Y-shaped face opening, lava cracks, jagged crest
+    mag = ["................",
+           ".......w........",
+           "......wll.......",
+           ".....wllmm......",
+           "....wllllmd.....",
+           "...wlllCllmd....",
+           "...llllBlmmd....",
+           "..wlllBlllmmd...",
+           "..llxxxlxxxmd...",
+           "..llBxxlxxBmd...",
+           "..lllxxxxmmmd...",
+           "..llllxxmmCmd...",
+           "..wlllxxmmBmmd..",
+           ".wllllxxmmmmmd..",
+           "..dddd..ddddd...",
+           "................"]
+    rock = ["................",
+            "................",
+            ".B..............",
+            ".CS.............",
+            ".TSS............",
+            "..TSS...........",
+            "...TT...........",
+            "................"]
+    magma = comp(place(rock), place(rock, mirror=True), place(mag))
+
+    # Abyssal: a sea-helm, fin crest front to back, gill cheek plates, a narrow visor, side fins
+    aby = ["................",
+           "................",
+           "................",
+           ".....wwlll......",
+           "....wlllllmm....",
+           "...wlllllllmd...",
+           "...lllllllmmd...",
+           "...xxBxxxxBxd...",
+           "...lxxxxxxxmd...",
+           "...wTlllllTmd...",
+           "...lTllxllTmd...",
+           "...lTlxxxlTmd...",
+           "....llllllmd....",
+           ".....dddddd.....",
+           "................"]
+    fin = ["....S...........",
+           "....SS..S.......",
+           "....STS.SS.S....",
+           ".....STSTSSS....",
+           ".....TTUTTUU....",
+           "................"]
+    sidefin = ["................",
+               "................",
+               "................",
+               "................",
+               "................",
+               "................",
+               "................",
+               "S...............",
+               "SS..............",
+               "STS.............",
+               ".TT.............",
+               "..U.............",
+               "................"]
+    abyssal = comp(place(sidefin), place(sidefin, mirror=True), place(aby, 0, 1), place(fin, 0, 0))
+
+    # Hamster: a nasal helm in fur colours, round ears, puffy cream cheek guards, pink nose
+    ham = ["................",
+           "................",
+           "................",
+           "......wSSl......",
+           ".....wlSTlm.....",
+           "....wllSTlmm....",
+           "...wlllSTllmd...",
+           "...llllSTlmmd...",
+           "...CCCCCCCCCC...",
+           "...SxxxSTxxxU...",
+           "..SSTxxSTxxTUU..",
+           "..STTTxSTxTTUU..",
+           "..STTTxABxTTUU..",
+           "..STTUxxxxTUUU..",
+           "...TU......UU...",
+           "................"]
+    ham = [r[:16] for r in ham]
+    ears = ["................",
+            "................",
+            "..lm............",
+            ".wAm............",
+            ".lBd............",
+            "..d............."]
+    hamster = comp(place(ears), place(ears, mirror=True), place(ham))
+
+    # Clockwork: a leather aviator cap with long ear flaps, brass goggles pushed up on the brow
+    cap = ["................",
+           "................",
+           "......SSST......",
+           ".....SSSTTT.....",
+           "....SSSSTTTU....",
+           "...SSSSSTTTUU...",
+           "...SSSSTTTTUU...",
+           "...SSSTTTTTUU...",
+           "...SSTTTTTTUU...",
+           "..STTxxxxxxTUU..",
+           "..STTxxxxxxTUU..",
+           "..STTxxxxxxTUU..",
+           "..STTx....xTUU..",
+           "...TU......TU...",
+           "................",
+           "................"]
+    gog = ["................",
+           "................",
+           "................",
+           "................",
+           "................",
+           "................",
+           "..EwlF....wlFG..",
+           ".GwABFGFFGwABFG.",
+           ".GlBCFGGGGlBCFG.",
+           "..FFFG....FFGG..",
+           "................"]
+    clock = comp(place(cap), place(gog))
+    I['infernal_horned_helm'] = (infernal, {})
+    I['magma_horned_helm'] = (magma, {})
+    I['abyssal_fin_helm'] = (abyssal, {})
+    I['hamster_helm'] = (hamster, {'x': '#3a1a12'})
+    I['clockwork_goggle_cap'] = (clock, {'x': '#1e1210'})
 
     I['apprentice_floppy_hat'] = (place(grid(["................",
                                               "......wll.......",
@@ -150,13 +272,6 @@ def I_():
     tail = place([(12, 7, 'd'), (13, 7, 'S'), (13, 8, 'x'), (14, 8, 'd'), (13, 9, 'S'), (14, 9, 'S'), (13, 10, 'x'),
                   (14, 10, 'd'), (13, 11, 'S'), (14, 11, 'S'), (13, 12, 'x'), (14, 12, 'd'), (13, 13, 'S'), (14, 13, 'T')])
     I['poacher_fur_cap'] = (comp(tail, place(fur), band), {})
-    cap = shade(dome(r=5.8, top=3, bottom=12), 'STTUU')
-    cap = over(cap, [(x, 7, 'x') for x in range(2, 14)])
-    lenses = place([(4, 6, 'l'), (5, 6, 'l'), (6, 6, 'm'), (4, 7, 'l'), (5, 7, 'A'), (6, 7, 'd'), (4, 8, 'm'),
-                    (5, 8, 'B'), (6, 8, 'd'), (5, 9, 'd'),
-                    (9, 6, 'l'), (10, 6, 'l'), (11, 6, 'm'), (9, 7, 'l'), (10, 7, 'A'), (11, 7, 'd'), (9, 8, 'm'),
-                    (10, 8, 'B'), (11, 8, 'd'), (10, 9, 'd'), (7, 7, 'd'), (8, 7, 'd')])
-    I['clockwork_goggle_cap'] = (comp(place(cap), lenses), {})
     bd = shade(dome(r=5.8, top=3, bottom=11), 'AABCC')
     bd = over(bd, [(5, 5, 'w'), (8, 4, 'w'), (10, 6, 'w'), (6, 8, 'w'), (9, 9, 'w'), (4, 9, 'w')])
     knot = place([(13, 8, 'B'), (14, 9, 'A'), (14, 10, 'B'), (13, 11, 'C'), (14, 12, 'C'), (12, 9, 'C')])

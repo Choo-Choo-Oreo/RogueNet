@@ -727,7 +727,8 @@ def walk(stand, info, view, legs, over=None, gear=False):
     for f in range(4):
         dip = f % 2
         if info.get('skirt'):
-            g = upper(stand, hip, None, 0) if not dip else skirt_step(stand, hip, 1 if f == 1 else -1)
+            feet = feet_under(parse(info['views'][view][1]))
+            g = upper(stand, hip, None, 0) if not dip else skirt_step(stand, hip, 1 if f == 1 else -1, feet)
         elif view == 'Right':
             g = upper(stand, hip, legs, dip)
             if f == 0:
@@ -755,16 +756,41 @@ def walk(stand, info, view, legs, over=None, gear=False):
         out.append(g if gear else outline(g))
     return out
 
-def skirt_step(stand, hip, sway):
-    """No legs: body down 1px, the skirt 1 row shorter, its hem swinging sideways."""
+def feet_under(body):
+    """The feet showing below a skirt (a dwarf's boots): the column spans of the last row's
+    boots and bare feet, or [] for a gown down to the floor."""
+    spans, run = [], []
+    for x, c in enumerate(body[15] + ['.']):
+        if c in 'kK4768':
+            run.append(x)
+        elif run:
+            spans.append((run[0], run[-1]))
+            run = []
+    return spans
+
+def skirt_step(stand, hip, sway, feet=()):
+    """No legs: body down 1px, the skirt 1 row shorter. A floor-length gown's hem swings
+    sideways; a skirt with feet under it stays still and the feet step instead (facing
+    front or back one foot lifts up under the hem, from the side the foot moves)."""
     g = blank()
     for y in range(hip + 1):
         for x in range(16):
             put(g, x, y + 1, stand[y][x])
     for y in range(hip + 2, 16):
-        s = sway if y >= 14 else 0
+        s = sway if y >= 14 and not feet else 0
         for x in range(16):
             put(g, x + s, y, stand[y][x])
+    if len(feet) == 1:   # side view: the foot steps forward, then back
+        (x0, x1), = feet
+        for x in range(x0 - 1, x1 + 2):
+            g[15][x] = '.'
+        for x in range(x0 - 1, x1 + 2):
+            put(g, x + sway, 15, stand[15][x])
+    elif len(feet) >= 2:   # front or back: the lifted foot goes up under the skirt
+        x0, x1 = feet[-1] if sway > 0 else feet[0]
+        for x in range(x0 - 1, x1 + 2):
+            if stand[14][x] == '.' or x0 <= x <= x1:
+                g[15][x] = '.'
     return g
 
 def colour(skin, c):

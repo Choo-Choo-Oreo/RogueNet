@@ -9,7 +9,8 @@
 #  - the neck piece and held items are the Human's art moved to where this body's chest and
 #    hands are (NECK, HANDS).
 # Every piece then walks with the body exactly as the body does (character_skins.walk).
-# Run: python .claude/tools/character_gear.py   (all sets in SETS, all drawn bodies)
+# Sets in SETS are painted by hand (militia); every other item's Human art is refitted (fit, touch).
+# Run: python .claude/tools/character_gear.py [set or back item ...]   (default: everything)
 import os
 from PIL import Image
 import character_skins as cs
@@ -21,10 +22,16 @@ LIGHT, MID, DARK = '94cekK', '7adfw', '68bg'   # body shades -> which of a piece
 
 # ---- body map: what each pixel of a body's standing grid is
 
+HUMAN = {'hip': 11}
+
+def grid_of(skin, view):
+    """A body's standing grid and its D entry; 'human' is the Human's own sheet."""
+    if skin == 'human':
+        return [[c if isinstance(c, str) else '?' for c in r] for r in cs.human_grids(view)[0]], HUMAN
+    return cs.parse(cs.D[skin]['views'][view][1]), cs.D[skin]
+
 def body_map(skin, view):
-    info = cs.D[skin]
-    spec = info['views'][view]
-    g = cs.parse(spec[1])
+    g, info = grid_of(skin, view)
     hip, skirt = info['hip'], info.get('skirt', False)
     shirt_rows = [y for y in range(16) if any(c in SHIRT for c in g[y])]
     first = shirt_rows[0]
@@ -318,6 +325,281 @@ def left(skin, spec):
     dx, dy = HANDS[skin].get('Right', (0, 0))
     return [moved(g, -dx, dy) for g in frames]
 
+# ---- every other set: the Human's own art refitted to the body, then given a touch of the race
+# (touch). Rows are mapped anchor to anchor (collar to collar, belt to belt, sole to sole),
+# and within a row the Human's outline-to-outline span is stretched onto the body's, so a
+# pauldron or a flared hem stays just as far outside the body as it was on the Human.
+
+HEAD = {   # the head's box on each body, outline included: (x0, y0, x1, y1)
+ 'human': {'Down': (4, 0, 10, 5), 'DownRight': (4, 0, 10, 5), 'Right': (5, 0, 10, 5), 'UpRight': (4, 0, 10, 5),
+           'Up': (4, 0, 10, 5)},
+ 'dwarf_male': {v: (3, 4, 11, 8) for v in cs.VIEWS} | {'Right': (4, 4, 11, 8)},
+ 'dwarf_female': {v: (3, 3, 11, 8) for v in cs.VIEWS} | {'Right': (4, 4, 11, 8)},
+ 'kemono_male': {v: (3, 2, 11, 6) for v in cs.VIEWS} | {'Right': (5, 2, 11, 6)},
+ 'kemono_female': {v: (3, 2, 11, 6) for v in cs.VIEWS} | {'Right': (5, 2, 11, 6)},
+}
+HAIR = '123'
+BEARD = {'dwarf_male'}   # his beard hangs over what he wears; all other hair (braids, locks) goes under it
+
+def lin(a0, a1, b0, b1, v):
+    """v on [a0, a1] mapped onto [b0, b1]; past the ends it moves 1:1 with the nearer end."""
+    if v <= a0 or a1 == a0:
+        return b0 + (v - a0)
+    if v >= a1:
+        return b1 + (v - a1)
+    return b0 + round((v - a0) * (b1 - b0) / (a1 - a0))
+
+def rows_of(parts, kinds):
+    return sorted({y for (x, y), p in parts.items() if p in kinds})
+
+def span(parts, y, kinds):
+    """The row's outline-to-outline span (the nearest row that has one, for rows without)."""
+    rows = rows_of(parts, kinds)
+    if not rows:
+        return None
+    y = min(rows, key=lambda r: abs(r - y))
+    xs = [x for (x, yy), p in parts.items() if yy == y and p in kinds]
+    return min(xs) - 1, max(xs) + 1
+
+def refit(src, anchors, skin, view, kinds, squeeze=()):
+    """Move a Human piece onto a body. anchors: [(body row, Human row)], rows between are
+    stretched; squeeze: body rows (a skirt) that take the Human's row with its gaps closed."""
+    _, hparts, _ = body_map('human', view)
+    hg, _, _ = body_map('human', view)
+    _, parts, _ = body_map(skin, view)
+    out = cs.blank()
+    for y in range(16):
+        sy = anchors[0][1] + y - anchors[0][0]
+        for (b0, h0), (b1, h1) in zip(anchors, anchors[1:]):
+            if y >= b0:
+                sy = lin(b0, b1, h0, h1, y)
+        if not 0 <= sy < 16 or not (ds := span(parts, y, kinds)) or not (hs := span(hparts, sy, kinds)):
+            continue
+        if y in squeeze:   # the Human's row without the dark gap between its legs, spread edge to edge
+            px = [src[sy][x] for x in range(16) if src[sy][x] != '.' and hg[sy][x] not in '.0?']
+            x0, x1 = ds[0] + 1, ds[1] - 1
+            for x in range(x0, x1 + 1):
+                if px:
+                    out[y][x] = px[lin(x0, x1, 0, len(px) - 1, x)]
+            continue
+        if y < anchors[0][0]:   # above the body (a pennant's flag, a quiver's arrows): moved, not stretched
+            ds, hs = span(parts, anchors[0][0], kinds), span(hparts, anchors[0][1], kinds)
+            dx = round((ds[0] + ds[1] - hs[0] - hs[1]) / 2)
+            ds, hs = (0, 15), (-dx, 15 - dx)
+        for x in range(16):
+            sx = lin(*ds, *hs, x)
+            if 0 <= sx < 16 and src[sy][sx] != '.':
+                out[y][x] = src[sy][sx]
+    return out
+
+def pw(anchors, v):
+    """lin() through several (from, to) anchors in order."""
+    if v <= anchors[0][0]:
+        return anchors[0][1] + v - anchors[0][0]
+    for (a0, b0), (a1, b1) in zip(anchors, anchors[1:]):
+        if v <= a1:
+            return lin(a0, a1, b0, b1, v)
+    return anchors[-1][1] + v - anchors[-1][0]
+
+def eyes(skin, view):
+    g, _ = grid_of(skin, view)
+    return [(x, y) for y in range(16) for x in range(16) if g[y][x] == '5']
+
+def fit_head(src, skin, view):
+    """The Human's helmet stretched over this head, eye row to eye row and eye to eye, so eye
+    slits and visors land on the eyes."""
+    if len([y for y in range(16) if any(c != '.' for c in src[y])]) <= 2:
+        return fit_ring(src, skin, view)
+    if skin.startswith('elf'):
+        return moved(src, *ELF_HELM.get(view, (0, 0)))
+    hx0, hy0, hx1, hy1 = HEAD['human'][view]
+    bx0, by0, bx1, by1 = HEAD[skin][view]
+    xs, ys = [(bx0, hx0)], [(by0, hy0)]
+    he, be = eyes('human', view), eyes(skin, view)
+    if he and be and len(he) == len(be):
+        ys.append((be[0][1], he[0][1]))
+        xs += [(b[0], h[0]) for b, h in zip(sorted(be), sorted(he))]
+    xs.append((bx1, hx1)); ys.append((by1, hy1))
+    out = cs.blank()
+    g, _ = grid_of(skin, view)
+    kemono = skin.startswith('kemono')
+    for y in range(16):
+        for x in range(16):
+            sx, sy = pw(xs, x), pw(ys, y)
+            if 0 <= sx < 16 and 0 <= sy < 16 and src[sy][sx] != '.':
+                if kemono and be and y >= be[0][1] and open_face(x, be, (bx0, bx1), view):
+                    continue
+                out[y][x] = src[sy][sx]
+    return out
+
+RING_EDGE = (46, 30, 24)
+
+def fit_ring(src, skin, view):
+    """A thin ring over the head (a halo): kept its own size, not stretched, and lowered until its
+    ends rest beside the head's first full-width row, so it sits on the head instead of floating."""
+    def crown(s):   # (the first row with an unbroken run at least 6 wide (not the ears), its centre)
+        g, _ = grid_of(s, view)
+        for y in range(16):
+            run = []
+            for x in range(17):
+                if x < 16 and g[y][x] != '.':
+                    run.append(x)
+                elif len(run) >= 6:
+                    return y, (run[0] + run[-1]) / 2
+                else:
+                    run = []
+    bottom = max(y for y in range(16) if any(c != '.' for c in src[y]))
+    (by, bx), (_, hx) = crown(skin), crown('human')
+    out = moved(src, round(bx - hx), by - bottom)
+    g, _ = grid_of(skin, view)
+    edge = [(x, y) for y in range(16) for x in range(16) if out[y][x] == '.' and g[y][x] not in '.0'
+            and any(0 <= y + dy < 16 and 0 <= x + dx < 16 and out[y + dy][x + dx] != '.'
+                    for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))]
+    for x, y in edge:   # a dark line where it lies on the hair, so a gold halo shows on gold hair
+        out[y][x] = RING_EDGE
+    return out
+
+def open_face(x, eye_px, box, view):
+    """A kemono's helmet is open-faced: from the eyes down only the cheek guards stay (the back
+    of the head, seen from the side), so its eyes, snout and muzzle show."""
+    if view == 'Right':
+        return x >= min(ex for ex, _ in eye_px) - 1
+    return box[0] + 1 < x < box[1] - 1
+
+def fit_hands(src, skin, view):
+    """Gloves: each hand's glove moved to where this body's hand on that side is."""
+    _, hparts, _ = body_map('human', view)
+    _, parts, _ = body_map(skin, view)
+    out = cs.blank()
+    hands = lambda ps: [xy for xy, p in ps.items() if p == 'hand']
+    mid = 7.5
+    for side in (lambda x: x < mid, lambda x: x >= mid):
+        h = [xy for xy in hands(hparts) if side(xy[0])]
+        b = [xy for xy in hands(parts) if side(xy[0])]
+        if not h or not b:
+            continue
+        dx = round(sum(x for x, _ in b) / len(b) - sum(x for x, _ in h) / len(h))
+        dy = max(y for _, y in b) - max(y for _, y in h)
+        for y in range(16):
+            for x in range(16):
+                if src[y][x] != '.' and side(x):
+                    cs.put(out, x + dx, y + dy, src[y][x])
+    return out
+
+UPPER, LOWER, ALL = ('torso', 'sleeve', 'hand', 'belt'), ('leg', 'belt', 'skirt', 'foot'), \
+    ('torso', 'sleeve', 'hand', 'belt', 'leg', 'skirt', 'foot')
+
+def torso_rows(skin, view):
+    _, parts, _ = body_map(skin, view)
+    rows = rows_of(parts, ('torso', 'sleeve'))
+    return rows[0], rows[-1]
+
+def fit(slot, src, skin, view):
+    g, parts, belt = body_map(skin, view)
+    _, hparts, hbelt = body_map('human', view)
+    (t0, t1), (h0, h1) = torso_rows(skin, view), torso_rows('human', view)
+    if skin.startswith('elf'):   # the Human's build: the armour sits where it does on the Human,
+        t0, t1 = h0, h1          # over the long hair facing away
+    if slot == 'head':
+        return fit_head(src, skin, view)
+    if slot == 'gloves':
+        return fit_hands(src, skin, view)
+    if slot == 'chest':
+        return refit(src, [(t0, h0), (t1, h1)], skin, view, UPPER)
+    if slot == 'back':
+        return refit(src, [(t0, h0), (t1, h1), (15, 15)], skin, view, ALL)
+    if slot == 'feet':
+        if not rows_of(parts, ('foot',)):
+            return None   # a floor-length gown hides the feet
+        return refit(src, [(15, 15)], skin, view, ('foot',))
+    # legs: belt to belt, the legs (or the skirt) down to the ankle
+    leg_rows = rows_of(parts, ('leg', 'skirt'))
+    hl = rows_of(hparts, ('leg',))
+    b = belt if belt is not None else leg_rows[0] - 1
+    skirt = rows_of(parts, ('skirt',))
+    last = leg_rows[-1] if not skirt else 15
+    return refit(src, [(b, hbelt), (last, hl[-1])], skin, view, LOWER, squeeze=skirt)
+
+def mix(a, b, t):
+    return tuple(round(p + (q - p) * t) for p, q in zip(a, b))
+
+GOLD = {'elf': (240, 204, 96), 'dwarf': (236, 196, 80)}
+FUR = (240, 226, 204)
+
+def touch(slot, out, skin, view):
+    """What makes a piece look made for this race: an elf's gold filigree hem and collar, a
+    dwarf's studded hem and big buckle (and his beard over it all), a kemono's fur cuffs (its own
+    chest tuft is the collar; its face and ears show through a helmet)."""
+    race = skin.split('_')[0]
+    g, parts, belt = body_map(skin, view)
+    cols = {}
+    for y in range(16):
+        for x in range(16):
+            if out[y][x] != '.' and (x, y) in parts:
+                cols.setdefault(x, []).append(y)
+    if slot == 'chest':
+        for x, ys in cols.items():
+            top, bottom = min(ys), max(ys)
+            if race == 'elf':
+                out[bottom][x] = mix(out[bottom][x], GOLD['elf'], 0.55)
+                out[top][x] = mix(out[top][x], GOLD['elf'], 0.35)
+            elif race == 'dwarf' and x % 2 == 0:
+                out[bottom][x] = mix(out[bottom][x], GOLD['dwarf'], 0.7)
+            elif race == 'kemono':
+                if parts.get((x, bottom)) == 'sleeve':
+                    out[bottom][x] = mix(out[bottom][x], FUR, 0.6)
+    if slot == 'legs' and race == 'dwarf' and belt is not None:
+        xs = sorted(x for x in range(16) if out[belt][x] != '.' and (x, belt) in parts)
+        if xs:
+            m = (xs[0] + xs[-1]) // 2
+            for x in (m, m + 1):
+                out[belt][x] = GOLD['dwarf']
+    if skin in BEARD and slot in ('chest', 'back', 'neck') and not view.startswith('Up'):
+        for y in range(torso_rows(skin, view)[0], 16):
+            for x in range(16):
+                if g[y][x] in HAIR:
+                    out[y][x] = '.'
+    return out
+
+def items():
+    """(slot, art) of every item with worn art, from game/items."""
+    import glob, json
+    found = []
+    for f in sorted(glob.glob(GEAR + '../../../game/items/**/*.json', recursive=True)):
+        try:
+            data = json.load(open(f, encoding='utf-8'))
+        except (ValueError, OSError):
+            continue
+        for it in data if isinstance(data, list) else [data]:
+            if isinstance(it, dict) and it.get('art') and it.get('slot'):
+                found.append((it['slot'], it['art'].replace('res://resources/gfx/gear/', '')))
+    return sorted(set(found))
+
+def build_refit(slot, art, skin):
+    folder, name = os.path.split(art)
+    out = GEAR + folder + '/' + skin + '/'
+    if slot in ('neck', 'main_hand', 'off_hand'):
+        spec = (art, 'neck' if slot == 'neck' else 'held', None)
+        views = {v: piece(skin, v, slot, spec) for v in cs.VIEWS if human_frames(art, v)}
+        if slot == 'neck':
+            views = {v: [touch('neck', f, skin, v) for f in fr] for v, fr in views.items()}
+        left_frames = left(skin, spec) if slot != 'neck' else None
+    else:
+        views, left_frames = {}, None
+        for v in cs.VIEWS:
+            src = human_frames(art, v)
+            if not src:
+                continue
+            g = fit(slot, src[0], skin, v)
+            if g is None:
+                g = cs.blank()
+            views[v] = walked(skin, v, touch(slot, g, skin, v))
+    os.makedirs(out, exist_ok=True)
+    for v, frames in views.items():
+        save(frames, out + name + '-' + v + '.png')
+    if left_frames:
+        save(left_frames, out + name + '-Left.png')
+
 def save(frames, path):
     im = Image.new('RGBA', (64, 16))
     for f, g in enumerate(frames):
@@ -338,7 +620,14 @@ def build(set_id, skin):
             save(frames, out + name + '-Left.png')
 
 if __name__ == '__main__':
+    import sys
+    only = sys.argv[1:]   # set ids or back item folders to build; none = everything
     for set_id in SETS:
+        if not only or set_id in only:
+            for skin in SKINS:
+                build(set_id, skin)
+    done = [a for a in items() if a[1].split('/')[1] not in SETS and (not only or a[1].split('/')[1] in only)]
+    for slot, art in done:
         for skin in SKINS:
-            build(set_id, skin)
-    print('gear:', ', '.join(SETS), 'x', ', '.join(SKINS))
+            build_refit(slot, art, skin)
+    print('gear:', len(done), 'refitted pieces +', ', '.join(SETS), 'x', ', '.join(SKINS))
