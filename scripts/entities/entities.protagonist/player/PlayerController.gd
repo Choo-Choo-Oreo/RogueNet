@@ -92,6 +92,28 @@ func set_character(character_id: String) -> void:
 ## worn: slot -> item id (NetworkSync.peer_equipment). Cosmetic only for now.
 func set_equipment(worn: Dictionary) -> void:
 	gear.set_equipment(worn)
+	_worn = worn
+	# Putting the instrument away ends the solo.
+	if is_multiplayer_authority() and performance.song != "" and performance.song != _held_song():
+		NetworkSync.share_performing("")
+
+var _worn: Dictionary = {}
+## The solo, if any (see BardPerformance and the "perform" key).
+var performance := BardPerformance.new()
+
+func _held_song() -> String:
+	return ItemDatabase.song(_worn.get("main_hand", ""))
+
+## Called on every screen by NetworkSync.receive_performing.
+func set_performing(song: String) -> void:
+	performance.play(song, is_multiplayer_authority())
+
+## The perform key: start the held instrument's song, or stop it.
+func _toggle_performing() -> void:
+	if performance.song != "":
+		NetworkSync.share_performing("")
+	elif not _is_dead and _held_song() != "":
+		NetworkSync.share_performing(_held_song())
 
 func _load_player_data() -> void:
 	var data := JsonOnloading.load_dict(PLAYER_DATA_PATH)
@@ -149,6 +171,8 @@ func _on_died() -> void:
 	stats.is_ghost = true
 	if is_multiplayer_authority():
 		local_is_ghost = true
+		if performance.song != "":
+			NetworkSync.share_performing("")
 	animator.play_death()
 	await animator.pose_finished
 	if not is_inside_tree():
@@ -180,6 +204,8 @@ func _ready() -> void:
 	gear.name = "GearLayers"
 	add_child(gear)
 	gear.setup($AnimatedSprite2D)
+	performance.name = "BardPerformance"
+	add_child(performance)
 	_load_player_data()
 	var hit_feedback := HitFeedback.new()
 	hit_feedback.name = "HitFeedback"
@@ -311,6 +337,8 @@ func _input(event: InputEvent) -> void:
 		return
 	if get_viewport().gui_get_focus_owner() is LineEdit:
 		return
+	if event.is_action_pressed("perform"):
+		_toggle_performing()
 	if event is InputEventKey and event.pressed and SLOT_KEYS.has(event.keycode):
 		var slot: int = SLOT_KEYS[event.keycode]
 		if slot < _attacks.size() and not _attacks[slot].is_empty():

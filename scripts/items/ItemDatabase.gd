@@ -174,6 +174,10 @@ static func weapon_kind(item_id: String) -> String:
 			return pair[1]
 	return ""
 
+## The song an instrument plays when its wearer performs ("" for anything else).
+static func song(item_id: String) -> String:
+	return get_item(item_id).get("song", "")
+
 ## The item's own flavour text ("" when it has none; its set's lore is set_info()).
 static func description(item_id: String) -> String:
 	return get_item(item_id).get("description", "")

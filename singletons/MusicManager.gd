@@ -6,12 +6,17 @@ const MENU_MUSIC := "res://resources/sfx/music/Menu-Music.mp3"
 ## effects bus: this loud, fading in over this many seconds and out over a fifth of that.
 const AMBIENCE_DB := -10.0
 const AMBIENCE_FADE := 2.0
+## While this machine's player performs (BardPerformance), the music drops this far,
+## fading over this many seconds.
+const DUCK_DB := -40.0
+const DUCK_FADE := 0.6
 
 var _player: AudioStreamPlayer
 var _current_path := ""
 var _ambience: AudioStreamPlayer
 var _ambience_path := ""
 var _ambience_fade: Tween
+var _duck_fade: Tween
 
 func _ready() -> void:
 	_player = AudioStreamPlayer.new()
@@ -45,6 +50,13 @@ func _play(path: String) -> void:
 	_current_path = path
 	_player.stream = stream
 	_player.play()
+
+## Fades the music down (true) for a solo, or back up (false).
+func duck(on: bool) -> void:
+	if _duck_fade:
+		_duck_fade.kill()
+	_duck_fade = create_tween()
+	_duck_fade.tween_property(_player, "volume_db", DUCK_DB if on else 0.0, DUCK_FADE)
 
 func stop() -> void:
 	_current_path = ""

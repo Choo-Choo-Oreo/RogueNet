@@ -70,6 +70,40 @@ func _on_server_disconnected() -> void:
 const MAX_CHAT_LENGTH := 200
 
 # Chat goes through the host, which stamps the sender's name and sends the line to everyone.
+# peer_id -> the song they're performing (BardPerformance). Same route as peer_equipment.
+var peer_songs: Dictionary = {}
+
+## Called by PlayerController when this machine's player starts ("" = stops) a solo.
+func share_performing(song: String) -> void:
+	if multiplayer.is_server():
+		_set_performing(multiplayer.get_unique_id(), song)
+	else:
+		report_performing.rpc_id(1, song)
+
+@rpc("any_peer", "reliable")
+func report_performing(song: String) -> void:
+	if not multiplayer.is_server():
+		return
+	_set_performing(multiplayer.get_remote_sender_id(), song)
+
+func _set_performing(peer_id: int, song: String) -> void:
+	# Only the song of the instrument they hold.
+	var held: String = peer_equipment.get(peer_id, {}).get("main_hand", "")
+	if song != "" and song != ItemDatabase.song(held):
+		return
+	for other_id in multiplayer.get_peers():
+		receive_performing.rpc_id(other_id, peer_id, song)
+	receive_performing(peer_id, song)
+
+@rpc("authority", "reliable")
+func receive_performing(peer_id: int, song: String) -> void:
+	peer_songs[peer_id] = song
+	var scene := get_tree().current_scene
+	var player_root := scene.get_node_or_null("Player") if scene else null
+	var player := player_root.get_node_or_null(str(peer_id)) if player_root else null
+	if player and player.has_method("set_performing"):
+		player.set_performing(song)
+
 func send_chat(text: String) -> void:
 	if multiplayer.is_server():
 		_broadcast_chat(1, text)
