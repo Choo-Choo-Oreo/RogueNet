@@ -346,7 +346,7 @@ Duplication:
 - [✓] Settings in tabs (Audio, Video; Voice is under Audio since 2026-09-25). Voice: microphone picker, mic gain, hear yourself, live meter (level, background, gate), one-take talking calibration (was whisper/yell), voice chat volume (`scripts/settings/VoiceSettings.gd`). Needs a real test: pick your mic, calibrate, then the Test Lab mic check
 - [✗] Voice: a noise gate (a little under your whisper) replaces Steam's transmission threshold; no noise suppression or echo cancellation of our own (Steam did those). Check with the two-player test whether that is missed
 - [✗] 3. Wire `CombatSounds` (attack, hurt, impact, death, voice) through step 2
-- [✗] `resources/sfx/combat/` and `sfx/ui/` (Silvery's) do not follow the STRUCTURE tree (`sfx/entities/...`, `sfx/effects/<family>`); proposal in the 2026-09-25 session, awaiting Orea
+- [✓] (2026-09-25) Silvery's `resources/sfx/combat/` moved into the STRUCTURE tree: damage and attack sounds to `sfx/effects/effects.<family>/` (named like `gfx/effects`, so `CombatSounds` finds a type's hurt sound by name and its `HURT_BY_TYPE` table is gone), impact/death/voice/grunts to `sfx/entities/`; `sfx/ui/` stays and is in the tree now. `entropia_bolt` and `perditio_touch` had types that are not damage types (`Entropia`, `Perditio`), now `Arcana.Entropia`, `Necrotic.Perditio`
 - [✓] Voice chat as noise is in (dB from the mic level); walls muffle what players hear of each other's voices (step 2)
 
 ## Dead code and duplication audit, round 2 (2026-09-25: one agent, symbol index + structural diff)

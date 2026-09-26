@@ -1,7 +1,7 @@
 {
 	"verb": "hit",
 	"amount": 2,
-	"type": "Entropia",
+	"type": "Arcana.Entropia",
 	"interval": 1.6,
 	"range_tiles": 4,
 	"effect": {

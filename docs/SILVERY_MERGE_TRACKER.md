@@ -42,14 +42,20 @@ Your current area. The sound files only; the scripts that play them are in the o
   names, so it works as-is. Only three branch files write out the old path and need it
   fixed when they come over: `test/sim/hit_feedback.gd`, `resources/sfx/combat/README.md`,
   `.claude/docs/combat-feedback.md`.
-- [✗] **New `d300b27`:** Silvery added `SoundPlayer.numbered(start)` (finds `pop_1.wav`,
+- [✓] (2026-09-25) **New `d300b27`:** Silvery added `SoundPlayer.numbered(start)` (finds `pop_1.wav`,
   `pop_2.wav`… until one is missing). Copy that function by hand into
   `scripts/util/SoundPlayer.gd`. You changed that file too, in `c66e72c`. LIQUID AMBIENCE,
   FOOTSTEPS and DOOR SOUNDS need it.
 - [✗] `resources/sfx/effects/acid/`, `lava/` (4 more lava sounds in `d300b27`), `doors/`,
   `resources/sfx/effects/README.md` (take)
-- [✗] `resources/sfx/combat/README.md`, `resources/sfx/effects/water/README.md` (take)
-- [✗] `resources/AudioBusLayout.tres` (MERGE). Main has a **VoiceChat** bus the branch
+- [~] `resources/sfx/combat/README.md` taken, now `resources/sfx/README.md`;
+  `resources/sfx/effects/water/README.md` (take) still to do
+- **`resources/sfx/combat/` is gone on main (2026-09-25):** its files moved into the STRUCTURE
+  tree (`sfx/effects/effects.<family>/`, `sfx/entities/`; the table in `resources/sfx/README.md`).
+  Branch code that writes a `sfx/combat/` path (HitFeedback's `player/grunt`, `heartbeat`, the
+  `hit_feedback` sim) needs the new path when it comes over.
+- [✓] (2026-09-25) `resources/AudioBusLayout.tres` (MERGE): Master has the branch's LowPass in
+  slot 0 (HurtOverlay uses slot 0) then main's HardLimiter; SFX has the Compressor. Main has a **VoiceChat** bus the branch
   lacks. The branch adds LowPassFilter and Compressor effects (used for the hurt muffle
   in COMBAT FEEDBACK). Keep VoiceChat and add the effects.
 - Note: `SoundPlayer` is the one shared place sounds are started from. Creature, ambient

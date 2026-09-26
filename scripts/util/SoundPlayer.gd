@@ -113,6 +113,14 @@ static func screen_centre(from: Node) -> Vector2:
 	var viewport := from.get_viewport()
 	return viewport.get_canvas_transform().affine_inverse() * (viewport.get_visible_rect().size / 2.0)
 
+## The takes of one sound: `start` + "_1.wav", "_2.wav"... up to the first one missing
+## (".../grunt" gives grunt_1.wav to grunt_3.wav). Empty if there are none.
+static func numbered(start: String) -> Array[String]:
+	var paths: Array[String] = []
+	while ResourceLoader.exists("%s_%d.wav" % [start, paths.size() + 1]):
+		paths.append("%s_%d.wav" % [start, paths.size() + 1])
+	return paths
+
 ## True if a world position is on screen (or within OFF_SCREEN_MARGIN of it) for the camera
 ## `from` is seen through.
 static func on_screen(from: Node, world: Vector2) -> bool:

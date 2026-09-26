@@ -142,7 +142,8 @@ RogueNet/
       │    │    └── entities.projectiles/
       │    ├── effects/
       │    ├── ambiance/
-      │    └── music/
+      │    ├── music/
+      │    └── ui/
       └── shaders/
 ```
 
@@ -261,8 +262,8 @@ parts, placed objects (graves and so on) and the interface.
 **`resources/gfx/placeholders/`, `fallbacks/`** Stand-in art for content that has none yet
 and the image used when a real one fails to load. Nothing final lives here.
 
-**`resources/sfx/ambiance/`, `music/`** Looping background sound per place, and the music
-tracks. (Creature and effect sounds are under `sfx/entities/` and `sfx/effects/`.)
+**`resources/sfx/ambiance/`, `music/`, `ui/`** Looping background sound per place, the music
+tracks, and the interface's sounds. (Creature and effect sounds are under `sfx/entities/` and `sfx/effects/`.)
 
 **`resources/shaders/`** Shader code; where it belongs is open.
 
