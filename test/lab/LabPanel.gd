@@ -193,7 +193,7 @@ func _make_noise() -> void:
 	var c: Dictionary = _cells[_index]
 	var ts: int = _player.grid_mover.tile_size
 	var at: Vector2 = _player.global_position
-	var db: float = ActionIndex.resolve(["throw_rock"])[0].get("loudness_db", 0.0)
+	var db: float = ActionIndex.resolve(["throw_rock"])[0].get("db", 0.0)
 	if c.get("noise_at") != null:
 		at = (Vector2(_world(c["noise_at"])) + Vector2(0.5, 0.5)) * ts
 		db = float(c["noise_at"]["db"])

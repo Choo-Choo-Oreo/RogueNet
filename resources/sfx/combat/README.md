@@ -43,7 +43,7 @@ Hurt sounds by damage type:
 `burn` is ready for fire, but nothing deals fire damage yet: there is no fire type (Zeal may be
 meant as one) and lava tiles slow you but don't hurt. That is a gameplay decision for Orea.
 
-## Loudness and crowds
+## Volume and crowds
 
 - Your own attacks and hits on you are loudest; your party's are 5 dB quieter, enemies' 8 dB,
   a hit landing on a minion 3 dB. A boss is 2 dB louder and skips every limit below.

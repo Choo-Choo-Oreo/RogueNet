@@ -430,10 +430,10 @@ NOTES = {
     'voice_talk': ('The same, talking (50 dB).', 'Walk up to it the same way.',
                    'Heard across the room (28 tiles in the open) and round the end of the wall (quieter), but not through it (35 dB off leaves about 10). The rat shut in behind the wall (hears from 27) must not come.'),
     'voice_yell': ('The same, yelling (70 dB).', 'Walk up to it the same way.',
-                   'Heard through the wall, quieter than in the open. The rat shut in behind the wall should hear it (about 29 dB reaches it; it hears from 27) and try to come to look. Say if the loudness feels wrong anywhere.'),
-    'voice_mic_check': ('Records your own voice (the mic, gain and calibration from Settings > Voice) to see what dB the game makes of it.',
+                   'Heard through the wall, quieter than in the open. The rat shut in behind the wall should hear it (about 29 dB reaches it; it hears from 27) and try to come to look. Say if the dB feels wrong anywhere.'),
+    'voice_mic_check': ('Records your own voice (the mic, gain and calibration from Settings > Audio > Voice) to see what dB the game makes of it.',
                         'Press M: it turns your mic on and asks you to whisper, then talk, then yell, a few seconds each.',
-                        'The table compares, for each: what minions hear (the game), the loudness of the recording, and the target (30 / 50 / 70). The takes are saved as WAVs you can play back.'),
+                        'The table compares, for each: what minions hear (the game), the dB of the recording, and the target (30 / 50 / 70). The takes are saved as WAVs you can play back.'),
     'swarm_rats': ('About 60 rats in one room.', 'Open the door and fight or run.',
                    'Frame rate (F4 shows it) dropping badly, or rats stuck in a pile.'),
 }

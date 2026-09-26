@@ -11,8 +11,9 @@ var _dragging := false
 func _ready():
 	audio_bus_id = AudioServer.get_bus_index(audio_bus_name)
 
-	slider.value = db_to_linear(AudioServer.get_bus_volume_db(audio_bus_id))
-	spinbox.value = slider.value
+	# The box can go past the slider's end (typed); the slider just sits at its end then.
+	spinbox.value = db_to_linear(AudioServer.get_bus_volume_db(audio_bus_id))
+	slider.value = spinbox.value
 
 	slider.value_changed.connect(_on_value_changed)
 	spinbox.value_changed.connect(_on_value_changed)
@@ -34,4 +35,4 @@ func _on_value_changed(value: float) -> void:
 		_on_user_finished_input()
 
 func _on_user_finished_input() -> void:
-	ConfigFileHandler.save_audio_setting(audio_bus_name + "_volume", slider.value)
+	ConfigFileHandler.save_audio_setting(audio_bus_name + "_volume", spinbox.value)

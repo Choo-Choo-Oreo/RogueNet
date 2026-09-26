@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/PauseMenu.gd" id="1_pausemenu"]
+[ext_resource type="Script" path="res://scripts/ui/PlayerVoiceList.gd" id="2_playervoicelist"]
 
 [node name="PauseMenu" type="Control"]
 layout_mode = 3
@@ -71,6 +72,30 @@ text = "End Mission"
 custom_minimum_size = Vector2(220, 50)
 layout_mode = 2
 text = "Main Menu"
+
+[node name="Voices" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -360.0
+offset_top = 16.0
+offset_right = -16.0
+grow_horizontal = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Voices"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Voices/VBoxContainer"]
+layout_mode = 2
+text = "VOICES"
+horizontal_alignment = 1
+
+[node name="List" type="VBoxContainer" parent="Voices/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("2_playervoicelist")
+with_me = false
 
 [node name="PanelSettings" type="Panel" parent="."]
 visible = false

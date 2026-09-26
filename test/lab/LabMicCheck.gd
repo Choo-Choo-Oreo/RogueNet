@@ -7,8 +7,9 @@ extends Node
 ## (the mic when you are not talking, VoiceChat.background_db). For every take it keeps:
 ## - what the game made of it: the noises your talking made (VoiceChat.voice_noise, the dB
 ##   minions hear, one every half second at most);
-## - the recording itself (VoiceChat.own_voice): its average and loudest level, turned into dB
-##   the same way (VoiceChat.my_voice_db), and saved as a WAV in user://test_lab/ to play back.
+## - the recording itself (VoiceChat.own_voice): its typical and loudest level (VoiceChat.envelope_db,
+##   what the game goes by), turned into dB the same way (VoiceChat.my_voice_db), and saved as a
+##   WAV in user://test_lab/ to play back.
 ## The two should agree; the target is where a whisper, talking and a yell are meant to land.
 
 ## VoiceChat's script, for its static functions (the VoiceChat autoload is an instance).
@@ -26,8 +27,10 @@ var _take := -1  # index into TAKES, -1 while not running
 var _recording := false  # false during the pause before a take
 var _until_msec := 0
 var _pcm := PackedByteArray()
-var _levels: Array[float] = []  # each mic chunk's level (VoiceChat.mic_level_db)
+var _levels: Array[float] = []  # VoiceChat.envelope_db at each chunk while the gate is open
 var _noises: Array[float] = []
+## Whether the mic was on for talking before the check turned it on; put back after.
+var _was_talking := false
 
 func _ready() -> void:
 	VoiceChat.own_voice.connect(_on_own_voice)
@@ -35,10 +38,12 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	if _take >= 0:
-		VoiceChat.set_talking(VoiceChat.voice_activation)
+		VoiceChat.set_talking(_was_talking)
 
 func start() -> void:
 	results.clear()
+	if _take < 0:
+		_was_talking = VoiceChat.talking
 	VoiceChat.set_talking(true)
 	_begin(0)
 
@@ -67,13 +72,13 @@ func _process(_delta: float) -> void:
 		_begin(_take + 1)
 	else:
 		_take = -1
-		VoiceChat.set_talking(VoiceChat.voice_activation)
+		VoiceChat.set_talking(_was_talking)
 		status = "Done (WAVs in %s). Press M to go again." % ProjectSettings.globalize_path(WAV_DIR)
 
 ## The voice settings the takes were made with (Settings > Audio > Voice), for the panel.
 func settings_line() -> String:
-	return "mic %s, gain %+.0f dB, calibration whisper %.0f / yell %.0f, auto gain %s, rumble filter %s" % [
-		AudioServer.input_device, VoiceChat.mic.gain_db, VoiceChat.whisper_mic_db, VoiceChat.yell_mic_db,
+	return "mic %s, gain %+.0f dB, calibration talking %.0f, auto gain %s, rumble filter %s" % [
+		AudioServer.input_device, VoiceChat.mic.gain_db, VoiceChat.talk_mic_db,
 		"on" if VoiceChat.auto_gain else "off", "on" if VoiceChat.mic.rumble_filter else "off"]
 
 ## The background level and the gate (under it is not talking), for the panel.
@@ -84,7 +89,8 @@ func background_line() -> String:
 func _on_own_voice(pcm: PackedByteArray) -> void:
 	if _recording:
 		_pcm.append_array(pcm)
-		_levels.append(VoiceChatScript.mic_level_db(pcm))
+		if VoiceChat.gate_open:
+			_levels.append(VoiceChat.envelope_db)
 
 func _on_voice_noise(db: float) -> void:
 	if _recording:
@@ -100,13 +106,12 @@ func _result() -> String:
 		for db in _noises:
 			total += db
 		game = "%.0f avg, %.0f max (%d noises)" % [total / _noises.size(), _noises.max(), _noises.size()]
-	var heard := _levels.filter(func(level: float) -> bool: return level >= VoiceChat.gate_db())
 	var recording := "silent"
-	if not heard.is_empty():
-		var average := VoiceChatScript.average_db(heard)
-		var loudest: float = heard.max()
-		recording = "%.0f avg (%.0f dB under the mic's limit), %.0f loudest (%.0f)" % [
-			VoiceChat.my_voice_db(average), average, VoiceChat.my_voice_db(loudest), loudest]
+	if not _levels.is_empty():
+		var typical := VoiceChatScript.median_db(_levels)
+		var loudest: float = _levels.max()
+		recording = "%.0f typical (%.0f dB under the mic's limit), %.0f loudest (%.0f)" % [
+			VoiceChat.my_voice_db(typical), typical, VoiceChat.my_voice_db(loudest), loudest]
 	return "%s, target %.0f dB\n   game: %s\n   recording: %s\n   %s" % [word.to_upper(), TAKES[_take][1], game, recording, wav]
 
 ## Saves the take as a WAV; returns where, or why not.

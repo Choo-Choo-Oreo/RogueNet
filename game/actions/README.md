@@ -34,7 +34,7 @@ walks) and for the player (the order is the hotbar slot).
 | `effect` | A picture played when it is used: `texture`, `frame_count`, `speed`, `anchor`. A `projectile` adds `projectile` (a flying sprite) plus `attacker` and `target` animations. |
 | `shape` | For `destroy_tiles`: breaks the walls inside it (`line` with `length` and `width`, or `circle` with `radius`), leaving floor. Never breaks `barrier_*` tiles. |
 | `radius_tiles`, `duration`, `max_targets` | For `taunt`: forces minions within the radius (nearest `max_targets`) onto the user for `duration` seconds. |
-| `loudness_db` | For `throw`: how loud the landing is, in dB (a footstep is 30, a yell about 70; at most 90). Open floor takes 1 dB off per tile, a wall tile 35, a closed door 20; a creature hears it if what is left reaches its hearing `threshold_db`. No value: a silent landing. It flies at most `range_tiles` and stops short of a wall. |
+| `db` | For `throw`: the landing's dB (a footstep is 30, a yell about 70; at most 90). Open floor takes 1 dB off per tile, a wall tile 35, a closed door 20; a creature hears it if what is left reaches its hearing `threshold_db`. No value: a silent landing. It flies at most `range_tiles` and stops short of a wall. |
 | `needs_sight`, `only_through_walls` | Minion firing rules. The second fires only while a wall is between it and its target. |
 
 ## Every action

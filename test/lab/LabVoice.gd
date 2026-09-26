@@ -1,9 +1,9 @@
 class_name LabVoice
 extends AudioStreamPlayer2D
 
-## A fake teammate talking without a break at one loudness, for the Test Lab's voice_* cells.
-## It is a buzz whose level is what an uncalibrated voice of `db` has coming off the mic
-## (VoiceChat.mic_level_for), played exactly the way a teammate is
+## A fake teammate talking without a break at one dB, for the Test Lab's voice_* cells.
+## It is a buzz as loud as a teammate's voice of `db` plays (VoiceChat.playback_dbfs), played
+## exactly the way a teammate is
 ## (VoiceChat.heard_volume_db: through the sound spread, silent under your hearing). Like a
 ## real talker it is also a noise minions hear (NetworkSync.report_noise, as often as
 ## VoiceChat's), so show-sound draws its spread. It draws itself: a dot, its level, and what
@@ -30,22 +30,21 @@ func _ready() -> void:
 	generator.buffer_length = 0.25
 	stream = generator
 	bus = "VoiceChat"
-	attenuation = 0.0  # left/right only, like VoiceChat's players
-	max_distance = SoundPlayer.HEARD_MAX_DISTANCE
+	SoundPlayer.set_up_heard(self)  # left/right only, like VoiceChat's players
 	z_index = 100  # over the map and the fog
 	play()
 	_playback = get_stream_playback()
 
 func _process(_delta: float) -> void:
 	heard_volume_db = VoiceChat.heard_volume_db(self, global_position, db)
-	volume_db = heard_volume_db
+	volume_db = heard_volume_db + VoiceChat.CENTRE_PAN_MAKEUP_DB
 	queue_redraw()
 	var now := Time.get_ticks_msec()
 	if now >= _next_noise_msec:
 		_next_noise_msec = now + int(VoiceChat.VOICE_NOISE_SECONDS * 1000.0)
 		NetworkSync.report_noise(global_position, db)
 	# A sawtooth's RMS is its peak / sqrt(3).
-	var peak := sqrt(3.0) * db_to_linear(VoiceChatScript.mic_level_for(db))
+	var peak := sqrt(3.0) * db_to_linear(VoiceChatScript.playback_dbfs(db))
 	var frames := PackedVector2Array()
 	frames.resize(_playback.get_frames_available())
 	for i in frames.size():

@@ -76,6 +76,7 @@ layout_mode = 2
 text = "Master Volume"
 
 [node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/MasterHBoxContainer"]
+scrollable = false
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -102,6 +103,7 @@ layout_mode = 2
 text = "Music Volume"
 
 [node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/MusicHBoxContainer"]
+scrollable = false
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -128,6 +130,7 @@ layout_mode = 2
 text = "SFX Volume"
 
 [node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/SFXHBoxContainer"]
+scrollable = false
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -154,6 +157,7 @@ layout_mode = 2
 text = "UI Volume"
 
 [node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/UIHBoxContainer"]
+scrollable = false
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -180,6 +184,7 @@ layout_mode = 2
 text = "Voice Chat Volume"
 
 [node name="AudioSliderControl" type="HSlider" parent="MarginContainer/VBoxContainer/Tabs/Audio/List/VoiceChatHBoxContainer"]
+scrollable = false
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3

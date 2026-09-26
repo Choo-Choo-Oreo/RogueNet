@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://b7uns6j0fj3jv" path="res://scenes/ui/town/GuildMission.tscn" id="3_guildmission"]
 [ext_resource type="PackedScene" path="res://scenes/ui/PauseMenu.tscn" id="4_pausemenu"]
 [ext_resource type="PackedScene" path="res://scenes/ui/town/TownStorage.tscn" id="5_townstorage"]
+[ext_resource type="Script" path="res://scripts/ui/PlayerVoiceList.gd" id="6_playervoicelist"]
 
 [node name="MainTown" type="Control" unique_id=748747690]
 layout_mode = 3
@@ -63,6 +64,7 @@ horizontal_alignment = 1
 [node name="PlayerList" type="VBoxContainer" parent="HSplitContainer/PlayerListPanel/PlayersBox" unique_id=756192384]
 layout_mode = 2
 size_flags_vertical = 3
+script = ExtResource("6_playervoicelist")
 
 [node name="ChatPanel" type="VBoxContainer" parent="HSplitContainer/PlayerListPanel" unique_id=1082611912]
 layout_mode = 2

@@ -8,16 +8,15 @@ extends RefCounted
 const BIAS := 0x84
 const CLIP := 32635
 
-static var _decoded := PackedInt32Array()
+static var _decoded := PackedFloat32Array()
 
 ## 16-bit little-endian PCM -> one byte per sample.
 static func encode(pcm: PackedByteArray) -> PackedByteArray:
-	@warning_ignore("integer_division")  # 2 bytes per sample
-	var count := pcm.size() / 2
+	var samples := MicInput.samples_of(pcm)
 	var out := PackedByteArray()
-	out.resize(count)
-	for i in count:
-		var sample := pcm.decode_s16(i * 2)
+	out.resize(samples.size())
+	for i in samples.size():
+		var sample := roundi(samples[i] * 32768.0)
 		var negative := 0x80 if sample < 0 else 0
 		var magnitude := mini(absi(sample), CLIP) + BIAS
 		var exponent := 7
@@ -36,9 +35,9 @@ static func decode(data: PackedByteArray) -> PackedByteArray:
 		for byte in 256:
 			var b := ~byte & 0xFF
 			var magnitude := ((((b & 0x0F) << 3) + BIAS) << ((b >> 4) & 7)) - BIAS
-			_decoded[byte] = -magnitude if (b & 0x80) != 0 else magnitude
-	var pcm := PackedByteArray()
-	pcm.resize(data.size() * 2)
+			_decoded[byte] = (-magnitude if (b & 0x80) != 0 else magnitude) / 32768.0
+	var samples := PackedFloat32Array()
+	samples.resize(data.size())
 	for i in data.size():
-		pcm.encode_s16(i * 2, _decoded[data[i]])
-	return pcm
+		samples[i] = _decoded[data[i]]
+	return MicInput.pcm_of(samples)

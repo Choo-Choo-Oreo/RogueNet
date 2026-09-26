@@ -4,6 +4,9 @@ extends Control
 @onready var panel: Panel = $Panel
 @onready var buttons: VBoxContainer = $Panel/VBoxContainer
 @onready var end_mission_button: Button = $Panel/VBoxContainer/EndMissionButton
+## Top right in a mission: the other players' Mute and voice volume (the town lists them itself).
+@onready var voices: PanelContainer = $Voices
+@onready var voice_list: PlayerVoiceList = $Voices/VBoxContainer/List
 
 const PANEL_PADDING := Vector2(60, 60)
 
@@ -24,7 +27,11 @@ func open() -> void:
 
 # Only the host, and only during a mission, can end it for everyone.
 func _open() -> void:
-	end_mission_button.visible = multiplayer.is_server() and get_tree().current_scene.scene_file_path.ends_with("Dungeon.tscn")
+	var in_mission := get_tree().current_scene.scene_file_path.ends_with("Dungeon.tscn")
+	end_mission_button.visible = multiplayer.is_server() and in_mission
+	voices.visible = in_mission and voice_list.has_others()
+	if voices.visible:
+		voice_list.refresh()
 	show()
 	_fit_panel.call_deferred()
 

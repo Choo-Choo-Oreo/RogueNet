@@ -21,10 +21,10 @@ const GROUP := "noise_marker"
 const MARKER_SECONDS := 15.0
 ## A noise this close to a live marker reuses it instead of making another.
 const REUSE_TILES := 2.0
-const TILE_SIZE := 16.0
+const TILE_SIZE: float = SoundSpread.TILE
 
 ## Sound levels are clamped to this: a footstep is PlayerController.FOOTSTEP_DB, a thrown rock
-## its action's `loudness_db`, a voice VoiceChat.voice_db.
+## its action's `db`, a voice VoiceChat.voice_db.
 const LOUDEST_DB := 90.0
 
 ## Debug (show-sound): the last floods, each {"levels": {quad: dB}, "db", "source", "sums", "msec"}.

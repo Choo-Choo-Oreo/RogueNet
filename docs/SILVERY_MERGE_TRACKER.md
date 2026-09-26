@@ -10,8 +10,8 @@ copied over as-is. **MERGE** = you both changed it; open both and combine by han
 **MERGE (easy)** = you both changed it, but in different lines, so nothing overlaps.
 Still combine it by hand: copying his file over would wipe out your changes.
 
-Last checked: 2026-09-25 against branch tip `d300b27` (34 commits since the split at
-`d0b8a02`) and main `70d972c`. Labels compare against committed `main`: if you have
+Last checked: 2026-09-25 against branch tip `1b46e21` (35 commits since the split at
+`d0b8a02`) and main `7ee9de3`. Labels compare against committed `main`: if you have
 uncommitted edits in a "take" file, treat it as MERGE.
 
 ## How to import a chunk
@@ -92,6 +92,33 @@ Rarer tile variants picked by weight: cracked or mossy stone, bone flecks in fle
 - take: `resources/gfx/ui/app_icon/` (`.aseprite`, 2 PNGs, `AppIcon.ico`)
 - MERGE (easy): `project.godot`. Two lines: `config/icon` and `config/windows_native_icon`.
   You also changed `project.godot` in `c66e72c`, so add the two lines by hand.
+
+### SKINS (new, `1b46e21` "re") ✗
+Seven new looks for the adventurer: `human_female`, plus a male and a female elf, dwarf
+and kemono (a fox with ears and a tail). They're made by a script
+(`.claude/tools/character_skins.py`), and there are no `.aseprite` files yet.
+- take (art): `resources/gfx/entities/entities.protagonist/variants/` (7 folders, each with
+  PNGs and an `<id>.json` like `{"like": "human", "art": ...}`), its README,
+  `.claude/tools/character_skins.py`, `test/unit/test_character_skins.gd`
+- MERGE: `PlayerController.gd`, `scripts/ui/town/MainTown.gd`, `scenes/ui/town/MainTown.tscn`
+- **Built on the old code, so it clashes with your adventurer/skin work (`0e7a9c8`,
+  `bc78339`):**
+  - The names are old: his code says `CHARACTERS` and `character_id` (and adds
+    `character_ids()`/`character_data()`), where main now says `SKINS`, `skin_id` and `set_skin`.
+    His folder is `variants/`; by main's naming it should be `skins/`.
+  - The picker is in the wrong place. He builds a 4-column picker grid on the town's old
+    "Human" button panel. Main no longer uses that panel: the skin is chosen per adventurer
+    in `CharacterSelect`, saved, and shared through `NetworkSync.report_skin`. Keep his
+    art and his `like`/`art` loading; put the choice into `CharacterSelect` and don't take
+    his `MainTown` changes.
+  - Main's `SKINS` comment says only the Human is left because gear only fits its body.
+    His `"fits_gear": false` answers that: gear is hidden on the elf, dwarf and kemono
+    (the items still count). **Decision:** do you want skins that show no gear yet?
+- `human_female` is the Human's sheets plus long hair. Re-run his script after the Human's
+  art changes (GEAR ART `be05007` changed it).
+- Main still has old `entities.protagonist/dwarf/` and `knight/` folders, which the `SKINS`
+  comment calls temporary. The new `dwarf_male` makes them a second dwarf; remove them
+  when this lands.
 
 ### THINGS RESTORE (art and data main reverted) ✗
 The "things" commit (`d0b8a02`) that `main` reverted in `102f4e9`. The branch is built on it.
@@ -230,7 +257,7 @@ Taking one of these brings in the other chunks' changes too.
 
 | File | Chunks |
 |---|---|
-| `PlayerController.gd` | COMBAT FEEDBACK, ANIMATIONS, WADING |
+| `PlayerController.gd` | COMBAT FEEDBACK, ANIMATIONS, WADING, SKINS |
 | `MinionController.gd` | COMBAT FEEDBACK, ANIMATIONS, WADING |
 | `GridMover.gd` | FOOTSTEPS, FIXES |
 | `TileType.gd` | WADING, TILE VARIANTS |

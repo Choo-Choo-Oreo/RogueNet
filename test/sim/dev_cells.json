@@ -951,7 +951,7 @@
    },
    "what": "The same, yelling (70 dB).",
    "try": "Walk up to it the same way.",
-   "look": "Heard through the wall, quieter than in the open. The rat shut in behind the wall should hear it (about 29 dB reaches it; it hears from 27) and try to come to look. Say if the loudness feels wrong anywhere."
+   "look": "Heard through the wall, quieter than in the open. The rat shut in behind the wall should hear it (about 29 dB reaches it; it hears from 27) and try to come to look. Say if the dB feels wrong anywhere."
   },
   {
    "name": "minion_rat_blind",
@@ -1861,9 +1861,9 @@
    "voice_at": null,
    "mic_check": true,
    "player_at": null,
-   "what": "Records your own voice (the mic, gain and calibration from Settings > Voice) to see what dB the game makes of it.",
+   "what": "Records your own voice (the mic, gain and calibration from Settings > Audio > Voice) to see what dB the game makes of it.",
    "try": "Press M: it turns your mic on and asks you to whisper, then talk, then yell, a few seconds each.",
-   "look": "The table compares, for each: what minions hear (the game), the loudness of the recording, and the target (30 / 50 / 70). The takes are saved as WAVs you can play back."
+   "look": "The table compares, for each: what minions hear (the game), the dB of the recording, and the target (30 / 50 / 70). The takes are saved as WAVs you can play back."
   }
  ]
 }

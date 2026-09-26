@@ -52,7 +52,7 @@ Notes:
   `"senses": { "hearing": false }`, or sets a sense's numbers, e.g.
   `"senses": { "sight": { "range_tiles": 8.0 } }`. `touch`, `sight` and `hearing` are
   implemented; `smell`/`taste` exist but always report no detection. Hearing is by event and
-  in decibels: a noise (a player's footstep 30 dB, a thrown rock landing 55, a voice 30 to 70)
+  in decibels: a noise (a player's footstep 30 dB, a thrown rock landing 55, a voice 0 to 90, normal talking 50)
   spreads across the 8px quads and loses dB on the way: each tile's `muffle` (floor 1, wall
   35, closed door 20 per tile) and 3 more for bending round a corner
   (`scripts/cells/SoundSpread.gd`). Hearing is `{"threshold_db": n}`, the quietest level the

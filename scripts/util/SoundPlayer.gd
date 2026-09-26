@@ -69,9 +69,10 @@ static func play(from: Node, path: String, options: Dictionary = {}) -> Node:
 			return null
 	var player: Node
 	if at != null:
-		var p2 := AudioStreamPlayer2D.new()
-		p2.max_distance = HEARD_MAX_DISTANCE if o["heard"] else HEARING_DISTANCE
-		p2.attenuation = 0.0 if o["heard"] else 1.0
+		var p2 := heard_player()
+		if not o["heard"]:
+			p2.max_distance = HEARING_DISTANCE
+			p2.attenuation = 1.0
 		p2.position = at
 		player = p2
 	else:
@@ -94,6 +95,23 @@ static func play(from: Node, path: String, options: Dictionary = {}) -> Node:
 		fade.tween_property(player, "volume_db", -40.0, o["fade"])
 		fade.tween_callback(player.queue_free)
 	return player
+
+## A 2D player for a sound whose volume the caller sets from what reaches the listener
+## (`heard`, VoiceChat's voices): left/right only, never cut off by distance.
+static func heard_player() -> AudioStreamPlayer2D:
+	return set_up_heard(AudioStreamPlayer2D.new())
+
+## Makes `p2` a heard player (see heard_player); returns it.
+static func set_up_heard(p2: AudioStreamPlayer2D) -> AudioStreamPlayer2D:
+	p2.max_distance = HEARD_MAX_DISTANCE
+	p2.attenuation = 0.0
+	return p2
+
+## The middle of the screen in the world, where the listener is, for the camera `from` is seen
+## through.
+static func screen_centre(from: Node) -> Vector2:
+	var viewport := from.get_viewport()
+	return viewport.get_canvas_transform().affine_inverse() * (viewport.get_visible_rect().size / 2.0)
 
 ## True if a world position is on screen (or within OFF_SCREEN_MARGIN of it) for the camera
 ## `from` is seen through.
