@@ -1,0 +1,8 @@
+{
+	"room_count": { "min": 25, "max": 38 },
+	"default_door": "none",
+	"tag_weights": { "corridor": 0.6, "maze": 0.6, "killzone": 0.5, "peaceful": 0.7, "vast": 0.35 },
+	"monsters": { "bee": 3, "mantis": 2, "toad": 2, "mandrake": 2, "mushroom": 2, "beetle": 1, "butterfly": 1, "dragonfly": 1, "snake": 1, "slime": 0.5 },
+	"music": "res://resources/sfx/music/The-Lone-Forest.mp3",
+	"ambience": "res://resources/sfx/ambiance/forest.mp3"
+}

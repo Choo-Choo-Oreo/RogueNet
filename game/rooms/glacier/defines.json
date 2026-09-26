@@ -1,0 +1,8 @@
+{
+	"room_count": { "min": 25, "max": 38 },
+	"default_door": "none",
+	"tag_weights": { "corridor": 0.5, "maze": 0.6, "killzone": 0.5, "peaceful": 0.7, "vast": 0.35 },
+	"monsters": { "wolf": 3, "penguin": 2, "yeti": 2, "owl": 1, "bat_echo": 1, "eagle": 1, "ghost": 0.5 },
+	"music": "res://resources/sfx/music/The-Lone-Forest.mp3",
+	"ambience": "res://resources/sfx/ambiance/cave.mp3"
+}

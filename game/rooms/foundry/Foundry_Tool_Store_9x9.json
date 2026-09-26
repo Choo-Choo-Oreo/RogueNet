@@ -1,0 +1,262 @@
+{
+	"id": "Foundry_Tool_Store_9x9",
+	"biome": "foundry",
+	"format": 2,
+	"width": 9,
+	"height": 9,
+	"role": "normal",
+	"tags": [
+		"combat"
+	],
+	"base_floor": "floor_metal_plate",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_metal_plate",
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"walls": [
+		[
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			null,
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron"
+		]
+	],
+	"connectors": [
+		{
+			"a": {
+				"x": 4,
+				"y": 8
+			},
+			"b": {
+				"x": 4,
+				"y": 8
+			},
+			"free": true,
+			"door": "iron"
+		}
+	],
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 5,
+				"y": 2
+			},
+			"minion": "rat"
+		},
+		{
+			"position": {
+				"x": 2,
+				"y": 5
+			},
+			"minion": "rat"
+		}
+	],
+	"objects": [
+		{
+			"type": "barrel",
+			"position": {
+				"x": 40.0,
+				"y": 24.0
+			},
+			"rotation": 0.0
+		},
+		{
+			"type": "crate",
+			"position": {
+				"x": 24.0,
+				"y": 88.0
+			},
+			"rotation": 0.0
+		}
+	]
+}

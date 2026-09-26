@@ -1,0 +1,253 @@
+{
+	"id": "Foundry_Duct_Kinked_5x15",
+	"biome": "foundry",
+	"format": 2,
+	"width": 5,
+	"height": 15,
+	"role": "corridor",
+	"tags": [
+		"corridor"
+	],
+	"base_floor": "floor_metal_plate",
+	"floor": [
+		[
+			null,
+			null,
+			"floor_metal_plate",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_metal_plate",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_metal_plate",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_metal_plate",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_metal_plate",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_metal_plate",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_metal_plate",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_metal_plate",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_metal_plate",
+			null,
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null,
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_metal_plate",
+			null,
+			null
+		]
+	],
+	"walls": [
+		[
+			"wall_iron",
+			"wall_iron",
+			null,
+			"wall_iron",
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			"wall_iron",
+			null,
+			"wall_iron",
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			"wall_iron",
+			null,
+			"wall_iron",
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			"wall_iron",
+			null,
+			"wall_iron",
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			"wall_iron",
+			null,
+			"wall_iron",
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			"wall_iron",
+			null,
+			"wall_iron",
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			"wall_iron",
+			null,
+			"wall_iron",
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			"wall_iron",
+			null,
+			"wall_iron",
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			"wall_iron",
+			null,
+			"wall_iron",
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			"wall_iron",
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			"wall_iron",
+			"wall_iron",
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			"wall_iron",
+			"wall_iron",
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			"wall_iron",
+			"wall_iron",
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			"wall_iron",
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			"wall_iron",
+			null,
+			"wall_iron",
+			"wall_iron"
+		]
+	],
+	"connectors": [
+		{
+			"a": {
+				"x": 2,
+				"y": 0
+			},
+			"b": {
+				"x": 2,
+				"y": 0
+			},
+			"free": true,
+			"door": "iron"
+		},
+		{
+			"a": {
+				"x": 2,
+				"y": 14
+			},
+			"b": {
+				"x": 2,
+				"y": 14
+			},
+			"free": true,
+			"door": "iron"
+		}
+	],
+	"objects": []
+}

@@ -1,0 +1,8 @@
+{
+	"name": "Laser keytar",
+	"slot": "main_hand",
+	"set": "neon_outlaw",
+	"art": "res://resources/gfx/gear/main_hand/neon_outlaw/LaserKeytar",
+	"icon": "res://resources/gfx/ui/icons/items/laser_keytar.png",
+	"song": "res://resources/sfx/music/bard/Keytar-NeonDriveHorizon.mp3"
+}

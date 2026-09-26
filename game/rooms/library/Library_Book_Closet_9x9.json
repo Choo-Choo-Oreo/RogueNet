@@ -1,0 +1,254 @@
+{
+	"id": "Library_Book_Closet_9x9",
+	"biome": "library",
+	"format": 2,
+	"width": 9,
+	"height": 9,
+	"role": "normal",
+	"tags": [
+		"combat"
+	],
+	"base_floor": "floor_parquet",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_parquet",
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"walls": [
+		[
+			"wall_bookshelf",
+			"wall_bookshelf",
+			"wall_bookshelf",
+			"wall_bookshelf",
+			"wall_bookshelf",
+			"wall_bookshelf",
+			"wall_bookshelf",
+			"wall_bookshelf",
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			"wall_bookshelf",
+			"wall_bookshelf",
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf",
+			"wall_bookshelf",
+			"wall_bookshelf",
+			"wall_bookshelf"
+		]
+	],
+	"connectors": [
+		{
+			"a": {
+				"x": 4,
+				"y": 8
+			},
+			"b": {
+				"x": 4,
+				"y": 8
+			},
+			"free": true,
+			"door": "wood"
+		}
+	],
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 4,
+				"y": 3
+			},
+			"minion": "rat"
+		},
+		{
+			"position": {
+				"x": 6,
+				"y": 7
+			},
+			"minion": "rat"
+		}
+	],
+	"objects": [
+		{
+			"type": "crate",
+			"position": {
+				"x": 120.0,
+				"y": 24.0
+			},
+			"rotation": 0.0
+		}
+	]
+}

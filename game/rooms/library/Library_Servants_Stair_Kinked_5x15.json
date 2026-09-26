@@ -1,0 +1,253 @@
+{
+	"id": "Library_Servants_Stair_Kinked_5x15",
+	"biome": "library",
+	"format": 2,
+	"width": 5,
+	"height": 15,
+	"role": "corridor",
+	"tags": [
+		"corridor"
+	],
+	"base_floor": "floor_parquet",
+	"floor": [
+		[
+			null,
+			null,
+			"floor_parquet",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_parquet",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_parquet",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_parquet",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_parquet",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_parquet",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_parquet",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_parquet",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_parquet",
+			null,
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			"floor_parquet",
+			null,
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			"floor_parquet",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_parquet",
+			null,
+			null
+		]
+	],
+	"walls": [
+		[
+			"wall_bookshelf",
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf",
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf",
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf",
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf",
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf",
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf",
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf",
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf",
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf",
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			null,
+			"wall_bookshelf",
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf",
+			"wall_bookshelf",
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf",
+			"wall_bookshelf",
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf",
+			"wall_bookshelf",
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			null,
+			"wall_bookshelf",
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf",
+			"wall_bookshelf"
+		]
+	],
+	"connectors": [
+		{
+			"a": {
+				"x": 2,
+				"y": 0
+			},
+			"b": {
+				"x": 2,
+				"y": 0
+			},
+			"free": true,
+			"door": "wood"
+		},
+		{
+			"a": {
+				"x": 2,
+				"y": 14
+			},
+			"b": {
+				"x": 2,
+				"y": 14
+			},
+			"free": true,
+			"door": "wood"
+		}
+	],
+	"objects": []
+}

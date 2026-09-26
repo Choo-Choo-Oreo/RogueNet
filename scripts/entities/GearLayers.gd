@@ -16,6 +16,10 @@ extends Node
 ## body, so the gear would otherwise float on the ghost.
 var hidden := false
 
+## Whose copy of each piece to draw: "" the Human's, else a skin with a body of its own
+## (ItemDatabase.sheet_path). A piece not drawn for that body yet isn't shown.
+var body_id := ""
+
 var _body: AnimatedSprite2D
 var _layers: Dictionary = {}   # slot -> AnimatedSprite2D
 var _sheet := ""   # the sheet the layers are set up for: a DRAW_ORDER or LEFT_SHEETS one
@@ -44,11 +48,18 @@ func set_equipment(worn: Dictionary) -> void:
 			layer.sprite_frames = null
 			layer.visible = false
 		else:
-			layer.sprite_frames = ItemDatabase.sprite_frames(item_id)
-			layer.visible = not hidden
+			layer.sprite_frames = ItemDatabase.sprite_frames(item_id, body_id)
+			layer.visible = layer.sprite_frames != null and not hidden
 	_worn = worn.duplicate()
 	_effects.set_equipment(worn)
 	_sheet = ""
+
+## Draw the gear for another body (a character skin, see body_id).
+func set_body(id: String) -> void:
+	if id == body_id:
+		return
+	body_id = id
+	set_equipment(_worn)
 
 func _process(_delta: float) -> void:
 	if _body == null or _body.sprite_frames == null:
@@ -92,6 +103,6 @@ func _pick_held_views(sheet: String) -> void:
 		var item_id: String = _worn.get(slot, "")
 		if item_id == "" or _layers[slot].sprite_frames == null:
 			continue
-		var view := ItemDatabase.held_left(item_id, sheet)
+		var view := ItemDatabase.held_left(item_id, sheet, body_id)
 		var animation = "Left" if view[0] == "Left" else ItemDatabase.ANIMATION_SHEETS.find_key(view[0])
 		_held_view[slot] = [animation, view[1]]

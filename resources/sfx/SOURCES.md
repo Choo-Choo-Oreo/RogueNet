@@ -115,3 +115,12 @@ Still synthesised placeholders (no good match found yet): `combat/attacks/taunt.
 | combat/voice/squawk.wav | Pinguin | SondangSirait419 | 220042 |
 | combat/voice/grind.wav | Stone, Block, Drag, Wood, Grind | freesound_community | 82327 |
 | combat/voice/cat.wav | Cat Growl into Hiss | freesound_community | 99813 |
+
+## Bard songs (music/bard/, whole tracks, downloaded 2026-09-26, not Content ID registered)
+
+| File (under resources/sfx/) | Pixabay title | By | Number |
+|---|---|---|---|
+| music/bard/Keytar-NeonDriveHorizon.mp3 | Synthwave Music Neon Drive Horizon | alex-morgan | 578508 |
+| music/bard/Guitar-ThrashShred.mp3 | Thrash Metal Instrumental with Shredding Guitar | NickPanek | 296168 |
+| music/bard/Drums-DrumAndBass.mp3 | Drum and Bass - Drum & Bass | AudioDollar | 549621 |
+| music/bard/Theremin-OutAfterCurfew.mp3 | Out After Curfew | melodyayresgriffiths | 171673 |

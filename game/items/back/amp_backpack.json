@@ -1,0 +1,7 @@
+{
+	"name": "Amp backpack",
+	"slot": "back",
+	"set": "neon_outlaw",
+	"art": "res://resources/gfx/gear/back/amp_backpack/AmpBackpack",
+	"icon": "res://resources/gfx/ui/icons/items/amp_backpack.png"
+}

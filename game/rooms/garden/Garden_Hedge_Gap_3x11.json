@@ -1,0 +1,153 @@
+{
+	"id": "Garden_Hedge_Gap_3x11",
+	"biome": "garden",
+	"format": 2,
+	"width": 3,
+	"height": 11,
+	"role": "corridor",
+	"tags": [
+		"corridor"
+	],
+	"base_floor": "floor_grass",
+	"floor": [
+		[
+			null,
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			null
+		]
+	],
+	"walls": [
+		[
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone"
+		]
+	],
+	"connectors": [
+		{
+			"a": {
+				"x": 1,
+				"y": 0
+			},
+			"b": {
+				"x": 1,
+				"y": 0
+			},
+			"free": true,
+			"door": "wood"
+		},
+		{
+			"a": {
+				"x": 1,
+				"y": 10
+			},
+			"b": {
+				"x": 1,
+				"y": 10
+			},
+			"free": true,
+			"door": "wood"
+		}
+	],
+	"objects": []
+}

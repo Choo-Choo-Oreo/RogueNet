@@ -1,0 +1,253 @@
+{
+	"id": "Garden_Hedge_Gap_Kinked_5x15",
+	"biome": "garden",
+	"format": 2,
+	"width": 5,
+	"height": 15,
+	"role": "corridor",
+	"tags": [
+		"corridor"
+	],
+	"base_floor": "floor_grass",
+	"floor": [
+		[
+			null,
+			null,
+			"floor_grass",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_grass",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_grass",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_grass",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_grass",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_grass",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_grass",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_grass",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_grass",
+			null,
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			"floor_grass",
+			null,
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_grass",
+			"floor_grass",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_grass",
+			null,
+			null
+		]
+	],
+	"walls": [
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		]
+	],
+	"connectors": [
+		{
+			"a": {
+				"x": 2,
+				"y": 0
+			},
+			"b": {
+				"x": 2,
+				"y": 0
+			},
+			"free": true,
+			"door": "wood"
+		},
+		{
+			"a": {
+				"x": 2,
+				"y": 14
+			},
+			"b": {
+				"x": 2,
+				"y": 14
+			},
+			"free": true,
+			"door": "wood"
+		}
+	],
+	"objects": []
+}

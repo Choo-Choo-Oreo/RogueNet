@@ -1,0 +1,7 @@
+{
+	"name": "Riot pants",
+	"slot": "legs",
+	"set": "neon_outlaw",
+	"art": "res://resources/gfx/gear/legs/neon_outlaw/NeonOutlawPants",
+	"icon": "res://resources/gfx/ui/icons/items/neon_outlaw_pants.png"
+}

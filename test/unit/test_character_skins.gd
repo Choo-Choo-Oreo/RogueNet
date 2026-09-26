@@ -30,3 +30,17 @@ func test_gear_shows_only_on_bodies_it_fits() -> void:
 	assert_true(PlayerController.character_data("human").get("fits_gear", true), "the Human")
 	assert_true(PlayerController.character_data("human_female").get("fits_gear", true), "on the Human's body")
 	assert_false(PlayerController.character_data("dwarf_male").get("fits_gear", true), "a body of its own")
+
+func test_a_body_of_its_own_wears_its_own_copy_of_the_gear() -> void:
+	for character_id in PlayerController.character_ids():
+		if PlayerController.character_data(character_id).get("fits_gear", true):
+			continue
+		for item_id in ["militia_gambeson", "militia_bucket_helm", "militia_wooden_shield"]:
+			var frames := ItemDatabase.sprite_frames(item_id, character_id)
+			assert_not_null(frames, "%s %s" % [character_id, item_id])
+			if frames != null:
+				assert_eq(frames.get_frame_count("Front"), ItemDatabase.FRAME_COUNT, "%s %s" % [character_id, item_id])
+				assert_string_contains(frames.get_frame_texture("Front", 0).atlas.resource_path, "/%s/" % character_id)
+		assert_true(ItemDatabase.held_left("militia_wooden_shield", "Left", character_id)[0] == "Left", character_id + " shield face")
+	assert_null(ItemDatabase.sprite_frames("militia_gambeson", "no_such_body"), "not drawn for that body: not shown")
+	assert_string_contains(ItemDatabase.sheet_path("militia_gambeson", "Down", "elf_male"), "chest/militia/elf_male/MilitiaGambeson-Down.png")

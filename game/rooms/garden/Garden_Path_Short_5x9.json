@@ -1,0 +1,169 @@
+{
+	"id": "Garden_Path_Short_5x9",
+	"biome": "garden",
+	"format": 2,
+	"width": 5,
+	"height": 9,
+	"role": "corridor",
+	"tags": [
+		"corridor"
+	],
+	"base_floor": "floor_grass",
+	"floor": [
+		[
+			null,
+			"floor_leaves",
+			"floor_leaves",
+			"floor_leaves",
+			null
+		],
+		[
+			null,
+			"floor_leaves",
+			"floor_leaves",
+			"floor_leaves",
+			null
+		],
+		[
+			null,
+			"floor_leaves",
+			"floor_leaves",
+			"floor_leaves",
+			null
+		],
+		[
+			null,
+			"floor_leaves",
+			"floor_leaves",
+			"floor_leaves",
+			null
+		],
+		[
+			null,
+			"floor_leaves",
+			"floor_leaves",
+			"floor_leaves",
+			null
+		],
+		[
+			null,
+			"floor_leaves",
+			"floor_leaves",
+			"floor_leaves",
+			null
+		],
+		[
+			null,
+			"floor_leaves",
+			"floor_leaves",
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_leaves",
+			"floor_grass",
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			"floor_leaves",
+			"floor_grass",
+			"floor_grass",
+			null
+		]
+	],
+	"walls": [
+		[
+			"wall_mossy_stone",
+			null,
+			null,
+			null,
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			null,
+			null,
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			null,
+			null,
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			null,
+			null,
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			null,
+			null,
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			null,
+			null,
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			null,
+			null,
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			null,
+			null,
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			null,
+			null,
+			"wall_mossy_stone"
+		]
+	],
+	"connectors": [
+		{
+			"a": {
+				"x": 1,
+				"y": 0
+			},
+			"b": {
+				"x": 3,
+				"y": 0
+			},
+			"free": true,
+			"door": "none"
+		},
+		{
+			"a": {
+				"x": 1,
+				"y": 8
+			},
+			"b": {
+				"x": 3,
+				"y": 8
+			},
+			"free": true,
+			"door": "none"
+		}
+	],
+	"objects": []
+}

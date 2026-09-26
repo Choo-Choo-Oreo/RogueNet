@@ -1,0 +1,236 @@
+{
+	"id": "Glacier_Ice_Grotto_11x7",
+	"biome": "glacier",
+	"format": 2,
+	"width": 11,
+	"height": 7,
+	"role": "normal",
+	"tags": [
+		"combat"
+	],
+	"base_floor": "floor_snow",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_snow",
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_ice",
+			"floor_ice",
+			"floor_ice",
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			null,
+			null
+		],
+		[
+			null,
+			"floor_snow",
+			"floor_ice",
+			"floor_ice",
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			null
+		],
+		[
+			null,
+			null,
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_snow",
+			"floor_snow",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			"floor_snow",
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"walls": [
+		[
+			"wall_ice",
+			"wall_ice",
+			"wall_ice",
+			"wall_ice",
+			"wall_ice",
+			"wall_ice",
+			"wall_ice",
+			"wall_ice",
+			"wall_ice",
+			"wall_ice",
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			"wall_ice",
+			"wall_ice",
+			"wall_ice",
+			"wall_ice",
+			null,
+			"wall_ice",
+			"wall_ice",
+			"wall_ice",
+			"wall_ice",
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			"wall_ice",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_ice",
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			"wall_ice",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_ice",
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			"wall_ice",
+			"wall_ice",
+			"wall_ice",
+			"wall_ice",
+			null,
+			null,
+			"wall_ice",
+			"wall_ice",
+			"wall_ice",
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			"wall_ice",
+			"wall_ice",
+			"wall_ice",
+			"wall_ice",
+			null,
+			"wall_ice",
+			"wall_ice",
+			"wall_ice",
+			"wall_ice",
+			"wall_ice"
+		]
+	],
+	"connectors": [
+		{
+			"a": {
+				"x": 5,
+				"y": 6
+			},
+			"b": {
+				"x": 5,
+				"y": 6
+			},
+			"free": true,
+			"door": "none"
+		}
+	],
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 7,
+				"y": 2
+			}
+		},
+		{
+			"position": {
+				"x": 4,
+				"y": 3
+			}
+		}
+	],
+	"objects": [
+		{
+			"type": "crate",
+			"position": {
+				"x": 152.0,
+				"y": 56.0
+			},
+			"rotation": 0.0
+		}
+	]
+}

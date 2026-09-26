@@ -1,0 +1,7 @@
+{
+	"name": "Glowing pick pendant",
+	"slot": "neck",
+	"set": "neon_outlaw",
+	"art": "res://resources/gfx/gear/amulets/neon_outlaw/NeonOutlawPickPendant",
+	"icon": "res://resources/gfx/ui/icons/items/neon_outlaw_pick_pendant.png"
+}

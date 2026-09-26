@@ -1,0 +1,7 @@
+{
+	"name": "Fingerless neon gloves",
+	"slot": "gloves",
+	"set": "neon_outlaw",
+	"art": "res://resources/gfx/gear/gloves/neon_outlaw/NeonOutlawGloves",
+	"icon": "res://resources/gfx/ui/icons/items/neon_outlaw_gloves.png"
+}

@@ -19,8 +19,9 @@ const DEFAULT_CHARACTER := "human"
 ## More skins to pick from: one folder each, named by its id, holding <id>.json. A skin
 ## that is a character with other art says {"like": "human", "art": "<its sheets' path
 ## minus -<Direction>.png>"} and gets everything else (animations, blink) from "like".
-## A skin with a body of its own says "fits_gear": false: gear is drawn for the Human's
-## body, so it isn't shown on that skin until the race has gear of its own.
+## A skin with a body of its own says "fits_gear": false: the Human's gear doesn't fit it,
+## so it wears its own copy of each piece (GearLayers.body_id); pieces not drawn for it
+## yet aren't shown.
 const VARIANTS_DIR := "res://resources/gfx/entities/entities.protagonist/variants/"
 
 ## Stats/attack shared by every character skin.
@@ -86,7 +87,7 @@ func set_character(character_id: String) -> void:
 	$AnimatedSprite2D.sprite_frames = SpriteFramesLoader.build(data["sprite_frames"])
 	animator.set_idle_life(data.get("idle", {}))
 	animator.set_lunge(data.get("lunge", false))
-	gear.hidden = not data.get("fits_gear", true)
+	gear.set_body("" if data.get("fits_gear", true) else character_id)
 
 ## worn: slot -> item id (NetworkSync.peer_equipment). Cosmetic only for now.
 func set_equipment(worn: Dictionary) -> void:

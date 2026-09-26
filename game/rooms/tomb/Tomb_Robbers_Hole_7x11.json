@@ -1,0 +1,244 @@
+{
+	"id": "Tomb_Robbers_Hole_7x11",
+	"biome": "tomb",
+	"format": 2,
+	"width": 7,
+	"height": 11,
+	"role": "normal",
+	"tags": [
+		"combat"
+	],
+	"base_floor": "floor_sand",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_brick",
+			null,
+			null
+		],
+		[
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_brick",
+			"floor_brick",
+			null
+		],
+		[
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_brick",
+			"floor_brick",
+			"floor_brick",
+			null
+		],
+		[
+			null,
+			"floor_brick",
+			"floor_brick",
+			"floor_brick",
+			"floor_brick",
+			"floor_brick",
+			null
+		],
+		[
+			null,
+			"floor_brick",
+			"floor_brick",
+			"floor_brick",
+			"floor_brick",
+			"floor_brick",
+			null
+		],
+		[
+			null,
+			"floor_brick",
+			"floor_brick",
+			"floor_brick",
+			"floor_brick",
+			"floor_brick",
+			null
+		],
+		[
+			null,
+			"floor_brick",
+			"floor_brick",
+			"floor_brick",
+			"floor_brick",
+			"floor_brick",
+			null
+		],
+		[
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			null
+		],
+		[
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_sand",
+			null,
+			null,
+			null
+		]
+	],
+	"walls": [
+		[
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			null,
+			"wall_smooth_stone",
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			null,
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone"
+		]
+	],
+	"connectors": [
+		{
+			"a": {
+				"x": 3,
+				"y": 10
+			},
+			"b": {
+				"x": 3,
+				"y": 10
+			},
+			"free": true,
+			"door": "none"
+		}
+	],
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 2,
+				"y": 5
+			}
+		},
+		{
+			"position": {
+				"x": 5,
+				"y": 5
+			},
+			"minion": "zombie"
+		}
+	],
+	"objects": []
+}

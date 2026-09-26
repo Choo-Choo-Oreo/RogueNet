@@ -1,0 +1,603 @@
+{
+	"id": "Foundry_Treasure_Crate_Hoard_15x13",
+	"biome": "foundry",
+	"format": 2,
+	"width": 15,
+	"height": 13,
+	"role": "normal",
+	"tags": [
+		"treasure"
+	],
+	"base_floor": "floor_metal_plate",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"walls": [
+		[
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron",
+			"wall_iron"
+		]
+	],
+	"connectors": [
+		{
+			"a": {
+				"x": 0,
+				"y": 5
+			},
+			"b": {
+				"x": 0,
+				"y": 7
+			},
+			"free": true,
+			"door": "iron"
+		}
+	],
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 11,
+				"y": 3
+			},
+			"minion": "mimic"
+		}
+	],
+	"objects": [
+		{
+			"type": "crate",
+			"position": {
+				"x": 104.0,
+				"y": 40.0
+			},
+			"rotation": 0.0
+		},
+		{
+			"type": "crate",
+			"position": {
+				"x": 136.0,
+				"y": 40.0
+			},
+			"rotation": 0.0
+		},
+		{
+			"type": "crate",
+			"position": {
+				"x": 168.0,
+				"y": 40.0
+			},
+			"rotation": 0.0
+		},
+		{
+			"type": "crate",
+			"position": {
+				"x": 200.0,
+				"y": 40.0
+			},
+			"rotation": 0.0
+		},
+		{
+			"type": "crate",
+			"position": {
+				"x": 104.0,
+				"y": 72.0
+			},
+			"rotation": 0.0
+		},
+		{
+			"type": "crate",
+			"position": {
+				"x": 200.0,
+				"y": 72.0
+			},
+			"rotation": 0.0
+		},
+		{
+			"type": "crate",
+			"position": {
+				"x": 104.0,
+				"y": 104.0
+			},
+			"rotation": 0.0
+		},
+		{
+			"type": "crate",
+			"position": {
+				"x": 136.0,
+				"y": 104.0
+			},
+			"rotation": 0.0
+		},
+		{
+			"type": "crate",
+			"position": {
+				"x": 168.0,
+				"y": 104.0
+			},
+			"rotation": 0.0
+		},
+		{
+			"type": "chest",
+			"position": {
+				"x": 200.0,
+				"y": 104.0
+			},
+			"rotation": 0.0
+		},
+		{
+			"type": "crate",
+			"position": {
+				"x": 104.0,
+				"y": 136.0
+			},
+			"rotation": 0.0
+		},
+		{
+			"type": "crate",
+			"position": {
+				"x": 136.0,
+				"y": 136.0
+			},
+			"rotation": 0.0
+		},
+		{
+			"type": "crate",
+			"position": {
+				"x": 200.0,
+				"y": 136.0
+			},
+			"rotation": 0.0
+		},
+		{
+			"type": "crate",
+			"position": {
+				"x": 104.0,
+				"y": 168.0
+			},
+			"rotation": 0.0
+		},
+		{
+			"type": "crate",
+			"position": {
+				"x": 136.0,
+				"y": 168.0
+			},
+			"rotation": 0.0
+		}
+	]
+}

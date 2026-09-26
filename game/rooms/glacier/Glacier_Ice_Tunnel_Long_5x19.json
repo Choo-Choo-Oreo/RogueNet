@@ -1,0 +1,309 @@
+{
+	"id": "Glacier_Ice_Tunnel_Long_5x19",
+	"biome": "glacier",
+	"format": 2,
+	"width": 5,
+	"height": 19,
+	"role": "corridor",
+	"tags": [
+		"corridor"
+	],
+	"base_floor": "floor_snow",
+	"floor": [
+		[
+			null,
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			null
+		],
+		[
+			null,
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			null
+		],
+		[
+			null,
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			null
+		],
+		[
+			null,
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			null
+		],
+		[
+			null,
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			null
+		],
+		[
+			null,
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			null
+		],
+		[
+			null,
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			null
+		],
+		[
+			null,
+			"floor_snow",
+			"floor_snow",
+			null,
+			null
+		],
+		[
+			null,
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			null
+		],
+		[
+			null,
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_snow",
+			null
+		],
+		[
+			null,
+			"floor_ice",
+			"floor_ice",
+			"floor_ice",
+			null
+		],
+		[
+			null,
+			"floor_snow",
+			"floor_ice",
+			"floor_ice",
+			null
+		],
+		[
+			null,
+			null,
+			"floor_ice",
+			"floor_ice",
+			null
+		],
+		[
+			null,
+			"floor_snow",
+			"floor_snow",
+			"floor_ice",
+			null
+		],
+		[
+			null,
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			null
+		],
+		[
+			null,
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			null
+		],
+		[
+			null,
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			null
+		],
+		[
+			null,
+			"floor_snow",
+			"floor_snow",
+			"floor_snow",
+			null
+		]
+	],
+	"walls": [
+		[
+			"wall_ice",
+			null,
+			null,
+			null,
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			null,
+			null,
+			null,
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			null,
+			null,
+			null,
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			null,
+			null,
+			null,
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			null,
+			null,
+			null,
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			null,
+			null,
+			null,
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			null,
+			null,
+			null,
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			null,
+			null,
+			"wall_ice",
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			null,
+			null,
+			null,
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			null,
+			null,
+			null,
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			"wall_rough_cave",
+			"wall_rough_cave",
+			null,
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			null,
+			null,
+			null,
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			null,
+			null,
+			null,
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			"wall_ice",
+			null,
+			null,
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			null,
+			null,
+			null,
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			null,
+			null,
+			null,
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			null,
+			null,
+			null,
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			null,
+			null,
+			null,
+			"wall_ice"
+		],
+		[
+			"wall_ice",
+			null,
+			null,
+			null,
+			"wall_ice"
+		]
+	],
+	"connectors": [
+		{
+			"a": {
+				"x": 1,
+				"y": 0
+			},
+			"b": {
+				"x": 3,
+				"y": 0
+			},
+			"free": true,
+			"door": "none"
+		},
+		{
+			"a": {
+				"x": 1,
+				"y": 18
+			},
+			"b": {
+				"x": 3,
+				"y": 18
+			},
+			"free": true,
+			"door": "none"
+		}
+	],
+	"objects": []
+}

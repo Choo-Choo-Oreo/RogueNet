@@ -1,0 +1,241 @@
+{
+	"id": "Tomb_Passage_Bend_9x9",
+	"biome": "tomb",
+	"format": 2,
+	"width": 9,
+	"height": 9,
+	"role": "corridor",
+	"tags": [
+		"corridor"
+	],
+	"base_floor": "floor_sand",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand"
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand"
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand"
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"walls": [
+		[
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone"
+		]
+	],
+	"connectors": [
+		{
+			"a": {
+				"x": 3,
+				"y": 0
+			},
+			"b": {
+				"x": 5,
+				"y": 0
+			},
+			"free": true,
+			"door": "none"
+		},
+		{
+			"a": {
+				"x": 8,
+				"y": 3
+			},
+			"b": {
+				"x": 8,
+				"y": 5
+			},
+			"free": true,
+			"door": "none"
+		}
+	],
+	"objects": []
+}

@@ -1,0 +1,8 @@
+{
+	"room_count": { "min": 25, "max": 38 },
+	"default_door": "none",
+	"tag_weights": { "corridor": 0.5, "maze": 0.6, "killzone": 0.5, "peaceful": 0.7, "vast": 0.35 },
+	"monsters": { "ghost": 3, "moth": 3, "wraith": 2, "rat": 2, "owl": 1, "cat": 1, "imp": 1, "witch": 1, "gargoyle": 1, "mimic": 0.5 },
+	"music": "res://resources/sfx/music/Groovy.mp3",
+	"ambience": "res://resources/sfx/ambiance/manor.mp3"
+}

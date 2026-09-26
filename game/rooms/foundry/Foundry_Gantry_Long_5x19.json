@@ -1,0 +1,326 @@
+{
+	"id": "Foundry_Gantry_Long_5x19",
+	"biome": "foundry",
+	"format": 2,
+	"width": 5,
+	"height": 19,
+	"role": "corridor",
+	"tags": [
+		"corridor"
+	],
+	"base_floor": "floor_metal_plate",
+	"floor": [
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_grate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_grate",
+			"floor_grate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_grate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		],
+		[
+			null,
+			"floor_metal_plate",
+			"floor_metal_plate",
+			"floor_metal_plate",
+			null
+		]
+	],
+	"walls": [
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			"wall_iron"
+		],
+		[
+			"wall_iron",
+			null,
+			null,
+			null,
+			"wall_iron"
+		]
+	],
+	"connectors": [
+		{
+			"a": {
+				"x": 1,
+				"y": 0
+			},
+			"b": {
+				"x": 3,
+				"y": 0
+			},
+			"free": true,
+			"door": "none"
+		},
+		{
+			"a": {
+				"x": 1,
+				"y": 18
+			},
+			"b": {
+				"x": 3,
+				"y": 18
+			},
+			"free": true,
+			"door": "none"
+		}
+	],
+	"objects": [
+		{
+			"type": "crate",
+			"position": {
+				"x": 56.0,
+				"y": 88.0
+			},
+			"rotation": 0.0
+		},
+		{
+			"type": "barrel",
+			"position": {
+				"x": 24.0,
+				"y": 232.0
+			},
+			"rotation": 0.0
+		}
+	]
+}

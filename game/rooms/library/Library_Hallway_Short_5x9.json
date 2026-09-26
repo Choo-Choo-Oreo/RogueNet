@@ -1,0 +1,169 @@
+{
+	"id": "Library_Hallway_Short_5x9",
+	"biome": "library",
+	"format": 2,
+	"width": 5,
+	"height": 9,
+	"role": "corridor",
+	"tags": [
+		"corridor"
+	],
+	"base_floor": "floor_parquet",
+	"floor": [
+		[
+			null,
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			"floor_parquet",
+			"floor_parquet",
+			null
+		]
+	],
+	"walls": [
+		[
+			"wall_bookshelf",
+			null,
+			null,
+			null,
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			null,
+			null,
+			"wall_bookshelf"
+		],
+		[
+			"wall_stained_glass",
+			null,
+			null,
+			null,
+			"wall_stained_glass"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			null,
+			null,
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			null,
+			null,
+			"wall_bookshelf"
+		],
+		[
+			"wall_stained_glass",
+			null,
+			null,
+			null,
+			"wall_stained_glass"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			null,
+			null,
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			null,
+			null,
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			null,
+			null,
+			"wall_bookshelf"
+		]
+	],
+	"connectors": [
+		{
+			"a": {
+				"x": 1,
+				"y": 0
+			},
+			"b": {
+				"x": 3,
+				"y": 0
+			},
+			"free": true,
+			"door": "none"
+		},
+		{
+			"a": {
+				"x": 1,
+				"y": 8
+			},
+			"b": {
+				"x": 3,
+				"y": 8
+			},
+			"free": true,
+			"door": "none"
+		}
+	],
+	"objects": []
+}

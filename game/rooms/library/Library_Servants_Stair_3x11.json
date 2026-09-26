@@ -1,0 +1,153 @@
+{
+	"id": "Library_Servants_Stair_3x11",
+	"biome": "library",
+	"format": 2,
+	"width": 3,
+	"height": 11,
+	"role": "corridor",
+	"tags": [
+		"corridor"
+	],
+	"base_floor": "floor_parquet",
+	"floor": [
+		[
+			null,
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			null
+		],
+		[
+			null,
+			"floor_parquet",
+			null
+		]
+	],
+	"walls": [
+		[
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf"
+		],
+		[
+			"wall_bookshelf",
+			null,
+			"wall_bookshelf"
+		]
+	],
+	"connectors": [
+		{
+			"a": {
+				"x": 1,
+				"y": 0
+			},
+			"b": {
+				"x": 1,
+				"y": 0
+			},
+			"free": true,
+			"door": "wood"
+		},
+		{
+			"a": {
+				"x": 1,
+				"y": 10
+			},
+			"b": {
+				"x": 1,
+				"y": 10
+			},
+			"free": true,
+			"door": "wood"
+		}
+	],
+	"objects": []
+}

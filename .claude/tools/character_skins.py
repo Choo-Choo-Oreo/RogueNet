@@ -2,8 +2,8 @@
 #  - DRAWN: a race with its own body (dwarf, elf, kemono). Each view's standing pose is drawn
 #    below by hand; the walk frames are made from it the way the Human walks: frames 1 and 3
 #    dip 1px with one foot planted and the other lifted (side view: a stride), frames 0 and 2
-#    stand (side view: the far foot passes behind). Gear is drawn for the Human's body and does
-#    NOT fit these; each race needs its own gear art.
+#    stand (side view: the far foot passes behind). Gear drawn for the Human's body doesn't fit
+#    these; character_gear.py makes each one's own gear art, walking the same way (walk()).
 #  - ON_HUMAN: the Human's own pixels with things drawn on (human_female's long hair), so all
 #    gear fits. Rerun when the Human's sheets change.
 # Run: python .claude/tools/character_skins.py   (writes resources/.../variants/<id>/)
@@ -696,6 +696,8 @@ def front_step(stand, hip, legs, lifted):
     return g
 
 def dark(c):
+    if isinstance(c, tuple):   # a gear colour (character_gear.py)
+        return tuple(round(v * FAR) for v in c)
     return c if c in '.0' else c + '~'
 
 def side_leg(g, stand, hip, legs, top, shift_to, far):
@@ -713,9 +715,13 @@ def side_leg(g, stand, hip, legs, top, shift_to, far):
 def frames(skin, view):
     info = D[skin]
     spec = info['views'][view]
-    legs, text = spec[0], spec[1]
     over = parse(spec[2]) if len(spec) > 2 else None
-    stand = parse(text)
+    return walk(parse(spec[1]), info, view, spec[0], over)
+
+def walk(stand, info, view, legs, over=None, gear=False):
+    """The 4 walk frames of a standing grid on a body (info = its D entry). gear=True: a gear
+    layer on that body: it moves the same way, but gets no outline of its own and is hidden
+    where the body's `over` (a tail hanging over the legs) is drawn."""
     hip = info['hip']
     out = []
     for f in range(4):
@@ -742,8 +748,11 @@ def frames(skin, view):
         if over:
             for y in range(16):
                 for x in range(16):
-                    put(g, x, y + dip, over[y][x])
-        out.append(outline(g))
+                    if gear and over[y][x] != '.' and 0 <= y + dip < 16:
+                        g[y + dip][x] = '.'
+                    elif not gear:
+                        put(g, x, y + dip, over[y][x])
+        out.append(g if gear else outline(g))
     return out
 
 def skirt_step(stand, hip, sway):

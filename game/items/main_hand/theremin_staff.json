@@ -1,0 +1,8 @@
+{
+	"name": "Theremin staff",
+	"slot": "main_hand",
+	"set": "neon_outlaw",
+	"art": "res://resources/gfx/gear/main_hand/neon_outlaw/ThereminStaff",
+	"icon": "res://resources/gfx/ui/icons/items/theremin_staff.png",
+	"song": "res://resources/sfx/music/bard/Theremin-OutAfterCurfew.mp3"
+}

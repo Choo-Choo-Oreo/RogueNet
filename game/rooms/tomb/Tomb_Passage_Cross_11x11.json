@@ -1,0 +1,353 @@
+{
+	"id": "Tomb_Passage_Cross_11x11",
+	"biome": "tomb",
+	"format": 2,
+	"width": 11,
+	"height": 11,
+	"role": "corridor",
+	"tags": [
+		"corridor"
+	],
+	"base_floor": "floor_sand",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_brick",
+			"floor_brick",
+			"floor_brick",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand"
+		],
+		[
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_brick",
+			"floor_brick",
+			"floor_brick",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand"
+		],
+		[
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_brick",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			"floor_sand"
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_brick",
+			"floor_sand",
+			"floor_sand",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"walls": [
+		[
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone"
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone",
+			"wall_sandstone"
+		]
+	],
+	"connectors": [
+		{
+			"a": {
+				"x": 4,
+				"y": 0
+			},
+			"b": {
+				"x": 6,
+				"y": 0
+			},
+			"free": true,
+			"door": "none"
+		},
+		{
+			"a": {
+				"x": 4,
+				"y": 10
+			},
+			"b": {
+				"x": 6,
+				"y": 10
+			},
+			"free": true,
+			"door": "none"
+		},
+		{
+			"a": {
+				"x": 0,
+				"y": 4
+			},
+			"b": {
+				"x": 0,
+				"y": 6
+			},
+			"free": true,
+			"door": "none"
+		},
+		{
+			"a": {
+				"x": 10,
+				"y": 4
+			},
+			"b": {
+				"x": 10,
+				"y": 6
+			},
+			"free": true,
+			"door": "none"
+		}
+	],
+	"objects": []
+}

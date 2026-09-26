@@ -242,8 +242,14 @@ static func full_set(worn: Dictionary) -> String:
 static func set_bonus(set_id: String) -> Dictionary:
 	return set_info(set_id).get("bonus", {})
 
-static func sheet_path(item_id: String, sheet: String) -> String:
-	return "%s-%s.png" % [get_item(item_id).get("art", ""), sheet]
+## body: "" for the Human's body, else a character skin with a body of its own
+## (PlayerController, "fits_gear": false). Its copy of a piece sits in a folder named
+## after it beside the Human's (made by .claude/tools/character_gear.py).
+static func sheet_path(item_id: String, sheet: String, body := "") -> String:
+	var art: String = get_item(item_id).get("art", "")
+	if body != "":
+		art = "%s/%s/%s" % [art.get_base_dir(), body, art.get_file()]
+	return "%s-%s.png" % [art, sheet]
 
 ## Paint order for a DRAW_ORDER sheet or a LEFT_SHEETS one. Facing left is the mirrored
 ## right-facing order with the two hands swapped: the main hand goes where the off hand was.
@@ -258,9 +264,9 @@ static func draw_order(sheet: String) -> Array:
 	return order
 
 ## Which sheet a held item draws facing `left_sheet` (a LEFT_SHEETS value), and whether mirrored.
-static func held_left(item_id: String, left_sheet: String) -> Array:
+static func held_left(item_id: String, left_sheet: String, body := "") -> Array:
 	var sheet: String = HELD_LEFT[left_sheet]
-	if ResourceLoader.exists(sheet_path(item_id, sheet)):
+	if ResourceLoader.exists(sheet_path(item_id, sheet, body)):
 		return [sheet, false]
 	return [LEFT_SHEETS.find_key(left_sheet), true]
 
@@ -272,27 +278,32 @@ static func frame_texture(sheet_texture: Texture2D, frame: int) -> AtlasTexture:
 	return atlas
 
 ## Same animation names and frame counts as the Human body, so a gear layer can
-## copy the body's animation and frame every tick.
-static func sprite_frames(item_id: String) -> SpriteFrames:
-	if _sprite_frames.has(item_id):
-		return _sprite_frames[item_id]
+## copy the body's animation and frame every tick. null: the piece isn't drawn for
+## that body (see sheet_path) yet.
+static func sprite_frames(item_id: String, body := "") -> SpriteFrames:
+	var key := item_id + "@" + body
+	if _sprite_frames.has(key):
+		return _sprite_frames[key]
+	if body != "" and not ResourceLoader.exists(sheet_path(item_id, "Down", body)):
+		_sprite_frames[key] = null
+		return null
 	var frames := SpriteFrames.new()
 	frames.remove_animation("default")
 	for anim_name in ANIMATION_SHEETS:
-		var texture: Texture2D = load(sheet_path(item_id, ANIMATION_SHEETS[anim_name]))
+		var texture: Texture2D = load(sheet_path(item_id, ANIMATION_SHEETS[anim_name], body))
 		frames.add_animation(anim_name)
 		if texture == null:
 			continue
 		for i in FRAME_COUNT:
 			frames.add_frame(anim_name, frame_texture(texture, i))
 	# own left-facing art (held items only, see HELD_LEFT), as an animation named after its sheet
-	var left := sheet_path(item_id, "Left")
+	var left := sheet_path(item_id, "Left", body)
 	if ResourceLoader.exists(left):
 		var texture: Texture2D = load(left)
 		frames.add_animation("Left")
 		for i in FRAME_COUNT:
 			frames.add_frame("Left", frame_texture(texture, i))
-	_sprite_frames[item_id] = frames
+	_sprite_frames[key] = frames
 	return frames
 
 ## The picture in inventory slots: the item's own "icon" image if it has one,

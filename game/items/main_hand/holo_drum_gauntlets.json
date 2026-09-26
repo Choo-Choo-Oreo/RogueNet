@@ -1,0 +1,8 @@
+{
+	"name": "Holo drum gauntlets",
+	"slot": "main_hand",
+	"set": "neon_outlaw",
+	"art": "res://resources/gfx/gear/main_hand/neon_outlaw/HoloDrumGauntlets",
+	"icon": "res://resources/gfx/ui/icons/items/holo_drum_gauntlets.png",
+	"song": "res://resources/sfx/music/bard/Drums-DrumAndBass.mp3"
+}

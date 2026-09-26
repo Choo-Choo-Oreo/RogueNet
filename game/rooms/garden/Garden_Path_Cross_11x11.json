@@ -1,0 +1,353 @@
+{
+	"id": "Garden_Path_Cross_11x11",
+	"biome": "garden",
+	"format": 2,
+	"width": 11,
+	"height": 11,
+	"role": "corridor",
+	"tags": [
+		"corridor"
+	],
+	"base_floor": "floor_grass",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_leaves",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_leaves",
+			"floor_leaves",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_leaves",
+			"floor_leaves",
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_grass",
+			null,
+			"floor_grass",
+			"floor_leaves",
+			"floor_leaves",
+			"floor_leaves",
+			"floor_leaves",
+			null,
+			null
+		],
+		[
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_leaves",
+			"floor_leaves",
+			"floor_leaves",
+			"floor_leaves",
+			"floor_leaves",
+			"floor_leaves"
+		],
+		[
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_leaves",
+			"floor_leaves",
+			"floor_leaves",
+			"floor_leaves",
+			"floor_leaves",
+			"floor_leaves"
+		],
+		[
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass"
+		],
+		[
+			null,
+			null,
+			"floor_grass",
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"walls": [
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			null,
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			null,
+			null,
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone",
+			null,
+			null,
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			null,
+			null,
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			null,
+			null,
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			null,
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		]
+	],
+	"connectors": [
+		{
+			"a": {
+				"x": 4,
+				"y": 0
+			},
+			"b": {
+				"x": 6,
+				"y": 0
+			},
+			"free": true,
+			"door": "none"
+		},
+		{
+			"a": {
+				"x": 4,
+				"y": 10
+			},
+			"b": {
+				"x": 6,
+				"y": 10
+			},
+			"free": true,
+			"door": "none"
+		},
+		{
+			"a": {
+				"x": 0,
+				"y": 4
+			},
+			"b": {
+				"x": 0,
+				"y": 6
+			},
+			"free": true,
+			"door": "none"
+		},
+		{
+			"a": {
+				"x": 10,
+				"y": 4
+			},
+			"b": {
+				"x": 10,
+				"y": 6
+			},
+			"free": true,
+			"door": "none"
+		}
+	],
+	"objects": []
+}

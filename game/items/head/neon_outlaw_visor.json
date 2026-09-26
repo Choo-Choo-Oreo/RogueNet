@@ -1,0 +1,7 @@
+{
+	"name": "Neon mohawk visor",
+	"slot": "head",
+	"set": "neon_outlaw",
+	"art": "res://resources/gfx/gear/helmets/neon_outlaw/NeonOutlawVisor",
+	"icon": "res://resources/gfx/ui/icons/items/neon_outlaw_visor.png"
+}

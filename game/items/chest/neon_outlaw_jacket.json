@@ -1,0 +1,7 @@
+{
+	"name": "Studded neon jacket",
+	"slot": "chest",
+	"set": "neon_outlaw",
+	"art": "res://resources/gfx/gear/chest/neon_outlaw/NeonOutlawJacket",
+	"icon": "res://resources/gfx/ui/icons/items/neon_outlaw_jacket.png"
+}

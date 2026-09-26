@@ -1,0 +1,245 @@
+{
+	"id": "Garden_Potting_Shed_9x9",
+	"biome": "garden",
+	"format": 2,
+	"width": 9,
+	"height": 9,
+	"role": "normal",
+	"tags": [
+		"combat"
+	],
+	"base_floor": "floor_grass",
+	"floor": [
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null,
+			null
+		],
+		[
+			null,
+			"floor_moss",
+			"floor_moss",
+			"floor_moss",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null
+		],
+		[
+			null,
+			null,
+			"floor_moss",
+			"floor_moss",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			"floor_moss",
+			"floor_moss",
+			"floor_grass",
+			"floor_grass",
+			"floor_grass",
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_grass",
+			null,
+			null,
+			null,
+			null
+		],
+		[
+			null,
+			null,
+			null,
+			null,
+			"floor_grass",
+			null,
+			null,
+			null,
+			null
+		]
+	],
+	"walls": [
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		],
+		[
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			null,
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone",
+			"wall_mossy_stone"
+		]
+	],
+	"connectors": [
+		{
+			"a": {
+				"x": 4,
+				"y": 8
+			},
+			"b": {
+				"x": 4,
+				"y": 8
+			},
+			"free": true,
+			"door": "wood"
+		}
+	],
+	"spawn_cells": [
+		{
+			"position": {
+				"x": 6,
+				"y": 2
+			},
+			"minion": "toad"
+		},
+		{
+			"position": {
+				"x": 3,
+				"y": 5
+			},
+			"minion": "mushroom"
+		}
+	],
+	"objects": []
+}

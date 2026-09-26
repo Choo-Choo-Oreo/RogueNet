@@ -1,0 +1,169 @@
+{
+	"id": "Tomb_Passage_Short_5x9",
+	"biome": "tomb",
+	"format": 2,
+	"width": 5,
+	"height": 9,
+	"role": "corridor",
+	"tags": [
+		"corridor"
+	],
+	"base_floor": "floor_sand",
+	"floor": [
+		[
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			null
+		],
+		[
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			null
+		],
+		[
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			null
+		],
+		[
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			null
+		],
+		[
+			null,
+			"floor_brick",
+			"floor_sand",
+			"floor_sand",
+			null
+		],
+		[
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			null
+		],
+		[
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			null
+		],
+		[
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			null
+		],
+		[
+			null,
+			"floor_sand",
+			"floor_sand",
+			"floor_sand",
+			null
+		]
+	],
+	"walls": [
+		[
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			"wall_sandstone"
+		],
+		[
+			"wall_sandstone",
+			null,
+			null,
+			null,
+			"wall_sandstone"
+		]
+	],
+	"connectors": [
+		{
+			"a": {
+				"x": 1,
+				"y": 0
+			},
+			"b": {
+				"x": 3,
+				"y": 0
+			},
+			"free": true,
+			"door": "none"
+		},
+		{
+			"a": {
+				"x": 1,
+				"y": 8
+			},
+			"b": {
+				"x": 3,
+				"y": 8
+			},
+			"free": true,
+			"door": "none"
+		}
+	],
+	"objects": []
+}
