@@ -45,9 +45,12 @@ var _floor_layer: TileMapLayer
 
 func _ready():
 	display_layer.position = Vector2(data_layer.tile_set.tile_size) / 2.0
-	data_layer.changed.connect(_on_data_layer_changed)
 	_floor_layer = get_parent().get_node_or_null("FloorData") as TileMapLayer
-	refresh()
+	# In game whoever paints calls TileInitialize.refresh_all/refresh_cells once it is done; the
+	# `changed` signal would redraw the finished map a second time (print test 2026-09-26).
+	if Engine.is_editor_hint():
+		data_layer.changed.connect(_on_data_layer_changed)
+		refresh()
 
 var _refresh_queued := false
 
@@ -70,18 +73,14 @@ func refresh():
 	display_layer.clear()
 	if overlay_layer:
 		overlay_layer.clear()
-	if group_sources.is_empty():
-		var touched := {}
-		for cell in data_layer.get_used_cells_by_id(source_id):
-			for offset in [Vector2i(0, 0), Vector2i(-1, 0), Vector2i(0, -1), Vector2i(-1, -1)]:
-				touched[cell + offset] = true
-		for pos in touched:
-			_refresh_cell(pos)
-	else:
-		var used_rect := data_layer.get_used_rect()
-		for y in range(used_rect.position.y - 1, used_rect.end.y):
-			for x in range(used_rect.position.x - 1, used_rect.end.x):
-				_refresh_cell(Vector2i(x, y))
+	# Only quads touching one of this renderer's own cells can draw anything (grouped walls draw
+	# only their own corners, see _refresh_cell), so there is no need to scan the whole layer.
+	var touched := {}
+	for cell in data_layer.get_used_cells_by_id(source_id):
+		for offset in [Vector2i(0, 0), Vector2i(-1, 0), Vector2i(0, -1), Vector2i(-1, -1)]:
+			touched[cell + offset] = true
+	for pos in touched:
+		_refresh_cell(pos)
 
 ## Redraws only what `cells` (data-layer cells that changed) can affect: each display quad touches
 ## the four cells around its corner, so a changed cell alters four quads. The layer's `changed`

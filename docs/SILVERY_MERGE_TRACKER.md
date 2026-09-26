@@ -11,10 +11,8 @@ copied over as-is. **MERGE** = you both changed it; open both and combine by han
 Still combine it by hand: copying his file over would wipe out your changes.
 
 Last checked: 2026-09-25 against branch tip `8771fd9` (36 commits since the split at
-`d0b8a02`) and main `90b7f2d`. **2026-09-26, sounds only:** tip is `34f1e4f` (39 commits); the
-3 new ones (`fd552b8` elf and dwarf skins, `c12af26` wolves bite with attack frames plus barrels
-and crates as props, `34f1e4f` new tile sets and floor overlays, 233 files) have **no sound
-files**; not yet sorted into chunks below. Labels compare against committed `main`: if you have
+`d0b8a02`) and main `90b7f2d`. **Checked again 2026-09-26** against tip `94900e2` (41 commits)
+and main `3bd9586`: the 5 new commits are sorted into the chunks marked "new 2026-09-26" below. Labels compare against committed `main`: if you have
 uncommitted edits in a "take" file, treat it as MERGE.
 
 ## How to import a chunk
@@ -231,10 +229,13 @@ No code. After importing, look at it in game.
 ### COMBAT FEEDBACK ✗
 Hit sounds, damage numbers, hurt overlay. Close to your sound work.
 - Sound code: already in main (see AUDIO). Take `test/unit/test_combat_sounds.gd` and fix its paths
-- Numbers and hits (take): `scripts/entities/HitFeedback.gd`, `scripts/entities/DamageNumber.gd`, `test/sim/hit_feedback.gd`
+- Numbers and hits: `scripts/entities/DamageNumber.gd` (take), `test/sim/hit_feedback.gd` (take, fix
+  its paths); `scripts/entities/HitFeedback.gd` is now on main with the sound part only: MERGE, add
+  his looks to main's file (see AUDIO)
 - Hurt overlay (take): `scripts/ui/HurtOverlay.gd`
-- Actions (take): `scripts/actions/AttackEffect.gd`, `ParticleBurst.gd`, `verbs/HitVerb.gd`,
-  `ProjectileVerb.gd`, `TauntVerb.gd`, `DestroyTilesVerb.gd`, `TileHit.gd`, `scripts/ui/MenuBattle.gd`,
+- Actions, **MERGE now** (2026-09-26; main changed them for the sound work: attack noise, `cause`):
+  `scripts/actions/AttackEffect.gd`, `verbs/HitVerb.gd`, `ProjectileVerb.gd`, `TauntVerb.gd`,
+  `DestroyTilesVerb.gd`, `TileHit.gd`. Take: `ParticleBurst.gd`, `scripts/ui/MenuBattle.gd`,
   `.claude/docs/combat-feedback.md`
 - MERGE (easy): `game/actions/slash.json`, `arrow_shot.json`, `entropia_bolt.json`,
   `perditio_touch.json`, `MouseFollowCamera.gd`
@@ -322,6 +323,94 @@ Unrelated fixes bundled into one commit. Take each one with the chunk it belongs
 - `HurtOverlay.gd`, `PartyWipeScreen.gd`, `RunLog.gd`, `PlayerInventory.gd`,
   `AudioBusLayout.tres`: already covered by their chunks
 
+### WOLF BITE AND ATTACK POSES (new 2026-09-26, `c12af26`) ✗
+An attack plays the caster's "Attack"+facing animation once on every peer (the wolf and
+hellhound crouch-bite-stand); players lunge when their body JSON says `"lunge"`.
+- take: the 8 wolf attack sheets (`Wolf-Attack-Down|Up|Left|Right`, `.png` + `.aseprite`) in
+  `resources/gfx/entities/entities.antagonist/minions/wolf/wolf/` and `wolf.hellhound/`,
+  `test/unit/test_body_poses.gd`
+- `scripts/entities/DirectionalAnimator.gd`: take (main has not changed it; also in ANIMATIONS)
+- MERGE: `wolf.json`, `wolf_hellhound.json` (add the 4 `Attack*` entries; main edited their
+  comments), `human.json` (`"lunge": true`; also in ANIMATIONS), `PlayerController.gd` (`set_lunge`),
+  `singletons/NetworkSync.gd` (one line)
+- **MERGE with care, `AttackEffect.gd`:** his `play_attack` is written on the old one. Keep main's
+  lines (the attack's noise, `report_noise`, and nothing sent for an attack with no picture and no
+  sound) and add only his `tagged["caster"]` path.
+- **`ThrowVerb.gd`:** take only his "turn toward the landing" line (`play_attack(caster,
+  landing_global, attack, {"anchor": "attacker"})`). His `loudness` is the old sound model; main's
+  throw uses the action's `db`.
+- Main has `scripts/entities/HitFeedback.gd` and the `cause` in hits; check the pose still plays
+  when the attack's effect has no picture.
+
+### PROPS (new 2026-09-26, `c12af26`) ✗
+Any PNG in `resources/gfx/objects/props/` is a prop: listed in the Dungeon Maker, drawn in dives,
+turned with its room. Cosmetic only (no collision, no sound). Barrel and Crate to start.
+- take: `scripts/dungeon/Props.gd`, `test/unit/test_props.gd`, `resources/gfx/objects/props/`
+  (`Barrel`, `Crate`, `.png` + `.aseprite`)
+- MERGE: `scripts/dungeon/DungeonAssembler.gd`, `DungeonMaker.gd`, `DungeonPainter.gd`,
+  `game/rooms/README.md`
+- **Check:** main's to-do says room `"objects"` is editor-only data until decoration is built.
+  Props are that decoration: decide whether they use `"objects"` or a key of their own.
+
+### NEW TILE SETS (new 2026-09-26, `34f1e4f`) ✗
+Fourteen floors (brick, cobblestone, flowers, grate, gravel, ice, lava crust, leaves, metal plate,
+moss, mossy cobblestone, parquet, sand, snow) and eight walls (bookshelf, brick, ice, iron, mine
+ore, mossy stone, sandstone, stained glass), floor overlays (little animations), a redrawn
+`wall_smooth_stone` and `floor_water`.
+- take: the 22 new tile JSONs in `game/tiles/`, `game/tiles/floor_water.json` (adds its ripple
+  overlay), `game/tile_registry.json` (main has not changed it), their art in
+  `resources/gfx/tileset/` (`.png`, `_normal.png`, `.aseprite`, 7 `overlay_*.png`),
+  `.claude/tools/normal_maps.py` (also in TILE VARIANTS)
+- MERGE: `game/tiles/README.md`, `README.md` (Tiles section; main added `muffle` and `footsteps`
+  there), `docs/ART_TODO.md`
+- **Sound, before taking:** the new floors already carry `footsteps`; give each new wall a
+  `muffle` like main's walls (wood 20 to bedrock 60: bookshelf about 20, ice and brick about 35,
+  iron and sandstone about 40, stained glass about 15). Add any new `footsteps` material
+  (e.g. `sand`, `snow`, `metal`) to `game/sounds.json` `footstep_db`, or it uses the default.
+- Needed by: NEW BIOMES
+
+### ELF AND DWARF REDRAW (new 2026-09-26, `fd552b8`) ✗
+Part of SKINS: the elf and dwarf sheets in `resources/gfx/entities/entities.protagonist/variants/`
+redrawn (slim elves in green and gold, stocky dwarves in blue) and `.claude/tools/character_skins.py`.
+Take with SKINS; nothing on main to merge.
+
+### ITEM ICONS REDRAW (new 2026-09-26, `6bcacf0`) ✗
+All 205 item icons in `resources/gfx/ui/icons/items/` redrawn, made by the new scripts in
+`.claude/tools/item_icons/`. Main deleted those icons in the revert (THINGS RESTORE), so take them
+with THINGS RESTORE, from this newer commit. MERGE: `docs/ART_TODO.md` (one line).
+
+### NEW BIOMES (new 2026-09-26, `94900e2` "r") ✗
+Five new biomes, 45 rooms each with a `defines.json`: `foundry`, `garden`, `glacier`, `library`,
+`tomb` in `game/rooms/`.
+- take: the five folders, **then remove `"biome"` from every room** (main dropped that field from
+  all rooms on 2026-09-25; the folder decides)
+- Needs: NEW TILE SETS (the rooms use its floors and walls), THINGS RESTORE (their monsters: only
+  `wraith` and `skeleton_archer` are on main; goblin, orc, bee, yeti, penguin, scorpion and the rest
+  are not), BIOME AMBIENCE (`defines.json` points at `resources/sfx/ambiance/*.mp3`)
+- Check `game/rooms/BIOMES.md` and the Dungeon Maker's biome list know them.
+
+### NEON OUTLAW SET AND BARD SONGS (new 2026-09-26, `94900e2` "r") ✗
+A legendary bard set: 11 items (jacket, boots, gloves, visor, pants, pick pendant, amp backpack,
+and four instruments: laser keytar, plasma guitar, holo drum gauntlets, theremin staff).
+- take: the 11 item JSONs in `game/items/*/`, `game/sets/neon_outlaw.json`, their icons in
+  `resources/gfx/ui/icons/items/`, gear art in `resources/gfx/gear/*/neon_outlaw/` and
+  `back/amp_backpack/`, `.claude/tools/neon_outlaw.py`
+- Sound: 4 whole songs in `resources/sfx/music/bard/` (Pixabay, credited in `SOURCES.md`). Each
+  instrument's JSON names its `"song"`; **nothing plays it yet** on the branch either.
+- Needs: THINGS RESTORE / STORAGE (main has no `game/sets/`)
+
+### GEAR FOR OTHER BODIES (new 2026-09-26, `94900e2` "r") ✗
+Skins with a body of their own (`"fits_gear": false`: elf, dwarf) now wear their own copy of
+each piece instead of none: `resources/gfx/gear/<slot>/<set>/<skin>/`, made by
+`.claude/tools/character_gear.py`. So far militia (all slots) and a few weapons (poacher, rogue,
+wraith). This answers most of SKINS' "skins that show no gear" decision.
+- take: the 602 gear files (main has not changed `resources/gfx/gear/`),
+  `.claude/tools/character_gear.py`, `test/unit/test_character_skins.gd`
+- MERGE: `scripts/entities/GearLayers.gd` (`body_id`, `set_body`), `scripts/items/ItemDatabase.gd`
+  (`sheet_path`/`sprite_frames`/`held_left` take a body), `PlayerController.gd` (`gear.set_body`;
+  main calls it `set_skin`)
+- Needs: SKINS
+
 ## Skip
 - `6f0293b` / `5739548`: a scratch screenshot script added and then removed
 - `ac7ed86`, `ac75de7`, `6f6d2c9`: restore and merge commits (THINGS RESTORE covers them)
@@ -333,16 +422,21 @@ Taking one of these brings in the other chunks' changes too.
 
 | File | Chunks |
 |---|---|
-| `PlayerController.gd` | COMBAT FEEDBACK, ANIMATIONS, WADING, SKINS |
+| `PlayerController.gd` | COMBAT FEEDBACK, ANIMATIONS, WADING, SKINS, WOLF BITE, GEAR FOR OTHER BODIES |
 | `MinionController.gd` | COMBAT FEEDBACK, ANIMATIONS, WADING |
 | `GridMover.gd` | FOOTSTEPS, FIXES |
 | `TileType.gd` | WADING, TILE VARIANTS |
 | `ParticleBurst.gd` | COMBAT FEEDBACK, FOOTSTEPS |
 | `SettingsMenu.gd` | SETTINGS, BIOME AMBIENCE |
-| `GearLayers.gd` | ANIMATIONS, WADING |
-| `ItemDatabase.gd` | STORAGE, WADING |
+| `GearLayers.gd` | ANIMATIONS, WADING, GEAR FOR OTHER BODIES |
+| `ItemDatabase.gd` | STORAGE, WADING, GEAR FOR OTHER BODIES |
 | `DollStage.gd` | STORAGE, WADING |
-| `NetworkSync.gd` | COMBAT FEEDBACK, FIXES |
+| `NetworkSync.gd` | COMBAT FEEDBACK, FIXES, WOLF BITE |
+| `AttackEffect.gd` | COMBAT FEEDBACK, WOLF BITE |
+| `DirectionalAnimator.gd` | ANIMATIONS, WOLF BITE |
+| `human.json` | ANIMATIONS, WOLF BITE |
+| `normal_maps.py` | TILE VARIANTS, NEW TILE SETS |
+| `docs/ART_TODO.md` | NEW TILE SETS, ITEM ICONS REDRAW |
 | `ConfigFileHandler.gd`, `SettingsMenu.tscn` | COMBAT FEEDBACK, SETTINGS |
 | `README.md`, `docs/ART_TODO.md` | almost every chunk; merge the text at the end |
 

@@ -19,6 +19,7 @@ func _ready() -> void:
 	FlowField.clear()
 	SurroundSectors.clear()
 	_paint(rooms, placements, floor_data, wall_data, registry, defines)
+	tile_initialize.refresh_all()
 	_place_doors(rooms, placements, defines)
 	MusicManager.play_for_biome(defines)
 	# PlayerVision is a later sibling in Dungeon.tscn -- its own _ready() hasn't

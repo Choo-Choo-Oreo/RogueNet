@@ -8,9 +8,9 @@ extends Node
 ## a chunk quieter than the gate (gate_db, a little under this player's whisper) is background.
 ## It goes to the host, which passes it on to everyone in the same place as the
 ## speaker (the town, or the same started mission), the same way chat goes through the host
-## (NetworkSync.send_chat). In a mission the living and the ghosts are two channels: ghosts
-## hear only ghosts, from anywhere; the living hear only the living, from where the speaker
-## stands: the voice spreads like any other sound (Sound.lost_to_local, through walls and doors
+## (NetworkSync.send_chat). In a mission the living never hear ghosts; ghosts hear ghosts from
+## anywhere and, so the dead aren't cut off from their friends (Orea 2026-09-26), the living too.
+## A living voice is heard from where the speaker stands, by the living and ghosts alike: it spreads like any other sound (Sound.lost_to_local, through walls and doors
 ## and round corners), and a listener whose hearing it doesn't reach hears nothing. Every
 ## speaker gets their own player on the VoiceChat bus.
 ##
@@ -485,10 +485,11 @@ func _relay(sender_id: int, data: PackedByteArray) -> void:
 		if peer_id != sender_id and _hears(peer_id, sender_id):
 			receive_voice.rpc_id(peer_id, sender_id, data)
 
-## Host only. Whether `listener` gets `speaker`'s voice: same place, and in a mission the
-## same side of death (a peer with no body there, e.g. in the town, counts as living).
+## Host only. Whether `listener` gets `speaker`'s voice: same place, and in a mission a ghost
+## speaker only to other ghosts; a ghost hears everyone (a peer with no body there, e.g. in the
+## town, counts as living).
 func _hears(listener: int, speaker: int) -> bool:
-	return _place_of(listener) == _place_of(speaker) and _is_ghost(NetworkSync._player(listener)) == _is_ghost(NetworkSync._player(speaker))
+	return _place_of(listener) == _place_of(speaker) and (_is_ghost(NetworkSync._player(listener)) or not _is_ghost(NetworkSync._player(speaker)))
 
 static func _is_ghost(body: Node) -> bool:
 	return body != null and body.stats.is_ghost

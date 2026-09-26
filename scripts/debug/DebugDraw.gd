@@ -316,8 +316,9 @@ func _draw_doors() -> void:
 		_label(Vector2(first) * TILE + Vector2(0, -2), text, color)
 
 func _draw_minions() -> void:
+	var near := _visible_tiles().grow(8)
 	for minion in get_tree().get_nodes_in_group("antagonist"):
-		if not "_last_state" in minion:
+		if not "_last_state" in minion or not near.has_point(Vector2i((minion.global_position / TILE).floor())):
 			continue
 		var state := clampi(int(minion._last_state), 0, 2)
 		var color: Color = STATE_COLORS[state]

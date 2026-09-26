@@ -177,11 +177,11 @@ static func _by_tag(table: Dictionary, tag: String) -> String:
 static func sound_db(key: String) -> float:
 	return float(_sound_data().get(key, 0.0))
 
-## How loud a step is on a floor of `material` (TileType.footsteps): SOUNDS_FILE footstep_db,
+## How loud a step is on a floor of `footsteps` material (TileType.footsteps): SOUNDS_FILE footstep_db,
 ## its "default" for a material not listed.
-static func footstep_db(material := "") -> float:
+static func footstep_db(footsteps := "") -> float:
 	var table: Dictionary = _sound_data().get("footstep_db", {})
-	return float(table.get(material, table.get("default", 0.0)))
+	return float(table.get(footsteps, table.get("default", 0.0)))
 
 static func _sound_data() -> Dictionary:
 	if _sounds.is_empty():

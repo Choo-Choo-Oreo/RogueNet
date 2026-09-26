@@ -10,11 +10,22 @@ class_name StaticTileRender
 @export var orientable: bool = false
 
 func _ready():
-	data_layer.changed.connect(_on_data_layer_changed)
-	refresh()
+	# Editor only, as in DualGridRender._ready.
+	if Engine.is_editor_hint():
+		data_layer.changed.connect(_on_data_layer_changed)
+		refresh()
+
+var _refresh_queued := false
 
 func _on_data_layer_changed() -> void:
-	refresh.call_deferred()
+	if _refresh_queued:
+		return
+	_refresh_queued = true
+	_run_queued_refresh.call_deferred()
+
+func _run_queued_refresh() -> void:
+	_refresh_queued = false
+	refresh()
 
 ## Redraws just `cells`; see DualGridRender.refresh_cells.
 func refresh_cells(cells: Array) -> void:
