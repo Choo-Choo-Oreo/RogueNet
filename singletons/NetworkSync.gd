@@ -529,25 +529,26 @@ func receive_minion_states(ids: PackedInt32Array, positions: PackedVector2Array,
 # reaches the same health and fires its own died signal -- no separate
 # despawn message needed, every peer just queue_frees itself once its own
 # copy hits 0.
-func report_minion_hit(minion_id: int, amount: int, type: String) -> void:
-	ask_host(request_minion_hit, [minion_id, amount, type])
+# `cause` is the action id that dealt the hit (the hit and hurt sounds, HitFeedback).
+func report_minion_hit(minion_id: int, amount: int, type: String, cause: String = "") -> void:
+	ask_host(request_minion_hit, [minion_id, amount, type, cause])
 
 @rpc("any_peer", "reliable")
-func request_minion_hit(minion_id: int, amount: int, type: String) -> void:
+func request_minion_hit(minion_id: int, amount: int, type: String, cause: String) -> void:
 	if not is_host():
 		return
-	_resolve_minion_hit(minion_id, amount, type)
+	_resolve_minion_hit(minion_id, amount, type, cause)
 
-func _resolve_minion_hit(minion_id: int, amount: int, type: String) -> void:
-	receive_minion_damage(minion_id, amount, type)
+func _resolve_minion_hit(minion_id: int, amount: int, type: String, cause: String) -> void:
+	receive_minion_damage(minion_id, amount, type, cause)
 	for peer_id in multiplayer.get_peers():
-		receive_minion_damage.rpc_id(peer_id, minion_id, amount, type)
+		receive_minion_damage.rpc_id(peer_id, minion_id, amount, type, cause)
 
 @rpc("authority", "reliable")
-func receive_minion_damage(minion_id: int, amount: int, type: String) -> void:
+func receive_minion_damage(minion_id: int, amount: int, type: String, cause: String) -> void:
 	var minion := _minion(minion_id)
 	if minion and minion.has_method("take_damage"):
-		minion.take_damage(amount, type)
+		minion.take_damage(amount, type, cause)
 
 # Doors. Open/closed state is host-authoritative: anyone who bumps a door (a
 # player, or a minion on the host) calls open_door; a client asks the host, the
@@ -763,16 +764,16 @@ func request_noise(position: Vector2, db: float) -> void:
 # Minion-on-player damage only ever originates on the host (only the host ever
 # runs minion AI/attacks), so this is a straight broadcast, no any_peer report
 # step needed the way minion hits have one.
-func relay_player_hit(player_id: int, amount: int, type: String) -> void:
-	receive_player_damage(player_id, amount, type)
+func relay_player_hit(player_id: int, amount: int, type: String, cause: String = "") -> void:
+	receive_player_damage(player_id, amount, type, cause)
 	for peer_id in multiplayer.get_peers():
-		receive_player_damage.rpc_id(peer_id, player_id, amount, type)
+		receive_player_damage.rpc_id(peer_id, player_id, amount, type, cause)
 
 @rpc("authority", "reliable")
-func receive_player_damage(player_id: int, amount: int, type: String) -> void:
+func receive_player_damage(player_id: int, amount: int, type: String, cause: String) -> void:
 	var player := _player(player_id)
 	if player and player.has_method("take_damage"):
-		player.take_damage(amount, type)
+		player.take_damage(amount, type, cause)
 
 ## Host only (an ability the host's AI fires, see MinionController._ability_destroy_tiles).
 ## Breaks the walls among `cells`: the host decides which fall and what shows under and

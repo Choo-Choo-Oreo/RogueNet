@@ -76,3 +76,25 @@ func test_every_action_type_is_a_listed_damage_type() -> void:
 	for id in ["slash", "bite", "bludgeon", "arrow_shot", "entropia_bolt", "perditio_touch"]:
 		var action: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://game/actions/%s.json" % id))
 		assert_has(types, action.get("type", ""), id)
+
+func test_a_hit_is_as_loud_as_its_action() -> void:
+	assert_eq(CombatSounds.hit_db("slash"), ActionIndex.db_of("slash"))
+	assert_gt(CombatSounds.hit_db("slash"), 0.0)
+	assert_eq(CombatSounds.hit_db(""), CombatSounds.sound_db("hit_db"), "no action: the file's hit_db")
+	assert_gt(CombatSounds.sound_db("death_db"), 0.0)
+
+func test_grunts_have_takes() -> void:
+	assert_gt(SoundPlayer.numbered(CombatSounds.PROTAGONIST_DIR + "grunt").size(), 1)
+	assert_true(ResourceLoader.exists(CombatSounds.PROTAGONIST_DIR + "heartbeat.wav"))
+
+func test_a_hit_tells_its_amount_type_and_cause() -> void:
+	# HitFeedback plays from this, on every peer (2026-09-25).
+	var stats := EntityStats.new()
+	stats.max_health = 10
+	stats.resistances = {"Physical": 1}
+	var got := []
+	stats.damaged.connect(func(amount, type, cause): got.append([amount, type, cause]))
+	stats.take_damage(3, "Physical", "slash")
+	stats.take_damage(1, "Physical", "bite")
+	assert_eq(got, [[2, "Physical", "slash"], [0, "Physical", "bite"]], "after resistances; 0 = blocked")
+	stats.free()

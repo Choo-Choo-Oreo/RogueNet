@@ -1,0 +1,5 @@
+{
+	"_comment": "dB of fight sounds that no action names (see resources/sfx/README.md). A hit sounds at its action's db; these are for the rest.",
+	"hit_db": 45.0,
+	"death_db": 55.0
+}

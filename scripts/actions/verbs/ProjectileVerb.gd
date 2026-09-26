@@ -22,12 +22,13 @@ static func perform(caster: Node2D, target_global: Vector2, attack: Dictionary) 
 	var effect: Dictionary = attack.get("effect", {})
 	var amount: int = attack.get("amount", 0)
 	var type: String = attack.get("type", "")
+	var cause: String = attack.get("id", "")
 	var attacker_data: Dictionary = effect.get("attacker", {})
 	AttackEffect.play_attack(caster, target_global, attack, attacker_data)
 	var texture: String = effect.get("projectile", "")
 	if texture == "":
 		_play_target(caster, effect, target_global)
-		TileHit.apply(caster, Vector2i(((target_global + half) / tile_size).floor()), amount, type)
+		TileHit.apply(caster, Vector2i(((target_global + half) / tile_size).floor()), amount, type, cause)
 		return
 	var footprint: int = caster.get_meta("footprint", 1)
 	var from: Vector2 = caster.global_position + Vector2(footprint, footprint) * tile_size / 2.0
@@ -36,7 +37,7 @@ static func perform(caster: Node2D, target_global: Vector2, attack: Dictionary) 
 	projectile.global_position = from
 	var hit_on_the_way := func(pos: Vector2) -> bool:
 		var tile := Vector2i((pos / tile_size).floor())
-		if not TileHit.apply(caster, tile, amount, type):
+		if not TileHit.apply(caster, tile, amount, type, cause):
 			return false
 		_play_target(caster, effect, Vector2(tile) * tile_size)
 		return true

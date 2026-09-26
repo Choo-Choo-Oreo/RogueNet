@@ -201,8 +201,8 @@ func set_minion_type(id: String) -> void:
 	_can_open_doors = door_mode == "open"
 	grid_mover.phases_doors = door_mode == "phase"
 
-func take_damage(amount: int, type: String = "") -> void:
-	stats.take_damage(amount, type)
+func take_damage(amount: int, type: String = "", cause: String = "") -> void:
+	stats.take_damage(amount, type, cause)
 	senses.note_hit()
 
 ## Called by NetworkSync.receive_minion_states on every peer that isn't this
@@ -225,6 +225,10 @@ func _ready() -> void:
 	GameTick.ticked.connect(_on_tick)
 	if default_minion_type != "":
 		set_minion_type(default_minion_type)
+	var hit_feedback := HitFeedback.new()
+	hit_feedback.name = "HitFeedback"
+	add_child(hit_feedback)
+	hit_feedback.setup(self, stats)
 	stats.died.connect(queue_free)
 	tree_exiting.connect(func(): bosses.erase(self))
 	# Which doors this minion may open depends on its "doors" field (see set_minion_type).

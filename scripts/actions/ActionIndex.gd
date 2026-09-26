@@ -10,6 +10,10 @@ const ROOTS: Array[String] = ["res://game/actions/"]
 
 static var _index := JsonIndex.new(ROOTS, "Action")
 
+## An action's `db` (0 if it has none, or there is no such action).
+static func db_of(id: String) -> float:
+	return float(_index.load_data(id).get("db", 0.0)) if _index.has(id) else 0.0
+
 ## The resolved attack dictionaries for a creature's "actions" list, in list order, each
 ## with its action "id" added (the hotbar shows it). An unknown action id is skipped with a warning.
 static func resolve(entries: Array) -> Array:

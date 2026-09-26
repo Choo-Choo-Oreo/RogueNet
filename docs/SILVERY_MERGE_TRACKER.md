@@ -52,8 +52,16 @@ Your current area. The sound files only; the scripts that play them are in the o
   `resources/sfx/effects/water/README.md` (take) still to do
 - **`resources/sfx/combat/` is gone on main (2026-09-25):** its files moved into the STRUCTURE
   tree (`sfx/effects/effects.<family>/`, `sfx/entities/`; the table in `resources/sfx/README.md`).
-  Branch code that writes a `sfx/combat/` path (HitFeedback's `player/grunt`, `heartbeat`, the
-  `hit_feedback` sim) needs the new path when it comes over.
+  Branch code that writes a `sfx/combat/` path (HurtOverlay's `HEARTBEAT`, the `hit_feedback`
+  sim) needs the new path when it comes over.
+- **Hit sounds are on main (2026-09-25):** `scripts/entities/HitFeedback.gd` exists with the
+  sound part only (hurt, impact, block, death, grunts via `SoundPlayer.numbered`, heartbeat on the
+  game tick), heard through walls (`Sound.play_heard`). `EntityStats.damaged(amount, type, cause)`,
+  `TileHit.apply(..., cause)` and the `cause` in the hit RPCs are in; the branch's `attacker`
+  (RunLog) is not. When COMBAT FEEDBACK comes over, add the looks to main's HitFeedback (flash,
+  recoil, numbers, spray, shake, hit-stop) instead of taking the branch file, and drop
+  HurtOverlay's heartbeat (HitFeedback plays it). Main reads a minion's tags from its json and
+  uses `is_boss`, not the branch's `tags` field and `is_boss` meta.
 - [✓] (2026-09-25) `resources/AudioBusLayout.tres` (MERGE): Master has the branch's LowPass in
   slot 0 (HurtOverlay uses slot 0) then main's HardLimiter; SFX has the Compressor. Main has a **VoiceChat** bus the branch
   lacks. The branch adds LowPassFilter and Compressor effects (used for the hurt muffle

@@ -12,4 +12,4 @@ static func perform(caster: Node2D, target_global: Vector2, attack: Dictionary) 
 	AttackEffect.play_attack(caster, target_global, attack, effect)
 	var tile_size: float = caster.grid_mover.tile_size
 	var half := Vector2(tile_size, tile_size) / 2.0
-	TileHit.apply(caster, Vector2i(((target_global + half) / tile_size).floor()), attack.get("amount", 0), attack.get("type", ""))
+	TileHit.apply(caster, Vector2i(((target_global + half) / tile_size).floor()), attack.get("amount", 0), attack.get("type", ""), attack.get("id", ""))

@@ -102,10 +102,10 @@ func _current_attack() -> Dictionary:
 ## them agree this player can't be hurt.
 var debug_god := false
 
-func take_damage(amount: int, type: String = "") -> void:
+func take_damage(amount: int, type: String = "", cause: String = "") -> void:
 	if debug_god:
 		return
-	stats.take_damage(amount, type)
+	stats.take_damage(amount, type, cause)
 
 ## Swaps to the ghost skin and stops the player from attacking -- movement
 ## stays on, since a ghost that can still drift around to watch the rest of
@@ -151,6 +151,10 @@ func _ready() -> void:
 	gear.setup($AnimatedSprite2D)
 	_load_adventurer_data()
 	stats.died.connect(_on_died)
+	var hit_feedback := HitFeedback.new()
+	hit_feedback.name = "HitFeedback"
+	add_child(hit_feedback)
+	hit_feedback.setup(self, stats)
 	grid_mover.stepped.connect(_on_stepped)
 	$TileHoverHighlight.sprite_frames = SpriteFramesLoader.build({
 		"frame_size": [16, 16],

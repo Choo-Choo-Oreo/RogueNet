@@ -22,6 +22,9 @@ extends RefCounted
 const EFFECTS_DIR := "res://resources/sfx/effects/"
 const ENTITIES_DIR := "res://resources/sfx/entities/"
 const VOICE_DIR := ENTITIES_DIR + "entities.antagonist/voice/"
+const PROTAGONIST_DIR := ENTITIES_DIR + "entities.protagonist/"
+## dB of the fight sounds no action names: "hit_db" (a hit with no known action), "death_db".
+const SOUNDS_FILE := "res://game/sounds.json"
 
 const OWN_DB := 0.0
 const PARTY_DB := -5.0
@@ -72,6 +75,7 @@ const VOICE_CHANCE := 5
 static var _last_voice_species := ""
 ## Sound name -> its path in sfx/effects ("" if none), found once.
 static var _effect_paths := {}
+static var _sounds := {}
 
 ## A copy of an attack's effect that also carries what every peer needs to play its sound:
 ## the file and its dB, the caster's team and peer, and whether it's a boss. Called by the verbs
@@ -169,26 +173,36 @@ static func _by_tag(table: Dictionary, tag: String) -> String:
 			return table[key]
 	return ""
 
+## A value from SOUNDS_FILE.
+static func sound_db(key: String) -> float:
+	if _sounds.is_empty():
+		_sounds = JsonOnloading.load_dict(SOUNDS_FILE)
+	return float(_sounds.get(key, 0.0))
+
+## How loud a hit by action `cause` is: that action's `db`, else SOUNDS_FILE's hit_db.
+static func hit_db(cause: String) -> float:
+	var db := ActionIndex.db_of(cause)
+	return db if db > 0.0 else sound_db("hit_db")
+
+## A body's sound heard as a sound of `db` where it stands (see the top); `volume` is who_db
+## or IMPACT_DB.
+static func _play_on(body: Node2D, path: String, db: float, volume: float, options: Dictionary = {}) -> void:
+	var heard := options.duplicate()
+	heard["volume_db"] = volume + db - PLAYBACK_DB
+	heard["jitter"] = JITTER
+	heard["always"] = "is_boss" in body and body.is_boss
+	Sound.play_heard(body, path, body.global_position, db, heard)
+
 ## A player being hit: its own hurt sound, deeper as health runs low.
 static func play_hurt(body: Node2D, type: String, cause: String, health_fraction: float) -> void:
-	var peer := int(str(body.name))
-	var db := who_db(body, "protagonist", peer, false)
-	SoundPlayer.play(body, hurt_path(type, cause), {
-		"at": body.global_position, "volume_db": db, "jitter": JITTER,
-		"pitch": lerpf(0.85, 1.0, clampf(health_fraction, 0.0, 1.0)),
-	})
+	var volume := who_db(body, "protagonist", int(str(body.name)), false)
+	_play_on(body, hurt_path(type, cause), hit_db(cause), volume, {"pitch": lerpf(0.85, 1.0, clampf(health_fraction, 0.0, 1.0))})
 
-## A minion being hit, or blocking a hit with its resistances (amount 0).
-static func play_impact(body: Node2D, tags: Array, amount: int) -> void:
+## A minion being hit, or anyone blocking a hit with their resistances (amount 0).
+static func play_impact(body: Node2D, tags: Array, amount: int, cause: String = "") -> void:
 	var name := "block" if amount <= 0 else material(tags)
-	SoundPlayer.play(body, ENTITIES_DIR + "impact/" + name + ".wav", {
-		"at": body.global_position, "volume_db": IMPACT_DB, "jitter": JITTER,
-		"always": body.get_meta("is_boss", false),
-	})
+	_play_on(body, ENTITIES_DIR + "impact/" + name + ".wav", hit_db(cause), IMPACT_DB)
 
 ## A minion dying.
 static func play_death(body: Node2D, tags: Array) -> void:
-	SoundPlayer.play(body, ENTITIES_DIR + "death/" + material(tags) + ".wav", {
-		"at": body.global_position, "volume_db": IMPACT_DB, "jitter": JITTER, "max_voices": 4,
-		"always": body.get_meta("is_boss", false),
-	})
+	_play_on(body, ENTITIES_DIR + "death/" + material(tags) + ".wav", sound_db("death_db"), IMPACT_DB, {"max_voices": 4})
