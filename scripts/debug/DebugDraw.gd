@@ -369,8 +369,8 @@ func _draw_senses() -> void:
 			draw_line(centre, minion.senses.investigate_marker.global_position, Color(SenseHearing.DEBUG_COLOR, 0.8), 1.0)
 
 ## The number behind each ring, written on the ring at its point closest to the player (straight
-## up when there is none): sight range in tiles; on each hearing ring the source level in dB
-## it stands for (a footstep is 30, a rock 55).
+## up when there is none): sight range in tiles. Hearing has no rings: its threshold is written
+## over the minion, the dB a sound must still have there to be heard (compare the sound's tiles).
 func _label_rings(minion: Node, shown: Array[String], centre: Vector2) -> void:
 	var senses: MinionSenses = minion.senses
 	var toward := Vector2.UP
@@ -380,8 +380,7 @@ func _label_rings(minion: Node, shown: Array[String], centre: Vector2) -> void:
 	if "sight" in shown and senses.sight.enabled:
 		_label(centre + toward * senses.sight.range_tiles * TILE, "sight %.0f" % senses.sight.range_tiles, SenseSight.DEBUG_COLOR)
 	if "hearing" in shown and senses.hearing.enabled:
-		for db in senses.hearing.debug_ring_levels():
-			_label(centre + toward * senses.hearing.reach_tiles(db) * TILE, "%d dB" % db, SenseHearing.DEBUG_COLOR)
+		_label(centre + Vector2(-8, -TILE), "hears %.0f" % senses.hearing.threshold_db, SenseHearing.DEBUG_COLOR)
 
 func _nearest_player(from: Vector2) -> Node2D:
 	var best: Node2D = null
@@ -449,13 +448,16 @@ func _label_sound(sound: Dictionary) -> void:
 	for sum in sound["sums"]:
 		var at: Vector2 = sum[0] + Vector2(-4, TILE + 4)
 		var level: float = sum[1]
-		var threshold: float = sum[2]
-		if level >= threshold:
-			_label(at, "%.1f >= %.0f heard" % [level, threshold], Color(0.3, 1.0, 0.4))
+		var total: float = sum[2]
+		var threshold: float = sum[3]
+		# With other recent noises added (SenseHearing.add_noise), when that made a difference.
+		var added := " (+ others %.1f)" % total if total > level + 0.05 else ""
+		if total >= threshold:
+			_label(at, "%.1f%s >= %.0f heard" % [level, added, threshold], Color(0.3, 1.0, 0.4))
 		elif level == -INF:
 			_label(at, "past the flood < %.0f missed" % threshold, Color(1.0, 0.3, 0.3))
 		else:
-			_label(at, "%.1f < %.0f missed" % [level, threshold], Color(1.0, 0.3, 0.3))
+			_label(at, "%.1f%s < %.0f missed" % [level, added, threshold], Color(1.0, 0.3, 0.3))
 
 ## The minion under the mouse (within 2 tiles): a panel with each thing it is tracking on its
 ## own line, instead of everything stacked over every minion.
@@ -505,7 +507,7 @@ func _inspect_lines(minion: Node) -> Array:
 	var hearing := senses.hearing
 	if DebugState.on("show-sound"):
 		var heard := "  last sound %.1f dB" % senses.last_heard_db if senses.last_heard_db > -INF else ""
-		lines.append(["hearing: %s%s" % ["from %.0f dB (a step %.0f tiles)" % [hearing.threshold_db, hearing.reach_tiles(PlayerController.FOOTSTEP_DB)] if hearing.enabled else "none", heard], SenseHearing.DEBUG_COLOR if hearing.enabled else NO_SENSE_COLOR])
+		lines.append(["hearing: %s%s" % ["from %.0f dB (a step %.0f tiles)" % [hearing.threshold_db, hearing.reach_tiles(CombatSounds.footstep_db())] if hearing.enabled else "none", heard], SenseHearing.DEBUG_COLOR if hearing.enabled else NO_SENSE_COLOR])
 	if DebugState.on("show-smell"):
 		lines.append(["smell: %s (not built)" % ("has it" if senses.smell.enabled else "none"), NO_SENSE_COLOR])
 	if DebugState.on("show-taste"):

@@ -1,5 +1,18 @@
 {
 	"_comment": "dB of fight sounds that no action names (see resources/sfx/README.md). A hit sounds at its action's db; these are for the rest.",
 	"hit_db": 45.0,
-	"death_db": 55.0
+	"death_db": 55.0,
+	"footstep_db": {
+		"_comment": "How loud a step is on each floor, by the floor's `footsteps` material (game/tiles, defaults to the tile name without floor_). A floor not listed uses default. Over a whisper (30) on hard floors, so whispering is quieter than walking.",
+		"default": 35.0,
+		"stone": 35.0,
+		"wood": 32.0,
+		"flesh": 30.0,
+		"dirt": 30.0,
+		"grass": 28.0,
+		"carpet": 25.0,
+		"water": 38.0,
+		"acid": 38.0,
+		"lava": 38.0
+	}
 }

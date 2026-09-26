@@ -11,7 +11,10 @@ copied over as-is. **MERGE** = you both changed it; open both and combine by han
 Still combine it by hand: copying his file over would wipe out your changes.
 
 Last checked: 2026-09-25 against branch tip `8771fd9` (36 commits since the split at
-`d0b8a02`) and main `90b7f2d`. Labels compare against committed `main`: if you have
+`d0b8a02`) and main `90b7f2d`. **2026-09-26, sounds only:** tip is `34f1e4f` (39 commits); the
+3 new ones (`fd552b8` elf and dwarf skins, `c12af26` wolves bite with attack frames plus barrels
+and crates as props, `34f1e4f` new tile sets and floor overlays, 233 files) have **no sound
+files**; not yet sorted into chunks below. Labels compare against committed `main`: if you have
 uncommitted edits in a "take" file, treat it as MERGE.
 
 ## How to import a chunk
@@ -34,7 +37,8 @@ git restore --source=origin/silvery/art-and-gear -- <path> <path> ...
 ### AUDIO (sound files and buses) [~]
 Your current area. The sound files only; the scripts that play them are in the other chunks.
 - [✓] The 150 sound files in `resources/sfx/combat`, `effects/water`, `ui/inventory` and
-  `ui/main_menu`, identical to the branch (committed in `68c02b4`)
+  `ui/main_menu`, identical to the branch (committed in `68c02b4`). `8771fd9` replaced the five
+  `effects/water` sounds (enter, exit, step_1..3) with longer ones: taken 2026-09-26, same paths
 - [✓] Sound code, ported in `68c02b4` into **different folders** than the branch uses:
   branch `scripts/audio/SoundPlayer.gd` is main's `scripts/util/SoundPlayer.gd`, and
   branch `scripts/audio/CombatSounds.gd` is main's `scripts/actions/CombatSounds.gd`.
@@ -138,6 +142,14 @@ floor's colours. **Sound files arrived in `8771fd9`:** `step_1..3.wav` in
   `<folder>/enter.wav`, so footstep folders are never mistaken for liquids.
 - MERGE: `scripts/entities/GridMover.gd` (it also has the FIXES speed cache)
 - take: `scripts/actions/ParticleBurst.gd` (also changed in COMBAT FEEDBACK), `test/unit/test_footsteps.gd`
+- **Main has the `footsteps` key (2026-09-26):** `TileType.footsteps` (same line as the branch:
+  JSON `footsteps`, else the tile name without `floor_`) and the branch's `footsteps` values on
+  main's carpet, smooth stone, smooth cave and wood floors. Main uses it for how loud a step is
+  (`game/sounds.json` `footstep_db`, `PlayerController.footstep_db`). When this chunk comes
+  over, `Wading`'s step sound should read the same `tile.footsteps` and play from the same
+  step event as `PlayerController._on_stepped`, not a second one. The new floor JSONs in
+  `34f1e4f` already carry `footsteps`; its new **walls** need a `muffle` (main's walls all set one now,
+  wood 20 to bedrock 60).
 - **Check against your hearing work:** Silvery's steps are only a sound you hear. Your
   `SoundSpread`/`SenseHearing` decides who can hear noise in the game. A step should
   come from one place and do both, not have two separate step events.

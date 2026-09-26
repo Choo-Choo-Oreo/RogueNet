@@ -37,7 +37,7 @@ const OPTIONS := [
 	["show-minion-state", "Minion state and target"],
 	["show-minion-routes", "Minion routes"],
 	["show-sight", "Minion sight: range, and a line to you (green sees you, red blocked, grey too far)"],
-	["show-sound", "Sound: each noise's spread (bright near, faint at its edge), hearing ranges, noise spots"],
+	["show-sound", "Sound: each noise's spread (bright near, faint at its edge), what each minion hears from (dB), noise spots"],
 	["show-touch", "Minion touch: range (solid while touching)"],
 	["show-smell", "Minion smell (not built yet: draws nothing)"],
 	["show-taste", "Minion taste (not built yet: draws nothing)"],

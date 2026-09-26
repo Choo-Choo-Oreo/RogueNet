@@ -1,7 +1,7 @@
 extends SceneTree
 
 ## How far each sound a player makes carries in a real generated dungeon: a footstep (the only
-## walking sound, PlayerController.FOOTSTEP_DB) and a voice whispering, talking and yelling
+## walking sound, as loud as the floor makes it: PlayerController.footstep_db) and a voice whispering, talking and yelling
 ## (VoiceChat.WHISPER_DB / TALK_DB / YELL_DB, the dB VoiceChat reports while you talk), and a
 ## fight: every action with a `db` (game/actions, the noise its attack makes, AttackEffect) and a
 ## death (game/sounds.json death_db, which only players hear, shown for comparison). Rats are
@@ -37,7 +37,7 @@ var _problems: Array[String] = []
 
 func _initialize() -> void:
 	var voice = load("res://singletons/VoiceChat.gd")
-	SOUNDS = [["footstep", load("res://scripts/entities/entities.protagonist/player/PlayerController.gd").FOOTSTEP_DB],
+	SOUNDS = [["footstep", 0.0],  # set in _make, from the floor the player stands on
 		["whisper", voice.WHISPER_DB], ["talking", voice.TALK_DB], ["yell", voice.YELL_DB]]
 	_tick = root.get_node("GameTick")
 	_seed = randi() % 100000
@@ -84,7 +84,8 @@ func _process(_delta: float) -> bool:
 			return _finish()
 		return false
 	var now: int = _tick.msec()
-	if _sound == -1 or now - _sound_msec >= 1000:
+	# Apart by more than the hearing window, so each sound is heard on its own (not added up).
+	if _sound == -1 or now - _sound_msec > load("res://scripts/entities/entities.senses/SenseHearing.gd").SUM_SECONDS * 1000.0 + 500.0:
 		if _sound >= 0:
 			_report(_sound)
 		_sound += 1
@@ -165,6 +166,7 @@ func _make(i: int) -> void:
 	var at := (Vector2(_start) + Vector2(0.5, 0.5)) * ts
 	if SOUNDS[i][0] == "footstep":
 		load("res://scripts/debug/DebugState.gd").unseen = false
+		SOUNDS[i][1] = _player.footstep_db(_start)
 		_player._on_stepped(_start)  # the real footstep, the way a step makes it
 		load("res://scripts/debug/DebugState.gd").unseen = true
 	else:

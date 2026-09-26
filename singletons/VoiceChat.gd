@@ -38,7 +38,7 @@ const MAX_PACKET_BYTES := 8192
 ## A speaker counts as talking until this long after their last packet.
 const SPEAKING_TIMEOUT_MSEC := 300
 ## A voice's dB in the dungeon (Sound, in dB like every noise; a footstep is
-## PlayerController.FOOTSTEP_DB): this player's mic level (RMS, in dB under the loudest the mic
+## CombatSounds.footstep_db): this player's mic level (RMS, in dB under the loudest the mic
 ## can record) moved so their normal talking is TALK_DB, one dB for one dB (voice_db): talking
 ## 10 dB louder in real life is 10 dB louder in the dungeon. Settings > Audio > Voice calibrates
 ## where their talking sits on their mic (talk_mic_db); until then it is DEFAULT_TALK_MIC_DB.

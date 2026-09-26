@@ -8,8 +8,9 @@ extends RefCounted
 ##
 ## How far a sound gets is SoundSpread's (dB lost per quad, walls and doors muffle, corners
 ## cost a little). A minion hears it when the level left where it stands is at least its
-## hearing threshold (SenseHearing.threshold_db). The flood only runs as far down as the
-## lowest threshold among the minions close enough to possibly hear it.
+## hearing threshold (SenseHearing.threshold_db), counting every noise it got in the last moment
+## added together (SenseHearing.add_noise). The flood only runs as far down as the lowest
+## threshold, less SenseHearing.SUM_UNDER_DB, among the minions close enough to count it.
 ##
 ## Going to look needs somewhere to go, and pathing wants a node, so a noise becomes a
 ## marker: a bare Node2D left where it was made for MARKER_SECONDS. Minions share markers
@@ -23,16 +24,21 @@ const MARKER_SECONDS := 15.0
 const REUSE_TILES := 2.0
 const TILE_SIZE: float = SoundSpread.TILE
 
-## Sound levels are clamped to this: a footstep is PlayerController.FOOTSTEP_DB, a thrown rock
+## Sound levels are clamped to this: a footstep is CombatSounds.footstep_db (by floor), a thrown rock
 ## its action's `db`, a voice VoiceChat.voice_db.
 const LOUDEST_DB := 90.0
 
-## Debug (show-sound): the last floods, each {"levels": {quad: dB}, "db", "source", "sums", "msec"}.
+## Debug (show-sound): the last floods, each {"levels": {quad: dB}, "db", "source", "sums", "msec"};
+## a sum is [where the minion stood, this noise's level, all its recent noises added, threshold].
 const SHOW_SECONDS := 2.0
 static var recent: Array = []
 
 static func make(tree: SceneTree, position: Vector2, db: float) -> void:
-	db = clampf(db, 0.0, LOUDEST_DB)
+	var started := Time.get_ticks_usec()
+	_make(tree, position, clampf(db, 0.0, LOUDEST_DB))
+	DebugState.add_time("hearing", Time.get_ticks_usec() - started)
+
+static func _make(tree: SceneTree, position: Vector2, db: float) -> void:
 	# Every step loses at least AIR_DB_PER_TILE per tile of straight-line distance, so a minion
 	# farther away than its spare dB allows cannot hear it and is skipped before the flood.
 	var listeners: Array = []
@@ -41,10 +47,10 @@ static func make(tree: SceneTree, position: Vector2, db: float) -> void:
 		if not minion.has_method("hearing_threshold"):
 			continue
 		var threshold: float = minion.hearing_threshold()
-		var spare_tiles := (db - threshold) / SoundSpread.AIR_DB_PER_TILE
+		var spare_tiles := (db - threshold + SenseHearing.SUM_UNDER_DB) / SoundSpread.AIR_DB_PER_TILE
 		if spare_tiles >= 0.0 and minion.global_position.distance_to(position) <= (spare_tiles + minion.size_tiles) * TILE_SIZE:
 			listeners.append([minion, threshold])
-			quietest = minf(quietest, threshold)
+			quietest = minf(quietest, threshold - SenseHearing.SUM_UNDER_DB)
 	var showing := DebugState.on("show-sound")
 	if listeners.is_empty() and not showing:
 		return
@@ -52,31 +58,39 @@ static func make(tree: SceneTree, position: Vector2, db: float) -> void:
 		quietest = minf(quietest, SoundSpread.FLOOR_DB)
 	var source := SoundSpread.quad_at(position)
 	var levels := SoundSpread.flood(source, db, quietest, SoundSpread.reader(tree))
-	# Each listener's level, kept for the debug labels: [where it stood, level, its threshold].
 	var sums: Array = []
 	if showing:
 		recent.append({"levels": levels, "db": db, "source": source, "sums": sums, "msec": Time.get_ticks_msec()})
 		while recent.size() > 8:
 			recent.pop_front()
-	var marker: Node2D = null
 	for entry in listeners:
 		var minion = entry[0]
 		var tile := Vector2i((minion.global_position / TILE_SIZE).floor())
 		var level := SoundSpread.level_at(levels, tile, minion.grid_mover.footprint)
-		if showing:
-			sums.append([minion.global_position, level, entry[1]])
-		if level < entry[1]:
+		if level < entry[1] - SenseHearing.SUM_UNDER_DB:
+			if showing:
+				sums.append([minion.global_position, level, level, entry[1]])
 			continue
+		var heard: Array = minion.senses.hearing.add_noise(level, position)
+		if showing:
+			sums.append([minion.global_position, level, heard[0], entry[1]])
+		if heard[0] < entry[1]:
+			continue
+		var marker := marker_at(tree, heard[1])
 		if marker == null:
-			marker = marker_at(tree, position)
-			if marker == null:
-				return
-		minion.hear_noise(marker, level)
+			return
+		minion.hear_noise(marker, heard[0])
 
 ## What players hear: the same spread, run on each machine for its own adventurer (Viewer.local,
 ## threshold Viewer.hearing). The dB a sound made at `position` loses on its way to them, or
 ## INF when a sound of `db` would arrive quieter than they hear (or there is nobody to hear).
 static func lost_to_local(tree: SceneTree, position: Vector2, db: float) -> float:
+	var started := Time.get_ticks_usec()
+	var lost := _lost_to_local(tree, position, db)
+	DebugState.add_time("hearing (you)", Time.get_ticks_usec() - started)
+	return lost
+
+static func _lost_to_local(tree: SceneTree, position: Vector2, db: float) -> float:
 	var me := Viewer.local()
 	if me == null or db < me.hearing:
 		return INF

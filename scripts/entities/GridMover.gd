@@ -100,6 +100,10 @@ var flies := false
 func _ignores_terrain() -> bool:
 	return flies or _is_ghost()
 
+## The floor tile under `cell` (TileType), null off the map or with no floor layer.
+func floor_at(cell: Vector2i) -> TileType:
+	return TileType.by_id().get(floor_data.get_cell_source_id(cell)) if floor_data else null
+
 ## How much slower than normal ground stepping onto `cell` is: 1.0 normal,
 ## 1.25 rough, 2.0 difficult, 5.0 severe (1 / the tile's speed). Feeds
 ## pathfinding's costs; never below 1.0.

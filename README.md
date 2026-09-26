@@ -52,13 +52,15 @@ Notes:
   `"senses": { "hearing": false }`, or sets a sense's numbers, e.g.
   `"senses": { "sight": { "range_tiles": 8.0 } }`. `touch`, `sight` and `hearing` are
   implemented; `smell`/`taste` exist but always report no detection. Hearing is by event and
-  in decibels: a noise (a player's footstep 30 dB, a thrown rock landing 55, a voice 0 to 90, normal talking 50)
-  spreads across the 8px quads and loses dB on the way: each tile's `muffle` (floor 1, wall
-  35, closed door its type's `muffle`, default 20, per tile) and 3 more for bending round a corner
+  in decibels: a noise (a player's footstep 25-38 dB by floor, `game/sounds.json` `footstep_db`;
+  a thrown rock landing 55, a voice 0 to 90, normal talking 50)
+  spreads across the 8px quads and loses dB on the way: each tile's `muffle` (floor 1.5, wall
+  35 unless its JSON says, closed door its type's `muffle`, default 20, per tile) and 3 more for bending round a corner
   (`scripts/cells/SoundSpread.gd`). Hearing is `{"threshold_db": n}`, the quietest level the
   creature hears (default 27; lower is keener): it hears the noise when at least that much is
-  left where it stands, and it investigates the *spot* of the noise, not the player. Across
-  open floor a footstep carries `30 - threshold_db` tiles. Debug toggle `show-sound` draws
+  left where it stands (noises in the last second add up, `SenseHearing.add_noise`), and it
+  investigates the *spot* of the noise, not the player. Across open floor a step on stone carries
+  `(35 - threshold_db) / 1.5` tiles. Debug toggle `show-sound` draws
   each noise's spread. How long to make a sense's range: see "Sense ranges" in
   `game/entities/README.md` (15 tiles is the high end, not a default or a hard cap).
 - `pack` (optional) — a pack id (any name; the wolves use `"wolf"`). Minions of one pack in the
@@ -212,8 +214,12 @@ JSON. DungeonMaker keeps it when re-saving.)
 ```
 
 - `muffle` (optional) — how many dB a sound loses crossing this tile. Leave it out
-  for the default: 35 for `"category": "wall"`, 1 for a floor. Set it only on a tile that
-  differs (a thick bedrock wall, a carpet that deadens footsteps).
+  for the default: 35 for `"category": "wall"`, 1.5 for a floor (the air over it,
+  `SoundSpread.AIR_DB_PER_TILE`). Every wall sets its own (wood 20 up to bedrock 60).
+- `footsteps` (optional, floors) — the floor's step material: how loud a step on it is
+  (`game/sounds.json` `footstep_db`: carpet 25, wood 32, stone 35...) and, once Silvery's
+  footstep sounds come over, which folder they play from. Leave it out and it is the tile name
+  without `floor_` (`floor_dirt` is `dirt`); set it to share one (`"carpet"` on every carpet).
 - A new tile still needs a matching entry added to `game/tile_registry.json`
   to actually be usable from room JSON.
 - Tile art (and normal maps) live under `resources/gfx/tileset/`. Tileset

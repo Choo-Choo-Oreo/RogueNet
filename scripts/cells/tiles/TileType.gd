@@ -28,6 +28,9 @@ const TERRAIN_SPEED := {
 ## How many dB a sound loses crossing this tile (SoundSpread): JSON "muffle", or
 ## SoundSpread.WALL_DB_PER_TILE for a wall and AIR_DB_PER_TILE for a floor when the JSON leaves it out.
 @export var muffle := 1.0
+## A floor's step material: the "footsteps" folder its steps play from and the key of its step
+## loudness (CombatSounds.footstep_db). JSON "footsteps", else the tile name without "floor_".
+@export var footsteps := ""
 
 @export var glow_radius := 0.0
 @export var glow_color := Color.WHITE
@@ -60,6 +63,7 @@ func load_from_data(data: Dictionary) -> void:
 	glow_radius = data.get("glow_radius", 0.0)
 	overlay_density = data.get("overlay_density", 0.2)
 	muffle = float(data.get("muffle", SoundSpread.WALL_DB_PER_TILE if category == Category.WALL else SoundSpread.AIR_DB_PER_TILE))
+	footsteps = data.get("footsteps", tile_name.trim_prefix("floor_"))
 
 func load_from_file(path: String) -> void:
 	load_from_data(JsonOnloading.load_dict(path))

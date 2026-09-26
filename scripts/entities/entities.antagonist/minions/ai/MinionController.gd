@@ -309,7 +309,9 @@ func _think(delta: float) -> void:
 		_target = _nearest_player()
 	var lit := _target != null and _light_map != null and _light_map.is_tile_lit(_to_tile(global_position))
 	debug_lit = lit
+	var sensed := Time.get_ticks_usec()
 	var state := senses.update(global_position, _target, grid_mover.blocks_sight, lit, delta)
+	DebugState.add_time("senses", Time.get_ticks_usec() - sensed)
 	if _override == null:
 		if state == MinionSenses.State.PATROL:
 			_lock = null
@@ -1123,7 +1125,7 @@ func join_pack_investigation(marker: Node2D) -> void:
 func hearing_threshold() -> float:
 	return senses.hearing.threshold() if is_multiplayer_authority() else INF
 
-## `db` is the level the sound still had here (SoundSpread), for the inspector.
+## `db` is the level heard here (SoundSpread, with the other recent noises added), for the inspector.
 func hear_noise(marker: Node2D, db := 0.0) -> void:
 	senses.hear(marker)
 	senses.last_heard_db = db

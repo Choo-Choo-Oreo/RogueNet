@@ -4,5 +4,6 @@
 	"normal_texture": "res://resources/gfx/tileset/floor_wood_planks_normal.png",
 	"specular_color": [0.03, 0.03, 0.03, 1],
 	"sort_order": 1,
+	"footsteps": "wood",
 	"marker_color": [0.662745, 0.454902, 0.286275, 1]
 }

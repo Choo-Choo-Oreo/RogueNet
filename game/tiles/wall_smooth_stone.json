@@ -5,5 +5,6 @@
 	"specular_color": [0.1, 0.1, 0.1, 1],
 	"sort_order": 100,
 	"category": "wall",
+	"muffle": 40,
 	"marker_color": [0.458824, 0.458824, 0.458824, 1]
 }

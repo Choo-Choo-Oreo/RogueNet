@@ -175,9 +175,18 @@ static func _by_tag(table: Dictionary, tag: String) -> String:
 
 ## A value from SOUNDS_FILE.
 static func sound_db(key: String) -> float:
+	return float(_sound_data().get(key, 0.0))
+
+## How loud a step is on a floor of `material` (TileType.footsteps): SOUNDS_FILE footstep_db,
+## its "default" for a material not listed.
+static func footstep_db(material := "") -> float:
+	var table: Dictionary = _sound_data().get("footstep_db", {})
+	return float(table.get(material, table.get("default", 0.0)))
+
+static func _sound_data() -> Dictionary:
 	if _sounds.is_empty():
 		_sounds = JsonOnloading.load_dict(SOUNDS_FILE)
-	return float(_sounds.get(key, 0.0))
+	return _sounds
 
 ## How loud a hit by action `cause` is: that action's `db`, else SOUNDS_FILE's hit_db.
 static func hit_db(cause: String) -> float:

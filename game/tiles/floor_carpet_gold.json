@@ -4,5 +4,6 @@
 	"normal_texture": "res://resources/gfx/tileset/floor_carpet_gold_normal.png",
 	"specular_color": [0.02, 0.02, 0.02, 1],
 	"sort_order": 8,
+	"footsteps": "carpet",
 	"marker_color": [0.729412, 0.564706, 0.14902, 1]
 }

@@ -37,6 +37,14 @@ Hurt sounds there are (a type without its own file uses its parent's):
 `arcana.entropia.zeal` (a burn) is ready for fire, but nothing deals fire damage yet: there is no fire type (Zeal may be
 meant as one) and lava tiles slow you but don't hurt. That is a gameplay decision for Orea.
 
+### Footsteps
+
+How loud a step is (what minions hear) comes from the floor: its `footsteps` material
+(`game/tiles`, e.g. `carpet`) looked up in `game/sounds.json` `footstep_db`. Carpet 25 is
+under a whisper (30), stone 35 over it. The step sound files themselves (`step_1..3` per
+material) are still on Silvery's branch (FOOTSTEPS in `docs/SILVERY_MERGE_TRACKER.md`); when
+they come over, one step event should make both the noise and the sound.
+
 ### Volume and crowds
 
 - An attack's sound is a sound in the dungeon at its action's `db` (`game/actions/README.md`):

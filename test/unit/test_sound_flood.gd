@@ -42,7 +42,7 @@ func test_a_wall_tile_takes_35_db() -> void:
 
 func test_a_footstep_does_not_carry_through_a_wall() -> void:
 	# A plain rat (27 dB) one tile past a wall from a footstep (30 dB).
-	var levels := SoundSpread.flood(Vector2i(1, 0), PlayerController.FOOTSTEP_DB, 27.0, _wall_at_tile_1)
+	var levels := SoundSpread.flood(Vector2i(1, 0), CombatSounds.footstep_db(), 27.0, _wall_at_tile_1)
 	assert_false(levels.has(Vector2i(4, 0)))
 
 func test_sound_never_enters_outside_the_map() -> void:
@@ -71,3 +71,18 @@ func test_stopping_at_a_listener_gives_the_same_level() -> void:
 	var early := SoundSpread.flood(Vector2i.ZERO, 60.0, 0.0, _corridor, ears)
 	assert_almost_eq(SoundSpread.level_at(early, Vector2i(3, 0)), SoundSpread.level_at(whole, Vector2i(3, 0)), 0.001)
 	assert_lt(early.size(), whole.size(), "stopped before flooding everything")
+
+func test_noises_add_up_as_sound_does() -> void:
+	assert_almost_eq(SenseHearing.sum_db([50.0, 50.0]), 53.01, 0.01, "two the same: +3")
+	assert_almost_eq(SenseHearing.sum_db([35.0, 40.0]), 41.19, 0.01, "the louder one counts most")
+	assert_eq(SenseHearing.sum_db([]), -INF)
+
+func test_a_creature_hears_noises_together_within_the_window() -> void:
+	var ears := SenseHearing.new()
+	var window := int(SenseHearing.SUM_SECONDS * 1000.0)
+	assert_almost_eq(ears.add_noise(24.0, Vector2(1, 0), 0)[0], 24.0, 0.01, "alone: under a rat's 27")
+	var heard: Array = ears.add_noise(25.0, Vector2(2, 0), 100)
+	assert_almost_eq(heard[0], 27.54, 0.01, "together: over it")
+	assert_eq(heard[1], Vector2(2, 0), "goes to look at the louder one")
+	assert_almost_eq(ears.add_noise(24.0, Vector2(1, 0), 100 + window + 1)[0], 24.0, 0.01, "the old ones have faded")
+	ears.free()

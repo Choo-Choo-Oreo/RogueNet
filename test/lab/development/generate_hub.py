@@ -309,7 +309,7 @@ REACH = {
 }
 
 # A noise the sim (and the Test Lab's N key) makes in a cell: (interior column, row, dB). 30 is
-# a footstep (PlayerController.FOOTSTEP_DB), 55 a thrown rock (game/actions/throw_rock.json). The sim then does NOT tell the creatures where the player is,
+# a footstep (game/sounds.json footstep_db, by floor), 55 a thrown rock (game/actions/throw_rock.json). The sim then does NOT tell the creatures where the player is,
 # so only hearing can move them. HEAR: must get within 3 tiles of the noise and never attack.
 # NO_HEAR: must not react at all (never leave Patrol).
 NOISE_AT = {'hearing_rock_behind_wall': (12, 1, 55.0), 'hearing_range': (7, 1, 30.0),

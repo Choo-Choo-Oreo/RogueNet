@@ -5,7 +5,7 @@ extends Node
 ## player, it is told when something made a sound. A sound arrives at some level in dB (what is
 ## left after SoundSpread's walls, doors and distance); this creature hears it when that is at
 ## least `threshold_db`. Lower is keener: across open floor (SoundSpread.AIR_DB_PER_TILE) it
-## hears a footstep (PlayerController.FOOTSTEP_DB) from reach_tiles(FOOTSTEP_DB) tiles away.
+## hears a footstep on stone (CombatSounds.footstep_db) from reach_tiles of it tiles away.
 ## What a hit does is MinionSenses.hear(): the creature goes to look at where the noise was.
 ## Fallback only (a footstep from 5 tiles): every creature JSON defines its own.
 const DEFAULT_THRESHOLD_DB := 27.0
@@ -17,26 +17,43 @@ const DEFAULT_THRESHOLD_DB := 27.0
 func threshold() -> float:
 	return threshold_db if enabled else INF
 
+## Noises that reach this creature within SUM_SECONDS add up, as sound does: two at 50 dB make
+## 53, 35 and 40 make 41.2 (sum_db). So a fight (swords, hits, yells) is louder than any one
+## part of it. A noise down to SUM_UNDER_DB under the threshold still counts toward the sum
+## (four of those together are heard); quieter ones are not worth the flood.
+const SUM_SECONDS := 1.0
+const SUM_UNDER_DB := 6.0
+## The noises in the window: [game msec, level here, where it was made].
+var _recent: Array = []
+
+## Levels in dB added as sound adds (their power), -INF for none.
+static func sum_db(levels: Array) -> float:
+	var power := 0.0
+	for db: float in levels:
+		power += pow(10.0, db / 10.0)
+	return 10.0 * log(power) / log(10.0) if power > 0.0 else -INF
+
+## A noise reached this creature at `level` from `position`: returns [the sum of the window's
+## noises, where the loudest of them was made] (go and look there).
+func add_noise(level: float, position: Vector2, now := GameTick.msec()) -> Array:
+	_recent = _recent.filter(func(noise: Array) -> bool: return now - noise[0] <= SUM_SECONDS * 1000.0)
+	_recent.append([now, level, position])
+	var levels: Array = []
+	var loudest: Array = _recent[0]
+	for noise: Array in _recent:
+		levels.append(noise[1])
+		if noise[1] > loudest[1]:
+			loudest = noise
+	return [sum_db(levels), loudest[2]]
+
 ## How many tiles of open floor a sound of `db` carries for this creature.
 func reach_tiles(db: float) -> float:
 	return maxf(db - threshold(), 0.0) / SoundSpread.AIR_DB_PER_TILE
 
-## Debug overlay (show-sound): one ring per RING_STEP_DB of source level, where a sound that
-## loud is heard across open floor (walls shrink it, see the sound flood). Fainter the louder;
-## DebugDraw writes the level on each.
+## Debug overlay (show-sound): no rings (Orea 2026-09-25, too many to read). The sound's own
+## spread shows the dB on every tile, so DebugDraw only writes this creature's threshold over it
+## (_label_rings) and, when a sound lands, heard or missed under it.
 const DEBUG_COLOR := Color(0.3, 0.9, 1.0)
-const RING_STEP_DB := 10
-const RING_LOUDEST_DB := 70
 
-func debug_draw(canvas: CanvasItem, centre: Vector2) -> void:
-	if enabled:
-		for db in debug_ring_levels():
-			canvas.draw_arc(centre, reach_tiles(db) * tile_size, 0.0, TAU, 64, Color(DEBUG_COLOR, 0.6 - 0.006 * db), 1.0)
-
-## The source levels a ring is drawn for: every RING_STEP_DB this creature can hear at all.
-func debug_ring_levels() -> Array[int]:
-	var levels: Array[int] = []
-	for db in range(RING_STEP_DB, RING_LOUDEST_DB + 1, RING_STEP_DB):
-		if reach_tiles(db) > 0.0:
-			levels.append(db)
-	return levels
+func debug_draw(_canvas: CanvasItem, _centre: Vector2) -> void:
+	pass
