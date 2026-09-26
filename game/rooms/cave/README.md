@@ -92,11 +92,12 @@ The 76 rooms have 306 spawn cells between them.
 
 - `room_count` 30 to 50 (unchanged).
 - `default_door` `"none"`.
-- `tag_weights` are the same as flesh and forest:
+- `tag_weights` are the same as flesh and forest, plus `vast`:
   - `corridor` 0.7
   - `maze` 0.6
   - `killzone` 0.5
   - `peaceful` 0.7
+  - `vast` 0.35 (the 60+ tile set pieces; about one run in four meets one)
 
   The old maze boost of 1.5 is gone. Only 8 of the 76 rooms are mazes now.
 - `monsters` and `music` are unchanged: bat 3, blind rat 2, wolf 1, and
@@ -129,6 +130,19 @@ file names (grid size = inside + 2).
   empty), Waterfall Grotto (chest behind a curtain of water).
 - **Boss:** Great Cavern (columns and a pool), Magma Heart (a lava lake
   with stone islands). The generator picks one of the four each run.
+
+### Added 2026-09-26 (4 rooms, now 80)
+
+These use `floor_moss`, `floor_ice`, `wall_ice`, `floor_gravel` and `wall_mossy_stone`.
+Rules as above: odd sizes, 3-wide free openings, no doors, swarms of five.
+
+- **Moss Cathedral 71×61** (`combat`, `vast`): a vast cavern under a hole in the roof. Moss over
+  the whole floor, a dirt clearing in the light, flowstone columns, drip pools. Eight swarms.
+- **Moss Garden 25×21:** a smaller mossy cave with a pool.
+- **Frozen Grotto 23×21:** ice walls, an icy floor.
+- **Scree Slope 27×19:** a slope of loose gravel along one side.
+
+The rooms are written by `.claude/tools/room_maps/additions.py`.
 
 ## Adding a new room, step by step
 

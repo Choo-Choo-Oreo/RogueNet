@@ -33,6 +33,15 @@ one per feature plus a Flooded and a Collapsed variant, and `catacomb/` as
 69 rooms, one per feature plus a Crumbling variant. Each folder's own `README.md`
 lists every piece.
 
+On 2026-09-26 five more biomes were added, all made by script
+(`.claude/tools/room_maps/`): `glacier/` (44 rooms), `tomb/` (44), `library/` (42),
+`foundry/` (44) and `garden/` (43). They are the first with rooms up to the 100x100 maximum
+outside `cathedral/`: each has two `vast` rooms (60-91 tiles a side) and a huge boss room
+(91-99) next to a medium one. `dungeon/`, `mine/`, `cave/` and `sewer/` got a few rooms each
+the same day, one of them `vast`. The map design these rooms follow (pacing, loops inside
+rooms, landmarks, killzones, a safe path through every hazard) is written out in each new
+folder's `README.md`.
+
 | Folder | Walls | Floors | Idea |
 |---|---|---|---|
 | `dungeon/` | `wall_cobble_brick` | smooth stone | Built masonry. 2-wide corridors and open rooms, with small side rooms off 1-wide doors. |
@@ -47,6 +56,11 @@ lists every piece.
 | `ruins/` | `wall_cobble_brick` brick, `wall_forest` trees growing through it | smooth stone, grass, dirt, water | The dungeon reclaimed by the forest: every dungeon room, made by script, in two stages. Overgrown (grass breaking through, some trees in the walls, a few walls fallen in) and Reclaimed (mostly grass, walls half trees, more fallen in, pools). Same shapes and openings as the dungeon. No doors. Dungeon and forest minions mixed: Overgrown rooms lean undead (skeleton archers, wraiths), Reclaimed rooms lean beasts (wolf packs, rats, bats), bats in the corners, a rare hellhound. |
 | `acid/` | `wall_rough_cave` rock, `wall_smooth_cave` etched stone and crystal | dirt, grass (moss), smooth cave (dry stone), acid | Caves eaten by acid: one room per feature (acid lake, dripping gallery, stepping stones, corroded chasm, moss garden), plus a Flooded variant where the acid rises and scorches the moss. Every acid room has a dry stone path between its openings: the fast way through. No doors. Leeches pinned in the acid, blind rat packs on the dry floor, bats rolled. |
 | `void/` | `wall_cobble_brick` ruined walls, `wall_smooth_stone` pillars and headstones | smooth stone, dirt (rubble, rot); the abyss is void (`null`) | Floating ruins over the abyss, the necrotic biome (Perditio: what falls in is gone for good): one room per feature (null gate, grave ring, fallen tower, stair to nothing, the Maw), plus a Crumbling variant where edges fall away, bridges thin and holes open. No outer wall: rooms are islands joined by their bridges. No doors. Wraith packs on the platforms, echo bats on the edge of the drop; boss rooms favour an `undead` antagonist. |
+| `glacier/` | `wall_ice` ice and seracs, `wall_rough_cave` rock | snow, ice, gravel (moraine), water (meltwater) | A frozen valley under a glacier: snowfields, crevasse fields, ice caves, frozen lakes, standing stones, an ice palace and the 99x99 Glacier Heart. Wide and open, so fights happen at range. No doors. Wolf packs, penguin colonies, yetis in their dens, owls and echo bats in the ice caves. |
+| `tomb/` | `wall_sandstone`, `wall_smooth_stone` sarcophagi and obelisks, `wall_brick` mud-brick houses | sand, brick, cobblestone, gravel, water and grass (oasis only) | A desert necropolis half buried in sand: hypostyle halls, sphinx court, snake pit, a pyramid interior and the 91x91 Buried City. No doors, except iron on treasure and the boss. Scorpions, snakes and scarabs in the sand; skeleton garrisons, zombies and lizardmen in the halls; mimics in the false tomb. |
+| `library/` | `wall_bookshelf` stacks, `wall_wood_plank` desks, `wall_stained_glass` windows, `wall_smooth_stone`, `wall_brick` | parquet, four carpet colours (one per room), smooth stone | An endless haunted library: stacks, reading rooms, a rotunda, an orrery, the forbidden section, and the 91x91 Endless Stacks. Shelves as walls, so cover everywhere and short sight lines. Wood doors on 1-wide openings, iron on treasure and the boss. Ghosts, moths, wraiths, rats and the librarian's cat; the Heart of the Archive boss always gets the minotaur. |
+| `foundry/` | `wall_iron` machinery, `wall_brick` furnaces, `wall_mine_ore` ore heaps, `wall_smooth_stone` | metal plate, grate walkways, lava and lava crust, cobblestone, gravel (slag), water (quench pools) | A deep forge: lava channels, casting floors, conveyors, a rail yard, slag heaps and the 97x97 Heart of the Forge. Every lava room has a grated walkway or crust bridge between its openings. Iron doors on 1-wide openings, treasure and the boss. Goblin crews, orcs, fire spirits (also on the lava), imps, gargoyles. |
+| `garden/` | `wall_forest` hedges, `wall_mossy_stone` garden walls and statues, `wall_stained_glass` greenhouse, `wall_smooth_stone`, `wall_brick` | grass, flowers, moss, leaves, cobblestone, mossy cobblestone, water (ponds) | An overgrown palace garden: hedge mazes (one 75x75), rose gardens, lily ponds, an orchard, a greenhouse, the 81x81 Parterre and the 91x91 Wild Heart. Wood doors on 1-wide openings and treasure. Bees, mantises, toads, mandrakes, mushrooms, dragonflies over the ponds. |
 
 ## `cathedral/` is a stress test, not a designed biome
 

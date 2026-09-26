@@ -39,6 +39,7 @@ just to add a field here.
   - The biome's `tag_weights` (in `defines.json`) can make a tag's rooms more or less likely to be picked (`maze` and `corridor` are down-weighted).
   - `treasure` takes a room out of the random pool. It is placed on a leftover dead end at the end. Treasure rooms can have `spawn_cells` if the loot should be guarded.
   - Other tags (`combat`, `peaceful`, `stone`, `brick`, `wood`, ...) describe the room and are not read by code yet.
+  - `vast` marks the big set pieces (60+ tiles a side, up to the 100x100 maximum). It is only read through `tag_weights`: biomes that have them set it to 0.35, so a dive meets about one.
   - Room tags are not minion tags. Minion tags live in `game/TAGS.md`.
 
 ### Weights: rooms first, corridors second

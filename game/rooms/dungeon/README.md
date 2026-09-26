@@ -133,6 +133,7 @@ weights. Anything not listed counts as 1.0.
 | `maze` | 0.6 | Mazes are fun, but not every other room. |
 | `killzone` | 0.5 | Rare spikes of difficulty. |
 | `peaceful` | 0.7 | A breather now and then. |
+| `vast` | 0.35 | The 60+ tile set pieces. About one run in seven meets one. |
 
 Lower weight means less often, but never impossible.
 
@@ -163,6 +164,23 @@ Lower weight means less often, but never impossible.
 - **Treasure:** Vault 7×7, Hoard 9×11 (both narrow), Armory 8×10, Reliquary
   8×8 (both wide, two chests each).
 - **Boss:** Throne 18×18, Pit 16×16 (8 minion spawns each).
+
+### Added 2026-09-26 (5 rooms, now 48)
+
+These use the newer tiles: `floor_cobblestone`, `floor_mossy_cobblestone`, `floor_grate` and
+`wall_mossy_stone`. Rules as above: even sizes, 2-wide `any` or `wood` doors (wood on combat
+rooms), 1-wide wood doors, rolled spawns.
+
+- **Undercroft 70×70** (`combat`, `vast`): the vaults under the keep. A grid of cobbled
+  chambers with several ways round every block, some mossy, some with a grated drain, some
+  full of mossy piers. Eight packs of three. The biggest dungeon room by far; `vast` keeps it
+  to about one run in seven.
+- **Combat Drain Hall 20×16:** a grated drain down the middle, mossy pillars either side.
+- **Combat Mossy Vault 18×18:** a ring of mossy pillars round a damp centre.
+- **Peaceful Cobbled Court 22×22:** an open court with a well in the middle.
+- **Treasure Oubliette 11×11:** one narrow door, a grated pit and a forgotten chest.
+
+The rooms are written by `.claude/tools/room_maps/additions.py`.
 
 ## Adding a new room, step by step
 

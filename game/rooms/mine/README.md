@@ -100,6 +100,7 @@ Anything not listed counts as 1.0.
 | `maze` | 0.4 | There are 24 mazes, almost half the set, so each one is kept rarer or they would crowd everything else out. |
 | `killzone` | 0.5 | Rare spikes of difficulty. |
 | `peaceful` | 0.7 | A breather now and then. |
+| `vast` | 0.35 | The 60+ tile set pieces. About one run in eight meets one. |
 
 ## Current piece set (2026-09-24)
 
@@ -134,6 +135,20 @@ Anything not listed counts as 1.0.
 
 Every maze has spawns: 2 in the small ones and up to 7 in the biggest. They
 sit in the dead ends farthest from the doors.
+
+### Added 2026-09-26 (4 rooms, now 70)
+
+These use `wall_mine_ore` (ore faces) and `floor_gravel` (loose rubble). Rules as above: odd
+sizes, 3-wide doors, timber frames every doorway, a plank track between the doors.
+
+- **Grand Excavation 81×81** (`combat`, `vast`): the open pit. Terraced rings of gravel, ore on
+  every face, timber props standing in the open, a track to all four portals. Eight packs of
+  three, some on the gravel.
+- **Ore Vein 23×19:** a gallery where the seam shows, ore on every wall.
+- **Gravel Pit 25×25:** a round pit of loose gravel round an ore heap; tracks run down to it.
+- **Collapsed Stope 21×21:** the roof came down. Rubble heaps, props still standing.
+
+The rooms are written by `.claude/tools/room_maps/additions.py`.
 
 ## Adding a new room, step by step
 

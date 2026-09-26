@@ -111,11 +111,12 @@ The 111 rooms have 512 spawn cells between them.
 
 - `room_count` 30 to 45.
 - `default_door` `"none"`.
-- `tag_weights` are the same as cave, flesh and forest:
+- `tag_weights` are the same as cave, flesh and forest, plus `vast`:
   - `corridor` 0.7
   - `maze` 0.6
   - `killzone` 0.5
   - `peaceful` 0.7
+  - `vast` 0.35 (the 60+ tile set pieces; about one run in ten meets one)
 - `monsters`: rat 3, blind rat 2, toothless rat 2, leech 1. Every minion but the
   leech is a `beast.rodent`.
 - `music`: Groovy.
@@ -152,6 +153,20 @@ The 111 rooms have 512 spawn cells between them.
 - **Boss:** Rat Kings Throne (a plank dais and throne on the refuse), Great
   Sump (a sump with an acid core, crossed by plank bridges). The generator
   picks one of the six each run.
+
+### Added 2026-09-26 (3 rooms, now 114)
+
+These use `floor_brick`, `floor_grate`, `wall_brick` and `wall_iron`. Rules as above: odd
+sizes, 5-wide mains with a 3-wide channel between ledges, rat swarms of five.
+
+- **Great Cistern 71×71** (`combat`, `vast`): a cistern the size of a cathedral. Brick
+  walkways on a grid over the water, grates at every crossing, brick piers standing in the
+  pools, a dry brick island in the middle. Many ways round, so swarms can come from anywhere.
+  Iron doors, like the other cisterns.
+- **Grate Junction 25×25:** four mains meet over a grated sump.
+- **Brick Culvert 13×31:** a brick culvert with a narrow channel and grated steps.
+
+The rooms are written by `.claude/tools/room_maps/additions.py`.
 
 ## Adding a new room, step by step
 

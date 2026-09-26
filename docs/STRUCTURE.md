@@ -108,7 +108,8 @@ RogueNet/
  │    ├── tiles/
  │    ├── rooms/
  │    │    └── acid, catacomb, cathedral, cave, dungeon, fallback, flesh, forest,
- │    │        manor, mine, ruins, sewer, void, volcano
+ │    │        foundry, garden, glacier, library, manor, mine, ruins, sewer, tomb,
+ │    │        void, volcano
  │    ├── doors/
  │    └── biomes/
  │
