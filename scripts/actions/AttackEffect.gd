@@ -32,13 +32,15 @@ static func effect_position(attacker_global: Vector2, target_global: Vector2, da
 static func play_between(caster_global: Vector2, at_global: Vector2, data: Dictionary) -> void:
 	NetworkSync.play_effect(effect_position(caster_global, at_global, data), data, at_global - caster_global)
 
-## An attack's opening: its `effect` picture (may be empty) plus its swing sound
-## (CombatSounds.tag_effect), shared with every peer. An attack with neither sends nothing; one
-## with a sound but no picture sends just the sound (NetworkSync._spawn_effect skips the picture).
+## An attack's opening, shared with every peer: its `effect` picture (may be empty; then
+## NetworkSync._spawn_effect skips the picture), its swing sound (CombatSounds.tag_effect), and
+## the caster's attack pose toward `at_global` (DirectionalAnimator.on_effect; "caster" is its
+## path from the scene, the same on every peer: Player/<peer>, Minions/<id>).
 static func play_attack(caster: Node2D, at_global: Vector2, attack: Dictionary, effect: Dictionary) -> void:
 	var tagged := CombatSounds.tag_effect(caster, attack, effect)
-	if effect.is_empty() and tagged["sound"] == "":
-		return
+	var scene := caster.get_tree().current_scene
+	if scene:
+		tagged["caster"] = str(scene.get_path_to(caster))
 	play_between(caster.global_position, at_global, tagged)
 
 ## direction points from attacker to target. The art is drawn attacking

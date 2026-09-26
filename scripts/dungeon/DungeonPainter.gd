@@ -20,6 +20,7 @@ func _ready() -> void:
 	SurroundSectors.clear()
 	_paint(rooms, placements, floor_data, wall_data, registry, defines)
 	_place_doors(rooms, placements, defines)
+	_place_props(rooms, placements)
 	MusicManager.play_for_biome(defines)
 	# LightMap is a later sibling in Dungeon.tscn -- its own _ready() (which
 	# builds _local) hasn't run yet at this point in the frame, so defer
@@ -36,6 +37,13 @@ func _place_doors(rooms: Dictionary, placements: Array, defines: Dictionary) -> 
 	manager.name = "Doors"
 	add_child(manager)
 	manager.build()
+
+## Barrels, crates and the rest, where the rooms put them (Props).
+func _place_props(rooms: Dictionary, placements: Array) -> void:
+	var props := Props.new()
+	props.name = "Props"
+	add_child(props)
+	props.build(rooms, placements)
 
 ## Nothing is lit yet this early, so every spawn cell in the dungeon counts
 ## as unseen and gets rolled -- exactly the "fill everything at generation

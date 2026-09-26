@@ -134,7 +134,11 @@ Each one is a straight run of cells on the outer ring:
 { "type": "torch", "position": { "x": 40.0, "y": 40.0 }, "rotation": 0.0 }
 ```
 
-- `type` must be a known object id. Today: `torch` (a light source) and `chest`.
+- `type` must be a known object id: `torch` (a light source), `chest`, `sign`, or a prop.
+  A prop is any picture in `resources/gfx/objects/props/`, named by its file in lower case
+  (`Barrel.png` is `barrel`). Props are drawn in a live dive (`scripts/dungeon/Props.gd`),
+  cosmetic only: nothing bumps into one. The other types are not drawn in a dive yet.
+  A room the assembler turns takes its objects with it; the pictures stay upright.
 - `position` is in **pixels** (not tiles): tile x 16 + 8 is the middle of a tile.
 - `rotation` is the object's rotation (`0.0` in every current room).
 

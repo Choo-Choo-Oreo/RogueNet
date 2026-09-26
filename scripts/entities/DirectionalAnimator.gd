@@ -9,9 +9,14 @@ extends Node
 ## (the locally-controlled body), or animate_from_position() to infer
 ## facing from observed position changes (a remote peer's body).
 ##
+## play_attack() plays the attack frames of the way the body faces, when the sprite has them:
+## an animation named "Attack" + the facing one ("AttackFront", "AttackSideRight"), played
+## once, then back to standing. Walking cuts it short; facing and idling wait for it.
+##
 ## It also poses the body without new frames, by moving the whole sprite in whole
 ## pixels at 10 fps, so worn gear (GearLayers, which copies the offset) follows:
-## - play_attack(): pull back 1px, lunge 2px toward the target, recover (0.4 s).
+## - play_attack() with no attack frames: pull back 1px, lunge 2px toward the target,
+##   recover (0.4 s), for a body whose JSON says "lunge": true (the Human; set_lunge).
 ## - play_death(): topple sideways, lie flat in its own tile, fade (1.7 s). A body
 ##   that is freed on death (a minion) hands its sprite to leave_corpse() instead.
 ## - idle life, from the sprite JSON's "idle" block (set_idle_life): "breath" sinks
@@ -51,6 +56,8 @@ var _idle_time := 0.0
 var _breath := false
 var _blink: Sprite2D = null
 var _blink_columns: Array = []
+var _lunge := false
+var _attack_anim := ""   # the facing animation an attack is playing over, "" when not attacking
 
 # Some characters (eg. the dwarf) have real, separately-drawn left/right art; others (eg. the
 # knight) have one side image that gets mirrored. Play whichever the current sprite_frames provides.
@@ -88,7 +95,7 @@ func _play_diagonal(vertical: String, is_left: bool) -> void:
 		_play_side(is_left)
 
 func animate_idle() -> void:
-	if continuous_animation:
+	if continuous_animation or _attack_anim != "":
 		return
 	sprite.stop()
 	_idle = true
@@ -97,6 +104,7 @@ func animate_moving(direction: Vector2) -> void:
 	if direction.is_zero_approx():
 		return
 	_idle = false
+	_attack_anim = ""
 	# Nearest of 8 directions, counting clockwise from right: 0 right, 1 down-right,
 	# 2 down, 3 down-left, 4 left, 5 up-left, 6 up, 7 up-right (y points down).
 	var octant := int(round(fposmod(direction.angle(), TAU) / (PI / 4.0))) % 8
@@ -115,6 +123,8 @@ func animate_moving(direction: Vector2) -> void:
 ## minion that's stopped adjacent to its target). continuous_animation skips
 ## the hold, same reasoning as animate_idle().
 func animate_facing(direction: Vector2) -> void:
+	if _attack_anim != "":
+		return
 	animate_moving(direction)
 	if not continuous_animation:
 		sprite.stop()
@@ -147,8 +157,26 @@ func set_idle_life(idle: Dictionary) -> void:
 		_blink.queue_free()
 		_blink = null
 
-## direction: toward the target. The lunge snaps to the nearest of the 8 directions.
+## The body JSON's "lunge": whether an attack with no attack frames lunges.
+func set_lunge(on: bool) -> void:
+	_lunge = on
+
+## direction: toward the target. Turns to face it, then plays the attack frames for that
+## facing, else the lunge (snapped to the nearest of the 8 directions), else nothing.
 func play_attack(direction: Vector2) -> void:
+	if direction.is_zero_approx():
+		return
+	_attack_anim = ""
+	animate_facing(direction)
+	var facing := String(sprite.animation)
+	if sprite.sprite_frames.has_animation("Attack" + facing):
+		_attack_anim = facing
+		sprite.play("Attack" + facing)
+		if not sprite.animation_finished.is_connected(_on_attack_finished):
+			sprite.animation_finished.connect(_on_attack_finished)
+		return
+	if not _lunge:
+		return
 	var forward := Vector2(signf(roundf(direction.normalized().x)), signf(roundf(direction.normalized().y)))
 	_pose = ATTACK_STEPS.map(func(px): return [forward * px, 0.0, 1.0])
 	_pose_time = 0.0
@@ -192,6 +220,25 @@ static func leave_corpse(body: Node2D, body_sprite: AnimatedSprite2D) -> void:
 	corpse.get_tree().create_timer(HitFeedback.WHITE_SECONDS + HitFeedback.RED_SECONDS).timeout.connect(func():
 		if is_instance_valid(body_sprite):
 			body_sprite.modulate = Color(1, 1, 1, body_sprite.modulate.a))
+
+# Back to standing the way it faced (still, unless it never stands still).
+func _on_attack_finished() -> void:
+	if _attack_anim == "" or not String(sprite.animation).begins_with("Attack"):
+		return
+	sprite.play(_attack_anim)
+	_attack_anim = ""
+	if not continuous_animation:
+		sprite.stop()
+
+## Every peer, when an attack's effect arrives (NetworkSync._spawn_effect): the caster (its
+## path from the scene, CombatSounds.tag_effect) plays its attack toward `direction`.
+static func on_effect(scene: Node, data: Dictionary, direction: Vector2) -> void:
+	if not data.has("caster"):
+		return
+	var caster := scene.get_node_or_null(NodePath(str(data["caster"])))
+	var animator: DirectionalAnimator = caster.get_node_or_null("DirectionalAnimator") if caster else null
+	if animator:
+		animator.play_attack(direction)
 
 func reset_pose() -> void:
 	_pose = []

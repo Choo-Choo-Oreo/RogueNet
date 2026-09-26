@@ -22,6 +22,7 @@ func before_each() -> void:
 	_gear.setup(_sprite)
 	_gear.set_equipment({"head": "heavy_iron_helm"})
 	_animator.set_idle_life(data.get("idle", {}))
+	_animator.set_lunge(data.get("lunge", false))
 	_animator.animate_moving(Vector2.DOWN)
 
 func _step(seconds: float) -> void:
@@ -42,6 +43,45 @@ func test_attack_lunges_toward_the_target_and_springs_back() -> void:
 	for i in 5:
 		_step(0.1)
 	assert_eq(_sprite.offset, Vector2.ZERO)
+
+func test_a_body_without_lunge_or_attack_frames_stays_put() -> void:
+	_animator.set_lunge(false)
+	_animator.play_attack(Vector2.RIGHT)
+	_step(0.15)
+	assert_eq(_sprite.offset, Vector2.ZERO)
+
+func test_attack_frames_play_once_for_the_facing_then_it_stands() -> void:
+	var wolf := MinionIndex.load_data("wolf")
+	_sprite.sprite_frames = SpriteFramesLoader.build(wolf["sprite_frames"])
+	_animator.set_lunge(false)
+	_animator.play_attack(Vector2(-2, 0))
+	assert_eq(String(_sprite.animation), "AttackSideLeft")
+	assert_true(_sprite.is_playing())
+	_animator.animate_facing(Vector2.RIGHT)
+	_animator.animate_idle()
+	assert_eq(String(_sprite.animation), "AttackSideLeft", "facing and idling wait for the bite")
+	_sprite.animation_finished.emit()
+	assert_eq(String(_sprite.animation), "SideLeft", "back to standing the way it faced")
+	assert_false(_sprite.is_playing())
+	_animator.play_attack(Vector2.DOWN)
+	_animator.animate_moving(Vector2.UP)
+	assert_eq(String(_sprite.animation), "Back", "walking cuts it short")
+
+func test_an_attack_effect_poses_its_caster_on_every_screen() -> void:
+	var scene := _sprite.get_parent()
+	scene.name = "Scene"
+	var body := Node2D.new()
+	body.name = "7"
+	scene.add_child(body)
+	_animator.reparent(body)
+	_animator.name = "DirectionalAnimator"   # as in the body scenes
+	_animator.sprite = _sprite
+	DirectionalAnimator.on_effect(scene, {"caster": "7"}, Vector2.RIGHT)
+	_step(0.15)
+	assert_eq(_sprite.offset, Vector2(2, 0), "the lunge, from the effect alone")
+	DirectionalAnimator.on_effect(scene, {"caster": "gone"}, Vector2.RIGHT)
+	DirectionalAnimator.on_effect(scene, {}, Vector2.RIGHT)
+	pass_test("an unknown or missing caster is ignored")
 
 func test_death_topples_into_its_own_tile_fades_and_waits_for_reset() -> void:
 	watch_signals(_animator)

@@ -85,6 +85,7 @@ func set_character(character_id: String) -> void:
 	var data := character_data(character_id)
 	$AnimatedSprite2D.sprite_frames = SpriteFramesLoader.build(data["sprite_frames"])
 	animator.set_idle_life(data.get("idle", {}))
+	animator.set_lunge(data.get("lunge", false))
 	gear.hidden = not data.get("fits_gear", true)
 
 ## worn: slot -> item id (NetworkSync.peer_equipment). Cosmetic only for now.
@@ -160,6 +161,7 @@ func _on_died() -> void:
 	var ghost_data := JsonOnloading.load_dict(GHOST_DATA_PATH)
 	$AnimatedSprite2D.sprite_frames = SpriteFramesLoader.build(ghost_data["sprite_frames"])
 	animator.set_idle_life(ghost_data.get("idle", {}))
+	animator.set_lunge(ghost_data.get("lunge", false))
 
 func _on_touch_area_body_entered(body: Node2D) -> void:
 	if not stats.is_ghost and body is MinionController:
@@ -359,10 +361,8 @@ func _try_attack() -> void:
 	if not ActionRunner.perform(self, target_global, attack):
 		_attack_timer = 0.0
 		return
-	# Face the target and lunge at it (DirectionalAnimator.play_attack).
-	var toward := Vector2(target_tile - own_tile)
-	animator.animate_facing(toward)
-	animator.play_attack(toward)
+	# Facing the target and lunging at it comes with the attack's effect, on every screen
+	# (AttackEffect.play_attack -> DirectionalAnimator.on_effect).
 
 ## Taunt slot (an action whose verb is "taunt", see TauntVerb). Its own cooldown
 ## (`interval`) so it never locks out the attacks.

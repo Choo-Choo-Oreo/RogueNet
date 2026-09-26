@@ -9,6 +9,7 @@
 			"Back": { "texture": "res://resources/gfx/entities/entities.protagonist/human/Human-Up.png", "frame_count": 4, "speed": 20.0 }
 		}
 	},
+	"lunge": true,
 	"idle": {
 		"breath": true,
 		"blink": {

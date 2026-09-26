@@ -542,7 +542,7 @@ func _make_color_swatch(color: Color) -> Texture2D:
 
 func _populate_object_palette() -> void:
 	_style_selection_highlight(object_palette_list, OBJECT_MODE_COLOR)
-	for object_type in OBJECT_MARKER_TEXTURES.keys():
+	for object_type in _object_textures().keys():
 		object_type_names.append(object_type)
 	_rebuild_object_palette_list("")
 
@@ -564,9 +564,13 @@ func _style_selection_highlight(item_list: ItemList, color: Color) -> void:
 	item_list.add_theme_stylebox_override("selected", style)
 	item_list.add_theme_stylebox_override("selected_focus", style)
 
+## The objects above plus every prop (Props: one picture each in resources/gfx/objects/props/).
+func _object_textures() -> Dictionary:
+	return OBJECT_MARKER_TEXTURES.merged(Props.textures())
+
 func _make_object_icon(object_type: String) -> Texture2D:
 	var atlas := AtlasTexture.new()
-	atlas.atlas = load(OBJECT_MARKER_TEXTURES[object_type])
+	atlas.atlas = load(_object_textures()[object_type])
 	atlas.region = Rect2(0, 0, TILE_SIZE, TILE_SIZE)
 	return atlas
 
@@ -1957,7 +1961,7 @@ func _object_label(object_type: String, pos: Vector2, rotation_degrees: float) -
 
 func _make_object_marker(pos: Vector2, object_type: String, rotation_degrees: float) -> Sprite2D:
 	var marker := Sprite2D.new()
-	if OBJECT_MARKER_TEXTURES.has(object_type):
+	if _object_textures().has(object_type):
 		marker.texture = _make_object_icon(object_type)
 	else:
 		marker.texture = preload("res://resources/gfx/placeholders/flat-color.png")

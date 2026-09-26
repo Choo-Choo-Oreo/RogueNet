@@ -16,7 +16,11 @@
 			"Front": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf/Wolf-Down.png", "frame_count": 3, "speed": 20.0 },
 			"Back": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf/Wolf-Up.png", "frame_count": 3, "speed": 20.0 },
 			"SideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf/Wolf-Left.png", "frame_count": 3, "speed": 20.0 },
-			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf/Wolf-Right.png", "frame_count": 3, "speed": 20.0 }
+			"SideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf/Wolf-Right.png", "frame_count": 3, "speed": 20.0 },
+			"AttackFront": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf/Wolf-Attack-Down.png", "frame_count": 4, "speed": 10.0, "loop": false },
+			"AttackBack": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf/Wolf-Attack-Up.png", "frame_count": 4, "speed": 10.0, "loop": false },
+			"AttackSideLeft": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf/Wolf-Attack-Left.png", "frame_count": 4, "speed": 10.0, "loop": false },
+			"AttackSideRight": { "texture": "res://resources/gfx/entities/entities.antagonist/minions/wolf/wolf/Wolf-Attack-Right.png", "frame_count": 4, "speed": 10.0, "loop": false }
 		}
 	}
 }

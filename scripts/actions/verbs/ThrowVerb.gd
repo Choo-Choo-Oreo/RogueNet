@@ -26,7 +26,8 @@ static func perform(caster: Node2D, target_global: Vector2, attack: Dictionary) 
 	if landing == here:
 		return false
 	var landing_global := (Vector2(landing) + Vector2(0.5, 0.5)) * tile_size
-	AttackEffect.play_attack(caster, caster.global_position, attack, {})
+	# the whoosh at the thrower, who turns to throw toward the landing
+	AttackEffect.play_attack(caster, landing_global, attack, {"anchor": "attacker"})
 	var loudness: float = attack.get("loudness", 3.0)
 	var land := func(): NetworkSync.report_noise(landing_global, loudness)
 	var texture: String = attack.get("effect", {}).get("projectile", "")

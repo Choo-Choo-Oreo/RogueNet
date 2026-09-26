@@ -709,6 +709,7 @@ func _spawn_effect(pos: Vector2, data: Dictionary, direction: Vector2) -> void:
 	if scene == null:
 		return
 	CombatSounds.on_effect(scene, pos, data)
+	DirectionalAnimator.on_effect(scene, data, direction)
 	if not data.has("texture"):
 		return
 	var effect: AttackEffect = ATTACK_EFFECT_SCENE.instantiate()

@@ -196,6 +196,8 @@ static func rotate_room(room: Dictionary, quarter_turns: int) -> Dictionary:
 			result["antagonist_spawns"] = _rotate_points(result["antagonist_spawns"], h)
 		if result.has("doors"):
 			result["doors"] = _rotate_doors(result["doors"], h)
+		if result.has("objects"):
+			result["objects"] = Props.rotate_objects(result["objects"], h)
 		result["width"] = h
 		result["height"] = w
 	if turns != 0:
