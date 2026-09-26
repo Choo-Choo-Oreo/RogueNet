@@ -16,9 +16,13 @@ const OVER_BACKGROUND_DB := 6.0
 ## A yell must be at least this much louder than the whisper, or the take is refused.
 const MIN_RANGE_DB := 6.0
 
+## VoiceChat's script, for its static functions (the VoiceChat autoload is an instance).
+const VoiceChatScript := preload("res://singletons/VoiceChat.gd")
+## No chunk from the mic for this long: it isn't working.
+const NO_SOUND_MSEC := 1000
+
 var _devices: OptionButton
 var _gain: HSlider
-var _gain_label: Label
 var _meter: ProgressBar
 var _meter_label: Label
 var _gate_mark: ColorRect
@@ -30,6 +34,8 @@ var _status: Label
 var _take := ""
 var _take_levels: Array[float] = []
 var _take_until_msec := 0
+## When the mic last handed over a chunk (the tab opening counts, so it gets a moment to start).
+var _last_chunk_msec := Time.get_ticks_msec()
 
 func _ready() -> void:
 	_devices = OptionButton.new()
@@ -41,7 +47,7 @@ func _ready() -> void:
 	_devices.item_selected.connect(func(i: int): VoiceChat.set_device(_devices.get_item_text(i)))
 	_row("Microphone", _devices)
 	var speakers := OptionButton.new()
-	for device in VoiceChat.output_devices():
+	for device in VoiceChatScript.output_devices():
 		speakers.add_item(device)
 		if device == AudioServer.output_device:
 			speakers.select(speakers.item_count - 1)
@@ -63,9 +69,15 @@ func _ready() -> void:
 	_gain.custom_minimum_size = Vector2(200, 0)
 	_gain.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_gain.value_changed.connect(_on_gain_changed)
-	_gain_label = _row("Mic gain", _gain)
+	_row("Mic gain", _with_number(_gain))
 
-	_switch("Hear yourself", VoiceChat.loopback, func(on: bool): VoiceChat.loopback = on)
+	var hear := _switch("Hear yourself", VoiceChat.loopback, func(on: bool): VoiceChat.loopback = on)
+	# Or only while held down; the switch shows it.
+	var hold := Button.new()
+	hold.text = "Hold to hear yourself"
+	hold.button_down.connect(func(): hear.button_pressed = true)
+	hold.button_up.connect(func(): hear.button_pressed = false)
+	add_child(hold)
 	_switch("Auto gain (every voice played at its loudness in the dungeon)", VoiceChat.auto_gain, VoiceChat.set_auto_gain)
 	_switch("Rumble filter (cuts hum and knocks under %.0f Hz)" % MicInput.HIGH_PASS_HZ, VoiceChat.mic.rumble_filter, VoiceChat.set_rumble_filter)
 	_switch("Stereo voices (left/right from where they stand)", VoiceChat.stereo, VoiceChat.set_stereo)
@@ -82,6 +94,8 @@ func _ready() -> void:
 	_gate_mark.size = Vector2(2, 16)
 	_meter.add_child(_gate_mark)
 	_meter_label = Label.new()
+	# Wraps rather than widening the tab when the message is long.
+	_meter_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(_meter_label)
 
 	var gate := HBoxContainer.new()
@@ -97,7 +111,7 @@ func _ready() -> void:
 	_gate_slider.value = VoiceChat.manual_gate_db
 	_gate_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_gate_slider.value_changed.connect(func(db: float): VoiceChat.set_gate(false, db); auto.button_pressed = false)
-	gate.add_child(_gate_slider)
+	gate.add_child(_with_number(_gate_slider))
 	gate.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_gate_label = _row("Talking from", gate)
 
@@ -121,15 +135,29 @@ func _ready() -> void:
 	visibility_changed.connect(_update_monitoring)
 	tree_exiting.connect(func(): VoiceChat.set_monitoring(false))
 	_update_monitoring()
-	_on_gain_changed(_gain.value, false)
 
 ## A switch that calls `changed` with its new state.
-func _switch(text: String, on: bool, changed: Callable) -> void:
+func _switch(text: String, on: bool, changed: Callable) -> CheckButton:
 	var button := CheckButton.new()
 	button.text = text
 	button.button_pressed = on
 	button.toggled.connect(changed)
 	add_child(button)
+	return button
+
+## `slider` with a box beside it to type the number in (the two share one value, so either one
+## changing fires the slider's value_changed).
+func _with_number(slider: HSlider) -> HBoxContainer:
+	var box := HBoxContainer.new()
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	box.add_child(slider)
+	var number := SpinBox.new()
+	number.suffix = "dB"
+	# slider.share(number) gives the number the slider's range and value (the other way round
+	# would reset the slider to an empty box's 0, and save it).
+	slider.share(number)
+	box.add_child(number)
+	return box
 
 ## A label and a control side by side; returns the label at the end of the row (for a value).
 func _row(title: String, control: Control) -> Label:
@@ -148,20 +176,25 @@ func _row(title: String, control: Control) -> Label:
 ## The mic runs for the meter only while this tab is showing.
 func _update_monitoring() -> void:
 	VoiceChat.set_monitoring(is_visible_in_tree())
+	_last_chunk_msec = Time.get_ticks_msec()
 
-func _on_gain_changed(db: float, save := true) -> void:
-	_gain_label.text = "%+.0f dB" % db
-	if save:
-		VoiceChat.set_gain(db)
+func _on_gain_changed(db: float) -> void:
+	VoiceChat.set_gain(db)
 
 func _process(_delta: float) -> void:
 	var level := VoiceChat.level_db
 	_meter.value = maxf(level, METER_FLOOR_DB)
 	var gate := VoiceChat.gate_db()
 	_gate_mark.position.x = _meter.size.x * inverse_lerp(METER_FLOOR_DB, 0.0, clampf(gate, METER_FLOOR_DB, 0.0))
-	_gate_label.text = "%.0f dB" % gate
+	# The number box shows a manual gate; the label only the automatic one.
+	_gate_label.text = "auto: %.0f dB" % gate if VoiceChat.auto_gate else ""
 	var talking := "silent" if level < VoiceChat.gate_db() else "in the dungeon %.0f dB" % VoiceChat.my_voice_db(level)
 	_meter_label.text = "%s   (mic %.0f dB, background %.0f dB, under %.0f dB is not talking)" % [talking, level, VoiceChat.background_db, VoiceChat.gate_db()]
+	# A mic that isn't working: nothing comes in at all. (Exact zeros are not flagged: a noise-cancelling
+	# mic sends them whenever you're quiet.)
+	var listening := "Listening to: %s. " % AudioServer.input_device
+	if Time.get_ticks_msec() - _last_chunk_msec > NO_SOUND_MSEC:
+		_meter_label.text = listening + "Nothing is coming in from this mic. Pick it again, or another one."
 	_calibration_label.text = "Whisper at %.0f dB, yell at %.0f dB (mic levels)%s" % [VoiceChat.whisper_mic_db, VoiceChat.yell_mic_db, "" if VoiceChat.is_calibrated() else ", the defaults"]
 	if _take != "":
 		var left := (_take_until_msec - Time.get_ticks_msec()) / 1000.0
@@ -175,18 +208,21 @@ func _start_take(take: String) -> void:
 	_take_until_msec = Time.get_ticks_msec() + int(CALIBRATE_SECONDS * 1000.0)
 
 func _on_chunk(pcm: PackedByteArray) -> void:
+	_last_chunk_msec = Time.get_ticks_msec()
 	if _take != "":
-		_take_levels.append(VoiceChat.mic_level_db(pcm))
+		_take_levels.append(VoiceChatScript.mic_level_db(pcm))
 
 func _finish_take() -> void:
 	var take := _take
 	_take = ""
 	var floor_db := VoiceChat.background_db + OVER_BACKGROUND_DB if VoiceChat.background_db > -INF else METER_FLOOR_DB
-	var talking := _take_levels.filter(func(level: float) -> bool: return level >= floor_db)
+	var talking := _take_levels.filter(func(chunk_db: float) -> bool: return chunk_db >= floor_db)
 	if talking.is_empty():
 		_status.text = "Didn't hear you. Check the microphone above and try again."
 		return
-	var level := VoiceChat.average_db(talking)
+	# The typical chunk, not the average: an average of power is dragged up by a few peaking chunks
+	# (they count as 0 dB), which once saved a yell of -4.5 when the yell was really about -22.
+	var level := VoiceChatScript.median_db(talking)
 	var whisper := level if take == "whisper" else VoiceChat.whisper_mic_db
 	var yell := level if take == "yell" else VoiceChat.yell_mic_db
 	if yell - whisper < MIN_RANGE_DB:

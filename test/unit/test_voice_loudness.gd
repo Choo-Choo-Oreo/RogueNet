@@ -104,3 +104,11 @@ func test_a_manual_gate_replaces_the_whisper_one() -> void:
 	assert_eq(chat.gate_db(), -50.0, "by hand")
 	chat.mic.free()
 	chat.free()
+
+func test_calibration_takes_the_typical_chunk_not_the_peaks() -> void:
+	# A yell at about -22 with a few peaking chunks (0 dB): once saved as -4.5 (2026-09-25).
+	var take := [-22.0, -21.0, -23.0, -22.0, 0.0, -20.0, 0.0, -24.0, -22.0]
+	assert_eq(VoiceChat.median_db(take), -22.0)
+	assert_gt(VoiceChat.average_db(take), -10.0, "the average is thrown off")
+	assert_eq(VoiceChat.median_db([-30.0, -20.0]), -25.0, "even count: halfway")
+	assert_eq(VoiceChat.median_db([]), -INF)

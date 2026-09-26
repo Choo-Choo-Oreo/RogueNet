@@ -171,6 +171,8 @@ func _update_mic() -> void:
 # --- Settings > Audio > Voice: each saved at once.
 
 func set_device(device: String) -> void:
+	# Godot's audio driver moves a running mic to the new device by itself. Don't restart it here:
+	# starting straight after a switch fails (WASAPI: init_input_device error).
 	MicInput.set_device(device)
 	ConfigFileHandler.save_setting("voice", "device", device)
 
@@ -343,6 +345,16 @@ static func scaled(pcm: PackedByteArray, boost_db: float) -> PackedByteArray:
 	for i in pcm.size() / 2:
 		out.encode_s16(i * 2, clampi(roundi(pcm.decode_s16(i * 2) * gain), -32768, 32767))
 	return out
+
+## The middle one of several levels (dB): a few peaking (0 dB) or silent chunks don't move it.
+static func median_db(levels: Array) -> float:
+	if levels.is_empty():
+		return -INF
+	var sorted := levels.duplicate()
+	sorted.sort()
+	@warning_ignore("integer_division")  # the middle index
+	var middle := sorted.size() / 2
+	return sorted[middle] if sorted.size() % 2 == 1 else (sorted[middle - 1] + sorted[middle]) / 2.0
 
 ## The average of several levels (dB) as the ear hears it: of their power, not of the dB numbers.
 static func average_db(levels: Array) -> float:

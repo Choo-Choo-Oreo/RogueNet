@@ -9,6 +9,8 @@ extends AudioStreamPlayer2D
 ## VoiceChat's), so show-sound draws its spread. It draws itself: a dot, its level, and what
 ## reaches you.
 
+## VoiceChat's script, for its static functions (the VoiceChat autoload is an instance).
+const VoiceChatScript := preload("res://singletons/VoiceChat.gd")
 const PITCH_HZ := 130.0
 const MIX_RATE := 24000.0
 
@@ -43,7 +45,7 @@ func _process(_delta: float) -> void:
 		_next_noise_msec = now + int(VoiceChat.VOICE_NOISE_SECONDS * 1000.0)
 		NetworkSync.report_noise(global_position, db)
 	# A sawtooth's RMS is its peak / sqrt(3).
-	var peak := sqrt(3.0) * db_to_linear(VoiceChat.mic_level_for(db))
+	var peak := sqrt(3.0) * db_to_linear(VoiceChatScript.mic_level_for(db))
 	var frames := PackedVector2Array()
 	frames.resize(_playback.get_frames_available())
 	for i in frames.size():

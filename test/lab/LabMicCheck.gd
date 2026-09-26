@@ -11,6 +11,8 @@ extends Node
 ##   the same way (VoiceChat.my_voice_db), and saved as a WAV in user://test_lab/ to play back.
 ## The two should agree; the target is where a whisper, talking and a yell are meant to land.
 
+## VoiceChat's script, for its static functions (the VoiceChat autoload is an instance).
+const VoiceChatScript := preload("res://singletons/VoiceChat.gd")
 const TAKES := [["whisper", 30.0], ["talk", 50.0], ["yell", 70.0]]
 const GAP_SECONDS := 3.0
 const TAKE_SECONDS := 5.0
@@ -68,6 +70,12 @@ func _process(_delta: float) -> void:
 		VoiceChat.set_talking(VoiceChat.voice_activation)
 		status = "Done (WAVs in %s). Press M to go again." % ProjectSettings.globalize_path(WAV_DIR)
 
+## The voice settings the takes were made with (Settings > Audio > Voice), for the panel.
+func settings_line() -> String:
+	return "mic %s, gain %+.0f dB, calibration whisper %.0f / yell %.0f, auto gain %s, rumble filter %s" % [
+		AudioServer.input_device, VoiceChat.mic.gain_db, VoiceChat.whisper_mic_db, VoiceChat.yell_mic_db,
+		"on" if VoiceChat.auto_gain else "off", "on" if VoiceChat.mic.rumble_filter else "off"]
+
 ## The background level and the gate (under it is not talking), for the panel.
 func background_line() -> String:
 	return "background %.0f dB under the mic's limit, gate %.0f (calibrated: %s)" % [
@@ -76,7 +84,7 @@ func background_line() -> String:
 func _on_own_voice(pcm: PackedByteArray) -> void:
 	if _recording:
 		_pcm.append_array(pcm)
-		_levels.append(VoiceChat.mic_level_db(pcm))
+		_levels.append(VoiceChatScript.mic_level_db(pcm))
 
 func _on_voice_noise(db: float) -> void:
 	if _recording:
@@ -95,7 +103,7 @@ func _result() -> String:
 	var heard := _levels.filter(func(level: float) -> bool: return level >= VoiceChat.gate_db())
 	var recording := "silent"
 	if not heard.is_empty():
-		var average := VoiceChat.average_db(heard)
+		var average := VoiceChatScript.average_db(heard)
 		var loudest: float = heard.max()
 		recording = "%.0f avg (%.0f dB under the mic's limit), %.0f loudest (%.0f)" % [
 			VoiceChat.my_voice_db(average), average, VoiceChat.my_voice_db(loudest), loudest]

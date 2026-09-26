@@ -244,24 +244,30 @@ func _lines() -> Array[String]:
 		out.append(line)
 	return out
 
-func _refresh_readout() -> void:
-	if _cells.is_empty() or _player == null:
-		return
+## Everything the readout shows under "You:" (the bug report copies the same).
+func _readout_lines() -> Array[String]:
 	var lines := _lines()
 	if is_instance_valid(_voice):
 		var reaches := "under your hearing" if _voice.heard_volume_db == VoiceChat.SILENT_DB else "reaches you at %.0f dB" % (_voice.db + _voice.heard_volume_db)
 		lines.append("talker at %s: %.0f dB, %s (you hear from %.0f)" % [_tile_of(_voice), _voice.db, reaches, _player.viewer.hearing])
 	if is_instance_valid(_mic):
 		lines.append(_mic.status)
+		lines.append(_mic.settings_line())
 		lines.append(_mic.background_line())
 		lines.append_array(_mic.results)
+	return lines
+
+func _refresh_readout() -> void:
+	if _cells.is_empty() or _player == null:
+		return
+	var lines := _readout_lines()
 	_readout.text = "You: %s\n%s" % [_tile_of(_player), "\n".join(lines) if not lines.is_empty() else "(no creatures in this cell)"]
 
 func _copy_report() -> void:
 	var c: Dictionary = _cells[_index]
 	var text := "Bug report from the Test Lab\ncell: %s (seed %d, hub test/lab/development)\nyou: %s, %.0fs after arriving\n" % [
 		c["name"], NetworkSync.dungeon_seed, _tile_of(_player), (Time.get_ticks_msec() - _started_msec) / 1000.0]
-	text += "creatures:\n  " + "\n  ".join(_lines()) + "\n"
+	text += "readout:\n  " + "\n  ".join(_readout_lines()).replace("\n", "\n  ") + "\n"
 	text += "debug log (last lines):\n  " + "\n  ".join(DebugLog.lines.slice(-8)) + "\n"
 	text += "what I saw: \n"
 	DisplayServer.clipboard_set(text)
