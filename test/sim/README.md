@@ -49,7 +49,8 @@ Smaller checks run on their own (each exits 1 on failure; `--fixed-fps 60` makes
   and then back to its home room on patrol.
 - `hearing_distances.gd` (a few seconds; `-- seed=N`, random by default) is a report, not a check: in a
   generated dungeon it puts rats 1 to 40 tiles from the player along the longest straight run of floor,
-  makes a footstep, a whisper, talking and a yell the way the game does, and prints the dB reaching each
+  makes a footstep, a whisper, talking, a yell, every action with a `db` (game/actions) and a death
+  (game/sounds.json) the way the game does, and prints the dB reaching each
   rat, whether it heard it, and which other creatures (by hearing threshold) would. FAIL only if a rat's
   reaction disagrees with the sound spread.
 - `vision_torch.gd` (a few seconds) stands the player in `light_blind_ignores` with no torch (only the

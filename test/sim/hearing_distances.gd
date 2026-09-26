@@ -2,7 +2,9 @@ extends SceneTree
 
 ## How far each sound a player makes carries in a real generated dungeon: a footstep (the only
 ## walking sound, PlayerController.FOOTSTEP_DB) and a voice whispering, talking and yelling
-## (VoiceChat.WHISPER_DB / TALK_DB / YELL_DB, the dB VoiceChat reports while you talk). Rats are
+## (VoiceChat.WHISPER_DB / TALK_DB / YELL_DB, the dB VoiceChat reports while you talk), and a
+## fight: every action with a `db` (game/actions, the noise its attack makes, AttackEffect) and a
+## death (game/sounds.json death_db, which only players hear, shown for comparison). Rats are
 ## placed along the longest straight run of floor from the player, at DISTANCES tiles, frozen in
 ## place (their AI is off, so nobody walks); each sound is made the way the game makes it
 ## (NetworkSync.report_noise -> Sound.make) and a rat that heard it has senses.last_heard_db set.
@@ -16,8 +18,8 @@ extends SceneTree
 ## the spread (a bug in Sound.make's hearing).
 
 const DISTANCES := [1, 2, 3, 4, 6, 8, 10, 13, 16, 20, 25, 30, 35, 40]
-## [name, dB]: what a player makes.
-const SOUNDS := [["footstep", 30.0], ["whisper", 30.0], ["talking", 50.0], ["yell", 70.0]]
+## [name, dB]: what a player makes; the fight's sounds are added in _initialize.
+var SOUNDS := [["footstep", 30.0], ["whisper", 30.0], ["talking", 50.0], ["yell", 70.0]]
 ## [creature, hearing threshold dB], from the creature JSONs; filled in _initialize.
 var _creatures: Array = []
 
@@ -41,6 +43,16 @@ func _initialize() -> void:
 			_seed = arg.trim_prefix("seed=").to_int()
 	for id in ["rat", "hamster", "bat", "bat_echo", "spider"]:
 		_creatures.append([id, _threshold(id)])
+	var fight: Array = []
+	for file in DirAccess.get_files_at("res://game/actions/"):
+		if file.ends_with(".json"):
+			var action: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://game/actions/" + file))
+			if float(action.get("db", 0.0)) > 0.0:
+				fight.append([file.get_basename(), float(action["db"])])
+	fight.sort_custom(func(a, b): return a[1] < b[1])
+	SOUNDS.append_array(fight)
+	var sounds: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://game/sounds.json"))
+	SOUNDS.append(["death", float(sounds.get("death_db", 0.0))])
 	root.get_node("NetworkSync").dungeon_seed = _seed
 	change_scene_to_file("res://scenes/dungeon/Dungeon.tscn")
 
@@ -153,7 +165,7 @@ func _make(i: int) -> void:
 		_player._on_stepped(_start)  # the real footstep, the way a step makes it
 		load("res://scripts/debug/DebugState.gd").unseen = true
 	else:
-		root.get_node("NetworkSync").report_noise(at, SOUNDS[i][1])  # what VoiceChat does
+		root.get_node("NetworkSync").report_noise(at, SOUNDS[i][1])  # what VoiceChat and an attack do
 
 func _report(i: int) -> void:
 	var name: String = SOUNDS[i][0]
