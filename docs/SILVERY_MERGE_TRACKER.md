@@ -30,6 +30,18 @@ git restore --source=origin/silvery/art-and-gear -- <path> <path> ...
   The **Shared files** table at the bottom lists them.
 - Commit each chunk on its own: `Import Silvery: <chunk name>`.
 
+### Pixel-perfect checks (2026-09-26)
+One grid, unit = one UI pixel (640×360), world art pixel = 2 units (`resources/gfx/TODO.md`).
+Anything scaled by a non-whole number still lands on it with uneven blocks, so **only whole-number scales**. Found on
+the branch (Silvery's work: tell Orea, don't edit):
+- `scripts/ui/MenuWeapon.gd` (MAIN MENU SOUNDS): weapon pop scale 0.6 → 1 (about line 70),
+  fireball scale tween 0 → 1 (about line 145)
+- `scripts/entities/DamageNumber.gd` (COMBAT FEEDBACK): pop from scale 1.6 → 1 (about line 61)
+- `scripts/entities/GearEffects.gd` (THINGS RESTORE): particle scale from the item JSON `"size"`;
+  all `[1, 1]` today, but any value is accepted, so it needs a whole-number check
+- Not a grid problem, but alpha fades blend colours off the palette: `GearEffects._fade_ramp`,
+  `Wading.gd` (about line 241), `ParticleBurst.gd` (about line 183), `DamageNumber.gd` (about line 68)
+
 ## Chunks
 
 ### AUDIO (sound files and buses) [~]

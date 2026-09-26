@@ -209,9 +209,9 @@ the art grid. Could be a player option (purists pick 1×).
 
 ## 9. Open decisions (Orea)
 
-- [ ] Stay as-is, Terraria-style, or the two-layer setup?
-- [ ] Accept steppier dungeon movement, or pay for the smoothing (1 px margin trick or a viewport multiplier)?
-- [ ] Non-16:9 screens: resize the game viewport or black bars?
+- [x] Stay as-is, Terraria-style, or the two-layer setup? **Two-layer** (Orea 2026-09-26)
+- [x] Accept steppier dungeon movement, or pay for the smoothing (1 px margin trick or a viewport multiplier)? **Smooth camera** (Orea 2026-09-26: the camera is never meant to be pixel perfect; 1 px margin trick)
+- [ ] Non-16:9 screens: resize the game viewport or black bars? (Orea 2026-09-26 leans to resize: more world on the long side, vision is limited anyway)
 - [ ] Are texture packs wanted? If so, allow only d=1/2, or denser with the screen caveat?
 - [ ] Which pixel font, and who makes or picks it?
 
